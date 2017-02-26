@@ -1,4 +1,4 @@
-LoNTrader (Legends of Norrath Trader) is a personal project I created and worked on during the 2006-2009 timeframe, approximately. It's a Windows C++ application for automated trading of digital trading cards in the Legends of Norrath digital trading card game. Legends of Norrath has since been shut down, so I figured I'd put the code online for no particular reason, other than to pique or satisfy the curiousity of the curious.
+LoNTrader (Legends of Norrath Trader) is a personal project I created and worked on during the 2006-2009 timeframe, approximately. It's a Windows C++ application (~35,000 lines) for automated trading of digital trading cards in the Legends of Norrath digital trading card game. Legends of Norrath has since been shut down, so I figured I'd put the code online for no particular reason, other than to pique or satisfy the curiousity of the curious.
 
 LoNTrader uses the "DataPipeline" framework, which is a lightweight multi-threaded data-processing framework that I wrote along with this application, and have used for other applications. The Data Pipeline consists of three states: Acquire, Translate, and Execute.  
 
