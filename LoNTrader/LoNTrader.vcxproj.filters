@@ -1,0 +1,406 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="TradePoster">
+      <UniqueIdentifier>{4e18659e-437c-423a-9b85-32375a25db53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TradeBuilder">
+      <UniqueIdentifier>{98625177-7da3-4bc4-aa90-01bec1aff7b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PostedTrades">
+      <UniqueIdentifier>{2aab30c1-96f6-41cd-bf10-b82b3e367cdd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Database">
+      <UniqueIdentifier>{2e4b8356-aecd-44eb-bf7c-e2528a034ffd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ConfirmTrade">
+      <UniqueIdentifier>{a8c1af4f-11e9-4b1c-ba36-c55834d16dbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TradeDetail">
+      <UniqueIdentifier>{919d93b1-3406-4642-a881-2b83fb08c235}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="LoNTrader.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\lonwindow_bottomleft.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\lonwindow_bottomline.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\lonwindow_bottomright.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\lonwindow_leftline.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\lonwindow_rightline.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\lonwindow_topleft.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\lonwindow_topline.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\lonwindow_topright.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Main\Card_t.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\CardCollection_t.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\DcrTrades_t.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\EventTypes.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\LonCard_t.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\LonCardMap_t.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\LonCardSet_t.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\LonMessageTypes.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\LonPlayer_t.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\LonTrader_t.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\LonTraderImpl_t.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\LonTypes.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\LonWindow_t.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\LonWindowManager_t.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\PassiveFixedPricing_t.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\PcapTrades_t.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\resource.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\Services.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\SimplePosting_t.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\SimpleRangePricing_t.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\SsTrades_t.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\stdafx.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TiBase_t.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\Trade_t.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TradeExecutor_t.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TradeMaker_t.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TradeManager_t.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TradeMap_t.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TradeTypes.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TradeValue_t.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TrPrompts_t.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TrScrollThumb_t.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TrSurface_t.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TrTable_t.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TrWindow_t.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\XmlNames.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TradePoster.h">
+      <Filter>TradePoster</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TradePosterData.h">
+      <Filter>TradePoster</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TradePosterPolicy.h">
+      <Filter>TradePoster</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TradePosterTypes.h">
+      <Filter>TradePoster</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TradeBuilder.h">
+      <Filter>TradeBuilder</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TradeBuilderTypes.h">
+      <Filter>TradeBuilder</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\DbCards_t.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\DbCardSet_t.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\DbGroupedCards_t.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\DbGroups_t.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\DbTrades_t.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\DcrPostedTrades.h">
+      <Filter>PostedTrades</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\DcrTradeBuilder.h">
+      <Filter>TradeBuilder</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TradeDetailTypes.h">
+      <Filter>TradeDetail</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TradeDetail.h">
+      <Filter>TradeDetail</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\DcrTradeDetail.h">
+      <Filter>TradeDetail</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\PostedTrades.h">
+      <Filter>PostedTrades</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\PostedTradesPolicy.h">
+      <Filter>PostedTrades</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\PostedTradesTypes.h">
+      <Filter>PostedTrades</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TiTradeDetail.h">
+      <Filter>TradeDetail</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TiTradeBuilder.h">
+      <Filter>TradeBuilder</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TiPostedTrades.h">
+      <Filter>PostedTrades</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\ConfirmTrade.h">
+      <Filter>ConfirmTrade</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\ConfirmTradeTypes.h">
+      <Filter>ConfirmTrade</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TiConfirmTrade.h">
+      <Filter>ConfirmTrade</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\DcrConfirmTrade.h">
+      <Filter>ConfirmTrade</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main\Card_t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\CardCollection_t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\CmdCards.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\CmdTradePoster.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\CmdTrades.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\DcrTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\DcrTrades_t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\LonCard_t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\LonCard_Xml.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\LonCardSet_New.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\LonCardSet_t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\LonCardSet_Xml.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\LonPlayer_t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\LonTrader_t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\LonTraderImpl_t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\LonWindow_Find.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\LonWindow_t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\PassiveFixedPricing_t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\PcapTrades_t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\Services.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\SimplePosting_t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\SimpleRangePricing_t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\SsTrades_t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\Trade_t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\TradeExecutor_t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\TradeMaker_t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\TradeManager_t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\TradeTypes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\TradeValue_t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\TrPrompts_t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\TrScrollThumb_t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\TrWindow_t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\TradePoster.cpp">
+      <Filter>TradePoster</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\TradePosterData.cpp">
+      <Filter>TradePoster</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\DbCards_t.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\DbCardSet_t.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\DbGroupedCards_t.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\DbGroups_t.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\DbTrades_t.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\DcrPostedTrades.cpp">
+      <Filter>PostedTrades</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\DcrTradeBuilder.cpp">
+      <Filter>TradeBuilder</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\DcrTradeDetail.cpp">
+      <Filter>TradeDetail</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\PostedTradesPolicy.cpp">
+      <Filter>PostedTrades</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\TiTradeDetail.cpp">
+      <Filter>TradeDetail</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\TiTradeBuilder.cpp">
+      <Filter>TradeBuilder</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\TiPostedTrades.cpp">
+      <Filter>PostedTrades</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\TiConfirmTrade.cpp">
+      <Filter>ConfirmTrade</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\DcrConfirmTrade.cpp">
+      <Filter>ConfirmTrade</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

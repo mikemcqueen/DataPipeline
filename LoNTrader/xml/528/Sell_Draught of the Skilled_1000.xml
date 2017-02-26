@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TradePoster Type="Offer">
+  <CardQuantity>
+    <Card Name="Draught of the Skilled" />
+    <Quantity>1</Quantity>
+  </CardQuantity>
+  <PricingPolicy Name="PassiveFixed" />
+  <PassiveFixed>
+    <Price>1000</Price>
+  </PassiveFixed>
+  <PostingPolicy Name="Simple" />
+  <Simple>
+    <AllowedCards Count="3">
+      <CardQuantity>
+        <Card Name="Inquisitor Booster Pack" />
+        <Quantity>50</Quantity>
+      </CardQuantity>
+      <CardQuantity>
+        <Card Name="Oathbound Booster Pack" />
+        <Quantity>50</Quantity>
+      </CardQuantity>
+      <CardQuantity>
+        <Card Name="Forsworn Booster Pack" />
+        <Quantity>50</Quantity>
+      </CardQuantity>
+    </AllowedCards>
+    <TradeMaps Count="1">
+      <TradeMap Value="1000">
+        <Trades Count="1">
+          <Trade Id="0">
+            <Offer Count="1">
+              <CardQuantity>
+                <Card Name="Draught of the Skilled" />
+                <Quantity>1</Quantity>
+              </CardQuantity>
+            </Offer>
+            <Want Count="1">
+              <CardQuantity>
+                <Card Name="Inquisitor Booster Pack" />
+                <Quantity>1</Quantity>
+              </CardQuantity>
+            </Want>
+          </Trade>
+        </Trades>
+      </TradeMap>
+    </TradeMaps>
+  </Simple>
+</TradePoster>

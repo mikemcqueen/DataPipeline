@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CD82D79B-B058-4274-B960-CD5B2F749B6C}"
+	ProjectSection(SolutionItems) = preProject
+		stdafx.h = stdafx.h
+		ttd.txt = ttd.txt
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PipelineManager", "PipelineManager\PipelineManager.vcxproj", "{CE028B60-F646-4156-B52A-8EA5B7193F57}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LonTrader", "LoNTrader\LoNTrader.vcxproj", "{37230F2C-FCFC-4770-8D84-5661C841588B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CommonUtils", "CommonUtils\CommonUtils.vcxproj", "{612EC231-D5A3-4550-AF05-211548D82370}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DcrLib", "DcrLib\DcrLib.vcxproj", "{E0E9D0D7-58DE-4505-8EF0-8E50FF24B402}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AcquireHandlers", "AcquireHandlers\AcquireHandlers.vcxproj", "{EDC76DA7-36D5-419B-9468-3362F176E0FF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CE028B60-F646-4156-B52A-8EA5B7193F57}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CE028B60-F646-4156-B52A-8EA5B7193F57}.Debug|Win32.Build.0 = Debug|Win32
+		{CE028B60-F646-4156-B52A-8EA5B7193F57}.Release|Win32.ActiveCfg = Release|Win32
+		{CE028B60-F646-4156-B52A-8EA5B7193F57}.Release|Win32.Build.0 = Release|Win32
+		{37230F2C-FCFC-4770-8D84-5661C841588B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{37230F2C-FCFC-4770-8D84-5661C841588B}.Debug|Win32.Build.0 = Debug|Win32
+		{37230F2C-FCFC-4770-8D84-5661C841588B}.Release|Win32.ActiveCfg = Release|Win32
+		{37230F2C-FCFC-4770-8D84-5661C841588B}.Release|Win32.Build.0 = Release|Win32
+		{612EC231-D5A3-4550-AF05-211548D82370}.Debug|Win32.ActiveCfg = Debug|Win32
+		{612EC231-D5A3-4550-AF05-211548D82370}.Debug|Win32.Build.0 = Debug|Win32
+		{612EC231-D5A3-4550-AF05-211548D82370}.Release|Win32.ActiveCfg = Release|Win32
+		{612EC231-D5A3-4550-AF05-211548D82370}.Release|Win32.Build.0 = Release|Win32
+		{E0E9D0D7-58DE-4505-8EF0-8E50FF24B402}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E0E9D0D7-58DE-4505-8EF0-8E50FF24B402}.Debug|Win32.Build.0 = Debug|Win32
+		{E0E9D0D7-58DE-4505-8EF0-8E50FF24B402}.Release|Win32.ActiveCfg = Release|Win32
+		{E0E9D0D7-58DE-4505-8EF0-8E50FF24B402}.Release|Win32.Build.0 = Release|Win32
+		{EDC76DA7-36D5-419B-9468-3362F176E0FF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{EDC76DA7-36D5-419B-9468-3362F176E0FF}.Debug|Win32.Build.0 = Debug|Win32
+		{EDC76DA7-36D5-419B-9468-3362F176E0FF}.Release|Win32.ActiveCfg = Release|Win32
+		{EDC76DA7-36D5-419B-9468-3362F176E0FF}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TradePoster Type="Offer">
+  <CardQuantity>
+    <Card Name="Visage of the Stone Gargoyle" />
+    <Quantity>1</Quantity>
+  </CardQuantity>
+  <PricingPolicy Name="Simple" />
+  <Simple>
+    <Low>35000</Low>
+    <High>50000</High>
+    <Increment>1000</Increment>
+    <Current>0</Current>
+  </Simple>
+  <PostingPolicy Name="Simple" />
+  <Simple>
+    <AllowedCards Count="3">
+      <CardQuantity>
+        <Card Name="Inquisitor Booster Pack" />
+        <Quantity>16</Quantity>
+      </CardQuantity>
+      <CardQuantity>
+        <Card Name="Oathbound Booster Pack" />
+        <Quantity>16</Quantity>
+      </CardQuantity>
+      <CardQuantity>
+        <Card Name="Forsworn Booster Pack" />
+        <Quantity>16</Quantity>
+      </CardQuantity>
+    </AllowedCards>
+    <TradeMaps Count="16">
+      <TradeMap Value="35000">
+        <Trades Count="1">
+          <Trade Id="0">
+            <Offer Count="1">
+              <CardQuantity>
+                <Card Name="Visage of the Stone Gargoyle" />
+                <Quantity>1</Quantity>
+              </CardQuantity>
+            </Offer>
+            <Want Count="3">
+              <CardQuantity>
+                <Card Name="Oathbound Booster Pack" />
+                <Quantity>16</Quantity>
+              </CardQuantity>
+              <CardQuantity>
+                <Card Name="Forsworn Booster Pack" />
+                <Quantity>3</Quantity>
+              </CardQuantity>
+              <CardQuantity>
+                <Card Name="Inquisitor Booster Pack" />
+                <Quantity>16</Quantity>
+              </CardQuantity>
+            </Want>
+          </Trade>
+        </Trades>
+      </TradeMap>
+      <TradeMap Value="36000">
+        <Trades Count="1">
+          <Trade Id="0">
+            <Offer Count="1">
+              <CardQuantity>
+                <Card Name="Visage of the Stone Gargoyle" />
+                <Quantity>1</Quantity>
+              </CardQuantity>
+            </Offer>
+            <Want Count="3">
+              <CardQuantity>
+                <Card Name="Oathbound Booster Pack" />
+                <Quantity>16</Quantity>
+              </CardQuantity>
+              <CardQuantity>
+                <Card Name="Forsworn Booster Pack" />
+                <Quantity>4</Quantity>
+              </CardQuantity>
+              <CardQuantity>
+                <Card Name="Inquisitor Booster Pack" />
+                <Quantity>16</Quantity>
+              </CardQuantity>
+            </Want>
+          </Trade>
+        </Trades>
+      </TradeMap>
+      <TradeMap Value="37000">
+        <Trades Count="1">
+          <Trade Id="0">
+            <Offer Count="1">
+              <CardQuantity>
+                <Card Name="Visage of the Stone Gargoyle" />
+                <Quantity>1</Quantity>
+              </CardQuantity>
+            </Offer>
+            <Want Count="3">
+              <CardQuantity>
+                <Card Name="Oathbound Booster Pack" />
+                <Quantity>16</Quantity>
+              </CardQuantity>
+              <CardQuantity>
+                <Card Name="Forsworn Booster Pack" />
+                <Quantity>5</Quantity>
+              </CardQuantity>
+              <CardQuantity>
+                <Card Name="Inquisitor Booster Pack" />
+                <Quantity>16</Quantity>
+              </CardQuantity>
+            </Want>
+          </Trade>
+        </Trades>
+      </TradeMap>
+      <TradeMap Value="38000">
+        <Trades Count="1">
+          <Trade Id="0">
+            <Offer Count="1">
+              <CardQuantity>
+                <Card Name="Visage of the Stone Gargoyle" />
+                <Quantity>1</Quantity>
+              </CardQuantity>
+            </Offer>
+            <Want Count="3">
+              <CardQuantity>
+                <Card Name="Oathbound Booster Pack" />
+                <Quantity>16</Quantity>
+              </CardQuantity>
+              <CardQuantity>
+                <Card Name="Forsworn Booster Pack" />
+                <Quantity>6</Quantity>
+              </CardQuantity>
+              <CardQuantity>
+                <Card Name="Inquisitor Booster Pack" />
+                <Quantity>16</Quantity>
+              </CardQuantity>
+            </Want>
+          </Trade>
+        </Trades>
+      </TradeMap>
+      <TradeMap Value="39000">
+        <Trades Count="1">
+          <Trade Id="0">
+            <Offer Count="1">
+              <CardQuantity>
+                <Card Name="Visage of the Stone Gargoyle" />
+                <Quantity>1</Quantity>
+              </CardQuantity>
+            </Offer>
+            <Want Count="3">
+              <CardQuantity>
+                <Card Name="Oathbound Booster Pack" />
+                <Quantity>16</Quantity>
+              </CardQuantity>
+              <CardQuantity>
+                <Card Name="Forsworn Booster Pack" />
+                <Quantity>7</Quantity>
+              </CardQuantity>
+              <CardQuantity>
+                <Card Name="Inquisitor Booster Pack" />
+                <Quantity>16</Quantity>
+              </CardQuantity>
+            </Want>
+          </Trade>
+        </Trades>
+      </TradeMap>
+      <TradeMap Value="40000">
+        <Trades Count="1">
+          <Trade Id="0">
+            <Offer Count="1">
+              <CardQuantity>
+                <Card Name="Visage of the Stone Gargoyle" />
+                <Quantity>1</Quantity>
+              </CardQuantity>
+            </Offer>
+            <Want Count="3">
+              <CardQuantity>
+                <Card Name="Oathbound Booster Pack" />
+                <Quantity>16</Quantity>
+              </CardQuantity>
+              <CardQuantity>
+                <Card Name="Forsworn Booster Pack" />
+                <Quantity>8</Quantity>
+              </CardQuantity>
+              <CardQuantity>
+                <Card Name="Inquisitor Booster Pack" />
+                <Quantity>16</Quantity>
+              </CardQuantity>
+            </Want>
+          </Trade>
+        </Trades>
+      </TradeMap>
+      <TradeMap Value="41000">
+        <Trades Count="1">
+          <Trade Id="0">
+            <Offer Count="1">
+              <CardQuantity>
+                <Card Name="Visage of the Stone Gargoyle" />
+                <Quantity>1</Quantity>
+              </CardQuantity>
+            </Offer>
+            <Want Count="3">
+              <CardQuantity>
+                <Card Name="Oathbound Booster Pack" />
+                <Quantity>16</Quantity>
+              </CardQuantity>
+              <CardQuantity>
+                <Card Name="Forsworn Booster Pack" />
+                <Quantity>9</Quantity>
+              </CardQuantity>
+              <CardQuantity>
+                <Card Name="Inquisitor Booster Pack" />
+                <Quantity>16</Quantity>
+              </CardQuantity>
+            </Want>
+          </Trade>
+        </Trades>
+      </TradeMap>
+      <TradeMap Value="42000">
+        <Trades Count="1">
+          <Trade Id="0">
+            <Offer Count="1">
+              <CardQuantity>
+                <Card Name="Visage of the Stone Gargoyle" />
+                <Quantity>1</Quantity>
+              </CardQuantity>
+            </Offer>
+            <Want Count="3">
+              <CardQuantity>
+                <Card Name="Oathbound Booster Pack" />
+                <Quantity>16</Quantity>
+              </CardQuantity>
+              <CardQuantity>
+                <Card Name="Forsworn Booster Pack" />
+                <Quantity>10</Quantity>
+              </CardQuantity>
+              <CardQuantity>
+                <Card Name="Inquisitor Booster Pack" />
+                <Quantity>16</Quantity>
+              </CardQuantity>
+            </Want>
+          </Trade>
+        </Trades>
+      </TradeMap>
+      <TradeMap Value="43000">
+        <Trades Count="1">
+          <Trade Id="0">
+            <Offer Count="1">
+              <CardQuantity>
+                <Card Name="Visage of the Stone Gargoyle" />
+                <Quantity>1</Quantity>
+              </CardQuantity>
+            </Offer>
+            <Want Count="3">
+              <CardQuantity>
+                <Card Name="Oathbound Booster Pack" />
+                <Quantity>16</Quantity>
+              </CardQuantity>
+              <CardQuantity>
+                <Card Name="Forsworn Booster Pack" />
+                <Quantity>11</Quantity>
+              </CardQuantity>
+              <CardQuantity>
+                <Card Name="Inquisitor Booster Pack" />
+                <Quantity>16</Quantity>
+              </CardQuantity>
+            </Want>
+          </Trade>
+        </Trades>
+      </TradeMap>
+      <TradeMap Value="44000">
+        <Trades Count="1">
+          <Trade Id="0">
+            <Offer Count="1">
+              <CardQuantity>
+                <Card Name="Visage of the Stone Gargoyle" />
+                <Quantity>1</Quantity>
+              </CardQuantity>
+            </Offer>
+            <Want Count="3">
+              <CardQuantity>
+                <Card Name="Oathbound Booster Pack" />
+                <Quantity>16</Quantity>
+              </CardQuantity>
+              <CardQuantity>
+                <Card Name="Forsworn Booster Pack" />
+                <Quantity>12</Quantity>
+              </CardQuantity>
+              <CardQuantity>
+                <Card Name="Inquisitor Booster Pack" />
+                <Quantity>16</Quantity>
+              </CardQuantity>
+            </Want>
+          </Trade>
+        </Trades>
+      </TradeMap>
+      <TradeMap Value="45000">
+        <Trades Count="1">
+          <Trade Id="0">
+            <Offer Count="1">
+              <CardQuantity>
+                <Card Name="Visage of the Stone Gargoyle" />
+                <Quantity>1</Quantity>
+              </CardQuantity>
+            </Offer>
+            <Want Count="3">
+              <CardQuantity>
+                <Card Name="Oathbound Booster Pack" />
+                <Quantity>16</Quantity>
+              </CardQuantity>
+              <CardQuantity>
+                <Card Name="Forsworn Booster Pack" />
+                <Quantity>13</Quantity>
+              </CardQuantity>
+              <CardQuantity>
+                <Card Name="Inquisitor Booster Pack" />
+                <Quantity>16</Quantity>
+              </CardQuantity>
+            </Want>
+          </Trade>
+        </Trades>
+      </TradeMap>
+      <TradeMap Value="46000">
+        <Trades Count="1">
+          <Trade Id="0">
+            <Offer Count="1">
+              <CardQuantity>
+                <Card Name="Visage of the Stone Gargoyle" />
+                <Quantity>1</Quantity>
+              </CardQuantity>
+            </Offer>
+            <Want Count="3">
+              <CardQuantity>
+                <Card Name="Oathbound Booster Pack" />
+                <Quantity>16</Quantity>
+              </CardQuantity>
+              <CardQuantity>
+                <Card Name="Forsworn Booster Pack" />
+                <Quantity>14</Quantity>
+              </CardQuantity>
+              <CardQuantity>
+                <Card Name="Inquisitor Booster Pack" />
+                <Quantity>16</Quantity>
+              </CardQuantity>
+            </Want>
+          </Trade>
+        </Trades>
+      </TradeMap>
+      <TradeMap Value="47000">
+        <Trades Count="1">
+          <Trade Id="0">
+            <Offer Count="1">
+              <CardQuantity>
+                <Card Name="Visage of the Stone Gargoyle" />
+                <Quantity>1</Quantity>
+              </CardQuantity>
+            </Offer>
+            <Want Count="3">
+              <CardQuantity>
+                <Card Name="Oathbound Booster Pack" />
+                <Quantity>16</Quantity>
+              </CardQuantity>
+              <CardQuantity>
+                <Card Name="Forsworn Booster Pack" />
+                <Quantity>15</Quantity>
+              </CardQuantity>
+              <CardQuantity>
+                <Card Name="Inquisitor Booster Pack" />
+                <Quantity>16</Quantity>
+              </CardQuantity>
+            </Want>
+          </Trade>
+        </Trades>
+      </TradeMap>
+      <TradeMap Value="48000">
+        <Trades Count="1">
+          <Trade Id="0">
+            <Offer Count="1">
+              <CardQuantity>
+                <Card Name="Visage of the Stone Gargoyle" />
+                <Quantity>1</Quantity>
+              </CardQuantity>
+            </Offer>
+            <Want Count="3">
+              <CardQuantity>
+                <Card Name="Oathbound Booster Pack" />
+                <Quantity>16</Quantity>
+              </CardQuantity>
+              <CardQuantity>
+                <Card Name="Forsworn Booster Pack" />
+                <Quantity>16</Quantity>
+              </CardQuantity>
+              <CardQuantity>
+                <Card Name="Inquisitor Booster Pack" />
+                <Quantity>16</Quantity>
+              </CardQuantity>
+            </Want>
+          </Trade>
+        </Trades>
+      </TradeMap>
+      <TradeMap Value="49000">
+        <Trades Count="0"></Trades>
+      </TradeMap>
+      <TradeMap Value="50000">
+        <Trades Count="0"></Trades>
+      </TradeMap>
+    </TradeMaps>
+  </Simple>
+</TradePoster>

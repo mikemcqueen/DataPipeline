@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CardValueSet Count="11">
+  <CardValue>
+    <Card Name="Draught of the Skilled" />
+    <BuyAt>500</BuyAt>
+    <SellAt>2000</SellAt>
+  </CardValue>
+  <CardValue>
+    <Card Name="Draught of the Wise" />
+    <BuyAt>500</BuyAt>
+    <SellAt>2000</SellAt>
+  </CardValue>
+  <CardValue>
+    <Card Name="Ping's Poignant Potion Pack" />
+    <BuyAt>4000</BuyAt>
+    <SellAt>6000</SellAt>
+  </CardValue>
+  <CardValue>
+    <Card Name="Small Minds" />
+    <BuyAt>1000</BuyAt>
+    <SellAt>5000</SellAt>
+  </CardValue>
+  <CardValue>
+    <Card Name="Draught of Vitality" />
+    <BuyAt>2000</BuyAt>
+    <SellAt>5000</SellAt>
+  </CardValue>
+  <CardValue>
+    <Card Name="Seafury Buccaneer" />
+    <BuyAt>15000</BuyAt>
+    <SellAt>26000</SellAt>
+  </CardValue>
+  <CardValue>
+    <Card Name="Visage of Nillipus" />
+    <BuyAt>26000</BuyAt>
+    <SellAt>60000</SellAt>
+  </CardValue>
+  <CardValue>
+    <Card Name="Visage of the Brownie Noble" />
+    <BuyAt>32000</BuyAt>
+    <SellAt>60000</SellAt>
+  </CardValue>
+  <CardValue>
+    <Card Name="Draught of Ingenuity" />
+    <BuyAt>1000</BuyAt>
+    <SellAt>3000</SellAt>
+  </CardValue>
+  <CardValue>
+    <Card Name="Token of Loyalty" />
+    <BuyAt>24000</BuyAt>
+    <SellAt>42000</SellAt>
+  </CardValue>
+  <CardValue>
+    <Card Name="Visage of the Stone Gargoyle" />
+    <BuyAt>17000</BuyAt>
+    <SellAt>48000</SellAt>
+  </CardValue>
+</CardValueSet>

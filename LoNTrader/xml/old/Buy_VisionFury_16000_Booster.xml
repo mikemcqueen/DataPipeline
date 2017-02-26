@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TradePoster Type="Want">
+  <CardQuantity>
+    <Card Name="Vision of Fury" />
+    <Quantity>1</Quantity>
+  </CardQuantity>
+  <PricingPolicy Name="PassiveFixed" />
+  <PassiveFixed>
+    <Price>16000</Price>
+  </PassiveFixed>
+  <PostingPolicy Name="Simple" />
+  <Simple Name="Simple">
+    <AllowedCards Count="2">
+      <CardQuantity>
+        <Card Name="Oathbound Booster Pack" />
+        <Quantity>0</Quantity>
+      </CardQuantity>
+      <CardQuantity>
+        <Card Name="Forsworn Booster Pack" />
+        <Quantity>0</Quantity>
+      </CardQuantity>
+    </AllowedCards>
+    <Trades Count="2">
+      <Trade Id="0">
+        <Offer Count="1">
+          <CardQuantity>
+            <Card Name="Oathbound Booster Pack" />
+            <Quantity>16</Quantity>
+          </CardQuantity>
+        </Offer>
+        <Want Count="1">
+          <CardQuantity>
+            <Card Name="Vision of Fury" />
+            <Quantity>1</Quantity>
+          </CardQuantity>
+        </Want>
+      </Trade>
+      <Trade Id="1">
+        <Offer Count="1">
+          <CardQuantity>
+            <Card Name="Forsworn Booster Pack" />
+            <Quantity>16</Quantity>
+          </CardQuantity>
+        </Offer>
+        <Want Count="1">
+          <CardQuantity>
+            <Card Name="Vision of Fury" />
+            <Quantity>1</Quantity>
+          </CardQuantity>
+        </Want>
+      </Trade>
+    </Trades>
+  </Simple>
+</TradePoster>
