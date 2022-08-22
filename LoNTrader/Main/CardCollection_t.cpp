@@ -18,7 +18,7 @@
 #include "Services.h"
 #include "Log.h"
 
-#include "boost/bind.hpp"
+//#include "boost/bind.hpp"
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -155,7 +155,6 @@ operator()(
 bool
 CardValue_t::
 operator==(
-//    const CardValue_t& lhs,
     const CardValue_t& rhs) const
 {
     return pCard->GetId() == rhs.pCard->GetId();
@@ -274,6 +273,13 @@ AddCards(
 //
 // Add or change a card value.
 //
+// TODO: AddOrUpdateCardValue
+//
+// This whole thing isn't designed well. Should probably have a reference to
+// a struct containing buyAt/SellAt prices, and just update the reference?
+// Maybe.  I forget how std::set hashes are calculated for value-types.
+// or is it just using operator==?
+// (err.. is hash_set default? or is this an ordered set?)
 
 void
 CardValueSet_t::
@@ -770,7 +776,7 @@ Read(
     ASSERT(!!b);
     for (; !gc.IsEOF(); gc.MoveNext())
     {
-DWORD Ticks = GetTickCount();
+//DWORD Ticks = GetTickCount64();
         const Card_t* pCard = Services::GetCardSet().Lookup(gc.m_cardid);
         ASSERT(NULL != pCard);
         if (NULL == pCard)
@@ -778,7 +784,7 @@ DWORD Ticks = GetTickCount();
         // TODO: only  Count++ if insert succeeds?
         insert(CardQuantity_t(pCard, gc.m_quantity));
         Count++;
-ccLookupTicks += GetTickCount() - Ticks;
+//ccLookupTicks += GetTickCount64() - Ticks;
     }
     gc.Close();
     return Count;

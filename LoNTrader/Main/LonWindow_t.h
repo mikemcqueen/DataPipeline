@@ -16,6 +16,8 @@
 #include "LonTypes.h"
 #include "EventTypes.h"
 
+#pragma warning(disable:26495) // uninitialized member
+
 /////////////////////////////////////////////////////////////////////////////
 
 class LonTrader_t;
@@ -26,12 +28,12 @@ public:
 
     struct Handle_t
     {
-        HWND           hWnd;
+        HWND                hWnd;
         Lon::Window::Type_e Type;
 
         Handle_t() :
             hWnd(NULL),
-                Type(Lon::Window::Unknown)
+            Type(Lon::Window::Unknown)
         { }
     };
 
@@ -56,12 +58,12 @@ public:
             size_t              ScrollPageLines;
 
             Data_t(
-                Lon::Window::Type_e           WindowType,
+                Lon::Window::Type_e      WindowType,
                 Lon::ScrollBar_t::Type_e InitScrollBar,
                 Type_e                   InitScrollType,
                 size_t                   InitScrollCount,
                 size_t                   InitScrollPageLines)
-            :
+                :
                 Lon::Event::Data_t(
                     DP::Stage::Acquire,
                     Lon::Event::Id::Scroll,
@@ -201,7 +203,7 @@ public:
             Data_t(
                 Lon::Window::Type_e WindowType,
                 const wchar_t* Text)
-            :
+                :
                 Lon::Event::Data_t(
                     DP::Stage::Acquire,
                     Lon::Event::Id::SendChars,

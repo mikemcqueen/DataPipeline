@@ -106,9 +106,6 @@
     <ClInclude Include="Main\LonWindowManager_t.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Main\PassiveFixedPricing_t.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="Main\PcapTrades_t.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -116,12 +113,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Main\Services.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Main\SimplePosting_t.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Main\SimpleRangePricing_t.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Main\SsTrades_t.h">
@@ -250,6 +241,15 @@
     <ClInclude Include="Main\DcrConfirmTrade.h">
       <Filter>ConfirmTrade</Filter>
     </ClInclude>
+    <ClInclude Include="Main\SimplePosting_t.h">
+      <Filter>TradePoster</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\SimpleRangePricing_t.h">
+      <Filter>TradePoster</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\PassiveFixedPricing_t.h">
+      <Filter>TradePoster</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main\Card_t.cpp">
@@ -306,19 +306,7 @@
     <ClCompile Include="Main\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Main\PassiveFixedPricing_t.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Main\PcapTrades_t.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Main\Services.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Main\SimplePosting_t.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Main\SimpleRangePricing_t.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Main\SsTrades_t.cpp">
@@ -401,6 +389,15 @@
     </ClCompile>
     <ClCompile Include="Main\DcrConfirmTrade.cpp">
       <Filter>ConfirmTrade</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\SimplePosting_t.cpp">
+      <Filter>TradePoster</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\SimpleRangePricing_t.cpp">
+      <Filter>TradePoster</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\PassiveFixedPricing_t.cpp">
+      <Filter>TradePoster</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

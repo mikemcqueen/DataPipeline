@@ -41,10 +41,10 @@ namespace Event
         Lon::Window::Type_e WindowType;
 
         Data_t(
-            DP::Stage_t              Stage      = DP::Stage::Any,
+            DP::Stage_t         Stage      = DP::Stage::Any,
             DP::MessageId_t     Id         = DP::Message::Id::Unknown,
             Lon::Window::Type_e InitWindowType = Lon::Window::Unknown,
-            DP::Event::Flag_t              Flags      = 0,
+            DP::Event::Flag_t   Flags      = 0,
             size_t              Size       = sizeof(Data_t))
         :
             DP::Event::Data_t(

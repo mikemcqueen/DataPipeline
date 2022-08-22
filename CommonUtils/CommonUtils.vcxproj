@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{EDC76DA7-36D5-419B-9468-3362F176E0FF}</ProjectGuid>
-    <RootNamespace>AcquireHandlers</RootNamespace>
+    <ProjectGuid>{612EC231-D5A3-4550-AF05-211548D82370}</ProjectGuid>
+    <RootNamespace>CommonUtils</RootNamespace>
     <Keyword>Win32Proj</Keyword>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -20,14 +20,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
-    <UseOfMfc>false</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
-    <UseOfMfc>false</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -54,7 +52,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>inc;..\PipelineManager;..\CommonUtils;..\Ui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\xmllite;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -67,7 +65,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>inc;..\PipelineManager;..\CommonUtils;..\Ui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\xmllite;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
@@ -78,32 +76,39 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="SsTask\SsTask_t.cpp" />
-    <ClCompile Include="SsTask\SsWindow.cpp" />
+    <ClCompile Include="DDUtil.cpp" />
+    <ClCompile Include="getopt.cpp" />
+    <ClCompile Include="Log.cpp" />
+    <ClCompile Include="LogWindow_t.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Util.cpp" />
+    <ClCompile Include="XmlUtil.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="inc\PcapTask_t.h" />
-    <ClInclude Include="inc\SsTask_t.h" />
-    <ClInclude Include="inc\SsWindow.h" />
+    <ClInclude Include="autocs.h" />
+    <ClInclude Include="autohand.h" />
+    <ClInclude Include="CIRCBUF.H" />
+    <ClInclude Include="CommonTypes.h" />
+    <ClInclude Include="DDUtil.h" />
+    <ClInclude Include="Flag_t.h" />
+    <ClInclude Include="Log.h" />
+    <ClInclude Include="Log_t.h" />
+    <ClInclude Include="Macros.h" />
+    <ClInclude Include="Pool.h" />
+    <ClInclude Include="Recordset_t.h" />
+    <ClInclude Include="Rect.h" />
     <ClInclude Include="stdafx.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\CommonUtils\CommonUtils.vcxproj">
-      <Project>{612ec231-d5a3-4550-af05-211548d82370}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\DcrLib\DcrLib.vcxproj">
-      <Project>{e0e9d0d7-58de-4505-8ef0-8e50ff24b402}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\PipelineManager\PipelineManager.vcxproj">
-      <Project>{ce028b60-f646-4156-b52a-8ea5b7193f57}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
+    <ClInclude Include="StringSet_t.h" />
+    <ClInclude Include="SurfacePoolItem_t.h" />
+    <ClInclude Include="TextTable_t.h" />
+    <ClInclude Include="ThreadQueue_t.h" />
+    <ClInclude Include="TiBase_t.h" />
+    <ClInclude Include="Timer_t.h" />
+    <ClInclude Include="XmlFile.h" />
+    <ClInclude Include="XmlUtil.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

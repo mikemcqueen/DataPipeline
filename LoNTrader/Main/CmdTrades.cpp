@@ -28,16 +28,20 @@
 #include "LonPlayer_t.h"
 #include "CardCollection_t.h"
 
+#if 0
 #if _MSC_VER > 1000
 #pragma warning(push)
 #pragma warning(disable:4245) // signed/unsigned mismatch in boost
 #endif
 
 #include "boost/filesystem.hpp"
+//#include <filesystem>
+//using boost::filesystem;
 #include "boost/regex/v4/fileiter.hpp"
 
 #if _MSC_VER > 1000
 #pragma warning(pop)
+#endif
 #endif
 
 using namespace std;
@@ -174,12 +178,17 @@ void
 ReadTradeDbs(
     const wchar_t* pszDirectory)
 {
+    pszDirectory;
+    throw runtime_error("ReadTradeDbs not implemented");
+#if 0 // eliminating boost::filsystem
     size_t Count = 0;
     Timer_t Timer(L"ReadTradeDbs()");
 
     using namespace boost::filesystem;
-
-    wpath Directory(pszDirectory);
+    typedef path wpath;
+    typedef directory_iterator wdirectory_iterator;
+   //	using namespace std::filesystem;
+    path Directory(pszDirectory);
     const wdirectory_iterator itEnd;
     LogAlways(L"  Directory: %ls", Directory.string().c_str());
     // loop through each file in the directory
@@ -197,7 +206,7 @@ ReadTradeDbs(
             LogAlways(L"    Skipping non-mdb file");
             continue;
         }
-        LonTrader_t::SetDbName(it->path().string().c_str());
+        LonTrader_t::SetDbName(it->path().wstring().c_str());
         CDatabase db;
         try
         {
@@ -211,6 +220,7 @@ ReadTradeDbs(
             LogError(L"  ReadTradeDbs() exception: %ls", e->m_strError);
         }
     }
+#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -431,6 +441,7 @@ CmdTrades(
     case L'3': // show
         GetTradeManager().ShowTrades(_wtoi(&pszCmd[Pos]));
         return true;
+
     default:
         break;
     }

@@ -1,0 +1,12 @@
+lon::window_t::  should probably become lonwindow namespace
+with manager_t type
+   get rid of static methods
+
+add event:: namespace
+	event types inside this
+
+
+
+-Gm what is it, remove it
+
+

@@ -26,13 +26,13 @@
 #define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
 
 #ifdef INCLUDE_AFXDB
-#define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS	// some CString constructors will be explicit
-#include <afx.h>
-#include <afxdb.h>
-#include <odbcinst.h>
+	#define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS	// some CString constructors will be explicit
+	#include <afx.h>
+	#include <afxdb.h>
+	#include <odbcinst.h>
 #else
-#include <windows.h>
-#include <windowsx.h>
+	#include <windows.h>
+	#include <windowsx.h>
 #endif
 
 #if 0 // debug stuff
@@ -67,11 +67,10 @@
 #include "xmllite.h"
 
 #if _MSC_VER >= 1000
-#pragma warning(disable:4355)  // 'this' used in member initializer list
-#pragma warning(disable:4480)  // enum : type
-#pragma warning(disable:4481)  // 'override' keyword
+	#pragma warning(disable:4355)  // 'this' used in member initializer list
+	#pragma warning(disable:4480)  // enum : type
+	#pragma warning(disable:4481)  // 'override' keyword
+	#pragma warning(disable:28125) // InitialzeCriticalSection in try/except block
 #endif
 
 using namespace std;
-using namespace std::tr1;
-

@@ -42,7 +42,7 @@ DcrTest(
 #if 0
 arg; bTable;
 #else
-    std::auto_ptr<CSurface> spSurface(new CSurface());
+    std::unique_ptr<CSurface> spSurface(new CSurface());
     HRESULT hr = g_pDisplay->CreateSurfaceFromBitmap(spSurface.get(), arg);
     if (FAILED(hr))
     {

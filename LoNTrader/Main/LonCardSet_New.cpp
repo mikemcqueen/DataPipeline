@@ -15,7 +15,7 @@
 //#include "Services.h"
 #include "LonTrader_t.h"
 
-#include "boost/bind.hpp"
+//#include "boost/bind.hpp"
 
 ///////////////////////////////////////////////////////////////////////////////
 

@@ -78,8 +78,8 @@ void
 DcrTrades_t::
 Shutdown()
 {
-    std::auto_ptr<const Charset_t> c(s_pCharset);
-    std::auto_ptr<const Charset_t> bc(s_pBoldCharset);
+    std::unique_ptr<const Charset_t> c(s_pCharset);
+    std::unique_ptr<const Charset_t> bc(s_pBoldCharset);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -128,10 +128,11 @@ DcrTrades_t::
 InitCharset(
     const LOGFONT& LogFont)
 {
-    std::auto_ptr<Charset_t> pCharset(
-        new Charset_t(LogFont,
-                      L"abcdefghijkmnopqrstuwvxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789l:,'()_-."));
-
+    auto pCharset = std::make_unique<Charset_t>(
+        LogFont,
+        L"abcdefghijkmnopqrstuwvxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789l:,'()_-."
+    );
+    
     if (!pCharset->IsValid())
     {
         LogError(L"DcrTrades_t: Charset invalid.");

@@ -17,9 +17,8 @@ Card_t Card_t::DummyCard(DummyCardId, DummyCardName, DummyCardValue);
 /////////////////////////////////////////////////////////////////////////////
 
 Card_t::
-Card_t(
-    Token_t Token)
-:
+Card_t(Token_t Token)
+    :
     m_id(0),
     m_Value(0)
 {
@@ -34,7 +33,7 @@ Card_t(
     CardId_t       id,
     const wchar_t* pszName,
     size_t         Value)
-: 
+    : 
     m_id(id),
     m_strName(pszName),
     m_Value(Value)

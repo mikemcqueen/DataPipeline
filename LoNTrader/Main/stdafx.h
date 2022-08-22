@@ -64,12 +64,13 @@
 #include <shlwapi.h>
 #include "xmllite.h"
 
-#include "boost/bind.hpp"
+//#include "boost/bind.hpp"
 
 using namespace std;
 
 #if _MSC_VER >= 1000
 #pragma warning(disable:4480)  // enum : type
 #pragma warning(disable:4355)  // 'this' used in member initializer list
+#pragma warning(disable:28125) // InitialzeCriticalSection in try/except block
 #endif
 

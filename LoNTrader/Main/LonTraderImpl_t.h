@@ -71,7 +71,8 @@ struct LonTraderImpl_t
     ConfirmTrade::Manager_t m_ConfirmTrade;
 
     SsTrades_t              m_SsTrades;
-    PcapTrades_t            m_PcapTrades;
+	// trying to get this to build without pcap
+	//    PcapTrades_t            m_PcapTrades;
 
     TrScrollThumb_t         m_TrScroll;
     TrPrompts_t             m_TrPrompts;

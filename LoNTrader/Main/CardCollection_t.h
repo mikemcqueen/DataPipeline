@@ -50,7 +50,7 @@ public:
 
     explicit
     CardValue_t(
-        const Card_t* pC = NULL)
+        const Card_t* pC = nullptr)
         :
         pCard(pC),
         BuyAt(0),
@@ -250,7 +250,7 @@ public:
     };
 
     struct IsBooster :
-        std::unary_function<CardQuantity_t, bool>
+        std::function<CardQuantity_t(bool)>
     {
         bool operator()(const CardQuantity_t& CardQ) const;
     };

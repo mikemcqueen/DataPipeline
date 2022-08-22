@@ -69,7 +69,8 @@ Initialize()
     using namespace DP::Stage;
 
 	pm.AddHandler(Acquire, m_pImpl->m_SsTrades, szLonPostedTrades);
-	pm.AddHandler(Acquire,   m_pImpl->m_PcapTrades,                    szLonPostedTrades);
+	// commented this out to get ti to build
+//	pm.AddHandler(Acquire,   m_pImpl->m_PcapTrades,                    szLonPostedTrades);
 	
 	pm.AddHandler(Translate, m_pImpl->m_TrPrompts, szLonPostedTrades);
 	pm.AddHandler(Translate, m_pImpl->m_TrScroll, szLonPostedTrades);

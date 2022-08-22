@@ -21,6 +21,7 @@
 #include "DcrPostedTrades.h"
 #include "PostedTrades.h"
 
+#if 0
 #if _MSC_VER > 1000
 #pragma warning(push)
 #pragma warning(disable:4245) // signed/unsigned mismatch in boost
@@ -32,6 +33,7 @@
 #if _MSC_VER > 1000
 #pragma warning(pop)
 #endif
+#endif 
 
 using namespace std;
 
@@ -60,7 +62,7 @@ CmdTradePoster(
 
     case L'd': // details - Show(true)
         bDetail = true;
-        // fall through
+        [[fallthrough]];
     case L'i': // info    - Show(false)
         {
             TradePoster::Id_t Id;
@@ -79,7 +81,7 @@ CmdTradePoster(
 
     case L'b': // buy
         bBuy = true;
-        // fall through
+        [[fallthrough]];
     case L's': // sell
         return CmdTradePosterBuySellCard(bBuy, &pszCmd[Pos], bTest);
 
@@ -252,7 +254,7 @@ CmdTradePosterCard(
     {
     case L'a': // add
         bAdd = true;
-        // fall through
+        [[fallthrough]];
     case L'r': // remove
         {
             // Format: tmc[a|r]Id,CardName,Quantity
@@ -735,14 +737,14 @@ bTest;
     {
     case 'd': // detail
         bDetail = true;
-        // fall through
+        [[fallthrough]];
     case 'i': // info
         GetTradePoster().ShowCardValues();
         return true;
 
     case 'a': // add - Format: tmvaCardname,BuyAt,SellAt
         bAdd = true;
-        // fall through
+        [[fallthrough]];
     case 's': // set - Format: tmvsCardname,BuyAt,SellAt
         {
             // CardName
@@ -793,6 +795,7 @@ bTest;
         {
         case L'r': // read
             bRead = true;
+            [[fallthrough]];
         case L'w': // write
             {
                 std::wstring strDir(&pszCmd[Pos]);
@@ -811,6 +814,7 @@ bTest;
         default:
             break;
         }
+        [[fallthrough]];
     default:
         break;
     }
@@ -824,7 +828,11 @@ LonTrader_t::
 ReadTradeXmls(
     const wchar_t* pszWildcard)
 {
-    Timer_t Timer(L"ReadTradeXmls");
+	pszWildcard;
+	size_t Count = 0;
+// TODO #if'd out to get this to compile. using some older boost regex lib.
+#if 0
+	Timer_t Timer(L"ReadTradeXmls");
     using namespace boost::re_detail;
 
     char buf[MAX_PATH];
@@ -835,7 +843,6 @@ ReadTradeXmls(
     const iter_type itEnd;
 //    LogAlways(L"  Buf: '%hs' - Path: '%hs', Root '%hs', Name: '%hs'",
 //        buf, it.path(), it.root(), it.name());
-    size_t Count = 0;
     for(; itEnd != it; ++it)
     {
         wchar_t szFile[MAX_PATH];
@@ -849,7 +856,8 @@ ReadTradeXmls(
     }
     LogAlways(L"  Reading done (%d)", Count);
     // TODO: throw if fails?
-    return Count;
+#endif
+	return Count;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

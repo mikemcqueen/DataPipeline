@@ -280,9 +280,10 @@ AddTransactionHandler(
                 displayName = stringId;
             }
             HandlerData_t handlerData(stage, &handler, displayName);
-            TxIdHandlerMap_t::_Pairib ibPair = m_txHandlerMap.insert(
+            //TxIdHandlerMap_t::_Pairib ibPair = m_txHandlerMap.insert(
+            auto [ _, added ] = m_txHandlerMap.insert(
                 make_pair(transactionId, handlerData));
-            added = ibPair.second;
+            //added = ibPair.second;
             if (!added)
             {
                 LogError(L"PM::AddTransactionHandler(): HandlerMap.insert() failed");

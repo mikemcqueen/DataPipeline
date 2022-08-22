@@ -17,7 +17,7 @@
 #include "CardCollection_t.h"
 #include "Trade_t.h"
 
-#include "boost/bind.hpp"
+//#include "boost/bind.hpp"
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -918,6 +918,8 @@ LonCardSet_t::
 GetCardValues(
     CardValueSet_t& Cvs) const
 {
+    Cvs;
+#if 0 // eliminate boost::bind
     CLock lock(m_csCards);
     CardValueSet_t::iterator itCvs = Cvs.begin();
     for (; Cvs.end() != itCvs; ++itCvs)
@@ -1008,11 +1010,12 @@ GetCardValues(
         }
         else
         {
-// NOTE set elements are apparently immutable now, so just commenting out all mutations to get it comipiling
+// TODO: NOTE: set elements are apparently immutable now, so just commenting out all mutations to get it compiling
 //            itCvs->SellAt = LowAsk;
 //            itCvs->BuyAt = HighBid;
         }
     }
+#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////
