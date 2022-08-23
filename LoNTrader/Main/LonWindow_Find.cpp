@@ -479,7 +479,7 @@ FindTradeBuilderWindow(
     case TradeBuilderYourTableVScroll:
     case TradeBuilderYourTableHScroll:
         bYour = true;
-        // fall through
+        [[fallthrough]];
     case TradeBuilderTheirTableList:
     case TradeBuilderTheirTableView:
     case TradeBuilderTheirTableVScroll:

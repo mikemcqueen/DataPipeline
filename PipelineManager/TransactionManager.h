@@ -13,7 +13,7 @@
 #ifndef Include_TRANSACTIONMANAGER_H
 #define Include_TRANSACTIONMANAGER_H
 
-#include "DpMessage.h"
+#include "DpTransaction.h"
 #include "AutoCs.h"
 
 namespace DP
@@ -108,7 +108,7 @@ public:
 
     void
     CompleteTransaction(
-        DP::MessageId_t TransactionId,
+        TransactionId_t TransactionId,
         DWORD           Error = 0);
 
     Transaction::Data_t*

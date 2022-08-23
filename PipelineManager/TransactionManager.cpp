@@ -127,8 +127,8 @@ ExecuteNotify(
 void
 TransactionManager_t::
 CompleteTransaction(
-    MessageId_t TransactionId,
-    DWORD       Error)
+    TransactionId_t TransactionId,
+    DWORD           Error)
 {
     CLock lock(m_cs);
     Data_t* pData = GetTransactionExecuting();

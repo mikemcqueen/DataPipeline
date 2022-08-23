@@ -7,6 +7,6 @@ add event:: namespace
 
 
 
--Gm what is it, remove it
+see if i can remove ZeroMemory versions of Data_t everywhere.  Not sure what circumstances require this, if any.
 
-
+figure out the Class[] hack in DP::Message.

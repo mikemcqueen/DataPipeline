@@ -46,7 +46,8 @@ public:
     pool_item(
         PoolT* pPool,
         T&     item)
-    :   m_pPool(pPool),
+        :   
+        m_pPool(pPool),
         m_iRefCount(0),
         m_item(item),
         m_state(0)

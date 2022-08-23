@@ -18,17 +18,15 @@
 namespace DP
 {
 
-typedef MessageId_t TransactionId_t;
-
+using TransactionId_t = MessageId_t;
 namespace Transaction
 {
     namespace Id
     {
-        enum : TransactionId_t
-        {
-            Unknown    = 0,
-            User_First = 0x00040000,
-        };
+        using namespace Message;
+        static const TransactionId_t Unknown    = TransactionId_t(0);
+        static const TransactionId_t User_First = TransactionId_t(MakeId(0x1000));
+           // = TransactionId_t(Message::Id::Txn_First) + 0x00001000
     }
 
     typedef unsigned State_t;
@@ -40,7 +38,7 @@ namespace Transaction
             Pending,
             Complete,
             // Error, ?
-            User_First = 0x000400
+            User_First = 0x00040000
         };
     }
 
@@ -70,13 +68,14 @@ namespace Transaction
 
         Data_t(
             TransactionId_t transactionId,
-            Stage_t         stage = Stage::Any,
-            size_t          size = sizeof(Data_t))
-        :
+            size_t          size = sizeof(Data_t),
+            Stage_t         stage = Stage::Any)
+            :
             Event::Data_t(
                 stage,
                 transactionId,
                 size,
+                0,
                 Message::Type::Transaction),
             State(State::New),
             stateTimeout(0),

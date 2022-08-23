@@ -32,20 +32,20 @@ class Handler_t;
 class Policy_t
 {
 private:
-    Handler_t*        m_pHost;
-    DP::MessageId_t m_TransactionId;
+    Handler_t*          m_pHost;
+    DP::TransactionId_t m_TransactionId;
 
 public:
     Policy_t(
-        DP::MessageId_t TransactionId = DP::Message::Id::Unknown,
-        Handler_t*        pHost = NULL)
+        DP::TransactionId_t TransactionId = DP::Message::Id::Unknown,
+        Handler_t*          pHost = nullptr)
         :
         m_TransactionId(TransactionId),
         m_pHost(pHost)
     {}
 
-    Handler_t*        GetHost() const             { return m_pHost; }
-    DP::MessageId_t   GetTransactionId() const    { return m_TransactionId; }
+    Handler_t*          GetHost() const             { return m_pHost; }
+    DP::TransactionId_t GetTransactionId() const    { return m_TransactionId; }
 
     virtual bool PreInterpret(const DP::Transaction::Data_t* pData) const = 0;
     virtual bool ShouldCompareText() const                              = 0;
@@ -63,8 +63,8 @@ class DefaultPolicy_t :
 {
 public:
     DefaultPolicy_t(
-        DP::MessageId_t TransactionId = DP::Message::Id::Unknown,
-        Handler_t*        pHost = NULL)
+        DP::TransactionId_t TransactionId = DP::Message::Id::Unknown,
+        Handler_t*      pHost = nullptr)
         :
         Policy_t(TransactionId, pHost)
     {}

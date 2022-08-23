@@ -28,6 +28,8 @@ LonPlayer_t() :
 
 /////////////////////////////////////////////////////////////////////////////
 
+#pragma warning(disable:4063)
+
 HRESULT
 LonPlayer_t::
 OnTransactionComplete(

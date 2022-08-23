@@ -76,10 +76,13 @@ public:
                 ScrollPageLines(InitScrollPageLines)
             { }
 
+            //Data_t() = default;
+            
             Data_t()
             {
                 SecureZeroMemory(this, sizeof(Data_t));
             }
+            
         } m_Data;
 
         EventScroll_t(
@@ -108,22 +111,24 @@ public:
             Lon::ScrollBar_t ScrollBar;
 
             Data_t(
-                Lon::Window::Type_e   WindowType,
-                Lon::ScrollBar_t& InitScrollBar)
+                Lon::Window::Type_e   windowType,
+                Lon::ScrollBar_t&     scrollBar)
             :
                 Lon::Event::Data_t(
                     DP::Stage::Acquire,
                     Lon::Event::Id::ThumbPosition,
-                    WindowType,
+                    windowType,
                     0,
                     sizeof(Data_t)),
-                ScrollBar(InitScrollBar)
+                ScrollBar(scrollBar)
             { }
 
+            //Data_t() = default;
+            
             Data_t()
             {
                 SecureZeroMemory(this, sizeof(Data_t));
-            }
+            }            
         } m_Data;
 
         EventThumbPosition_t(
@@ -172,6 +177,8 @@ public:
                 bDoubleClick(InitDoubleClick)
             { }
 
+            //Data_t() = default;
+            
             Data_t()
             {
                 SecureZeroMemory(this, sizeof(Data_t));
@@ -214,6 +221,8 @@ public:
                 wcscpy_s(Chars, Text);
             }
 
+            //Data_t() = default;
+            
             Data_t()
             {
                 SecureZeroMemory(this, sizeof(Data_t));
@@ -223,7 +232,7 @@ public:
         EventSendChars_t(
             Lon::Window::Type_e WindowType,
             const wchar_t* Text)
-        :
+            :
             m_Data(WindowType, Text)
         { }
     };

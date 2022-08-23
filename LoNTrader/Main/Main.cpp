@@ -156,6 +156,7 @@ ProcessCommandLine(
         }
     }
     // may need to do this prior to DcrTest in the future
+#if 0
     if (!bDbSupplied)
     {
         SYSTEMTIME t;
@@ -165,6 +166,7 @@ ProcessCommandLine(
             return -1;
         LonTrader_t::SetDbName(DbName);
     }
+#endif
     return 1;
 }
 
@@ -177,17 +179,16 @@ wmain(
     wchar_t* envp[])
 {
     envp;
-    struct Cleanup_t
-    {
+    struct Cleanup_t {
         ~Cleanup_t() { ShutdownCleanup(); }
     } Cleanup;
 
-    try
-    {
+    try {
         // get all throwing stuff out of startup init
         if (!StartupInitialize())
         {
             _putws(L"StartupInitialize() failed.");
+            Sleep(10000);
             return -1;
         }
         int iRet = ProcessCommandLine(argc, argv);
@@ -214,19 +215,16 @@ wmain(
         Trader.Stop();
 
         DcrTrades_t::Shutdown();
-    }
-    catch(std::exception& e)
-    {
+        return 0;
+    } catch(std::exception& e) {
         LogError(L"### Caught %hs: %hs ###", typeid(e).name(), e.what());
-    }
-    catch(HRESULT hr)
-    {
+    } catch(HRESULT hr) {
         LogError(L"### Caught HRESULT=0x%08x - terminating ###", hr);
-    }
-    catch(...)
-    {
+    } catch(...) {
         LogError(L"### Unhandled exception ###");
     }
+    Log_t::Get().GetLog().flush();
+    Sleep(10000);
     return 0;
 }
 

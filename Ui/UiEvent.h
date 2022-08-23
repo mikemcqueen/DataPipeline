@@ -19,19 +19,28 @@
 
 namespace Ui
 {
+
+using EventId_t = DP::EventId_t;
+
 namespace Event
 {
 
     typedef std::vector<INPUT> InputVector_t;
 
+    constexpr auto MakeId(const unsigned id) {
+        //const unsigned max = 0x10000;
+        //if consteval {
+        //    static_assert(id < max);
+        //}
+        const auto first = static_cast<unsigned>(DP::Event::Id::Ui_First);
+        return EventId_t(first + id);
+    }
+
     namespace Id
     {
-        enum : DP::EventId_t
-        {
-            ClickPoint = DP::Event::Id::Ui_First,
-            ClickWidget,
-            SendChars,
-        };
+        static const auto ClickPoint = EventId_t(MakeId(0));
+        static const auto ClickWidget = EventId_t(MakeId(1));
+        static const auto SendChars = EventId_t(MakeId(2));
     }
 
     struct Data_t :
@@ -40,19 +49,18 @@ namespace Event
         WindowId_t WindowId;
 
         Data_t(
-            DP::Stage_t       Stage        = DP::Stage::Any,
-            DP::MessageId_t   Id           = DP::Message::Id::Unknown,
-            WindowId_t        InitWindowId = Window::Id::Unknown,
-            DP::Event::Flag_t Flags        = 0,
-            size_t            Size         = sizeof(Data_t))
+            DP::Stage_t       stage        = DP::Stage::Any,
+            DP::EventId_t     eventId      = DP::Event::Id::Unknown,
+            WindowId_t        _windowId    = Window::Id::Unknown,
+            DP::Event::Flag_t flags        = 0,
+            size_t            size         = sizeof(Data_t))
         :
             DP::Event::Data_t(
-                Stage,
-                Id,
-                Size,
-                DP::Message::Type::Event,
-                Flags),
-            WindowId(InitWindowId)
+                stage,
+                eventId,
+                size,
+                flags),
+            WindowId(_windowId)
         { }        
     };
 
@@ -141,9 +149,9 @@ namespace Event
                 WindowId_t      windowId,
                 POINT           point,
                 Input::Method_t method          = Input::Method::SendInput,
-                Mouse::Button_t InitButton      = Mouse::Button::Left,
-                size_t          InitCount       = 1,
-                bool            InitDoubleClick = false)
+                Mouse::Button_t button      = Mouse::Button::Left,
+                size_t          count       = 1,
+                bool            doubleClick = false)
             :
                 Input::Data_t(
                     Id::ClickPoint,
@@ -151,9 +159,9 @@ namespace Event
                     point,
                     method,
                     sizeof(Data_t)),
-                Button(InitButton),
-                Count(InitCount),
-                bDoubleClick(InitDoubleClick)
+                Button(button),
+                Count(count),
+                bDoubleClick(doubleClick)
             {
             }
 

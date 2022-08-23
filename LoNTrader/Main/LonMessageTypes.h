@@ -16,22 +16,29 @@
 #include "LonTypes.h"
 #include "DpTransaction.h"
 
-
 namespace Lon
 {
+    using LonMessageId_t = DP::MessageId_t;
+
     namespace Message
     {
+        constexpr auto MakeId(const unsigned id) {
+            //const unsigned max = 0x10000;
+            //if consteval {
+            //    static_assert(id < max);
+            //}
+            const auto first = static_cast<unsigned>(DP::Message::Id::Message_First); // TODO or User_First
+            return LonMessageId_t(first + id);
+        }
+
         namespace Id
         {
-            enum : unsigned
-            {
-                // TODO: TextTable -> PostedTradesText, ConfirmTradesText, etc.
-                // Register the handlers with those IDs; Only send message to the
-                // handlers registered for that Id.
-                ScreenShot,
-                TextTable,
-                RemoveTrade,
-            };
+            // TODO: TextTable -> PostedTradesText, ConfirmTradesText, etc.
+            // Register the handlers with those IDs; Only send message to the
+            // handlers registered for that Id.
+            static const auto ScreenShot =  LonMessageId_t(MakeId(0));
+            static const auto TextTable =   LonMessageId_t(MakeId(1));
+            static const auto RemoveTrade = LonMessageId_t(MakeId(2));
         }
 
         struct Data_t :
@@ -40,21 +47,20 @@ namespace Lon
             Lon::Window::Type_e WindowType;
 
             Data_t(
-                const wchar_t*      Class,
-                DP::Stage_t              Stage,
-                DP::MessageType_t   MessageType,
-                DP::MessageId_t     MessageId,
-                Lon::Window::Type_e InitWindowType = Lon::Window::Unknown,
-                size_t              Size = sizeof(Data_t))
-            :
+                const wchar_t*      _className,
+                DP::Stage_t         _stage,
+                DP::Message::Type   _messageType,
+                DP::MessageId_t     _messageId,
+                Lon::Window::Type_e _windowType = Lon::Window::Unknown,
+                size_t              _size = sizeof(Data_t))
+                :
                 DP::Message::Data_t(
-                    //Class,
-                    Stage,
-                    MessageType,
-                    DP::MessageId_t(MessageId),
-				    Class,
-                    Size),
-                WindowType(InitWindowType)
+                    _stage,
+                    _messageId,
+                    _size, 
+                    _className,
+                    _messageType),
+                WindowType(_windowType)
             { }
 
         private:
@@ -64,18 +70,26 @@ namespace Lon
 
     } // Message 
 
+    using LonTransactionId_t = DP::TransactionId_t;
+
     namespace Transaction
     {
+        constexpr auto MakeId(const unsigned id) {
+            //const unsigned max = 0x10000;
+            //if consteval {
+            //    static_assert(id < max);
+            //}
+            const auto first = static_cast<unsigned>(DP::Transaction::Id::User_First);
+            return LonTransactionId_t(first + id);
+        }
+
         namespace Id
         {
-            enum : unsigned
-            {
-                GetYourCards,
-                GatherTrades,
-                BuyTrade,
-                PostTrade,
-                RemoveTrade
-            };
+            static const auto GetYourCards = LonTransactionId_t(MakeId(0));
+            static const auto GatherTrades = LonTransactionId_t(MakeId(1));
+            static const auto BuyTrade = LonTransactionId_t(MakeId(2));
+            static const auto PostTrade = LonTransactionId_t(MakeId(3));
+            static const auto RemoveTrade = LonTransactionId_t(MakeId(4));
         }
 
         namespace Error
@@ -100,14 +114,14 @@ namespace Lon
             Lon::Window::Type_e WindowType;
 
             Data_t(
-                DP::MessageId_t   Id,
-                Lon::Window::Type_e InitWindowType,
-                size_t              Size = sizeof(Data_t))
+                DP::MessageId_t     id,
+                Lon::Window::Type_e windowType,
+                size_t              size = sizeof(Data_t))
                 :
                 DP::Transaction::Data_t(
-                    Id,
-                    Size),
-                WindowType(InitWindowType)
+                    id,
+                    size),
+                WindowType(windowType)
             { }
         };
     }

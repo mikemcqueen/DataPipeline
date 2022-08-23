@@ -33,6 +33,8 @@ Handler_t(
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+#pragma warning(disable:4063) // invalid enum case
+
 HRESULT
 Handler_t::
 EventHandler(
@@ -231,6 +233,8 @@ GetSsWindowRect(
 
 /////////////////////////////////////////////////////////////////////////////
 
+#pragma warning(disable:4063)
+
 void
 Handler_t::
 ThreadProcessEvent()
@@ -256,6 +260,7 @@ ThreadProcessEvent()
             break;
 */
         case Id::ClickPoint:
+            [[fallthrough]];
         case Id::ClickWidget:
             {
                 Click::Data_t ClickData;
@@ -270,6 +275,7 @@ ThreadProcessEvent()
                 }
             }
             break;
+
         case Id::SendChars:
             {
                 SendChars::Data_t sendCharsData;

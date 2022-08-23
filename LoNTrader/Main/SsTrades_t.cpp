@@ -28,6 +28,8 @@ SsTrades_t(
 
 ///////////////////////////////////////////////////////////////////////////////////
 
+#pragma warning(disable:4063)
+
 HRESULT
 SsTrades_t::
 EventHandler(
@@ -69,7 +71,7 @@ EventHandler(
                 break;
         }
         // Scroll events in collection - fall through to AsyncEvent
-
+        [[fallthrough]];
     case Id::Scroll:
     case Id::Click:
     case Id::SendChars:
@@ -153,7 +155,7 @@ SsTrades_t::
 OnThumbPositionEvent(
     LonWindow_t::EventThumbPosition_t::Data_t& Data)
 {
-	/*  NOTE: commented out so it will compile
+	/* TODO: NOTE: commented out so it will compile
 	if (0 == (Data.Flags & DP::Event::Flags::Query))
     {
         SetThumbPosition(Data.WindowType, Data.ScrollBar);

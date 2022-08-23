@@ -33,30 +33,56 @@ namespace Stage
     };
 }
 
-typedef unsigned MessageType_t;
-typedef unsigned MessageId_t;
+enum class MessageId_t : unsigned {};
+
+constexpr bool operator==(const MessageId_t lhs, const MessageId_t rhs) {
+    return unsigned(lhs) == unsigned(rhs);
+}
 
 namespace Message
 {
-    namespace Type
+    enum class Type : unsigned
     {
-        enum : MessageType_t
-        {
-            Unknown = 0,
-            Message,
-            Event,
-            Transaction,
-        };
-    }
+        Unknown = 0,
+        Message,
+        Event,
+        Transaction
+    };
 
-    namespace Id
-    {
-        enum : MessageId_t
+    /*struct Id {
+        enum : unsigned
         {
-            Unknown    = 0,
-            Screenshot = 1,
-            User_First = 0x00010000,
+            Undefined = 0,
+            Screenshot, // TODO
+            Message_First = 0x00010000,
+            Event_First   = 0x00020000,
+            Txn_First     = 0x00040000,
         };
+    };*/
+
+    /*enum Id : MessageId_t
+    {
+        Unknown = 0, // TODO: Undefined
+        Screenshot,
+        Message_First = 0x00010000,
+        Event_First   = 0x00020000,
+        Txn_First     = 0x00040000,
+    };
+    */
+    
+    namespace Id {
+        static const auto Unknown           = MessageId_t(0);
+        static const auto Screenshot        = MessageId_t(1);
+        static const auto Message_First     = MessageId_t(0x00010000);
+        static const auto Event_First       = MessageId_t(0x00020000);
+        static const auto Transaction_First = MessageId_t(0x00030000);
+    }
+    
+    constexpr auto MakeId(const unsigned id) -> MessageId_t {
+        //const unsigned max = 0x10000;
+        const auto first = static_cast<unsigned>(Message::Id::Message_First);
+        //static_assert(id < max);
+        return MessageId_t(first + id);
     }
 
     struct Data_t
@@ -67,31 +93,34 @@ namespace Message
         MessageId_t   Id;
         size_t        Size;
         wchar_t       Class[ClassLength];
-        MessageType_t Type;
+        Message::Type Type;
 
         Data_t(
-            Stage_t        InitStage = Stage::Any,
-            MessageId_t    InitId    = Id::Unknown,
-            size_t         InitSize  = sizeof(Data_t),
-            const wchar_t* InitClass = NULL,
-            MessageType_t  InitType  = Type::Message)
-        :
-            Stage(InitStage),
-            Type(InitType),
-            Id(InitId),
-            Size(InitSize)
+            Stage_t        stage       = Stage::Any,
+            MessageId_t    messageId   = Message::Id::Unknown,
+            size_t         size        = sizeof(Data_t),
+            const wchar_t* className   = nullptr,
+            Message::Type  messageType = Type::Message)
+            :
+            Stage(stage),
+            Type(messageType),
+            Id(messageId),
+            Size(size)
         {
             Class[0] = L'\0';
-            if (NULL != InitClass)
-            {
-                wcscpy_s(Class, InitClass);
+            if (nullptr != className) {
+                wcscpy_s(Class, className);
             }
         }
 
+        ~Data_t() = default; 
+        
+        /*
         virtual
         ~Data_t()
         {
         }
+        */
     };
 
 ////////////////////////////////////////////////////////////////////////////////

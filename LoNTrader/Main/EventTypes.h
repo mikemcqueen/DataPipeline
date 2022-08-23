@@ -20,19 +20,29 @@
 
 namespace Lon
 {
+
+using EventId_t = DP::MessageId_t;
+
 namespace Event
 {
+
+    constexpr auto MakeId(const unsigned id) {
+        //const unsigned max = 0x10000;
+        //if consteval {
+        //    static_assert(id < max);
+        //}
+        const auto first = static_cast<unsigned>(DP::Event::Id::User_First);
+        return EventId_t(first + id);
+    }
+
     namespace Id
     {
-        enum : unsigned
-        {
-            ThumbPosition,
-            Scroll,
-            Click,
-            Collection,
-            SendChars,
-            AddTrade
-        };
+        static const auto ThumbPosition = EventId_t(MakeId(0));
+        static const auto Scroll        = EventId_t(MakeId(1));
+        static const auto Click         = EventId_t(MakeId(2));
+        static const auto Collection    = EventId_t(MakeId(3));
+        static const auto SendChars     = EventId_t(MakeId(4));
+        static const auto AddTrade      = EventId_t(MakeId(5));
     }
 
     struct Data_t :
@@ -41,19 +51,21 @@ namespace Event
         Lon::Window::Type_e WindowType;
 
         Data_t(
-            DP::Stage_t         Stage      = DP::Stage::Any,
-            DP::MessageId_t     Id         = DP::Message::Id::Unknown,
-            Lon::Window::Type_e InitWindowType = Lon::Window::Unknown,
-            DP::Event::Flag_t   Flags      = 0,
-            size_t              Size       = sizeof(Data_t))
-        :
+            DP::Stage_t         Stage, /*    = DP::Stage::Any,*/
+            DP::MessageId_t     Id,    /*    = DP::Message::Id::Unknown,*/
+            Lon::Window::Type_e windowType = Lon::Window::Unknown,
+            DP::Event::Flag_t   flags      = 0,
+            size_t              size       = sizeof(Data_t))
+            :
             DP::Event::Data_t(
                 Stage,
                 Id,
-                Flags,
-                Size),
-            WindowType(InitWindowType)
-        { }        
+                flags,
+                size),
+            WindowType(windowType)
+        { }
+
+        Data_t() = default;
     };
 
     ////////////////////////////////////////////////////////////////////////////////

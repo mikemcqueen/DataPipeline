@@ -28,7 +28,7 @@ Base_t(
     const wchar_t* pClassName,
     const wchar_t* pWindowName,
           Flag_t   Flags)
-:
+    :
     m_WindowId(WindowId),
     m_parent(*this),         // a bit weird; parent of mainwindow is self
     m_hMainWindow(NULL),
@@ -60,12 +60,12 @@ Base_t(
 
 Base_t::
 Base_t(
-          WindowId_t      WindowId,
-          const Base_t&   parent,
+    WindowId_t            WindowId,
+    const Base_t&         parent,
     const wchar_t*        pWindowName,
-          Flag_t          Flags       /*= 0*/,
+    Flag_t                Flags       /*= 0*/,
     const Widget::Data_t* pWidgets    /*= NULL*/,
-          size_t          WidgetCount /*= 0*/)
+    size_t                WidgetCount /*= 0*/)
 :
     m_WindowId(WindowId),
     m_parent(parent),

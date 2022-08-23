@@ -174,27 +174,32 @@ InitFontInfo( HFONT hFont, SIZE& size )
 
 /////////////////////////////////////////////////////////////////////////////
 
+//#define _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES 1
+
 void
 Charset_t::
-GetKernPairs( HDC hDC )
+GetKernPairs(const HDC hDC)
 {
-	int cPairs = (int)GetKerningPairs( hDC, 0, 0 );
-    m_vKernPairs.resize(cPairs);
-    std::vector<KERNINGPAIR>::iterator iter = m_vKernPairs.begin();
-    DWORD ret = GetKerningPairs(hDC, cPairs, &m_vKernPairs[0]);
-    if (0 == ret)
-    {
-        wprintf(L"GetKerningPairs failed");
-        throw std::runtime_error("GetKerningPairs failed");
+	std::size_t numPairs = (std::size_t)::GetKerningPairs(hDC, 0, NULL);
+    m_vKernPairs.resize(numPairs);
+    //std::vector<KERNINGPAIR>::iterator iter = m_vKernPairs.begin();
+    unique_ptr<KERNINGPAIR[]>
+    /*auto*/ pkPairs(make_unique<KERNINGPAIR[]>(numPairs));
+    if (numPairs > 0) {
+        DWORD ret = ::GetKerningPairs(hDC, numPairs, pkPairs.get()); //  m_vKernPairs.data());
+        if (0 == ret) {
+            char msg[256];
+            sprintf_s(msg, 256, "GetKerningPairs failed, gle = %d, numPairs = %d, hDC = %08x\n",
+                GetLastError(), numPairs, (ULONG)hDC);
+            wprintf(L"GetKerningPairs2 failed\n");
+            throw std::runtime_error(msg); // "GetKerningPairs failed");
+        }
     }
-	for( size_t iChar=0; iChar < m_charsetSize; ++iChar )
-	{
+	for (size_t iChar = 0; iChar < m_charsetSize; ++iChar) {
 		m_vCharData[iChar].iFirstKernPair = -1;
-		for( int iPair=0; iPair<cPairs; ++iPair )
-		{
-			if(m_vKernPairs[iPair].wFirst ==(WORD)m_vszCharset[iChar])
-			{
-				m_vCharData[iChar].iFirstKernPair = iPair;
+		for (size_t pair = 0; pair < numPairs; ++pair) {
+			if (m_vKernPairs[pair].wFirst == (WORD)m_vszCharset[iChar]) {
+				m_vCharData[iChar].iFirstKernPair = pair;
 				break;
 			}
 		}

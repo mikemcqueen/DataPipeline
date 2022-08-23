@@ -142,7 +142,7 @@ InitSurfacePool(
     size_t        Count)
 {
 	Pool.reserve(Count);
-	for (size_t Surface=0; Surface < Count; ++Surface )
+	for (size_t Surface=0; Surface < Count; ++Surface)
 	{
 		CSurface* pSurface = new CSurface();
         HRESULT hr = Display.CreateSurface(pSurface, int(cx), int(cy));
@@ -161,6 +161,8 @@ InitSurfacePool(
 
 /////////////////////////////////////////////////////////////////////////////
 
+#pragma warning(disable:4063)
+
 HRESULT
 SsTask_t::
 EventHandler(
@@ -171,9 +173,16 @@ EventHandler(
         return hr;
     switch (Data.Id)
     {
-    case DP::Event::Id::Start: Start(); break;
-    case DP::Event::Id::Stop:  Stop();  break;
-    default: return S_FALSE;
+    case DP::Event::Id::Start:
+        Start();
+        break;
+
+    case DP::Event::Id::Stop:
+        Stop();
+        break;
+
+    default:
+        return S_FALSE;
     }
     return S_OK;
 }
@@ -411,17 +420,17 @@ DWORD
 WINAPI
 SsTask_t::
 ThreadFunc(
-    void *pvParam)
+    void* pvParam)
 {
-	enum
-	{
-		Exit     = 0,
-		Suspend,
+    enum
+    {
+        Exit = 0,
+        Suspend,
         Event,
-		Timer,
-		cHandles,
-	};
-	HANDLE aHandles[cHandles];
+        Timer,
+        cHandles,
+    };
+    HANDLE aHandles[cHandles] = { 0 };
 
 	SsTask_t* pClass = reinterpret_cast<SsTask_t*>(pvParam);
 	util::SetWaitableTimer(pClass->m_hTimer.get(), (DWORD)pClass->m_DelayMs, true);
@@ -474,9 +483,11 @@ SsTask_t::
 Shutter()
 {
 	SurfacePoolItem_t* pPoolItem = GetAvailableSurface();
-	if (NULL == pPoolItem)
+    if (NULL == pPoolItem) {
+        LogWarning(L"SSTask_t::Shutter(): No surface available");
         return;
-
+    }
+        
     struct AutoRelease_t
     {
         SurfacePoolItem_t* pPoolItem;
@@ -486,14 +497,15 @@ Shutter()
     } AutoRelease(pPoolItem);
     RECT rc;
     HWND hWnd = GetSsWindowRect(rc);
-    if (NULL != hWnd)
-    {
+    if (NULL != hWnd) {
         CSurface* pSurface = pPoolItem->get();
         if (TakeSnapShot(hWnd, rc, pSurface))
         {
             pPoolItem->set_state(PF_READY);
             PostData(hWnd, pPoolItem);
         }
+    } else {
+        LogWarning(L"SSTask_t::Shutter(): NULL hWnd");
     }
 }
 
@@ -527,7 +539,7 @@ TakeSnapShot(
 	}
 	else if( m_szTestSurface[0] )
 	{
-		TCHAR szPath[MAX_PATH];
+		wchar_t szPath[MAX_PATH];
 		wsprintf( szPath, L"%s\\%s", L"screens", m_szTestSurface );
 	    pSurface->DrawBitmap( szPath, 0, 0 );
 		m_szTestSurface[0] = 0;

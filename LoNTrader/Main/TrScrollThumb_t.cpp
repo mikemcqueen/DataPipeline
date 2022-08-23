@@ -105,7 +105,7 @@ MessageHandler(
     InitScrollPosition(m_Vert, WindowType, pSurface);
     InitScrollPosition(m_Horz, WindowType, pSurface);
     m_WindowType = WindowType;
-    PostData(pData->Id);
+    PostData(unsigned(pData->Id));
     return S_OK;
 }
 

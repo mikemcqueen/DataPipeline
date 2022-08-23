@@ -43,8 +43,7 @@ class Charset_t
 
 private:
 
-	mutable
-    std::vector<POINT>    m_vecOverlapPoints;
+	mutable std::vector<POINT> m_vecOverlapPoints;
 	std::vector<wchar_t>  m_vszCharset;
 	CharDataVector        m_vCharData;
 	KernPairVector        m_vKernPairs;
@@ -127,7 +126,7 @@ private:
         const wchar_t* pszCharset);
 
 	void					InitFontInfo( HFONT hFont, SIZE& size );
-	void					GetKernPairs( HDC hDC );
+    void					GetKernPairs(const HDC hDC);
 	void					DrawTextToSurface( HFONT hFont );
 	void					InitCharData( void );
 

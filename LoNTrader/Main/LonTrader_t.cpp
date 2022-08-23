@@ -228,10 +228,13 @@ Start(
         Sleep(g_dwSleep);
     }
 
+    pszDbName;
+#if 0
     if (!GetCardSet().ReadCards(pszDbName))
         return false;
+#endif
 
-    size_t TradeCount = GetTradeManager().ReadAllTrades();
+    size_t TradeCount = 0; //  GetTradeManager().ReadAllTrades();
     if ((0 < TradeCount) || !bGetYourCards)
         GetPlayer().ReadYourCards();
     if (0 < TradeCount)
@@ -243,7 +246,7 @@ Start(
     // 1 == SsTask, 2 = PcapTask.
     Lon::Event::Start_t EventStart;
     size_t Started = GetPipelineManager().SendEvent(EventStart);
-    if (2 != Started)
+    if (1 != Started)
     {
         LogError(L"Only %d acquire handler(s) started", Started);
         return false;
