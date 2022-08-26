@@ -63,17 +63,15 @@ namespace BuyTabGetItems
         //
         // DP::Handler_t virtual
         //
-        virtual
+
         HRESULT
         MessageHandler(
             const DP::Message::Data_t* pData) override;
 
-        virtual
         HRESULT
         ExecuteTransaction(
             DP::Transaction::Data_t& Data) override;
 
-        virtual
         HRESULT
         OnTransactionComplete(
             DP::Transaction::Data_t& Data) override;
@@ -142,7 +140,7 @@ namespace BuyTabGetItems
             const FnAddRow_t&   fnAddRow         = Base_t::FnAddRow_t(&Handler_t::AddRow),
             DP::TransactionId_t id               = kTransactionId,
             size_t              size             = sizeof(Data_t))
-        :
+            :
             Base_t(
                 itemName,
                 fnAddRow,

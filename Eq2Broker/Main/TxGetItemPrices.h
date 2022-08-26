@@ -53,26 +53,23 @@ namespace GetItemPrices
         //
         // DP::Handler_t virtual
         //
-        virtual
+
         HRESULT
         MessageHandler(
             const DP::Message::Data_t* pData) override;
 
-        virtual
         HRESULT
         ExecuteTransaction(
-            DP::Transaction::Data_t& Data) override;
+            const DP::Transaction::Data_t& Data) override;
 
-        virtual
         HRESULT
         ResumeTransaction(
                   DP::Transaction::Data_t& txData,
             const DP::Transaction::Data_t* pPrevTxData) override;
 
-        virtual
         HRESULT
         OnTransactionComplete(
-            DP::Transaction::Data_t& Data) override;
+            const DP::Transaction::Data_t& Data) override;
 
     public:
 
@@ -98,7 +95,7 @@ namespace GetItemPrices
         Data_t(
             const wstring&   itemName,
             PriceCountMap_t& priceMap)
-        :
+            :
             Base_t(
                 itemName,
                 priceMap,

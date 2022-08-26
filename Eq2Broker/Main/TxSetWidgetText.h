@@ -82,23 +82,22 @@ namespace SetWidgetText
 
     public:
 
-        Handler_t(Eq2Broker_t& broker) : m_broker(broker)
+        Handler_t(Eq2Broker_t& broker) :
+            m_broker(broker)
         {}
 
         //
         // DP::Handler_t virtual
         //
-        virtual
+ 
         HRESULT
         MessageHandler(
             const DP::Message::Data_t* pData) override;
 
-        virtual
         HRESULT
         ExecuteTransaction(
             DP::Transaction::Data_t& Data) override;
 
-        virtual
         HRESULT
         OnTransactionComplete(
             DP::Transaction::Data_t& Data) override;

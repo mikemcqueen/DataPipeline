@@ -35,8 +35,7 @@ namespace GetItemsForSale
     {
         PageNumber_t PageNumber;
 
-        Data_t()
-        :
+        Data_t() :
             DP::Transaction::Data_t(
                 Id::GetItemsForSale,
                 sizeof(Data_t))
