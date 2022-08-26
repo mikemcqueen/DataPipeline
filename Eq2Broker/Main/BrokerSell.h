@@ -1,0 +1,46 @@
+///////////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2008 Mike McQueen.  All rights reserved.
+//
+// BrokerSell.h
+//
+///////////////////////////////////////////////////////////////////////////////
+
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
+#ifndef Include_BROKERSELL_H
+#define Include_BROKERSELL_H
+
+#include "BrokerSellWindow.h"
+#include "DcrBrokerSell.h"
+#include "TiBrokerSell.h"
+#include "BrokerSellTypes.h"
+
+///////////////////////////////////////////////////////////////////////////////
+
+class Ui::Window::Base_t;
+
+namespace Broker
+{
+namespace Sell
+{
+namespace Window
+{
+    class Manager_t :
+        public Window::ManagerBase_t
+    {
+    public:
+        Manager_t(const Window_t& Window) : ManagerBase_t(Window) {}
+    };
+
+} // Window
+} // Sell
+} // Broker
+
+///////////////////////////////////////////////////////////////////////////////
+
+#endif // Include_BROKERSELL_H
+
+///////////////////////////////////////////////////////////////////////////////

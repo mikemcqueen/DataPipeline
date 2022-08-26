@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <ProjectGuid>{B6FDD539-623A-4B09-AC64-BB936E359F07}</ProjectGuid>
+    <RootNamespace>Eq2Broker</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+    <UseOfMfc>Static</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+    <UseOfMfc>Static</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>17.0.32708.82</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules />
+    <CodeAnalysisRuleAssemblies />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules />
+    <CodeAnalysisRuleAssemblies />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(SolutionDir);Main;Db;Ui;..\CommonUtils;..\Ui;..\DcrLib;..\PipelineManager;..\Accounts;..\TranslateHandlers\inc;..\AcquireHandlers\inc;..\boost_1_80_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level4</WarningLevel>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>ddraw.lib;dxguid.lib;odbc32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention />
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>copy fake exe</Message>
+      <Command>$(SolutionDir)\Deploy.cmd</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir);Main;Db;Ui;..\CommonUtils;..\Ui;..\DcrLib;..\PipelineManager;..\Accounts;..\TranslateHandlers\inc;..\AcquireHandlers\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>ddraw.lib;dxguid.lib;odbc32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention />
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Main\CmdCharacter.cpp" />
+    <ClCompile Include="Main\CmdTransaction.cpp" />
+    <ClCompile Include="Main\DcrBase_t.cpp" />
+    <ClCompile Include="Main\DcrBrokerBuy.cpp" />
+    <ClCompile Include="Main\DcrBrokerSell.cpp" />
+    <ClCompile Include="Main\DcrEq2Login.cpp" />
+    <ClCompile Include="Main\DcrSetPrice.cpp" />
+    <ClCompile Include="Main\Eq2BrokerImpl_t.cpp" />
+    <ClCompile Include="Main\Eq2Broker_t.cpp" />
+    <ClCompile Include="Main\Main.cpp" />
+    <ClCompile Include="Main\PageNumber_t.cpp" />
+    <ClCompile Include="Main\Price_t.cpp" />
+    <ClCompile Include="Main\stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Main\TiBrokerBuy.cpp" />
+    <ClCompile Include="Main\TiBrokerSell.cpp" />
+    <ClCompile Include="Main\TiSetPrice.cpp" />
+    <ClCompile Include="Main\TrWindowType.cpp" />
+    <ClCompile Include="Main\TxBaseGetItems.cpp" />
+    <ClCompile Include="Main\TxBuyItem.cpp" />
+    <ClCompile Include="Main\TxBuySellItems.cpp" />
+    <ClCompile Include="Main\TxBuyTabGetItems.cpp" />
+    <ClCompile Include="Main\TxGetItemPrices.cpp" />
+    <ClCompile Include="Main\TxGetItemsForSale.cpp" />
+    <ClCompile Include="Main\TxLogon.cpp" />
+    <ClCompile Include="Main\TxOpenBroker.cpp" />
+    <ClCompile Include="Main\TxRepriceItems.cpp" />
+    <ClCompile Include="Main\TxSellTabGetItems.cpp" />
+    <ClCompile Include="Main\TxSetActiveWindow.cpp" />
+    <ClCompile Include="Main\TxSetWidgetText.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Main\BrokerBuy.h" />
+    <ClInclude Include="Main\BrokerBuyText.h" />
+    <ClInclude Include="Main\BrokerBuyTypes.h" />
+    <ClInclude Include="Main\BrokerId.h" />
+    <ClInclude Include="Main\BrokerSell.h" />
+    <ClInclude Include="Main\BrokerSellTypes.h" />
+    <ClInclude Include="Main\CmdParser_t.h" />
+    <ClInclude Include="Main\DcrBase_t.h" />
+    <ClInclude Include="Main\DcrBrokerBuy.h" />
+    <ClInclude Include="Main\DcrBrokerSell.h" />
+    <ClInclude Include="Main\DcrEq2Login.h" />
+    <ClInclude Include="Main\DcrSetPrice.h" />
+    <ClInclude Include="Main\Eq2BrokerImpl_t.h" />
+    <ClInclude Include="Main\Eq2Broker_t.h" />
+    <ClInclude Include="Main\Eq2Login.h" />
+    <ClInclude Include="Main\Eq2LoginTypes.h" />
+    <ClInclude Include="Main\PageNumber_t.h" />
+    <ClInclude Include="Main\Price_t.h" />
+    <ClInclude Include="Main\SetPrice.h" />
+    <ClInclude Include="Main\SetPriceTypes.h" />
+    <ClInclude Include="Main\stdafx.h" />
+    <ClInclude Include="Main\TiBrokerBuy.h" />
+    <ClInclude Include="Main\TiBrokerSell.h" />
+    <ClInclude Include="Main\TiSetPrice.h" />
+    <ClInclude Include="Main\TrWindowType.h" />
+    <ClInclude Include="Main\TxBaseGetItems.h" />
+    <ClInclude Include="Main\TxBuyItem.h" />
+    <ClInclude Include="Main\TxBuySellItems.h" />
+    <ClInclude Include="Main\TxBuyTabGetItems.h" />
+    <ClInclude Include="Main\TxGetItemPrices.h" />
+    <ClInclude Include="Main\TxGetItemsForSale.h" />
+    <ClInclude Include="Main\TxLogon.h" />
+    <ClInclude Include="Main\TxOpenBroker.h" />
+    <ClInclude Include="Main\TxRepriceItems.h" />
+    <ClInclude Include="Main\TxSellTabGetItems.h" />
+    <ClInclude Include="Main\TxSetActiveWindow.h" />
+    <ClInclude Include="Main\TxSetWidgetText.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Res\Broker_BuyTab_Active.bmp" />
+    <Image Include="Res\Broker_BuyTab_Inactive.bmp" />
+    <Image Include="Res\Broker_Caption.bmp" />
+    <Image Include="Res\Broker_Cursor_Mask.bmp" />
+    <Image Include="Res\Broker_SalesLogTab_Active.bmp" />
+    <Image Include="Res\Broker_SalesLogTab_Inactive.bmp" />
+    <Image Include="Res\Broker_SellTab_Active.bmp" />
+    <Image Include="Res\Broker_SellTab_Inactive.bmp" />
+    <Image Include="Res\Eq2Loading_Cancel.bmp" />
+    <Image Include="Res\Eq2Login_Connect.bmp" />
+    <Image Include="Res\Login_Caption.bmp" />
+    <Image Include="Res\MainChat_Caption.bmp" />
+    <Image Include="Res\Market_BrowseTab_Active.BMP" />
+    <Image Include="Res\Market_BrowseTab_Inactive.bmp" />
+    <Image Include="Res\Market_Caption.bmp" />
+    <Image Include="Res\Zoning_Caption.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Res\cursor1.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Eq2Broker3.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Accounts\Accounts.vcxproj">
+      <Project>{82d084f1-c785-4cf3-adfd-ab010eff60e2}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\AcquireHandlers\AcquireHandlers.vcxproj">
+      <Project>{edc76da7-36d5-419b-9468-3362f176e0ff}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\CommonUtils\CommonUtils.vcxproj">
+      <Project>{612ec231-d5a3-4550-af05-211548d82370}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\DcrLib\DcrLib.vcxproj">
+      <Project>{e0e9d0d7-58de-4505-8ef0-8e50ff24b402}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\PipelineManager\PipelineManager.vcxproj">
+      <Project>{ce028b60-f646-4156-b52a-8ea5b7193f57}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\TranslateHandlers\Dcr\Dcr.vcxproj">
+      <Project>{2088cb25-8d22-4586-8ca0-5b02519b05ff}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\Ui\Ui.vcxproj">
+      <Project>{40e973b5-1bb6-46cd-bf50-e3d4d0a7f22b}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="Db\Eq2Db.vcxproj">
+      <Project>{d0863d03-6c53-4a65-9fe2-c0b56235c210}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="Ui\Eq2Ui.vcxproj">
+      <Project>{44512971-ca39-44d6-b4ef-21e7db1d47fe}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

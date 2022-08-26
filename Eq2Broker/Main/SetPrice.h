@@ -1,0 +1,47 @@
+///////////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2008-2009 Mike McQueen.  All rights reserved.
+//
+// SetPrice.h
+//
+///////////////////////////////////////////////////////////////////////////////
+
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
+#ifndef Include_SETPRICE_H
+#define Include_SETPRICE_H
+
+#include "SetPriceWindow.h"
+#include "DcrSetPrice.h"
+#include "TiSetPrice.h"
+#include "SetPriceTypes.h"
+
+namespace Broker
+{
+namespace SetPrice
+{
+namespace Window
+{
+
+///////////////////////////////////////////////////////////////////////////////
+
+    class Manager_t :
+        public ManagerBase_t
+    {
+    public:
+        Manager_t(Window_t& Window) :
+             ManagerBase_t(Window)
+        { }
+    };
+
+///////////////////////////////////////////////////////////////////////////////
+
+} // Window
+} // SetPrice
+} // Broker
+
+#endif // Include_SETPRICE_H
+
+///////////////////////////////////////////////////////////////////////////////

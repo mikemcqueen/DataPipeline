@@ -1,0 +1,46 @@
+///////////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2009 Mike McQueen.  All rights reserved.
+//
+// Eq2Login.h
+//
+///////////////////////////////////////////////////////////////////////////////
+
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
+#ifndef Include_EQ2LOGIN_H
+#define Include_EQ2LOGIN_H
+
+#include "Eq2LoginWindow.h"
+#include "DcrEq2Login.h"
+#include "Eq2LoginTypes.h"
+
+///////////////////////////////////////////////////////////////////////////////
+
+class Ui::Window::Base_t;
+
+namespace Broker
+{
+namespace Eq2Login
+{
+namespace Window
+{
+
+    class Manager_t :
+        public ManagerBase_t
+    {
+    public:
+        Manager_t(Window_t& Window) : ManagerBase_t(Window) {}
+    };
+
+} // Window
+} // Eq2Login
+} // Broker
+
+///////////////////////////////////////////////////////////////////////////////
+
+#endif // Include_EQ2LOGIN_H
+
+///////////////////////////////////////////////////////////////////////////////

@@ -1,0 +1,47 @@
+///////////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2008 Mike McQueen.  All rights reserved.
+//
+// BrokerBuy.h
+//
+///////////////////////////////////////////////////////////////////////////////
+
+#if _MSC_VER > 1000
+#pragma once
+#endif
+
+#ifndef Include_BROKERBUY_H
+#define Include_BROKERBUY_H
+
+#include "BrokerBuyWindow.h"
+#include "DcrBrokerBuy.h"
+#include "TiBrokerBuy.h"
+#include "BrokerBuyTypes.h"
+
+///////////////////////////////////////////////////////////////////////////////
+
+class Ui::Window::Base_t;
+
+namespace Broker
+{
+namespace Buy
+{
+namespace Window
+{
+
+    class Manager_t :
+        public ManagerBase_t
+    {
+    public:
+        Manager_t(Window_t& Window) : ManagerBase_t(Window) {}
+    };
+
+} // Window
+} // Buy
+} // Broker
+
+///////////////////////////////////////////////////////////////////////////////
+
+#endif // Include_BROKERBUY_H
+
+///////////////////////////////////////////////////////////////////////////////
