@@ -50,10 +50,12 @@ operator()(
     case State::Execute:
         pPM->Dispatch(pData);
         break;
+
     case State::Free:
         pPM->Release(pData);
         pPM->Free(pData);
         break;
+
     case State::Display:
 /*
 //        pPM->Display(pData);
@@ -72,9 +74,12 @@ operator()(
             LogInfo(L"    Unknown(%d)", pData->Stage);
 */
         break;
+
     case State::Startup:
+        //[[fallthrough]]
     case State::Shutdown:
         break;
+
     default:
         ASSERT(false);
         break;
@@ -155,7 +160,7 @@ StopAcquiring(
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class StageNameMap_t :
+class StageNameMap_t final :
     public map<Stage_t, const wstring>
 {
 public:
@@ -176,6 +181,7 @@ public:
         else
         {
             // TODO: if 1 or 0 bit set return "unknown" else return "multiple"
+            // TODO: add "unknown" entry to map
             static const wstring strUnknown(L"Unknown");
             return strUnknown;
         }
@@ -242,15 +248,14 @@ AddHandler(
           Handler_t& Handler,
     const wchar_t*   pszClass)
 {
-    if (Handler.Initialize(pszClass))
+    if (!Handler.Initialize(pszClass))
     {
-        HandlerData_t hd(Stage, &Handler);
-        CLock lock(m_csHandlers);
-        m_Handlers.push_back(hd);
-        return;
+        LogError(L"PM::AddHandler(%d): Handler.Initialize() failed", Stage);
+        throw runtime_error("PM::AddHandler()");
     }
-    LogError(L"PM::AddHandler(%d): Handler.Initialize() failed", Stage);
-    throw runtime_error("PM::AddHandler()");
+    HandlerData_t hd(Stage, &Handler);
+    CLock lock(m_csHandlers);
+    m_Handlers.push_back(hd);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -313,6 +318,11 @@ PipelineManager_t::
 SendEvent(
     Event::Data_t& Data)
 {
+    if (DP::Message::Type::Event != Data.Type) // && (Type::Transaction != Data.Type))
+    {
+        throw invalid_argument("PM::SendEvent(): Invalid message type");
+    }
+
     size_t Total = 0;
     size_t Handled = 0;
     CLock lock(m_csHandlers);
@@ -322,11 +332,7 @@ SendEvent(
     {
         pClass = Data.Class;
     }
-    using namespace DP::Message;
-    if (Type::Event != Data.Type)// && (Type::Transaction != Data.Type))
-    {
-        throw logic_error("PM::SendEvent(): Invalid message type");
-    }
+    //using namespace DP::Message;
 #if 0
     if (SUCCEEDED(TrySendTransactionEvent(Data)))
     {
@@ -360,15 +366,15 @@ SendTransactionEvent(
     Transaction::Data_t& Data,
     Transaction::Data_t* pPrevTxData /*= NULL*/)
 {
-    using namespace DP::Message;
-    if (Type::Transaction != Data.Type)
+    //using namespace DP::Message;
+    if (DP::Message::Type::Transaction != Data.Type)
     {
 //        return E_FAIL;
-        throw invalid_argument("PM::SendTransactionEvent");
+        throw invalid_argument("PM::SendTransactionEvent(): Invalid message type");
     }
-    if (sizeof(Transaction::Data_t) > Data.Size)
+    if (Data.Size < sizeof(Transaction::Data_t))
     {
-        throw logic_error("PM::SendTransactionEvent(): Invalid data size");
+        throw invalid_argument("PM::SendTransactionEvent(): Invalid data size");
     }
     CLock lock(m_csHandlers);
     TxIdHandlerMap_t::const_iterator it = m_txHandlerMap.find(Data.Id);
@@ -380,9 +386,14 @@ SendTransactionEvent(
         using namespace Transaction;
         switch (TxData.GetState())
         {
-        case State::New:      return pHandler->ExecuteTransaction(TxData);
-        case State::Complete: return pHandler->OnTransactionComplete(TxData);
-        default:              return pHandler->ResumeTransaction(TxData, pPrevTxData);
+        case State::New:      
+            return pHandler->ExecuteTransaction(TxData);
+
+        case State::Complete:
+            return pHandler->OnTransactionComplete(TxData);
+        
+        default:
+            return pHandler->ResumeTransaction(TxData, pPrevTxData);
         }
     }
     return S_FALSE;
@@ -426,7 +437,9 @@ Callback(
     case Stage::Acquire:
     case Stage::Translate:
     case Stage::Interpret:
+        LogInfo(L"PM::Callback (%s)", GetStageString(pMessage->Stage));
         break;
+
     default:
         throw std::invalid_argument("PipelineManager_t::Callback() Invalid stage");
     }
@@ -586,9 +599,11 @@ Release(
 */
         }
         break;
+
     case DP::Stage::Translate:
     case DP::Stage::Interpret:
         break;
+
     default:
         LogError(L"PM::ReleaseData('%ls', %d)", pData->Class, pData->Stage);
         throw std::invalid_argument("PM::ReleaseData() invalid stage");

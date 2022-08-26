@@ -23,9 +23,9 @@ namespace Transaction
 {
     namespace Id
     {
-        using namespace Message;
+        //using namespace Message;
         static const TransactionId_t Unknown    = TransactionId_t(0);
-        static const TransactionId_t User_First = TransactionId_t(MakeId(0x1000));
+        static const TransactionId_t User_First = TransactionId_t(Message::MakeId(0x1000));
            // = TransactionId_t(Message::Id::Txn_First) + 0x00001000
     }
 

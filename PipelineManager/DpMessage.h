@@ -71,7 +71,7 @@ namespace Message
     */
     
     namespace Id {
-        static const auto Unknown           = MessageId_t(0);
+        constexpr auto Unknown           = MessageId_t(0);
         static const auto Screenshot        = MessageId_t(1);
         static const auto Message_First     = MessageId_t(0x00010000);
         static const auto Event_First       = MessageId_t(0x00020000);

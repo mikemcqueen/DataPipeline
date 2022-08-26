@@ -35,13 +35,13 @@ namespace DP
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class TransactionManager_t
+class TransactionManager_t final
 {
 friend class PipelineManager_t;
 
 public:
 
-    class AutoRelease_t
+    class AutoRelease_t final
     {
         Transaction::Data_t* m_pData;
 
@@ -50,7 +50,7 @@ public:
         explicit
         AutoRelease_t(
             Transaction::Data_t* pData)
-        :
+            :
             m_pData(pData)
         { }
 
@@ -77,12 +77,13 @@ public:
 
 private:
 
-    struct Data_t
+    struct Data_t final
     {
         volatile long        refCount;
         Transaction::Data_t* pTxData;
 
-        Data_t(Transaction::Data_t* p) : pTxData(p), refCount(1) {}
+        Data_t(Transaction::Data_t* p) :
+            pTxData(p), refCount(1) {}
     };
     typedef std::deque<Data_t>  Queue_t;
     typedef std::vector<Data_t> Stack_t;

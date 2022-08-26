@@ -38,13 +38,13 @@ namespace DP
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-class PipelineManager_t
+class PipelineManager_t final
 {
     friend class TransactionManager_t;
 
 public:
 
-    struct ProcessThreadData_t
+    struct ProcessThreadData_t final
     {
         bool
         operator()(
@@ -55,12 +55,11 @@ public:
 
 private:
 
-
-    struct HandlerData_t
+    struct HandlerData_t final
     {
         Stage_t    Stage;
         Handler_t* pHandler;
-        std::wstring    name;
+        std::wstring name;
 
         HandlerData_t() :
             Stage(Stage::None), pHandler(NULL)
@@ -73,7 +72,7 @@ private:
     typedef vector<HandlerData_t>                HandlerVector_t;
     typedef map<TransactionId_t, HandlerData_t>  TxIdHandlerMap_t;
 
-    struct CompareMessage_t
+    struct CompareMessage_t final
     {
         bool operator()(
             const Message::Data_t* pD1,
@@ -196,8 +195,8 @@ private:
 
 private:
 
-    PipelineManager_t(const PipelineManager_t&);
-    PipelineManager_t& operator=(const PipelineManager_t&);
+    PipelineManager_t(const PipelineManager_t&) = delete;
+    PipelineManager_t& operator=(const PipelineManager_t&) = delete;
 };
 
 } // DP

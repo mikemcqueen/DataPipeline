@@ -16,6 +16,7 @@
 #include "DpTransaction.h"
 #include "DpEvent.h"
 #include "DpMessage.h"
+#include "Log.h"
 
 namespace DP
 {
@@ -52,9 +53,8 @@ public:
     virtual
     HRESULT
     MessageHandler(
-        const Message::Data_t* pMessage)
+        const Message::Data_t* /* pMessage */)
     {
-        pMessage;
         return S_FALSE;
     }
 
@@ -108,25 +108,28 @@ public:
     virtual
     HRESULT
     ExecuteTransaction(
-        Transaction::Data_t& /*txData*/)
+        const Transaction::Data_t& /*txData*/) // changed const
     {
+        LogWarning(L"DP::Handler_t::ExecutionTransaction fall-through (S_FALSE)");
         return S_FALSE;
     }
  
     virtual
     HRESULT
     ResumeTransaction(
-        DP::Transaction::Data_t& /*txData*/,
-        const DP::Transaction::Data_t* /*pPrevTxData*/)
+        const Transaction::Data_t& /*txData*/, // changed const
+        const Transaction::Data_t* /*pPrevTxData*/)
     {
+        LogWarning(L"DP::Handler_t::ResumeTransaction fall-through (S_FALSE)");
         return S_FALSE;
     }
 
     virtual
     HRESULT
     OnTransactionComplete(
-        Transaction::Data_t&)
+        const Transaction::Data_t&)
     {
+        LogWarning(L"DP::Handler_t::OnTransactionComplete fall-through (S_FALSE)");
         return S_FALSE;
     }
 
@@ -138,12 +141,9 @@ private:
     SetClass(
         const wchar_t* pszClass)
     {
-        if (NULL != pszClass)
-        {
+        if (nullptr != pszClass) {
             m_strClass.assign(pszClass);
-        }
-        else
-        {
+        } else {
             m_strClass.clear();
         }
     }

@@ -84,7 +84,7 @@ ExecuteTransaction(
     Transaction::Data_t* pTxData,
     bool                 fInterrupt)
 {
-    return ExecuteTransaction(pTxData, NULL, fInterrupt);
+    return ExecuteTransaction(pTxData, nullptr, fInterrupt);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -96,11 +96,11 @@ ExecuteTransaction(
     Transaction::Data_t* pPrevTxData,
     bool                 fInterrupt)
 {
-    if (NULL == pTxData)
+    if (nullptr == pTxData)
     {
-        throw invalid_argument("XM::ExecuteTransaction()");
+        throw invalid_argument("TM::ExecuteTransaction()");
     }
-    LogInfo(L"%s::ExecuteTransaction()", GetPipelineManager().GetTransactionName(pTxData->Id));
+    LogInfo(L"TM::ExecuteTransaction(%s)", GetPipelineManager().GetTransactionName(pTxData->Id));
     bool bRet = false;
     CLock lock(m_cs);
     if (SetTransactionExecuting(pTxData, fInterrupt))
@@ -108,7 +108,7 @@ ExecuteTransaction(
         ExecuteNotify(pPrevTxData);
         bRet = true;
     }
-//    LogInfo(L"XM: --ExecuteTransaction(%x) State (%d)", pTxData->Id, pTxData->GetState());
+    LogInfo(L"TM::ExecuteTransaction(%x) State(%d)", pTxData->Id, pTxData->GetState());
     return bRet;
 }
 
@@ -134,14 +134,14 @@ CompleteTransaction(
     Data_t* pData = GetTransactionExecuting();
     if (NULL == pData)
     {
-        throw logic_error("XM::CompleteTransaction() No transaction executing");
+        throw logic_error("TM::CompleteTransaction() No transaction executing");
     }
     Transaction::Data_t* pTxData = pData->pTxData;
     if (TransactionId != pTxData->Id)
     {
-        throw invalid_argument("XM::CompleteTransaction() TransactionId invalid");
+        throw invalid_argument("TM::CompleteTransaction() TransactionId invalid");
     }
-    LogAlways(L"%s::CompleteTransaction() Error(%x)", 
+    LogAlways(L"TM::CompleteTransaction(%s) Error(%x)", 
               GetPipelineManager().GetTransactionName(pTxData->Id), Error);
     pTxData->Error = Error;
     pTxData->SetState(Transaction::State::Complete);
@@ -159,6 +159,7 @@ ApcExecute(
 {
     TransactionManager_t& tm = GetTransactionManager();
     Transaction::Data_t* pPrevTxData = reinterpret_cast<Transaction::Data_t*>(Param);
+    LogInfo(L"TM::ApcExecute");
     tm.SendEvent(L"ApcExecute()", pPrevTxData);
     delete pPrevTxData;
 }
@@ -177,9 +178,10 @@ ApcComplete(
     if (tm.GetTransactionExecuting()->pTxData != pTxData)
     {
         // not sure if this is even a problem necessarily, but seems impossible
-        LogError(L"XM: ApcComplete() pTxData != TransactionExecuting");
+        LogError(L"TM: ApcComplete() pTxData != TransactionExecuting");
         //throw logic_error("XM::ApcComplete() pTxData != TransactionExecuting");
     }
+    LogInfo(L"TM::ApcComplete");
     tm.SendEvent(L"ApcComplete()");
     tm.Release(pTxData);
 }
@@ -196,17 +198,18 @@ SendEvent(
     Data_t* pData = GetTransactionExecuting();
     if (NULL == pData)
     {
-        throw logic_error("XM::CompleteTransaction() No transaction executing");
+        throw logic_error("TM::CompleteTransaction() No transaction executing");
     }
     Transaction::Data_t* pTxData = pData->pTxData;
-    LogAlways(L"%s::%s State(%d)", GetPipelineManager().GetTransactionName(pTxData->Id),
-              eventName, pTxData->GetState());
+    LogAlways(L"TM::SendEvent(%s::%s) State(%d)",
+        GetPipelineManager().GetTransactionName(pTxData->Id),
+        eventName, pTxData->GetState());
 	HRESULT hr = GetPipelineManager().SendTransactionEvent(*pTxData, pPrevTxData);
     if (FAILED(hr))
     {
-        LogError(L"XM::SendEvent() %s:%s Error(%08x) State(%d)",
-                 GetPipelineManager().GetTransactionName(pTxData->Id),
-                 eventName, hr, pTxData->GetState());
+        LogError(L"TM::SendEvent(%s:%s) Error(%08x) State(%d)",
+            GetPipelineManager().GetTransactionName(pTxData->Id), eventName,
+            hr, pTxData->GetState());
     }
 }
 
