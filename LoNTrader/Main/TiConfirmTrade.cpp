@@ -72,6 +72,7 @@ OnTransactionComplete(
     case Transaction::Id::PostTrade:
         m_bDone = true;
         break;
+
     default:
         return S_FALSE;
     }

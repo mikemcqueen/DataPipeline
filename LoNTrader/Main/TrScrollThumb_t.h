@@ -36,38 +36,27 @@ private:
 public:
 
     TrScrollThumb_t();
-
-	virtual
-    ~TrScrollThumb_t();
+	virtual ~TrScrollThumb_t();
 
     //
     // DP::Handler_t virtual:
     //
 
-    virtual
     HRESULT
     MessageHandler(
-        const DP::Message::Data_t* pMessage);
+        const DP::Message::Data_t* pMessage) override;
 
     //
     // TrSurface_t virtual:
     //
 
-    virtual
     bool
     IsSupportedWindowType(
-        Lon::Window::Type_e WindowType) const;
+        Lon::Window::Type_e WindowType) const override;
 
-    virtual 
-    bool
-    TranslateSurface(
-        CSurface* pSurface,
-        RECT&     rcSurface);
-
-    virtual
     void
     PostData(
-        DWORD AcquireId);
+        DWORD AcquireId) override;
 
 private:
 

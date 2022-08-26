@@ -41,7 +41,7 @@ namespace ConfirmTrade
 			LineCount,
 			CharsPerLine,
 			ColumnCount> Text_t; 
-           // LineHeight, CharHeight> Text_t;  // NOTE: commented this out to make it compile
+           // LineHeight, CharHeight> Text_t;  // TODO: NOTE: commented this out to make it compile
     }
 
     namespace Translate

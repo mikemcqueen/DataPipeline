@@ -69,13 +69,13 @@ public:
         Policy_t(TransactionId, pHost)
     {}
 
-    virtual bool PreInterpret(const DP::Transaction::Data_t* pData) const;
-    virtual bool ShouldCompareText() const;
-    virtual bool CheckTrade(const Trade_t& Trade) const;
-    virtual bool ShouldSetText() const;
-    virtual void TradeFound(TradeId_t TradeId, RECT& Rect) const;
-    virtual void TradeNotFound(TradeId_t TradeId) const;
-    virtual void DoneGathering() const;
+    bool PreInterpret(const DP::Transaction::Data_t* pData) const override;
+    bool ShouldCompareText() const override;
+    bool CheckTrade(const Trade_t& Trade) const override;
+    bool ShouldSetText() const override;
+    void TradeFound(TradeId_t TradeId, RECT& Rect) const override;
+    void TradeNotFound(TradeId_t TradeId) const override;
+    void DoneGathering() const override;
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -86,9 +86,9 @@ class BuyTradePolicy_t :
 public:
     BuyTradePolicy_t() : DefaultPolicy_t(Lon::Transaction::Id::BuyTrade) {}
 
-    virtual bool ShouldCompareText() const;
-    virtual void TradeFound(TradeId_t TradeId, RECT& Rect) const;
-    virtual void TradeNotFound(TradeId_t TradeId) const;
+    bool ShouldCompareText() const override;
+    void TradeFound(TradeId_t TradeId, RECT& Rect) const override;
+    void TradeNotFound(TradeId_t TradeId) const override;
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -99,7 +99,7 @@ class GetYourCardsPolicy_t :
 public:
     GetYourCardsPolicy_t() : DefaultPolicy_t(Lon::Transaction::Id::GetYourCards) {}
 
-    virtual bool PreInterpret(const DP::Transaction::Data_t* pData) const;
+    bool PreInterpret(const DP::Transaction::Data_t* pData) const override;
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -110,8 +110,8 @@ class PostTradePolicy_t :
 public:
     PostTradePolicy_t() : DefaultPolicy_t(Lon::Transaction::Id::PostTrade) {}
 
-    virtual bool PreInterpret(const DP::Transaction::Data_t* pData) const;
-    virtual bool CheckTrade(const Trade_t& Trade) const;
+    bool PreInterpret(const DP::Transaction::Data_t* pData) const override;
+    bool CheckTrade(const Trade_t& Trade) const override;
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -122,9 +122,9 @@ class RemoveTradePolicy_t :
 public:
     RemoveTradePolicy_t() : DefaultPolicy_t(Lon::Transaction::Id::RemoveTrade) {}
 
-    virtual bool ShouldCompareText() const;
-    virtual void TradeFound(TradeId_t TradeId, RECT& Rect) const;
-    virtual void TradeNotFound(TradeId_t TradeId) const;
+    bool ShouldCompareText() const override;
+    void TradeFound(TradeId_t TradeId, RECT& Rect) const override;
+    void TradeNotFound(TradeId_t TradeId) const override;
 };
 
 class GatherTradesPolicy_t :
@@ -133,7 +133,7 @@ class GatherTradesPolicy_t :
 public:
     GatherTradesPolicy_t() : DefaultPolicy_t(Lon::Transaction::Id::GatherTrades) {}
 
-    virtual void DoneGathering() const;
+    void DoneGathering() const override;
 };
 
 /////////////////////////////////////////////////////////////////////////////

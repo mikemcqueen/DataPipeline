@@ -40,16 +40,17 @@ public:
               TextTable_i*  pText,
         const ScreenTable_t& ScreenTable);
 
-	virtual
-    ~DcrTable_t();
+    ~DcrTable_t() override = default;
 
-    virtual bool
+    //
+    // DCR virtual:
+    //
+
+    bool
     TranslateSurface(
         CSurface* pSurface,
         Rect_t&   rcSurface) override;
 
-    //
-    // Helpers.
     //
 
     void
@@ -121,10 +122,9 @@ private:
 
 private:
 
-    // Explicitly disabled:
-    DcrTable_t();
-    DcrTable_t(const DcrTable_t&);
-    DcrTable_t& operator=(const DcrTable_t&);
+    DcrTable_t() = delete;
+    DcrTable_t(const DcrTable_t&) = delete;
+    DcrTable_t& operator=(const DcrTable_t&) = delete;
 };
 
 /////////////////////////////////////////////////////////////////////////////

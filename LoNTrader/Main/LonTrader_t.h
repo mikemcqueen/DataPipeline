@@ -28,7 +28,7 @@ class TradeExecutor_t;
 namespace TradePoster  { class Manager_t; }
 namespace PostedTrades { class Manager_t; }
 
-class LonTrader_t
+class LonTrader_t final
 {
 
 public:
@@ -38,14 +38,15 @@ public:
 
     static wchar_t          s_szDbName[MAX_PATH];
 
-    static LonCardSet_t&    GetCardSet();
+ 
+    static LonCardSet_t& GetCardSet();
     static TradeManager_t&  GetTradeManager();
     static TradeExecutor_t& GetTradeExecutor();
     static LonPlayer_t&     GetPlayer();
 
 private:
 
-    LonTraderImpl_t* m_pImpl;
+    std::unique_ptr<LonTraderImpl_t> m_pImpl;
     LonWindow_t&     m_Window;
 
 public:
@@ -53,9 +54,13 @@ public:
     // Constructor & Destructor:
 
     LonTrader_t(
-              LonWindow_t& Window,
-        const wchar_t*     pszUsername);
-    ~LonTrader_t();
+        LonWindow_t& Window,
+        const wchar_t* pUsername);
+
+    LonTrader_t(const LonTrader_t&) = delete;
+    LonTrader_t(LonTrader_t&&) = delete;
+
+    ~LonTrader_t(); /* = default */
 
     bool
     Initialize();
@@ -63,7 +68,7 @@ public:
     bool
     Start(
         const wchar_t* pszDbName,
-              bool     bGetYourCards);
+        bool bGetYourCards);
 
     void
     Stop();
@@ -151,6 +156,7 @@ private:
     CmdTradePosterPrice(
         const wchar_t* pszCmd);
 //              bool     bTest);
+
     bool
     CmdTradePosterValue(
         const wchar_t* pszCmd,
@@ -160,7 +166,7 @@ private:
     CmdTradePosterBuySellCard(
              bool     bBuy,
        const wchar_t* pszCmd,
-              bool     bTest);
+             bool     bTest);
 
     bool
     CmdControl(
@@ -172,9 +178,8 @@ private:
    
 private:
 
-    LonTrader_t();
-    LonTrader_t(const LonTrader_t&);
-    LonTrader_t& operator=(const LonTrader_t&);
+    LonTrader_t() = delete;
+    LonTrader_t& operator=(const LonTrader_t&) = delete;
 };
 
 /////////////////////////////////////////////////////////////////////////////

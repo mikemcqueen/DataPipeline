@@ -93,7 +93,7 @@ private:
 
 private:
 
-    ManagerBase_t&    m_Manager;
+    ManagerBase_t& m_Manager;
 
     TiTable_t     m_TiTable;
 
@@ -122,23 +122,20 @@ public:
 protected:
 
     //
-    // DP::Handler_t virtual:
+    // DP::Handler_t override:
     //
 
-    virtual
     HRESULT
     MessageHandler(
-        const DP::Message::Data_t* pData);
+        const DP::Message::Data_t* pData) override;
 
-    virtual 
     HRESULT
     ExecuteTransaction(
-        const DP::Transaction::Data_t& Data);
+        const DP::Transaction::Data_t& Data) override;
 
-    virtual
     HRESULT
     OnTransactionComplete(
-        const DP::Transaction::Data_t& Data);
+        const DP::Transaction::Data_t& Data) override;
 
     const ManagerBase_t& GetManager() const  { return m_Manager; }
     ManagerBase_t&       GetManager()        { return m_Manager; }

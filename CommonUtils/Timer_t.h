@@ -9,7 +9,7 @@
 
 #include "Log.h"
 
-class Timer_t
+class Timer_t final
 {
 
 private:
@@ -23,7 +23,7 @@ public:
     Timer_t(
         const wchar_t* pszText = L"Timer_t",
         bool           bLogNow = true)
-    :
+        :
         strText(pszText)
     {
         Now(FileTime);

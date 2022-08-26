@@ -27,23 +27,16 @@ class TrTable_t :
 
 public:
 
-    TrTable_t()
-    {
-    }
-
-	virtual
-    ~TrTable_t()
-    {
-    }
+    TrTable_t() = default;
+    virtual ~TrTable_t() = default;
 
     //
     // DP::TranslateHandler_t virtual:
     //
 
-    virtual 
     void
     Translate(
-        const DP::AcquireData_t* pData)
+        const DP::AcquireData_t* pData) override;
     {
         if (!Validate(pData))
             return;
@@ -58,18 +51,29 @@ public:
     }
 
     //
-    // TrTable_t virtual:
+    // TrSurface_t virtual:
     //
 
-    virtual
     bool
     IsSupportedWindowType(
-        const LonWindow_t::Type_e /*WindowType*/) const
+        const LonWindow_t::Type_e /*WindowType*/) const override
     {
         return true;
     }
 
-    virtual 
+    void
+    PostData(
+        DWORD /*AcquireId*/) override
+    {
+        LogError(L"TrTable_t::PostData();");
+    }
+
+
+    //
+    // TrTable_t virtual:
+    //
+
+    virtual
     bool
     PreTranslateSurface(
         CSurface* /*pSurface*/,
@@ -78,19 +82,11 @@ public:
         return true; // !IsRectEmpty(&rcSurface);
     }
 
-    virtual 
+    virtual
     bool
     TranslateSurface(
         CSurface* pSurface,
-        RECT&     rcSurface) = 0;
-
-    virtual
-    void
-    PostData(
-        DWORD /*AcquireId*/)
-    {
-        LogError(L"TrTable_t::PostData();");
-    }
+        RECT& rcSurface) = 0;
 
 protected:
 

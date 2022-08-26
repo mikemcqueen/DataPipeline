@@ -44,35 +44,30 @@ public:
         Lon::Window::Type_e WindowType,
         TranslatePolicy_t& TranslatePolicy,
         ValidatePolicy_t&  ValidatePolicy)
-    :
+        :
         m_WindowType(WindowType),
         m_TranslatePolicy(TranslatePolicy),
         m_ValidatePolicy(ValidatePolicy)
     { }
 
-    virtual
-    ~TrWindow_t()
-    {}
-
+    ~TrWindow_t() override = default;
 
     // 
     // DP::Handler_t virtual:
     //
 
-    virtual
     bool
     Initialize(
-        const wchar_t* pszClass)
+        const wchar_t* pszClass) override
     {
         if (!TrSurface_t::Initialize(pszClass))
             return false;
         return m_TranslatePolicy.Initialize() && m_ValidatePolicy.Initialize();
     }
 
-    virtual
     HRESULT
     MessageHandler(
-        const DP::Message::Data_t* pData)
+        const DP::Message::Data_t* pData) override
     {
         if (Validate(pData, m_WindowType))
         {
@@ -93,9 +88,9 @@ public:
 
 private:
 
-    TrWindow_t();
-    TrWindow_t(const TrWindow_t&);
-    TrWindow_t& operator=(const TrWindow_t&);
+    TrWindow_t() = delete;
+    TrWindow_t(const TrWindow_t&) = delete;
+    TrWindow_t& operator=(const TrWindow_t&) = delete;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -147,9 +142,9 @@ protected:
 
 private:
 
-    OneTablePolicy_t();
-    OneTablePolicy_t(const OneTablePolicy_t&);
-    OneTablePolicy_t& operator=(const OneTablePolicy_t&);
+    OneTablePolicy_t() = delete;
+    OneTablePolicy_t(const OneTablePolicy_t&) = delete;
+    OneTablePolicy_t& operator=(const OneTablePolicy_t&) = delete;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -158,18 +153,17 @@ template<class GetDcrWindowType_t>
 class OneDynamicTablePolicy_t :
     public OneTablePolicy_t
 {
-
     const GetDcrWindowType_t* m_pGetDcrWindowType;
 
 public:
 
     explicit
     OneDynamicTablePolicy_t(
-              Lon::Window::Type_e TopWindowType,
-              DcrTrades_t&        DcrTrades,
+        Lon::Window::Type_e       TopWindowType,
+        DcrTrades_t&              DcrTrades,
         const GetDcrWindowType_t* pGetDcrWindowType,
-              RECT*               pRect = NULL)
-    :
+        RECT*                     pRect = NULL)
+        :
         OneTablePolicy_t(
             TopWindowType,
             DcrTrades,
@@ -180,18 +174,17 @@ public:
 
 protected:
 
-    virtual
     Lon::Window::Type_e
-    GetDcrWindowType() const
+    GetDcrWindowType() const override
     {
         return m_pGetDcrWindowType->GetDcrWindowType();
     }
 
 private:
     
-    OneDynamicTablePolicy_t();
-    OneDynamicTablePolicy_t(const OneDynamicTablePolicy_t&);
-    OneDynamicTablePolicy_t& operator=(const OneDynamicTablePolicy_t&);
+    OneDynamicTablePolicy_t() = delete;
+    OneDynamicTablePolicy_t(const OneDynamicTablePolicy_t&) = delete;
+    OneDynamicTablePolicy_t& operator=(const OneDynamicTablePolicy_t&) = delete;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -213,9 +206,9 @@ public:
     explicit
     TwoTablePolicy_t(
         Lon::Window::Type_e TopWindowType,
-        DcrTrades_t&   DcrFirst,
+        DcrTrades_t&        DcrFirst,
         Lon::Window::Type_e DcrFirstWindowType,
-        DcrTrades_t&   DcrSecond,
+        DcrTrades_t&        DcrSecond,
         Lon::Window::Type_e DcrSecondWindowType);
 
     bool
@@ -234,9 +227,9 @@ public:
 
 private:
 
-    TwoTablePolicy_t();
-    TwoTablePolicy_t(const TwoTablePolicy_t&);
-    TwoTablePolicy_t& operator=(const TwoTablePolicy_t&);
+    TwoTablePolicy_t() = delete;
+    TwoTablePolicy_t(const TwoTablePolicy_t&) = delete;
+    TwoTablePolicy_t& operator=(const TwoTablePolicy_t&) = delete;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

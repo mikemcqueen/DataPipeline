@@ -30,33 +30,27 @@ extern DWORD      g_dwSleep;
 // LonTrader_t static definitions.
 //
 
-// move to a DB class of some sort
+// TODO: move to a DB class of some sort
 const wchar_t LonTrader_t::s_szBaseDbName[]    = L"\\db\\cards.mdb";
 const wchar_t LonTrader_t::szLonPostedTrades[] = L"LonPostedTrades";
 
 wchar_t       LonTrader_t::s_szDbName[MAX_PATH];
 
 ///////////////////////////////////////////////////////////////////////////////
-//
-// Constructor.
-//
 
 LonTrader_t::
 LonTrader_t(
-          LonWindow_t& Window,
-    const wchar_t*     pszUsername)
-:
-    m_Window(Window),
-    m_pImpl(new LonTraderImpl_t(pszUsername))
+    LonWindow_t&   window,
+    const wchar_t* pUsername)
+    :
+    m_Window(window),
+    m_pImpl(std::make_unique<LonTraderImpl_t>(pUsername))
 {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-LonTrader_t::
-~LonTrader_t()
-{
-}
+LonTrader_t::~LonTrader_t() = default;
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -68,17 +62,17 @@ Initialize()
     DP::PipelineManager_t& pm = GetPipelineManager();
     using namespace DP::Stage;
 
-	pm.AddHandler(Acquire, m_pImpl->m_SsTrades, szLonPostedTrades);
-	// commented this out to get ti to build
-//	pm.AddHandler(Acquire,   m_pImpl->m_PcapTrades,                    szLonPostedTrades);
-	
-	pm.AddHandler(Translate, m_pImpl->m_TrPrompts, szLonPostedTrades);
+    pm.AddHandler(Acquire, m_pImpl->m_SsTrades, szLonPostedTrades);
+	// TODO: commented this out to get it to build
+    //pm.AddHandler(Acquire,   m_pImpl->m_PcapTrades,                    szLonPostedTrades);
+
+    pm.AddHandler(Translate, m_pImpl->m_TrPrompts, szLonPostedTrades);
 	pm.AddHandler(Translate, m_pImpl->m_TrScroll, szLonPostedTrades);
 	pm.AddHandler(Translate, m_pImpl->m_PostedTrades.GetTranslator(), szLonPostedTrades);
 	pm.AddHandler(Translate, m_pImpl->m_TradeDetail.GetTranslator(), szLonPostedTrades);
 	pm.AddHandler(Translate, m_pImpl->m_TradeBuilder.GetTranslator(), szLonPostedTrades);
 	pm.AddHandler(Translate, m_pImpl->m_ConfirmTrade.GetTranslator(), szLonPostedTrades);
-	
+
 	pm.AddHandler(Interpret, m_pImpl->m_PostedTrades.GetInterpreter(), szLonPostedTrades);
 	pm.AddHandler(Interpret, m_pImpl->m_TradeDetail.GetInterpreter(), szLonPostedTrades);
 	pm.AddHandler(Interpret, m_pImpl->m_TradeBuilder.GetInterpreter(), szLonPostedTrades);
@@ -88,7 +82,7 @@ Initialize()
     // NOTE: Player before Poster
 	pm.AddHandler(Analyze, m_pImpl->m_TradeManager, szLonPostedTrades);
 	pm.AddHandler(Analyze, m_pImpl->m_Player, szLonPostedTrades);
-	pm.AddHandler(Analyze, m_pImpl->m_TradePoster, szLonPostedTrades);
+	pm.AddHandler(Analyze, *m_pImpl->m_pTradePoster, szLonPostedTrades);
 	pm.AddHandler(Analyze, m_pImpl->m_TradeExecutor, szLonPostedTrades);
 
     return true;
@@ -96,11 +90,18 @@ Initialize()
 
 ///////////////////////////////////////////////////////////////////////////////
 
+#define XXX 0
+
 PostedTrades::Manager_t&
 LonTrader_t::
 GetPostedTrades()
 {
+#if XXX
+    static unsigned a;
+    return (PostedTrades::Manager_t&)a;
+#else
     return m_pImpl->m_PostedTrades;
+#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -110,7 +111,12 @@ LonCardSet_t&
 LonTrader_t::
 GetCardSet()
 {
+#if XXX
+    static unsigned a;
+    return (LonCardSet_t&)a;
+#else
     return LonTraderImpl_t::s_CardSet;
+#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -119,7 +125,12 @@ TradeManager_t&
 LonTrader_t::
 GetTradeManager()
 {
+#if XXX
+    static unsigned a;
+    return (TradeManager_t&)a;
+#else
     return LonTraderImpl_t::m_TradeManager;
+#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -128,7 +139,12 @@ TradeExecutor_t&
 LonTrader_t::
 GetTradeExecutor()
 {
+#if XXX
+    static unsigned a;
+    return (TradeExecutor_t&)a;
+#else
     return LonTraderImpl_t::m_TradeExecutor;
+#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -137,7 +153,12 @@ TradePoster::Manager_t&
 LonTrader_t::
 GetTradePoster()
 {
-    return m_pImpl->m_TradePoster;
+#if XXX
+    static unsigned a;
+    return (TradePoster::Manager_t&)a;
+#else
+    return *m_pImpl->m_pTradePoster;
+#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -146,7 +167,12 @@ LonPlayer_t&
 LonTrader_t::
 GetPlayer()
 {
+#if XXX
+    static unsigned a;
+    return (LonPlayer_t&)a;
+#else
     return LonTraderImpl_t::m_Player;
+#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -218,7 +244,7 @@ bool
 LonTrader_t::
 Start(
     const wchar_t* pszDbName,
-          bool     bGetYourCards)
+    bool           bGetYourCards)
 {
     LogInfo(L"LonTrader_t::Start()");
 
@@ -229,7 +255,7 @@ Start(
     }
 
     pszDbName;
-#if 0
+#if 0 // TODO: disabled DB access for making things run
     if (!GetCardSet().ReadCards(pszDbName))
         return false;
 #endif
@@ -243,10 +269,11 @@ Start(
     // Only start up the acquire handlers if we didn't read trades from DB.
     LogInfo(L"Start(): No trades in DB. Starting acquire handlers...");
 
+
     // 1 == SsTask, 2 = PcapTask.
     Lon::Event::Start_t EventStart;
     size_t Started = GetPipelineManager().SendEvent(EventStart);
-    if (1 != Started)
+    if (0 && 1 != Started)
     {
         LogError(L"Only %d acquire handler(s) started", Started);
         return false;
@@ -257,7 +284,10 @@ Start(
 
     if (bGetYourCards)
         GetPlayer().DoGetYourCards();
+#if 0
     GetTradeManager().DoGatherTrades();
+#endif
+
     return true;
 }
 
@@ -359,12 +389,14 @@ CmdControl(
         g_bWriteBmps = !g_bWriteBmps;
         LogAlways(L"WriteBmps=%d", g_bWriteBmps);
         return true;
+
     case L'k':  // toggle clicking
         {
-            bool bClick = m_pImpl->m_SsTrades.ToggleClick();
+        bool bClick = true; // m_pImpl->m_SsTrades.ToggleClick();
             LogAlways(L"Click=%d", bClick);
         }
         return true;
+
     case L't':  // transaction manager
         if (L'c' == pszCmd[Pos])      // complete: complete the current transaction
         {
@@ -379,6 +411,7 @@ CmdControl(
             return true;
         }
         break;
+
     default:
         break;
     }
@@ -400,10 +433,12 @@ CmdBuilder(
         case L's': // Set
             LonWindow_t::SendChars(Lon::Window::TradeBuilderSearchEdit, &pszCmd[2]);
             return true;
+
         default:
             break;
         }
         break;
+
     default:
         break;
     }

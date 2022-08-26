@@ -28,8 +28,6 @@ LonPlayer_t() :
 
 /////////////////////////////////////////////////////////////////////////////
 
-#pragma warning(disable:4063)
-
 HRESULT
 LonPlayer_t::
 OnTransactionComplete(
@@ -40,6 +38,7 @@ OnTransactionComplete(
     case Lon::Transaction::Id::GetYourCards:
         OnGetYourCardsComplete(static_cast<const EventGetYourCards_t::Data_t&>(Data));
         break;
+
     default:
         return S_FALSE;
     }

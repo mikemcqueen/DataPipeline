@@ -45,7 +45,7 @@ typedef std::set<CardTrades_t, CardTrades_t>  CardTradesSet_t;
 
 /////////////////////////////////////////////////////////////////////////////
 
-class TradeManager_t :
+class TradeManager_t final :
     public DP::Handler_t
 {
 
@@ -77,11 +77,8 @@ public:
 private:
 
     TradeMap_t    m_Trades;
-    mutable
-    CAutoCritSec  m_csTrades;
-
-    mutable
-    Timer_t       m_Timer;
+    mutable CAutoCritSec  m_csTrades;
+    mutable Timer_t       m_Timer;
 
 public:
 
@@ -92,25 +89,21 @@ public:
     // DP::Handler_t virtual:
     //
 
-    virtual
     HRESULT
     MessageHandler(
-        const DP::Message::Data_t* pData);
+        const DP::Message::Data_t* pData) override;
 
-    virtual
     HRESULT
     EventHandler(
-        DP::Event::Data_t& Data);
+        DP::Event::Data_t& Data) override;
 
-    virtual 
     HRESULT
     ExecuteTransaction(
-        const DP::Transaction::Data_t& Data);
+        const DP::Transaction::Data_t& Data) override;
 
-    virtual
     HRESULT
     OnTransactionComplete(
-        const DP::Transaction::Data_t& Data);
+        const DP::Transaction::Data_t& Data) override;
 
     // Helpers:
 

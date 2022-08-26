@@ -304,7 +304,7 @@ private:
     DWORD
     Func()
     {
-        HANDLE Handles[HandleCount];
+        HANDLE Handles[HandleCount] = { 0 };
         Handles[Exit] = m_hExitEvent.get();
         Handles[Add]  = m_hAddEvent.get();
 

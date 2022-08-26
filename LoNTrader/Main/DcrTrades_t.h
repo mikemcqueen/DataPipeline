@@ -18,7 +18,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class DcrTrades_t :
+class DcrTrades_t final :
     public DcrTable_t
 {
 private:
@@ -69,7 +69,7 @@ public:
     bool
     PreTranslateSurface(
         CSurface* pSurface,
-        RECT&     rcSurface);
+        Rect_t&   rcSurface) override;
 
 private:
 
@@ -97,9 +97,9 @@ private:
 
 private:
 
-    DcrTrades_t();
-    DcrTrades_t(const DcrTrades_t&);
-    DcrTrades_t& operator=(const DcrTrades_t&);
+    DcrTrades_t() = delete;
+    DcrTrades_t(const DcrTrades_t&) = delete;
+    DcrTrades_t& operator=(const DcrTrades_t&) = delete;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

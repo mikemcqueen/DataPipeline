@@ -64,105 +64,6 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Main\Card_t.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Main\CardCollection_t.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Main\DcrTrades_t.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Main\EventTypes.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Main\LonCard_t.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Main\LonCardMap_t.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Main\LonCardSet_t.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Main\LonMessageTypes.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Main\LonPlayer_t.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Main\LonTrader_t.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Main\LonTraderImpl_t.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Main\LonTypes.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Main\LonWindow_t.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Main\LonWindowManager_t.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Main\PcapTrades_t.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Main\resource.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Main\Services.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Main\SsTrades_t.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Main\stdafx.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Main\TiBase_t.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Main\Trade_t.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Main\TradeExecutor_t.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Main\TradeMaker_t.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Main\TradeManager_t.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Main\TradeMap_t.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Main\TradeTypes.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Main\TradeValue_t.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Main\TrPrompts_t.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Main\TrScrollThumb_t.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Main\TrSurface_t.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Main\TrTable_t.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Main\TrWindow_t.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Main\XmlNames.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="Main\TradePoster.h">
       <Filter>TradePoster</Filter>
     </ClInclude>
@@ -249,6 +150,105 @@
     </ClInclude>
     <ClInclude Include="Main\PassiveFixedPricing_t.h">
       <Filter>TradePoster</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\CardCollection_t.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\Card_t.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\DcrTrades_t.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\LonCard_t.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\LonCardMap_t.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\LonCardSet_t.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\LonMessageTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\LonPlayer_t.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\LonTrader_t.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\LonTraderImpl_t.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\LonTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\LonWindow_t.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\PcapTrades_t.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\Services.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\SsTrades_t.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TiBase_t.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\Trade_t.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TradeExecutor_t.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TradeMaker_t.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TradeManager_t.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TradeMap_t.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\XmlNames.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TrWindow_t.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TrTable_t.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TrSurface_t.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TrScrollThumb_t.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TrPrompts_t.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TradeValue_t.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TradeTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\LonWindowManager_t.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\EventTypes.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

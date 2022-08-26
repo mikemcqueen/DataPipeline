@@ -21,7 +21,7 @@
 
 DcrTable_t::
 DcrTable_t(
-          TextTable_i*   pText,
+    TextTable_i* pText,
     const ScreenTable_t& ScreenTable)
 :
     m_pText(pText),
@@ -29,13 +29,6 @@ DcrTable_t(
     m_Gridline(0)
 {
 }	
-
-/////////////////////////////////////////////////////////////////////////////
-
-DcrTable_t::
-~DcrTable_t()
-{
-}
 
 /////////////////////////////////////////////////////////////////////////////
 

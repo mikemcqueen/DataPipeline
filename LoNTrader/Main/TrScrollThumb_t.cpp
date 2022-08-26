@@ -147,30 +147,6 @@ GetScrollRect(
 
 ///////////////////////////////////////////////////////////////////////////////
 
-bool
-TrScrollThumb_t::
-TranslateSurface(
-    CSurface* pSurface,
-    RECT&     rcSurface)
-{
-#if 0
-    static int num = 0;
-    if (0 == num++)
-    {
-        LogAlways(L"ScrollRect = { %d, %d, %d, %d }",
-                  rcSurface.left, rcSurface.top, rcSurface.right, rcSurface.bottom);
-        pSurface->WriteBMP(L"bmp\\scroll_thumb.bmp", rcSurface);
-    }
-#else
-pSurface; rcSurface;
-#endif
-
-//    return Unknown != m_Position;
-    return false;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
 /*
 LPARAM pagedown = MAKELONG(rc.right / 2, rc.bottom - ScrollbarThumbHeight - 1);
 */

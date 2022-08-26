@@ -72,12 +72,15 @@ OnTransactionComplete(
     case Id::BuyTrade:
         OnBuyTradeComplete(Error);
         break;
+
     case Id::RemoveTrade:
         OnRemoveTradeComplete(Error);
         break;
+
     case Id::PostTrade:
         OnPostTradeComplete(Error);
         break;
+
     default:
         return S_FALSE;
     }
@@ -98,9 +101,11 @@ LogOnComplete(
     case Error::None:
         LogAlways(L"%ls complete - success", pszText);
         break;
+
     case Error::TestSucceeded:
         LogAlways(L"%ls complete - test succeeded", pszText);
         break;
+
     default:
         LogError(L"%ls complete - failed (%d)", pszText, Error);
         break;

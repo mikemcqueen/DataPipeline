@@ -101,7 +101,7 @@ GetItemId(
     }
     catch (CDBException* e)
     {
-        LogError(L"Items_t::GetItemId() exception: %ls", e->m_strError);
+        LogError(L"Items_t::GetItemId() exception: %ls", (LPCTSTR)e->m_strError);
         e->Delete();
     }
     return ItemId;
@@ -145,7 +145,7 @@ GetItemName(
     }
     catch (CDBException* e)
     {
-        LogError(L"Items_t::GetItemName() Id(%d) exception: %ls", itemId, e->m_strError);
+        LogError(L"Items_t::GetItemName() Id(%d) exception: %ls", itemId, (LPCTSTR)e->m_strError);
         e->Delete();
     }
     return NULL;
@@ -207,7 +207,7 @@ AddItem(
     catch (CDBException* e)
     {
         LogError(L"Items_t::AddItem(%ls) exception: %ls",
-                 pItemName, e->m_strError);
+                 pItemName, (LPCTSTR)e->m_strError);
         e->Delete();
     }
     return ItemId;
@@ -252,7 +252,7 @@ AddItem(
         return 0;
     }
     rs.SetAbsolutePosition(-1);
-    LogAlways(L"Added '%ls' to DB (%d)", rs.m_item_name, rs.m_item_id);
+    LogAlways(L"Added '%ls' to DB (%d)", (LPCTSTR)rs.m_item_name, rs.m_item_id);
     rs.Close();
     return rs.m_item_id;
 }

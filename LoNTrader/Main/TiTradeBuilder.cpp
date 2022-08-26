@@ -182,11 +182,13 @@ MessageHandler(
             pLonData,
             static_cast<TradePoster::EventPost_t::Data_t&>(*pData));
         break;
+
     case Transaction::Id::GetYourCards:
         InterpretGetYourCards(
             pLonData,
             static_cast<LonPlayer_t::EventGetYourCards_t::Data_t&>(*pData));
         break;
+
     default:
         return S_FALSE;
     }
@@ -208,14 +210,17 @@ InterpretGetYourCards(
         if (DoClickCollection(m_WhichCollection))
             SetState(ClearCardName);
         break;
+
     case ClearCardName:
         DoClearCardName();
         SetState(ScrollTable);
         break;
+
     case ScrollTable:
         if (HScrollTable())
             SetState(AddCard);
         break;
+
     case AddCard: // InterpretLines
         {
             size_t FirstNewLine;
@@ -239,6 +244,7 @@ InterpretGetYourCards(
             }
         }
         break;
+
     case Done:
         if (LonWindow_t::Click(Window::TradeBuilderExit))
         {
@@ -250,8 +256,10 @@ InterpretGetYourCards(
             SetState(Ready);
         }
         break;
+
     case Ready:
         break;
+
     default:
         ASSERT(false);
         break;
@@ -404,6 +412,7 @@ InterpretPostTrade(
         if (DoClearTrade())
             SetState(SelectCollection);
         break;
+
     case SelectCollection:
         {
             bool bEmpty = false;
@@ -420,18 +429,22 @@ InterpretPostTrade(
                 SetState(SubmitTrade);
         }
         break;
+
     case ClearCardName:
         if (DoClearCardName())
             SetState(ScrollTable);
         return;
+
     case ScrollTable:
         if (HScrollTable())
             SetState(EnterCardName);
         return;
+
     case EnterCardName:
         if (DoEnterCardName())
             SetState(AddCard);
         return;
+
     case AddCard:
         m_TiTable.SetText(pBuilderData->Text);
         if (DoAddCardToTrade(
@@ -441,10 +454,12 @@ InterpretPostTrade(
             SetState(SelectCollection);
         }
         break;
+
     case SubmitTrade:
         if (DoSubmitTrade())
             SetState(Waiting);
         return;
+
     case Waiting:
         if (Error::None == TransactionData.Error)
             return;
@@ -453,6 +468,7 @@ InterpretPostTrade(
         // TransactionData.Error was set in ConfirmTrade.
         OnPostTradeError(Error_e(TransactionData.Error));
         return;
+
     case Error:
         LogError(L"Error building posted trade");
         TransactionData.Error = Error::BuildingTrade;
@@ -460,8 +476,10 @@ InterpretPostTrade(
         SetState(Ready);
         OnPostTradeError(Error_e(TransactionData.Error));
         return;
+
     case Ready:
         return;
+
     default:
         ASSERT(false);
         return;
@@ -709,10 +727,12 @@ FindCardInText(
     case 1:
         OutLine = First;
         return true;
+
     case 2:
         ASSERT(Second > First);
         OutLine = (1 == pLonCard->GetNumber().foil) ? Second : First;
         return true;
+
     default:
         // zero, or 3 or more and we fail.
         break;

@@ -31,12 +31,10 @@ private:
 
 public:
 
-    // Constructor:
     WindowManager_t() :
         m_Interpreter(*this)
     { }
 
-    // Accessors:
     const Translator_t&    GetTranslator() const   { return m_Translator; }
     Translator_t&          GetTranslator()         { return m_Translator; }
 
@@ -45,10 +43,8 @@ public:
 
 private:
 
-    // Explicity disabled:
-
-    WindowManager_t(const WindowManager_t&);
-    WindowManager_t& operator=(const WindowManager_t&);
+    WindowManager_t(const WindowManager_t&) = delete;
+    WindowManager_t& operator=(const WindowManager_t&) = delete;
 };
 
 } // Lon

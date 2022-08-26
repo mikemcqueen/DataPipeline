@@ -93,7 +93,7 @@ Load(
     }
     catch (CDBException* e)
     {
-        LogError(L"ItemsOwned_t::Load() DbException: %s", e->m_strError);
+        LogError(L"ItemsOwned_t::Load() DbException: %s", (LPCTSTR)e->m_strError);
         e->Delete();
     }
 }
@@ -121,9 +121,9 @@ Load(
     size_t totalItems = 0;
     for (; !rs.IsEOF(); rs.MoveNext())
     {
-        ItemQuantityMap_t::_Pairib ibPair = map.insert(
+        auto [_, inserted] = map.insert(
             ItemQuantityMap_t::value_type(rs.m_item_id, rs.m_quantity));
-        if (!ibPair.second)
+        if (!inserted)
         {
             throw logic_error("ItemsOwned_t::Load(): map.insert() failed");
         }
@@ -147,7 +147,7 @@ Write(
     }
     catch (CDBException* e)
     {
-        LogError(L"ItemsOwned_t::Write() DbException: %s", e->m_strError);
+        LogError(L"ItemsOwned_t::Write() DbException: %s", (LPCTSTR)e->m_strError);
         e->Delete();
     }
     return 0;
@@ -280,7 +280,7 @@ AdjustQuantity(
     }
     catch (CDBException* e)
     {
-        LogError(L"ItemsOwned_t::AdjustQuantity() DbException: %s", e->m_strError);
+        LogError(L"ItemsOwned_t::AdjustQuantity() DbException: %s", (LPCTSTR)e->m_strError);
         e->Delete();
     }
 }

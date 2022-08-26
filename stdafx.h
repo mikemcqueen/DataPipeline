@@ -67,6 +67,7 @@
 #include "xmllite.h"
 
 #if _MSC_VER >= 1000
+    #pragma warning(disable:4063) // case statement of enum type with integer
 	#pragma warning(disable:4355)  // 'this' used in member initializer list
 	#pragma warning(disable:4480)  // enum : type
 	#pragma warning(disable:4481)  // 'override' keyword

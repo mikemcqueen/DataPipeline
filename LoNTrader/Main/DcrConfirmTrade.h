@@ -48,7 +48,7 @@ namespace Translate
     typedef TwoTablePolicy_t       TranslatePolicy_t;
     typedef ValidateWindowPolicy_t ValidatePolicy_t;
 
-    class Handler_t :
+    class Handler_t : 
         public TrWindow_t<
             TranslatePolicy_t,
             ValidatePolicy_t>
@@ -63,7 +63,7 @@ namespace Translate
 
         TranslatePolicy_t m_TranslatePolicy;
         ValidatePolicy_t  m_ValidatePolicy;
-
+    
         DcrTrades_t       m_DcrOffered;
         Table::Text_t     m_OfferedText;
 
@@ -73,7 +73,7 @@ namespace Translate
         // TODO: hacky:
         size_t            m_OfferedRequired;
         size_t            m_WantRequired;
-
+     
     public:
 
         Handler_t();
@@ -94,10 +94,9 @@ namespace Translate
         // TrSurface_t virtual:
         //
 
-        virtual 
         void
         PostData(
-            DWORD AcquireId);
+            DWORD AcquireId) override;
 
     private:
 

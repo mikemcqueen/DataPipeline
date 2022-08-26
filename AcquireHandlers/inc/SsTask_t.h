@@ -98,15 +98,13 @@ public:
     // DP::Handler_t virtual
     //
 
-    virtual
     bool
     Initialize(
-       const wchar_t* pszClass);
+       const wchar_t* pszClass) override;
 
-    virtual
     HRESULT
     EventHandler(
-        DP::Event::Data_t& Data);
+        DP::Event::Data_t& Data) override;
 
     //
     // SsTask_t virtual
@@ -223,9 +221,9 @@ private:
 
 private:
 
-    SsTask_t();
-    SsTask_t(const SsTask_t&);
-    SsTask_t& operator=(const SsTask_t&);
+    SsTask_t() = delete;
+    SsTask_t(const SsTask_t&) = delete;
+    SsTask_t& operator=(const SsTask_t&) = delete;
 };
 
 /////////////////////////////////////////////////////////////////////////////

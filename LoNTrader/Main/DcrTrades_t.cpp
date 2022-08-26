@@ -201,7 +201,7 @@ bool
 DcrTrades_t::
 PreTranslateSurface(
     CSurface* pSurface,
-    RECT&     rcSurface)
+    Rect_t&     rcSurface)
 {
     if (IsRectEmpty(&rcSurface))
         return false;

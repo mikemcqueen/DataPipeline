@@ -72,15 +72,13 @@ public:
     // DP::Handler_t virtual:
     //
 
-    virtual
     HRESULT
     MessageHandler(
-        const DP::Message::Data_t* pData);
+        const DP::Message::Data_t* pData) override;
 
-    virtual
     HRESULT
     ExecuteTransaction(
-        const DP::Transaction::Data_t& Data);
+        const DP::Transaction::Data_t& Data) override;
 
     // Should/could be virtual of something
 
@@ -144,8 +142,8 @@ private:
 
 private:
 
-    Handler_t(const Handler_t&);
-    Handler_t& operator= (const Handler_t&);
+    Handler_t(const Handler_t&) = delete;
+    Handler_t& operator= (const Handler_t&) = delete;
 };
 
 } // Interpret

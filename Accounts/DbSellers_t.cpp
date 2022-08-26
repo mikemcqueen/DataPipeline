@@ -101,7 +101,7 @@ GetSellerId(
     }
 
     SellerId_t SellerId = 0;
-    CDatabase db;
+    //CDatabase db;
     try
     {
 #if 1 || GLOBALDB
@@ -120,7 +120,7 @@ GetSellerId(
     }
     catch (CDBException* e)
     {
-        LogError(L"DbSellers_t::AddSeller() exception: %ls", e->m_strError);
+        LogError(L"DbSellers_t::AddSeller() exception: %ls", (LPCTSTR)e->m_strError);
         e->Delete();
     }
     return SellerId;
@@ -154,7 +154,7 @@ AddSeller(
     const wchar_t* pSellerName)
 {
     SellerId_t SellerId = 0;
-    CDatabase db;
+    //CDatabase db;
     try
     {
 #if 1 || GLOBALDB
@@ -178,7 +178,7 @@ AddSeller(
     catch (CDBException* e)
     {
         LogError(L"DbSellers_t::AddSeller(%ls) exception: %ls",
-                 pSellerName, e->m_strError);
+                 pSellerName, (LPCTSTR)e->m_strError);
         e->Delete();
     }
     return SellerId;
@@ -226,7 +226,7 @@ AddSeller(
         return 0;
     }
     rs.SetAbsolutePosition(-1);
-    LogAlways(L"DBSellers_t::AddSeller(): Added '%ls' (%d)", rs.m_seller_name, rs.m_seller_id);
+    LogAlways(L"DBSellers_t::AddSeller(): Added '%ls' (%d)", (LPCTSTR)rs.m_seller_name, rs.m_seller_id);
     rs.Close();
     return rs.m_seller_id;
 }

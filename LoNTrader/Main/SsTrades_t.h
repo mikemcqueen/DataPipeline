@@ -34,10 +34,10 @@ public:
         SurfacePoolItem_t* pPoolItem;
 
         ScreenShotData_t(
-            const wchar_t*           Class,
-                  Lon::Window::Type_e     WindowType,
-                  SurfacePoolItem_t* InitPoolItem,
-                  size_t             Size = sizeof(ScreenShotData_t))
+            const wchar_t*            Class,
+                  Lon::Window::Type_e WindowType,
+                  SurfacePoolItem_t*  InitPoolItem,
+                  size_t              Size = sizeof(ScreenShotData_t))
         :
             Lon::Message::Data_t(
                 Class,
@@ -66,10 +66,10 @@ private:
     mutable
     CAutoCritSec     m_csThumbs;
 
-    Lon::Window::Type_e   m_HorzType;
+    Lon::Window::Type_e m_HorzType;
     Lon::ScrollBar_t  m_HorzBar;
 
-    Lon::Window::Type_e   m_VertType;
+    Lon::Window::Type_e m_VertType;
     Lon::ScrollBar_t  m_VertBar;
 
     bool             m_bClick;
@@ -77,7 +77,7 @@ private:
 public:
 
     SsTrades_t(
-        CDisplay&    Display);
+        CDisplay& Display);
 
     bool
     ToggleClick()
@@ -89,29 +89,25 @@ public:
     // DP::Handler_t virtual:
     //
 
-    virtual
     HRESULT
     EventHandler(
-        DP::Event::Data_t& Event);
+        DP::Event::Data_t& Event) override;
 
     // 
     // SSTask virtual:
     //
 
-    virtual
     HWND
     GetSsWindowRect(
-        RECT& rcBounds) const;
+        RECT& rcBounds) const override;
 
-    virtual
     void
-    ThreadProcessEvent();
+    ThreadProcessEvent() override;
 
-    virtual
     void
     PostData(
-        HWND              hWnd,
-        SurfacePoolItem_t* pPoolItem);
+        HWND               hWnd,
+        SurfacePoolItem_t* pPoolItem) override;
 
 private:
 
@@ -161,9 +157,9 @@ private:
 
     // Explicitly disabled:
 
-    SsTrades_t();
-    SsTrades_t(const SsTrades_t&);
-    SsTrades_t& operator=(const SsTrades_t&);
+    SsTrades_t() = delete;
+    SsTrades_t(const SsTrades_t&) = delete;
+    SsTrades_t& operator=(const SsTrades_t&) = delete;
 };
 
 /////////////////////////////////////////////////////////////////////////////

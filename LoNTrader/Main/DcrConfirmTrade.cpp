@@ -41,8 +41,12 @@ Initialize(
 Handler_t::
 Handler_t() :
     TrWindow_t(TopWindowType, m_TranslatePolicy, m_ValidatePolicy),
-    m_TranslatePolicy(TopWindowType, m_DcrOffered, DcrOfferedWindowType,
-                                     m_DcrWant,    DcrWantWindowType),
+    m_TranslatePolicy(
+        TopWindowType,
+        m_DcrOffered,
+        DcrOfferedWindowType,
+        m_DcrWant,
+        DcrWantWindowType),
     m_DcrOffered(&m_OfferedText, Table::PixelColumnWidths, Table::ColumnCount),
     m_OfferedText(Table::CharColumnWidths, Table::ColumnCount),
     m_DcrWant(&m_WantText, Table::PixelColumnWidths, Table::ColumnCount),

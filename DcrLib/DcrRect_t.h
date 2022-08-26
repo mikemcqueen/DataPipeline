@@ -64,9 +64,9 @@ public:
     }
 
     //
-    // DCR virtual
+    // DCR virtual:
     //
-    virtual
+
     bool
     PreTranslateSurface(
         CSurface* pSurface,
@@ -93,7 +93,6 @@ public:
         return true;
     }
 
-    virtual
     bool
     TranslateSurface(
         CSurface* pSurface,
@@ -116,6 +115,8 @@ public:
         m_Text.assign(Buffer);
         return true;
     }
+
+    //
 
     const wstring&
     GetText() const

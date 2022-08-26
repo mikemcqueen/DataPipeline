@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -11,10 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{E0E9D0D7-58DE-4505-8EF0-8E50FF24B402}</ProjectGuid>
-    <RootNamespace>DcrLib</RootNamespace>
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <ProjectGuid>{2088CB25-8D22-4586-8CA0-5B02519B05FF}</ProjectGuid>
+    <RootNamespace>Dcr</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -39,7 +39,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <_ProjectFileVersion>14.0.25431.1</_ProjectFileVersion>
+    <_ProjectFileVersion>17.0.32708.82</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
@@ -58,10 +58,10 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\CommonUtils;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\inc;..\..\DcrLib;..\..\Ui;..\..\AcquireHandlers\inc;..\..\PipelineManager;..\..\CommonUtils;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>Level4</WarningLevel>
@@ -71,39 +71,48 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\CommonUtils;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\inc;..\..\DcrLib;..\..\Ui;..\..\AcquireHandlers\inc;..\..\PipelineManager;..\..\CommonUtils;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <PrecompiledHeader>Use</PrecompiledHeader>
+      <BrowseInformation>true</BrowseInformation>
       <WarningLevel>Level4</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Charset_t.cpp" />
-    <ClCompile Include="Dcr.cpp" />
-    <ClCompile Include="DcrTable_t.cpp" />
-    <ClCompile Include="stdafx.cpp">
+    <ClCompile Include="..\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\Ui\TrScrollThumb_t.cpp" />
+    <ClCompile Include="DcrWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Charset_t.h" />
-    <ClInclude Include="Dcr.h" />
-    <ClInclude Include="DcrRect_t.h" />
-    <ClInclude Include="DcrTable_t.h" />
-    <ClInclude Include="ScreenTable_t.h" />
-    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="..\inc\DcrWindow.h" />
+    <ClInclude Include="..\inc\TrScrollThumb_t.h" />
+    <ClInclude Include="..\stdafx.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CommonUtils\CommonUtils.vcxproj">
+    <ProjectReference Include="..\..\AcquireHandlers\AcquireHandlers.vcxproj">
+      <Project>{edc76da7-36d5-419b-9468-3362f176e0ff}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\CommonUtils\CommonUtils.vcxproj">
       <Project>{612ec231-d5a3-4550-af05-211548d82370}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\Ui\Ui.vcxproj">
+    <ProjectReference Include="..\..\DcrLib\DcrLib.vcxproj">
+      <Project>{e0e9d0d7-58de-4505-8ef0-8e50ff24b402}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\PipelineManager\PipelineManager.vcxproj">
+      <Project>{ce028b60-f646-4156-b52a-8ea5b7193f57}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Ui\Ui.vcxproj">
       <Project>{40e973b5-1bb6-46cd-bf50-e3d4d0a7f22b}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>

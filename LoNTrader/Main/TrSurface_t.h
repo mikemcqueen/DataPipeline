@@ -32,24 +32,17 @@ class TrSurface_t :
 
 public:
 
-    TrSurface_t()
-    {
-    }
-
-	virtual
-    ~TrSurface_t()
-    {
-    }
+    TrSurface_t() = default;
+    ~TrSurface_t() override = default;
 
     //
     // DP::Handler_t virtual:
     //
 
 /*
-    virtual 
     void
     MessageHandler(
-        const DP::Message::Data_t *pData)
+        const DP::Message::Data_t *pData) override
     {
         if (!Validate(pData, false))
             return;
@@ -145,8 +138,8 @@ private:
             (DP::Message::Type::Message == pMessage->Type) &&
             (Lon::Message::Id::ScreenShot == pMessage->Id))
         {
-                //TODO: && (static_cast<screenshot_t*>(pMessage)->pPoolItem != NULL)  - ?
-                return true;
+            //TODO: && (static_cast<screenshot_t*>(pMessage)->pPoolItem != NULL)  - ?
+            return true;
         }
         return false;
     }

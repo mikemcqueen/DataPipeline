@@ -29,5 +29,4 @@ GetTradeExecutor()
     return LonTrader_t::GetTradeExecutor();
 }
 
-
 };

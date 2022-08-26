@@ -127,7 +127,7 @@ ProcessCommandLine(
     bool bDbSupplied = false;
     int c;
 
-    while ((c = util::getopt (argc, argv, L"b:d:l:s:t:y")) != -1)
+    while ((c = util::getopt(argc, argv, L"b:d:l:s:t:y")) != -1)
     {
         switch (wchar_t(c))
         {
@@ -176,9 +176,8 @@ int
 wmain(
     int      argc,
     wchar_t* argv[],
-    wchar_t* envp[])
+    wchar_t* /*envp[]*/)
 {
-    envp;
     struct Cleanup_t {
         ~Cleanup_t() { ShutdownCleanup(); }
     } Cleanup;
@@ -192,15 +191,16 @@ wmain(
             return -1;
         }
         int iRet = ProcessCommandLine(argc, argv);
-        if (0 >= iRet)
+        if (iRet <= 0)
         {
-            if (0 > iRet)
+            if (iRet < 0)
                 LogError(L"ProcessCommandLine failed.");
             return iRet;
         }
 
         LonWindow_t Window;
         LonTrader_t Trader(Window, L"ChararcterName");
+
         if (!Trader.Initialize())
         {
             LogError(L"Trader.Initialize() failed");
@@ -213,7 +213,6 @@ wmain(
         }
         Trader.ReadConsoleLoop();
         Trader.Stop();
-
         DcrTrades_t::Shutdown();
         return 0;
     } catch(std::exception& e) {

@@ -14,7 +14,7 @@
 #define Include_LONTRADERIMPL_T_H
 
 #include "SsTrades_t.h"
-#include "PcapTrades_t.h"
+//#include "PcapTrades_t.h"
 
 #include "TrScrollThumb_t.h"
 #include "TrPrompts_t.h"
@@ -48,7 +48,9 @@
 struct LonTraderImpl_t
 {
     LonTraderImpl_t(
-        const wchar_t*     pszUsername);
+        const wchar_t* pUsername);
+
+    ~LonTraderImpl_t() = default;
 
     static
     LonPlayer_t             m_Player;
@@ -62,26 +64,19 @@ struct LonTraderImpl_t
     static
     TradeExecutor_t         m_TradeExecutor;
 
-    TradePoster::Manager_t  m_TradePoster;
+    std::unique_ptr<TradePoster::Manager_t>  m_pTradePoster;
 
     PostedTrades::Manager_t m_PostedTrades;
     TradeDetail::Manager_t  m_TradeDetail;
-
     TradeBuilder::Manager_t m_TradeBuilder;
     ConfirmTrade::Manager_t m_ConfirmTrade;
 
     SsTrades_t              m_SsTrades;
-	// trying to get this to build without pcap
-	//    PcapTrades_t            m_PcapTrades;
-
+    
+    // TODO: trying to get this to build without pcap
+	// PcapTrades_t            m_PcapTrades;
     TrScrollThumb_t         m_TrScroll;
     TrPrompts_t             m_TrPrompts;
-
-private:
-
-    LonTraderImpl_t();
-    LonTraderImpl_t(const LonTraderImpl_t&);
-    LonTraderImpl_t& operator=(const LonTraderImpl_t&);
 };
 
 ///////////////////////////////////////////////////////////////////////////////

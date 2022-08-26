@@ -21,9 +21,11 @@ using namespace Lon;
 
 extern CDisplay *g_pDisplay;
 
-static const size_t BitmapCount = 4;
-CSurface* s_rgpCornerSurfaces[BitmapCount];
-CSurface* s_rgpSideSurfaces[BitmapCount];
+constexpr size_t BitmapCount = 4;
+#if 0
+unique_ptr<CSurface> s_rgpCornerSurfaces[BitmapCount];
+unique_ptr<CSurface> s_rgpSideSurfaces[BitmapCount];
+#endif
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -224,13 +226,14 @@ bool
 ValidateWindowPolicy_t::
 InitAllBitmaps()
 {
-    static int rgBitmapIds[BitmapCount] = {
+#if 0
+    int rgBitmapIds[BitmapCount] = {
         IDB_WINDOW_TOPLEFT,
         IDB_WINDOW_TOPRIGHT,
         IDB_WINDOW_BOTTOMLEFT,
         IDB_WINDOW_BOTTOMRIGHT
     };
-    static int rgSideBitmapIds[BitmapCount] = {
+    int rgSideBitmapIds[BitmapCount] = {
         IDB_BITMAP1,// top
         IDB_BITMAP2,// right
         IDB_BITMAP3,// left
@@ -239,27 +242,24 @@ InitAllBitmaps()
 
     for (size_t Bitmap = 0; Bitmap < BitmapCount; ++Bitmap)
     {
-        if (NULL == s_rgpCornerSurfaces[Bitmap])
+        if (!s_rgpCornerSurfaces[Bitmap])
         {
-            CSurface* pSurface = new CSurface();
-            HRESULT hr = g_pDisplay->CreateSurfaceFromBitmap(pSurface,
-                                                             MAKEINTRESOURCE(rgBitmapIds[Bitmap]));
+            std::unique_ptr<CSurface> pSurface = std::make_unique<CSurface>();
+            HRESULT hr = g_pDisplay->CreateSurfaceFromBitmap(
+                pSurface.get(), MAKEINTRESOURCE(rgBitmapIds[Bitmap]));
             if (SUCCEEDED(hr))
-                s_rgpCornerSurfaces[Bitmap] = pSurface;
-            else
-                delete pSurface;
+                s_rgpCornerSurfaces[Bitmap] = std::move(pSurface);
         }
-        if (NULL == s_rgpSideSurfaces[Bitmap])
+        if (!s_rgpSideSurfaces[Bitmap])
         {
-            CSurface* pSurface = new CSurface();
-            HRESULT hr = g_pDisplay->CreateSurfaceFromBitmap(pSurface,
-                MAKEINTRESOURCE(rgSideBitmapIds[Bitmap]));
+            std::unique_ptr<CSurface> pSurface = std::make_unique<CSurface>();
+            HRESULT hr = g_pDisplay->CreateSurfaceFromBitmap(
+                pSurface.get(), MAKEINTRESOURCE(rgSideBitmapIds[Bitmap]));
             if (SUCCEEDED(hr))
-                s_rgpSideSurfaces[Bitmap] = pSurface;
-            else
-                delete pSurface;
+                s_rgpSideSurfaces[Bitmap] = std::move(pSurface);
         }
     }
+#endif
     return true;
 }
 
@@ -270,9 +270,9 @@ ValidateWindowPolicy_t::
 Validate(
     const SsTrades_t::AcquireData_t* pData)
 {
-    CSurface* pSurface = pData->pPoolItem->get();
     RECT rcSurface;
     ::GetClientRect(LonWindow_t::GetTopWindow().hWnd, &rcSurface);
+    CSurface* pSurface = pData->pPoolItem->get();
     if (!ValidateSides(pSurface, rcSurface))
     {
         LogInfo(L"ValidateWindowPolicy_t::ValidateSides() failed.");
@@ -289,8 +289,10 @@ ValidateSides(
     const CSurface* pSurface,
     const RECT&     rcBounds)
 {
+    pSurface; rcBounds;
+#if 0
     // Top
-    CSurface* pSide = s_rgpSideSurfaces[0];
+    CSurface* pSide = s_rgpSideSurfaces[0].get();
     if (!pSurface->Compare((RECTWIDTH(rcBounds) + pSide->GetWidth()) / 2, 0,
                            pSide, 0, 0, pSide->GetWidth(), pSide->GetHeight(),
                            COMPARE_F_NOTSRCTRANSPARENT))
@@ -309,7 +311,7 @@ ValidateSides(
     }
 
     // Bottom
-    pSide = s_rgpSideSurfaces[3];
+    pSide = s_rgpSideSurfaces[3].get();
     if (!pSurface->Compare((RECTWIDTH(rcBounds) + pSide->GetWidth()) / 2,
                            RECTHEIGHT(rcBounds) - pSide->GetHeight(),
                            pSide, 0, 0, pSide->GetWidth(), pSide->GetHeight(),
@@ -329,7 +331,7 @@ ValidateSides(
     }
 
     // Right
-    pSide = s_rgpSideSurfaces[1];
+    pSide = s_rgpSideSurfaces[1].get();
     if (!pSurface->Compare(rcBounds.right - pSide->GetWidth(),
                            (RECTHEIGHT(rcBounds) + pSide->GetHeight()) / 2,
                            pSide, 0, 0, pSide->GetWidth(), pSide->GetHeight(),
@@ -349,7 +351,7 @@ ValidateSides(
     }
 
     // Left
-    pSide = s_rgpSideSurfaces[2];
+    pSide = s_rgpSideSurfaces[2].get();
     if (!pSurface->Compare(0, (RECTHEIGHT(rcBounds) + pSide->GetHeight()) / 2,
                            pSide, 0, 0, pSide->GetWidth(), pSide->GetHeight(),
                            COMPARE_F_NOTSRCTRANSPARENT))
@@ -366,7 +368,7 @@ ValidateSides(
         LogInfo(L"Left line mismatch");
         return false;
     }
-
+#endif
     return true;
 }
 
@@ -378,12 +380,16 @@ ValidateCorners(
     const CSurface* pSurface,
     const RECT&     rcBounds)
 {
+    pSurface; rcBounds;
+#if 0
     // TopLeft
-    CSurface* pCorner = s_rgpCornerSurfaces[0];
-    if (!pSurface->Compare(0, 0, pCorner,
-                          0, 0, pCorner->GetWidth(), pCorner->GetHeight(),
-                          COMPARE_F_NOTSRCTRANSPARENT))
-//                          COMPARE_F_NOTDSTTRANSPARENT))
+    CSurface* pCorner = s_rgpCornerSurfaces[0].get();
+    if (!pSurface->Compare(
+        0,
+        0,
+        pCorner, 0, 0, pCorner->GetWidth(), pCorner->GetHeight(),
+        COMPARE_F_NOTSRCTRANSPARENT))
+//      COMPARE_F_NOTDSTTRANSPARENT))
     {
         RECT rc;
         SetRect(&rc, 0, 0, pCorner->GetWidth(), pCorner->GetHeight());
@@ -392,15 +398,17 @@ ValidateCorners(
         return false;
     }
     // TopRight
-    pCorner = s_rgpCornerSurfaces[1];
+    pCorner = s_rgpCornerSurfaces[1].get();
 /*    if (!pCorner->Compare(0, 0, pSurface, 
                           rc.right - pCorner->GetWidth(), 0,
                           pCorner->GetWidth(), pCorner->GetHeight(),
                           COMPARE_F_NOTSRCTRANSPARENT))
 */
-    if (!pSurface->Compare(rcBounds.right - pCorner->GetWidth(), 0,
-                           pCorner, 0, 0, pCorner->GetWidth(), pCorner->GetHeight(),
-                           COMPARE_F_NOTDSTTRANSPARENT))
+    if (!pSurface->Compare(
+        rcBounds.right - pCorner->GetWidth(),
+        0,
+        pCorner, 0, 0, pCorner->GetWidth(), pCorner->GetHeight(),
+        COMPARE_F_NOTDSTTRANSPARENT))
     {
         RECT rc;
         SetRect(&rc, rcBounds.right - pCorner->GetWidth(), 0, pCorner->GetWidth(), pCorner->GetHeight());
@@ -409,16 +417,18 @@ ValidateCorners(
         return false;
     }
     // BottomLeft
-    pCorner = s_rgpCornerSurfaces[2];
+    pCorner = s_rgpCornerSurfaces[2].get();
 /*
     if (!pCorner->Compare(0, 0, pSurface, 
                           0, rc.bottom - pCorner->GetHeight(),
                           pCorner->GetWidth(), pCorner->GetHeight(),
                           COMPARE_F_NOTSRCTRANSPARENT))
 */
-    if (!pSurface->Compare(0, rcBounds.bottom - pCorner->GetHeight(),
-                           pCorner, 0, 0, pCorner->GetWidth(), pCorner->GetHeight(),
-                           COMPARE_F_NOTDSTTRANSPARENT))
+    if (!pSurface->Compare(
+        0,
+        rcBounds.bottom - pCorner->GetHeight(),
+        pCorner, 0, 0, pCorner->GetWidth(), pCorner->GetHeight(),
+        COMPARE_F_NOTDSTTRANSPARENT))
     {
         RECT rc;
         SetRect(&rc, 0, rcBounds.bottom - pCorner->GetHeight(), pCorner->GetWidth(), pCorner->GetHeight());
@@ -427,24 +437,25 @@ ValidateCorners(
         return false;
     }
     // BottomRight
-    pCorner = s_rgpCornerSurfaces[3];
+    pCorner = s_rgpCornerSurfaces[3].get();
 /*
     if (!pCorner->Compare(0, 0, pSurface, 
                           rc.right - pCorner->GetWidth(), rc.bottom - pCorner->GetHeight(),
                           pCorner->GetWidth(), pCorner->GetHeight(),
                           COMPARE_F_NOTSRCTRANSPARENT))
 */
-    if (!pSurface->Compare(rcBounds.right - pCorner->GetWidth(), rcBounds.bottom - pCorner->GetHeight(),
-                           pCorner, 0, 0, pCorner->GetWidth(), pCorner->GetHeight(),
-                           COMPARE_F_NOTDSTTRANSPARENT))
-
+    if (!pSurface->Compare(
+        rcBounds.right - pCorner->GetWidth(),
+        rcBounds.bottom - pCorner->GetHeight(),
+        pCorner, 0, 0, pCorner->GetWidth(), pCorner->GetHeight(),
+        COMPARE_F_NOTDSTTRANSPARENT))
     {
 //        SetRect(&rc, rcBounds.right - pCorner->GetWidth(), rcBounds.bottom - pCorner->GetHeight(),
 //                pCorner->GetWidth(), pCorner->GetHeight());
-
         LogInfo(L"BottomRight corner mismatch");
         return false;
     }
+#endif
     return true;
 }
 

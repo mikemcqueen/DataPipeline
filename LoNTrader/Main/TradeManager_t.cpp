@@ -104,6 +104,7 @@ OnTransactionComplete(
         OnGatherTradesComplete(
 			static_cast<const EventGatherTrades_t::Data_t&>(Data));
         break;
+
     default:
         return S_FALSE;
     }

@@ -27,11 +27,12 @@ LonPlayer_t     LonTraderImpl_t::m_Player;
 
 LonTraderImpl_t::
 LonTraderImpl_t(
-    const wchar_t*     pszUsername)
-:
-    m_SsTrades(*g_pDisplay)
+    const wchar_t* pUsername)
+    :
+    m_SsTrades(*g_pDisplay),
+    m_pTradePoster(std::make_unique<TradePoster::Manager_t>())
 {
-    m_Player.SetName(pszUsername);
+    m_Player.SetName(pUsername); 
 }
 
 ///////////////////////////////////////////////////////////////////////////////

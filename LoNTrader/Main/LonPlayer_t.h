@@ -51,24 +51,21 @@ private:
 
 public:
 
-    mutable
-    Timer_t       m_Timer;
+    mutable Timer_t  m_Timer;
 
     LonPlayer_t();
 
     //
-    // DP::Handler_t virtual:
+    // DP::Handler_t override:
     //
 
-    virtual
     HRESULT
     MessageHandler(
-        const DP::Message::Data_t* pData);
+        const DP::Message::Data_t* pData) override;
 
-    virtual
     HRESULT
     OnTransactionComplete(
-        const DP::Transaction::Data_t& Data);
+        const DP::Transaction::Data_t& Data) override;
 
     // Accessors:
 
@@ -112,8 +109,8 @@ private:
 
 private:
 
-    LonPlayer_t(const LonPlayer_t&);
-    LonPlayer_t& operator=(const LonPlayer_t&);
+    LonPlayer_t(const LonPlayer_t&) = delete;
+    LonPlayer_t& operator=(const LonPlayer_t&) = delete;
 
 };
 

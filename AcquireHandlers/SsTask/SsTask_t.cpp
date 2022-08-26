@@ -428,9 +428,10 @@ ThreadFunc(
         Suspend,
         Event,
         Timer,
-        cHandles,
+
+        HandleCount,
     };
-    HANDLE aHandles[cHandles] = { 0 };
+    HANDLE aHandles[HandleCount] = { 0 };
 
 	SsTask_t* pClass = reinterpret_cast<SsTask_t*>(pvParam);
 	util::SetWaitableTimer(pClass->m_hTimer.get(), (DWORD)pClass->m_DelayMs, true);
@@ -442,7 +443,7 @@ ThreadFunc(
 
 	for (;;)
 	{
-		DWORD dw = WaitForMultipleObjects(cHandles, aHandles, FALSE, INFINITE);
+		DWORD dw = WaitForMultipleObjects(HandleCount, aHandles, FALSE, INFINITE);
 		switch (dw)
 		{
 		case WAIT_OBJECT_0 + Exit:
@@ -488,13 +489,13 @@ Shutter()
         return;
     }
         
-    struct AutoRelease_t
-    {
+    struct AutoRelease_t {
         SurfacePoolItem_t* pPoolItem;
 
         AutoRelease_t(SurfacePoolItem_t* pItem) : pPoolItem(pItem) {}
         ~AutoRelease_t() { pPoolItem->release(); }
     } AutoRelease(pPoolItem);
+
     RECT rc;
     HWND hWnd = GetSsWindowRect(rc);
     if (NULL != hWnd) {

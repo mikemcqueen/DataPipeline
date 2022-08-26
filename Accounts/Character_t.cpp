@@ -136,12 +136,12 @@ GetDb() const
     {
         shared_ptr<CDatabase> spDb(new CDatabase);
         OpenDb(*spDb.get());
-        ServerDatabaseMap_t::_Pairib ibPair = dbMap.insert(make_pair(m_serverId, spDb));
-        if (!ibPair.second)
+        auto [elem, inserted] = dbMap.insert(make_pair(m_serverId, spDb));
+        if (!inserted)
         {
             throw logic_error("Character_t::GetDb(): dbMap.insert() failed");
         }
-        it = ibPair.first;
+        it = elem;
     }
     return *it->second.get();
 }
@@ -258,11 +258,11 @@ InitItemsOwnedFromItemsForSale()
     for (; m_itemsForSale.end() != it; ++it)
     {
         const ForSaleData_t& data = it->second;
-        ItemQuantityMap_t::_Pairib ibPair = m_itemsOwned.insert(
+        auto [elem, inserted] = m_itemsOwned.insert(
             make_pair(it->first, data.Quantity));
-        if (!ibPair.second)
+        if (!inserted)
         {
-            ibPair.first->second += data.Quantity;
+            elem->second += data.Quantity;
         }
     }
     ItemsOwned_t::Write(GetId(), m_itemsOwned);
@@ -332,15 +332,15 @@ BuySellAdd(
 {
     if (0 != itemId)
     {
-        ItemBuySellMap_t::_Pairib ibPair = m_itemsToBuySell.insert(make_pair(itemId, data));
-        if (ibPair.second)
+        auto [elem, inserted] = m_itemsToBuySell.insert(make_pair(itemId, data));
+        if (inserted)
         {
             LogAlways(L"BuySell::Add() Buy %d x (%d) @ (%d)", 
                       data.maxToOwn, itemId, data.highBid); //GetCoinString(data.highBid));
         }
         else
         {
-            BuySellData_t& extant = ibPair.first->second;
+            const BuySellData_t& extant = elem->second;
             LogError(L"BuySell::Add() Item(%d) already in buySell @ %d x (%s)",
                      itemId, extant.maxToOwn, extant.highBid); // GetCoinString(extant.highBid));
         }

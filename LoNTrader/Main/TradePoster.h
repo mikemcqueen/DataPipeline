@@ -49,35 +49,30 @@ private:
     Map_t           m_Map;
     CardValueSet_t  m_DesiredCardValues;
     CardValueSet_t  m_ActualCardValues;
-    mutable 
-    CAutoCritSec    m_csMap;              // really, this is m_csData, locks everything above
+    mutable CAutoCritSec m_csMap;              // really, this is m_csData, locks everything above
     CAutoHandle     m_hTimer;
 
 protected:
-
-    //
-    // DP::Handler_t virtual:
-    //
 
     bool
     Initialize(
         const wchar_t* pszClass);
 
-    virtual
+    //
+    // DP::Handler_t virtual:
+    //
+
     HRESULT
     MessageHandler(
-        const DP::Message::Data_t* pData);
+        const DP::Message::Data_t* pData) override;
 
     HRESULT
     EventHandler(
-        DP::Event::Data_t& Data);
+        DP::Event::Data_t& Data) override;
 
-    virtual
     HRESULT
     OnTransactionComplete(
-        const DP::Transaction::Data_t& Data);
-
-    // Helpers
+        const DP::Transaction::Data_t& Data) override;
 
 public:
 
@@ -324,8 +319,8 @@ private:
 
 private:
 
-    Manager_t(const Manager_t&);
-    Manager_t& operator=(const Manager_t&);
+    Manager_t(const Manager_t&) = delete;
+    Manager_t& operator=(const Manager_t&) = delete;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

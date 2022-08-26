@@ -113,7 +113,7 @@ Load(
     }
     catch (CDBException* e)
     {
-        LogError(L"ItemsToBuySell_t::Load() DbException: %s", e->m_strError);
+        LogError(L"ItemsToBuySell_t::Load() DbException: %s", (LPCTSTR)e->m_strError);
         e->Delete();
     }
 }
@@ -152,9 +152,9 @@ Load(
     for (; !rs.IsEOF(); rs.MoveNext())
     {
         BuySellData_t buySellData(rs);
-        ItemBuySellMap_t::_Pairib ibPair = map.insert(
+        auto [_, inserted] = map.insert(
             ItemBuySellMap_t::value_type(rs.m_ItemId, buySellData));
-        if (!ibPair.second)
+        if (!inserted)
         {
             LogError(L"ItemsToBuySell_t::Load(): map.insert(%d) failed", rs.m_ItemId);
             throw logic_error("ItemsToBuySell_t::Load(): map.insert() failed");
