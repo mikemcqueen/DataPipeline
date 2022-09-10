@@ -30,7 +30,7 @@ Charset_t(
     const LOGFONT& lf,
     const wchar_t* pszCharset)
 :
-    m_spSurface(NULL),
+    m_spSurface(nullptr),
     m_charsetSize(0)
 {
 	HFONT hFont = CreateFontIndirect(&lf);
@@ -49,7 +49,7 @@ Charset_t(
     HFONT          hFont,
     const wchar_t* pszCharset)
 :
-    m_spSurface(NULL),
+    m_spSurface(nullptr),
     m_charsetSize(0)
 {
     Init(hFont, pszCharset);
@@ -63,8 +63,8 @@ Init(
     HFONT          hFont,
     const wchar_t* pszCharset)
 {
-	ASSERT(NULL != hFont);
-    ASSERT(NULL != pszCharset);
+	ASSERT(nullptr != hFont);
+    ASSERT(nullptr != pszCharset);
 
     m_valid = false;
 	m_iSpaceWidth = 0;
@@ -100,15 +100,15 @@ void
 Charset_t::
 WriteBmp(
     const wchar_t* pszFile,
-    const RECT*    pRect /* = NULL */) const
+    const RECT*    pRect /* = nullptr */) const
 {
-    ASSERT(NULL != pszFile);
+    ASSERT(nullptr != pszFile);
 
     WCHAR szFile[MAX_PATH];
     wsprintf(szFile, L"Diag\\Charset_%s.bmp", pszFile);
 
     RECT rc = { 0 };
-    if (NULL == pRect)
+    if (nullptr == pRect)
     {
         rc.right = m_spSurface->GetWidth();
         rc.bottom = m_spSurface->GetHeight();
@@ -122,10 +122,10 @@ WriteBmp(
 Charset_t::
 ~Charset_t()
 {
-    if (NULL != m_spSurface)
+    if (nullptr != m_spSurface)
     {
         delete m_spSurface;
-        m_spSurface = NULL;
+        m_spSurface = nullptr;
     }
 }
 
@@ -180,7 +180,7 @@ void
 Charset_t::
 GetKernPairs(const HDC hDC)
 {
-	std::size_t numPairs = (std::size_t)::GetKerningPairs(hDC, 0, NULL);
+	std::size_t numPairs = (std::size_t)::GetKerningPairs(hDC, 0, nullptr);
     m_vKernPairs.resize(numPairs);
     //std::vector<KERNINGPAIR>::iterator iter = m_vKernPairs.begin();
     unique_ptr<KERNINGPAIR[]>
@@ -213,9 +213,9 @@ Charset_t::
 DrawTextToSurface( HFONT hFont )
 {
 	HDC hDC = m_spSurface->GetDC();
-	if (NULL == hDC)
+	if (nullptr == hDC)
     {
-        _putws(L"Charset_t::DrawTextToSurface(): hDC == NULL");
+        _putws(L"Charset_t::DrawTextToSurface(): hDC == nullptr");
 		throw EVENT_E_ALL_SUBSCRIBERS_FAILED;
     }
 	HFONT hOldFont = (HFONT)SelectObject( hDC, hFont );
@@ -393,7 +393,7 @@ SetCharFlags(
     const wchar_t* pszChars,
     DWORD          dwFlags)
 {
-	ASSERT(NULL != pszChars);
+	ASSERT(nullptr != pszChars);
     // TODO: this is retarded.
 	size_t cChars = wcslen( pszChars );
 	for (unsigned iChar=0; iChar<cChars; ++iChar )
@@ -497,7 +497,7 @@ SkipChar(
 		return 0;
 
 	RECT rc;
-	if (NULL == pRect)
+	if (nullptr == pRect)
 	{
 		SetRect(&rc, 0, 0, ddsd.dwWidth, ddsd.dwHeight);
 		pRect = &rc;

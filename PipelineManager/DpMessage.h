@@ -33,15 +33,15 @@ namespace Stage
     };
 }
 
-enum class MessageId_t : unsigned {};
+enum class MessageId_t : int {};
 
 constexpr bool operator==(const MessageId_t lhs, const MessageId_t rhs) {
-    return unsigned(lhs) == unsigned(rhs);
+    return static_cast<int>(lhs) == static_cast<int>(rhs);
 }
 
 namespace Message
 {
-    enum class Type : unsigned
+    enum class Type
     {
         Unknown = 0,
         Message,
@@ -49,40 +49,26 @@ namespace Message
         Transaction
     };
 
-    /*struct Id {
-        enum : unsigned
-        {
-            Undefined = 0,
-            Screenshot, // TODO
-            Message_First = 0x00010000,
-            Event_First   = 0x00020000,
-            Txn_First     = 0x00040000,
-        };
-    };*/
-
-    /*enum Id : MessageId_t
-    {
-        Unknown = 0, // TODO: Undefined
-        Screenshot,
-        Message_First = 0x00010000,
-        Event_First   = 0x00020000,
-        Txn_First     = 0x00040000,
-    };
-    */
-    
     namespace Id {
-        constexpr auto Unknown           = MessageId_t(0);
-        static const auto Screenshot        = MessageId_t(1);
-        static const auto Message_First     = MessageId_t(0x00010000);
-        static const auto Event_First       = MessageId_t(0x00020000);
-        static const auto Transaction_First = MessageId_t(0x00030000);
+
+    constexpr auto Unknown           = static_cast<MessageId_t>(0);
+
+    constexpr auto Screenshot        = static_cast<MessageId_t>(1);
+
+    constexpr auto Message_First     = static_cast<MessageId_t>(0x10000);
+    constexpr auto Message_Last      = static_cast<MessageId_t>(0x1FFFF);
+
+    constexpr auto Event_First       = static_cast<MessageId_t>(0x20000);
+
+    constexpr auto Transaction_First = static_cast<MessageId_t>(0x30000);
+
     }
-    
-    constexpr auto MakeId(const unsigned id) -> MessageId_t {
-        //const unsigned max = 0x10000;
-        const auto first = static_cast<unsigned>(Message::Id::Message_First);
-        //static_assert(id < max);
-        return MessageId_t(first + id);
+
+    constexpr auto MakeId(const int id) noexcept {
+        constexpr auto first = static_cast<int>(Message::Id::Message_First);
+        //constexpr auto last = static_cast<int>(Message::Id::Message_Last);
+        //if consteval { static_assert(first + id <= last); }
+        return static_cast<MessageId_t>(first + id);
     }
 
     struct Data_t

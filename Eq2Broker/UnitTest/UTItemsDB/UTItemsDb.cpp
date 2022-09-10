@@ -39,7 +39,7 @@ InitDirectDraw(
 bool
 StartupInitialize()
 {
-	if (!AfxWinInit(::GetModuleHandle(NULL), NULL, ::GetCommandLine(), 0))
+	if (!AfxWinInit(::GetModuleHandle(nullptr), nullptr, ::GetCommandLine(), 0))
 	{
 		wprintf(L"MFC initialization failed\n");
 	    return false;
@@ -69,10 +69,10 @@ StartupInitialize()
 void
 FreeDirectDraw()
 {
-    if (NULL != g_pDisplay)
+    if (nullptr != g_pDisplay)
     {
         delete g_pDisplay;
-        g_pDisplay = NULL;
+        g_pDisplay = nullptr;
     }
 }
 
@@ -169,7 +169,7 @@ usage:
 
     if (!DcrBroker.TranslateSurface(&surf, rc))
         return -1;
-    TextTable.Dump(NULL, true);
+    TextTable.Dump(nullptr, true);
 
     using namespace Accounts::Db;
     size_t Row = 0;

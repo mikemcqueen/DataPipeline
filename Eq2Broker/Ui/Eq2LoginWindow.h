@@ -34,7 +34,7 @@ namespace Eq2Login
         //
         // Ui::Window_t virtual:
         //
-        virtual
+ 
         bool
         GetWidgetRect(
             Ui::WidgetId_t  WidgetId,
@@ -43,7 +43,6 @@ namespace Eq2Login
         const CSurface*
         GetOriginSurface() const override;
 
-        virtual
         void
         GetOriginSearchRect(
             const CSurface& surface,

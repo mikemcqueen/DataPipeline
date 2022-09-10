@@ -28,7 +28,7 @@ bool
 StartupInitialize(
     const wchar_t* pServerName)
 {
-	if (!AfxWinInit(::GetModuleHandle(NULL), NULL, ::GetCommandLine(), 0))
+	if (!AfxWinInit(::GetModuleHandle(nullptr), nullptr, ::GetCommandLine(), 0))
 	{
 		wprintf(L"MFC initialization failed\n");
 	    return false;
@@ -44,7 +44,7 @@ StartupInitialize(
         return false;
     }
 /*
-    if (!Db::Initialize(NULL, pServerName, false))
+    if (!Db::Initialize(nullptr, pServerName, false))
     {
         wprintf(L"Db::Initialize(%ls) failed", pServerName);
         return false;
@@ -91,7 +91,7 @@ Execute(
     path.append(L".csv");
     wifstream ifs(path.c_str());
     int line = 0;
-    for (int line = 1; ifs.good(); ++line)
+    for (line = 1; ifs.good(); ++line)
     {
         wchar_t buf[256];
         ifs.getline(buf, _countof(buf));
@@ -159,7 +159,7 @@ wmain(
     }
     catch (CDBException* e)
     {
-        LogError(L"### Caught CDBException: %s ###", e->m_strError);
+        LogError(L"### Caught CDBException: %s ###", (LPCTSTR)e->m_strError);
         e->Delete();
     }
     catch (...)

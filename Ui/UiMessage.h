@@ -45,7 +45,7 @@ namespace Message
             DP::MessageId_t Id           = DP::Message::Id::Unknown,
             Ui::WindowId_t      InitWindowId = Window::Id::Unknown,
             size_t            Size         = sizeof(Data_t),
-            const wchar_t*    pClass       = NULL)
+            const wchar_t*    pClass       = nullptr)
         :
             DP::Message::Data_t(
                 Stage,

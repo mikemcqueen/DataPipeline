@@ -119,7 +119,7 @@ namespace RepriceItems
 
         HRESULT
         OnTransactionComplete(
-            DP::Transaction::Data_t& Data) override;
+            const DP::Transaction::Data_t& Data) override;
 
     private:
 

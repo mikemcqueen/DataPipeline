@@ -19,108 +19,106 @@ namespace Broker
 //TODO: namespace Frame {
 ////////////////////////////////////////////////////////////////////////////////
 
-    class Window_t :
-        public Ui::Window_t
-    {
-    private:
+class Window_t :
+    public Ui::Window_t
+{
+private:
 
-        // Broker window
-        CSurface  m_brokerCaption;
-        CSurface  m_buyTabActive;
-        CSurface  m_buyTabInactive;
+    // Broker window
+    CSurface  m_brokerCaption;
+    CSurface  m_buyTabActive;
+    CSurface  m_buyTabInactive;
 
-        // Market window
-        CSurface  m_marketCaption;
-        CSurface  m_browseTabActive;
-        CSurface  m_browseTabInactive;
+    // Market window
+    CSurface  m_marketCaption;
+    CSurface  m_browseTabActive;
+    CSurface  m_browseTabInactive;
 
-        // Broker + Market windows
-        CSurface  m_sellTabActive;
-        CSurface  m_sellTabInactive;
-        CSurface  m_salesLogTabActive;
-        CSurface  m_salesLogTabInactive;
+    // Broker + Market windows
+    CSurface  m_sellTabActive;
+    CSurface  m_sellTabInactive;
+    CSurface  m_salesLogTabActive;
+    CSurface  m_salesLogTabInactive;
 
-        mutable Frame::Layout_t m_layout;
+    mutable Frame::Layout_t m_layout;
 
-    public:
+public:
 
-        static
-        bool
-        IsTabWindow(
-            Ui::WindowId_t windowId);
+    static
+    bool
+    IsTabWindow(
+        Ui::WindowId_t windowId);
 
-        static
-        Ui::WidgetId_t
-        GetTabWidgetId(
-            Ui::WindowId_t windowId);
+    static
+    Ui::WidgetId_t
+    GetTabWidgetId(
+        Ui::WindowId_t windowId);
 
-       // Constructor
-        explicit
-        Window_t(
-            const Ui::Window_t& parent);
+    // Constructor
+    explicit
+    Window_t(
+        const Ui::Window_t& parent);
 
-        //
-        // Ui::Window_t virtual:
-        //
-        virtual
-        Ui::Window::Base_t&
-        GetWindow(
-            Ui::WindowId_t windowId) const override;
+    //
+    // Ui::Window_t virtual:
+    //
 
-        virtual
-        Ui::WindowId_t
-        GetWindowId(
-            const CSurface& Surface,
-            const POINT*    pptHint = NULL) const override;
+    Ui::Window::Base_t&
+    GetWindow(
+        Ui::WindowId_t windowId) const override;
 
-        virtual
-        bool
-        IsLocatedOn(
-            const CSurface& Surface,
-                  Flag_t    flags,
-                  POINT*    pptOrigin = NULL) const override;
+    Ui::WindowId_t
+    GetWindowId(
+        const CSurface& Surface,
+        const POINT*    pptHint = nullptr) const override;
 
-        virtual
-        void
-        GetOriginSearchRect(
-            const CSurface& surface,
-                  Rect_t&   rect) const override;
+    bool
+    IsLocatedOn(
+        const CSurface& Surface,
+                Flag_t    flags,
+                POINT*    pptOrigin = nullptr) const override;
 
-        // Misc functions:
-        Tab_t
-        FindActiveTab(
-            const CSurface& Surface,
-            const POINT&    ptOrigin,
-                  POINT&    ptTab) const;
+    void
+    GetOriginSearchRect(
+        const CSurface& surface,
+                Rect_t&   rect) const override;
 
-        const Rect_t&
-        GetTabAreaRect(
-            const POINT& ptOrigin) const;
+    // 
 
-        TabWindow_t&
-        GetTabWindow(
-            Tab_t Tab) const;
+    Tab_t
+    FindActiveTab(
+        const CSurface& Surface,
+        const POINT&    ptOrigin,
+                POINT&    ptTab) const;
 
-        Frame::Layout_t GetLayout() const { return m_layout; }
+    const Rect_t&
+    GetTabAreaRect(
+        const POINT& ptOrigin) const;
 
-    private:
+    TabWindow_t&
+    GetTabWindow(
+        Tab_t Tab) const;
 
-        void
-        loadSurfaces();
+    Frame::Layout_t GetLayout() const { return m_layout; }
 
-        MainWindow_t&
-        GetMainWindow() const;
+private:
 
-        void
-        SetLayout(
-            Frame::Layout_t layout) const;
+    void
+    loadSurfaces();
 
-    private:
+    MainWindow_t&
+    GetMainWindow() const;
 
-        Window_t();
-        Window_t(const Window_t&);
-        Window_t& operator=(const Window_t&);
-    };
+    void
+    SetLayout(
+        Frame::Layout_t layout) const;
+
+private:
+
+    Window_t();
+    Window_t(const Window_t&);
+    Window_t& operator=(const Window_t&);
+};
 
 ////////////////////////////////////////////////////////////////////////////////
 

@@ -12,9 +12,9 @@
 
 /////////////////////////////////////////////////////////////////////////////
 
-#define SAFE_DELETE(p)            { if(NULL != (p)) { delete (p); (p)=NULL; } }
-#define SAFE_DELETE_ARRAY(p)    { if(NULL != (p)) { delete[] (p); (p)=NULL; } }
-#define SAFE_RELEASE(p)            { if(NULL != (p)) { (p)->Release(); (p)=NULL; } }
+#define SAFE_DELETE(p)            { if(nullptr != (p)) { delete (p); (p)=nullptr; } }
+#define SAFE_DELETE_ARRAY(p)    { if(nullptr != (p)) { delete[] (p); (p)=nullptr; } }
+#define SAFE_RELEASE(p)            { if(nullptr != (p)) { (p)->Release(); (p)=nullptr; } }
 
 #define POINT2LPARAM(pt)        MAKELPARAM((pt).x,(pt).y)
 

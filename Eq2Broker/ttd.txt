@@ -1,0 +1,32 @@
+lon::window_t::  should probably become lonwindow namespace
+with manager_t type
+   get rid of static methods
+
+add event:: namespace
+	event types inside this
+
+TransactionManager_t::ExecuteTransaction const TxData
+
+figure out the Class[] hack in DP::Message.
+
+g_pDisplay in LonTraderImpl.
+
+SSTask::Acquire::Data_t has a virtual destructor to release pool item. destructor i understand.  why does it need to be virtual?
+   because if it's not virtual it won't be called.  only the top-level derived class will be called.  in the case of SSWindow::Data_t
+   for Eq2Broker this is a real issue.
+
+the whole TrSurface_t -> TrWindow_t (no template type) -> TrTable_t -> ?? inheritance heirarchy looks bad
+
+static charsets in DcrTrades_t
+
+typedef SsTrades_t::ScreenShotData_t TranslateData_t; is in several files in the TrSurface -> TrWindows -> Tr?? heirarchy. looks unnecessary.
+
+c++17:
+	range_for (as_const? or just const auto) whereever const_iterator is defined. read up on as_const vs. const auto
+	public + delete instead of private copy/assignment/move
+	* (done-ish) override instead of virtual for all derived virtual functiond decls
+	nullptr instead of nullptr
+	enum class
+	constexpr
+		static const -> constexpr
+

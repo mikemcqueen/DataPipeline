@@ -103,14 +103,14 @@ public:
         static const wchar_t szVisit[]   = L"Visit ";
         static const size_t  VisitLength = 6;
 
-        const wchar_t* pEndName = NULL;
+        const wchar_t* pEndName = nullptr;
         size_t Offset = 0;
         if (0 == wcsncmp(pSellerText, szVisit, VisitLength))
         {
             pSellerText += VisitLength;
             pEndName = wcschr(pSellerText + Offset, L' ');
         }
-        if (NULL != pEndName)
+        if (nullptr != pEndName)
         {
             strSellerName.assign(pSellerText, pEndName - pSellerText);
         }

@@ -145,7 +145,7 @@ Load(
     rs.m_CharacterIdParam = id;
     rs.AddParam(ItemsToBuySell_t::Field::CharacterIdParam);
 
-    if (0 == rs.Open(CRecordset::forwardOnly, NULL, Recordset_t::DefaultReadOnlyFlags))
+    if (0 == rs.Open(CRecordset::forwardOnly, nullptr, Recordset_t::DefaultReadOnlyFlags))
     {
         throw logic_error("ItemsToBuySell_t::Load(): rs.Open() failed");
     }

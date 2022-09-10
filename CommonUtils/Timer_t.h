@@ -65,11 +65,11 @@ public:
     }
 
     void
-    Show(const wchar_t* pszText = NULL,
+    Show(const wchar_t* pszText = nullptr,
                bool     bAlways = false)
     {
         size_t diff = Diff();
-        if (NULL == pszText)
+        if (nullptr == pszText)
         {
             if (bAlways)
                 LogAlways(L"--%ls: %d seconds", strText.c_str(), diff);

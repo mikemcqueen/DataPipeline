@@ -62,11 +62,11 @@ private:
         std::wstring name;
 
         HandlerData_t() :
-            Stage(Stage::None), pHandler(NULL)
+            Stage(Stage::None), pHandler(nullptr)
         { }
 
         HandlerData_t(Stage_t s, Handler_t* h, const wchar_t* n = 0) :
-            Stage(s), pHandler(h), name((NULL != n) ? n : L"")
+            Stage(s), pHandler(h), name((nullptr != n) ? n : L"")
         { }
     };
     typedef vector<HandlerData_t>                HandlerVector_t;
@@ -119,22 +119,22 @@ public:
     AddHandler(
               Stage_t    Stage,
               Handler_t& Handler,
-        const wchar_t*   pszClass = NULL);
+        const wchar_t*   pszClass = nullptr);
 
     void
     AddTransactionHandler(
         Stage_t          stage,
         TransactionId_t  transactionId,
         Handler_t&       handler,
-        const wchar_t*   displayName = NULL);
+        const wchar_t*   displayName = nullptr);
 
     size_t
     StartAcquiring(
-        const wchar_t* pszClass = NULL);
+        const wchar_t* pszClass = nullptr);
 
     size_t
     StopAcquiring(
-        const wchar_t* pszClass = NULL);
+        const wchar_t* pszClass = nullptr);
 
     size_t
     SendEvent(
@@ -191,7 +191,7 @@ private:
     HRESULT
     SendTransactionEvent(
         Transaction::Data_t& Data,
-        Transaction::Data_t* pLastTxData = NULL);
+        Transaction::Data_t* pLastTxData = nullptr);
 
 private:
 

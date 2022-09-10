@@ -108,7 +108,7 @@ GetWindowId(
 {
     Rect_t TableRect;
     SIZE ScrollOffsets;
-if (NULL == pptHint)
+if (nullptr == pptHint)
 {
     throw invalid_argument("TableWindow_t::GetWindowId()");
 }

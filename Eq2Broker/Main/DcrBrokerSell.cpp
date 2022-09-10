@@ -81,7 +81,7 @@ PostData(
     }
 
     void *pBuffer = GetPipelineManager().Alloc(sizeof(Data_t));
-    if (NULL != pBuffer)
+    if (nullptr != pBuffer)
     {
         m_TextTable.Dump(L"DcrBrokerSell::PostData()");
         LogInfo(L"SeletecedRow(%d)", m_DcrTable.GetSelectedRow());

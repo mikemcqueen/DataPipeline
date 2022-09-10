@@ -106,11 +106,11 @@ CreateSurfaceFromResource(HINSTANCE hInst, UINT resourceId);
     // Display methods
     HRESULT Clear( DWORD dwColor = 0L );
     HRESULT ColorKeyBlt( DWORD x, DWORD y, LPDIRECTDRAWSURFACE7 pdds,
-                         RECT* prc = NULL );
+                         RECT* prc = nullptr );
     HRESULT Blt( DWORD x, DWORD y, LPDIRECTDRAWSURFACE7 pdds,
-                 RECT* prc=NULL, DWORD dwFlags=0 );
-    HRESULT Blt( DWORD x, DWORD y, CSurface* pSurface, RECT* prc = NULL );
-    HRESULT ShowBitmap( HBITMAP hbm, LPDIRECTDRAWPALETTE pPalette=NULL );
+                 RECT* prc=nullptr, DWORD dwFlags=0 );
+    HRESULT Blt( DWORD x, DWORD y, CSurface* pSurface, RECT* prc = nullptr );
+    HRESULT ShowBitmap( HBITMAP hbm, LPDIRECTDRAWPALETTE pPalette=nullptr );
     HRESULT SetPalette( LPDIRECTDRAWPALETTE pPalette );
     HRESULT Present();
 };
@@ -179,7 +179,7 @@ public:
     HRESULT                    Unlock( RECT *pRect=0 ) const;
 
     HRESULT                    Blt( DWORD x, DWORD y, LPDIRECTDRAWSURFACE7 pdds,
-                                 RECT* prc=NULL, DWORD dwFlags=DDBLTFAST_NOCOLORKEY );
+                                 RECT* prc=nullptr, DWORD dwFlags=DDBLTFAST_NOCOLORKEY );
     HRESULT                    Blt( DWORD x, DWORD y, CSurface * pSurface, RECT* prc = 0 );
 
     HRESULT                    ColorFill( const RECT *pRect, COLORREF clr );
@@ -222,7 +222,7 @@ public:
         const CSurface& surface,
         const Rect_t&   findRect,
               POINT&    ptOrigin,
-        const POINT*    pptHint = NULL) const;
+        const POINT*    pptHint = nullptr) const;
 
     size_t
     GetWidthInColorRange(

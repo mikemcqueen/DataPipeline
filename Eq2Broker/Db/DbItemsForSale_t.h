@@ -54,7 +54,7 @@ public:
 public:
 
 	ItemsForSale_t(
-        CDatabase* pDatabase = NULL,
+        CDatabase* pDatabase = nullptr,
         bool       bAllowDefaultConnect = false);
 
 	DECLARE_DYNAMIC(ItemsForSale_t)

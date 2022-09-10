@@ -15,12 +15,7 @@
 #include "DcrBrokerBuy.h"
 #include "Eq2Broker_t.h"
 
-namespace Broker
-{
-namespace Transaction
-{
-namespace SetWidgetText
-{
+namespace Broker::Transaction::SetWidgetText {
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -39,7 +34,7 @@ ExecuteTransaction(
 HRESULT
 Handler_t::
 OnTransactionComplete(
-    DP::Transaction::Data_t&)
+    const DP::Transaction::Data_t&)
 {
     LogInfo(L"TxSetWidgetText::TransactionComplete()");
     return S_OK;
@@ -55,8 +50,7 @@ MessageHandler(
     LogInfo(L"TxSetWidgetText::MessageHandler()");
     DP::TransactionManager_t::AutoRelease_t TxData(GetTransactionManager().Acquire());
     DP::Transaction::Data_t* pTxData = TxData.get();
-    if (NULL == pTxData)
-    {
+    if (nullptr == pTxData) {
         throw logic_error("TxSetWidgetText::MessageHandler(): No transaction active");
     }
     using Broker::Transaction::SetWidgetText::Data_t;
@@ -70,11 +64,9 @@ MessageHandler(
         txData.Complete(Error::InvalidWindow);
         return S_FALSE;
     }
-    const Buy::Translate::Data_t&
-        buyMessage = static_cast<const Buy::Translate::Data_t&>(*pMessage);
+    const auto buyMessage = static_cast<const Buy::Translate::Data_t&>(*pMessage);
     const wstring widgetText(buyMessage.searchText);
-    switch (txData.GetState())
-    {
+    switch (txData.GetState()) {
     case State::ClearText:
         if (!widgetText.empty())
         {
@@ -85,6 +77,7 @@ MessageHandler(
             txData.NextState();
         }
         break;
+
     case State::EnterText:
         {
             if (widgetText != txData.text)
@@ -94,6 +87,7 @@ MessageHandler(
             txData.NextState();
         }
         break;
+
     case State::ValidateText:
         if (widgetText == txData.text)
         {
@@ -110,6 +104,7 @@ MessageHandler(
             }
         }
         break;
+
     default:
         LogError(L"TxSetWidgetText::MessageHandler(): Invalid state (%x)",
                  txData.GetState());
@@ -123,7 +118,7 @@ MessageHandler(
 void
 Handler_t::
 ClearText(
-          Data_t&  txData,
+    Data_t&  txData,
     const wstring& currentText) const
 {
     Ui::Window_t& window = m_broker.GetWindow(txData.windowId);
@@ -148,8 +143,6 @@ ClearText(
 
 /////////////////////////////////////////////////////////////////////////////
 
-} // SetWidgetText
-} // Transaction
-} // Broker
+} // Broker::Transaction::SetWidgetText
 
 /////////////////////////////////////////////////////////////////////////////

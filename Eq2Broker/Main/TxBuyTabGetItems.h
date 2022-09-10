@@ -36,7 +36,7 @@ namespace BuyTabGetItems
 
 /////////////////////////////////////////////////////////////////////////////
 
-    static const DP::MessageId_t kTransactionId  = Id::BuyTabGetItems;
+    constexpr auto kTransactionId  = Id::BuyTabGetItems;
     //static const DP::MessageId_t  kMessageId      = Message::Id::Buy;
     //static const Ui::WindowId_t   kTopWindowId    = Window::Id::BrokerBuyTab;
 
@@ -46,7 +46,7 @@ namespace BuyTabGetItems
     template<class T> struct Data;
     typedef Data<ItemDataMap_t> Data_t;
 
-    class Handler_t :
+    class Handler_t final:
         public DP::Handler_t
     {
     private:
@@ -74,7 +74,7 @@ namespace BuyTabGetItems
 
         HRESULT
         OnTransactionComplete(
-            DP::Transaction::Data_t& Data) override;
+            const DP::Transaction::Data_t& Data) override;
 
     private:
 
@@ -126,7 +126,7 @@ namespace BuyTabGetItems
 /////////////////////////////////////////////////////////////////////////////
 
     template<class Param_t>
-    struct Data :
+    struct Data:
         public BaseGetItems::Data_t<Buy::Text_t, Param_t>
     {
         typedef BaseGetItems::Data_t<Buy::Text_t, Param_t> Base_t;
@@ -137,7 +137,7 @@ namespace BuyTabGetItems
         Data(
             const wstring&      itemName,
             Param_t&            param,
-            const FnAddRow_t&   fnAddRow         = Base_t::FnAddRow_t(&Handler_t::AddRow),
+            const typename Base_t::FnAddRow_t& fnAddRow         = Base_t::FnAddRow_t(&Handler_t::AddRow),
             DP::TransactionId_t id               = kTransactionId,
             size_t              size             = sizeof(Data_t))
             :

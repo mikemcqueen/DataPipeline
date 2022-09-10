@@ -25,7 +25,7 @@
 #endif
 
 #include "boost/filesystem.hpp"
-#include "boost/regex/v4/fileiter.hpp"
+//#include "boost/regex/v4/fileiter.hpp"
 
 #if _MSC_VER > 1000
 #pragma warning(pop)
@@ -60,12 +60,12 @@ SetDirectory(
             continue;
         }
         // skip non-mdb files
-        if (extension(it->path()) != L".mdb")
+        if (1) // extension(it->path()) != L".mdb")
         {
-            LogInfo(L"  Skipping non-mdb file: %ls", it->path().string().c_str());
+            LogInfo(L" CHECK THIS CODE Skipping non-mdb file: %ls", it->path().string().c_str());
             continue;
         }
-        const boost::uintmax_t size = file_size(it->path());
+        const boost::uintmax_t size = fs::file_size(it->path());
         const boost::uintmax_t minsize = 6000000;
         if (minsize > size)
         {
@@ -73,8 +73,8 @@ SetDirectory(
             continue;
         }
         const time_t time = last_write_time(it->path());
-        DbFiles_t::_Pairib ibPair = insert(value_type(time, it->path().string()));
-        if (!ibPair.second)
+        auto [_, inserted] = insert(make_pair(time, it->path().string()));
+        if (!inserted)
         {
             throw logic_error("DbFiles_t(): insert it->path failed");
         }
@@ -97,13 +97,13 @@ SetFiles(
     const int time1 = 100;
     const int time2 = 10000;
 
-    DbFiles_t::_Pairib PairIb = insert(value_type(time1, file1));
-    if (!PairIb.second)
+    auto [_1, inserted1] = insert(value_type(time1, file1));
+    if (!inserted1)
     {
         throw logic_error("DbFiles_t(): insert file1 failed");
     }
-    PairIb = insert(value_type(time2, file2));
-    if (!PairIb.second)
+    auto [_2, inserted2] = insert(value_type(time2, file2));
+    if (!inserted2)
     {
         throw logic_error("DbFiles_t(): insert file2 failed");
     }
@@ -121,18 +121,18 @@ Populate(
           ItemId_t        ItemId,
     const ThreadDataVector_t& threadData)
 {
-    ThreadDataVector_t::const_iterator itThreadData = threadData.begin();
+    const auto itThreadData = threadData.begin();
     for (; threadData.end() != itThreadData; ++itThreadData)
     {
         const ItemHiLoMap_t& map = itThreadData->spDiff->GetHiLoMap();
-        ItemHiLoMap_t::const_iterator itMap = map.find(ItemId);
+        const auto itMap = map.find(ItemId);
         if (map.end() != itMap)
         {
             const HiLoDataVector_t& hiloVector = itMap->second;
-            HiLoDataVector_t::const_iterator itHilo = hiloVector.begin();
+            const auto itHilo = hiloVector.begin();
             for (; hiloVector.end() != itHilo; ++itHilo)
             {
-                insert(value_type(itHilo->Time, &*itHilo));
+                insert(make_pair(itHilo->Time, &*itHilo));
             }
         }
     }
@@ -150,7 +150,7 @@ Populate(
     const ThreadDataVector_t& threadData)
 {
     // for each thread data (i.e. each thread diff result)
-    ThreadDataVector_t::const_iterator itThreadData = threadData.begin();
+    const auto itThreadData = threadData.begin();
     for (; threadData.end() != itThreadData; ++itThreadData)
     {
         // for each item sold
@@ -159,7 +159,7 @@ Populate(
             throw logic_error("ItemCoalesceMap_t::Popuplate() !itThreadData->spDiff");
         }
         const ItemSaleVectorMap_t& itemMap = itThreadData->spDiff->GetSaleMap();
-        ItemSaleVectorMap_t::const_iterator itItemMap = itemMap.begin();
+        const auto itItemMap = itemMap.begin();
         for(; itemMap.end() != itItemMap; ++itItemMap)
         {
             const ItemId_t itemId = itItemMap->first;
@@ -172,13 +172,13 @@ Populate(
             ItemCoalesceMap_t::iterator itThis = find(itemId);
             if (end() == itThis)
             {
-                ItemCoalesceMap_t::_Pairib ibCoalesce = insert(
+                auto [itMap, inserted] = insert(
                     value_type(itemId, TimeSaleVectorPtrMap_t()));
-                if (!ibCoalesce.second)
+                if (!inserted)
                 {
                     throw logic_error("ItemCoalesceMap_t::Populate(): insert() failed");
                 }
-                itThis = ibCoalesce.first;
+                itThis = itMap;
             }
             TimeSaleVectorPtrMap_t& thisTimeMap = itThis->second;
             // add an entry to thisTimeMap for each sale vector in timeMap
@@ -186,9 +186,9 @@ Populate(
             for (; timeMap.end() != itTimeMap; ++itTimeMap)
             {
                 const SaleDataVector_t& saleVector = itTimeMap->second;
-                TimeSaleVectorPtrMap_t::_Pairib ibThisTime = thisTimeMap.insert(
+                auto [_, inserted] = thisTimeMap.insert(
                     TimeSaleVectorPtrMap_t::value_type(itTimeMap->first, &saleVector));
-                if (!ibThisTime.second)
+                if (!inserted)
                 {
                     throw logic_error("ItemCoalesceMap_t::Populate(): thisTimeMap.insert() failed");
                 }
@@ -521,12 +521,12 @@ Add(
     {
         return itFind->second;
     }
-    IbPair_t IbPair = insert(ItemDataPair_t(ItemId, DiffData_t()));
-    if (!IbPair.second)
+    auto [entry, inserted] = insert(ItemDataPair_t(ItemId, DiffData_t()));
+    if (!inserted)
     {
         throw std::logic_error("ItemDataMap_t::Add(): insertion failed");
     }
-    return IbPair.first->second;
+    return entry->second;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -561,11 +561,10 @@ AddSellers(
         if (NULL != pSellerCountMap)
         {
             static const size_t FirstSaleCount = 1;
-            SellerCountMap_t::_Pairib
-                PairIB = pSellerCountMap->insert(SellerCountPair_t(ItemSellerPair.second, FirstSaleCount));
-            if (!PairIB.second)
+            auto [entry, inserted] = pSellerCountMap->insert(SellerCountPair_t(ItemSellerPair.second, FirstSaleCount));
+            if (!inserted)
             {
-                ++PairIB.first->second;
+                ++entry->second;
             }
         }
     }
@@ -721,16 +720,15 @@ Add(
     ItemPriceDataMap_t::iterator it = find(rs.m_ItemId);
     if (end() == it)
     {
-        ItemPriceDataMap_t::_Pairib
-            PairIB = insert(value_type(rs.m_ItemId, PriceDataMap_t()));
-        if (!PairIB.second)
+        auto [itMap, inserted] = insert(value_type(rs.m_ItemId, PriceDataMap_t()));
+        if (!inserted)
         {
             throw logic_error("ItemPriceDataMap_t::Add(): insert empty failed");
         }
-        it = PairIB.first;
+        it = itMap;
     }
     PriceDataMap_t& priceDataMap = it->second;
-    ItemPriceData_t Data;
+    ItemPriceData_t Data = { 0 };
     Data.SellerId = rs.m_SellerId;
     Data.Time = time;
     // NOTE: multi-map so insert always works.
@@ -759,15 +757,15 @@ Add(
     if (end() == itMap)
     {
         // If the supplied item doesn't have a price-data map, add an empty one.
-        ItemPriceDataMap_t::_Pairib IbPair = insert(
+        auto [itMapx, inserted] = insert(
             ItemPriceMapPair_t(ItemId, PriceDataMap_t()));
-        if (!IbPair.second)
+        if (!inserted)
         {
             throw logic_error("ItemPriceDataMap_t::Add(): insert() failed");
         }
-        itMap = IbPair.first;
+        itMap = itMapx;
     }
-    ItemPriceData_t Data;
+    ItemPriceData_t Data = { 0 };
     Data.Time = Time;
     PriceDataMap_t& PriceDataMap = itMap->second;
     // For each price in supplied pricemap, add an entry into the item's price-data map.
@@ -867,9 +865,8 @@ NewSellers;
         NewData.OneItemCount = ItemCount;
         NewData.OneItemValue = ItemValue;
     }
-    SellerDataMap_t::_Pairib
-        PairIB = insert(SellerDataMap_t::value_type(SellerId, SellerData_t()));
-    PairIB.first->second += NewData;
+    auto [it, _] = insert(SellerDataMap_t::value_type(SellerId, SellerData_t()));
+    it->second += NewData;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

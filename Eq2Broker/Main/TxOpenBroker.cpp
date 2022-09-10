@@ -47,12 +47,14 @@ void
 Handler_t::
 loadCursor()
 {
-    HCURSOR hCursor = LoadCursor(::GetModuleHandle(NULL), MAKEINTRESOURCE(IDC_BROKER_CURSOR));
-    if ((NULL == hCursor) ||
+#if 0 // TODO
+    HCURSOR hCursor = LoadCursor(::GetModuleHandle(nullptr), MAKEINTRESOURCE(IDC_BROKER_CURSOR));
+    if ((nullptr == hCursor) ||
         !GetCursorBits(hCursor, kCursorWidth, kCursorHeight, m_cursorBits))
     {
         throw logic_error("TxOpenBroker::loadCursor()");
     }
+#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -74,7 +76,7 @@ ExecuteTransaction(
 HRESULT
 Handler_t::
 OnTransactionComplete(
-    DP::Transaction::Data_t&)
+    const DP::Transaction::Data_t&)
 {
     LogInfo(L"TxOpenBroker::TransactionComplete()");
     return S_OK;
@@ -90,7 +92,7 @@ MessageHandler(
     LogInfo(L"TxOpenBroker::MessageHandler()");
     DP::TransactionManager_t::AutoRelease_t ar(GetTransactionManager().Acquire());
     DP::Transaction::Data_t* pTxData = ar.get();
-    if (NULL == pTxData)
+    if (nullptr == pTxData)
     {
         throw logic_error("TxOpenBroker::MessageHandler() No transaction active");
     }
@@ -154,7 +156,7 @@ HRESULT
 Handler_t::
 OpenBroker(
     const SsWindow::Acquire::Data_t& ssData,
-          Data_t&                    txData) const
+    Data_t& txData) const
 {
     switch (txData.GetState())
     {
@@ -167,6 +169,7 @@ OpenBroker(
         }
         txData.NextState();
         break;
+
     case State::FindBroker:
         if (IsBrokerCursor())
         {
@@ -193,6 +196,7 @@ OpenBroker(
             }
         }
         break;
+
     case State::ClickBroker:
         if (!IsBrokerCursor())
         {
@@ -209,8 +213,9 @@ OpenBroker(
             GetPipelineManager().StartAcquiring();
         }
         break;
+
     default:
-        throw logic_error("TxOpenBroker::Eq2Login() Invalid state");
+        throw logic_error("TxOpenBroker::OpenBroker() Invalid state");
     }
     return S_OK;
 }
@@ -269,7 +274,9 @@ GetCursorBits(
     {
         BITMAP bm;
         GetObject(iconInfo.hbmMask, sizeof(bm), &bm);
-        if ((1 == bm.bmBitsPixel) && (int(width) == bm.bmWidth) && (int(height) == bm.bmHeight))
+        if ((1 == bm.bmBitsPixel) &&
+            (int(width) == bm.bmWidth) && 
+            (int(height) == bm.bmHeight))
         {
             struct monoBITMAPINFO {
                 BITMAPINFOHEADER header;
@@ -281,11 +288,11 @@ GetCursorBits(
             bitmapInfo.header.biPlanes = 1;
             bitmapInfo.header.biBitCount = 1;
             bitmapInfo.header.biCompression = BI_RGB;
-            HDC hDC = GetDC(NULL);
+            HDC hDC = GetDC(nullptr);
             int lines = GetDIBits(hDC, iconInfo.hbmMask, 0, bm.bmHeight, bits,
                                   (LPBITMAPINFO)&bitmapInfo, DIB_PAL_COLORS);
             lines;
-            ReleaseDC(NULL, hDC);
+            ReleaseDC(nullptr, hDC);
             return true;
         }
         else

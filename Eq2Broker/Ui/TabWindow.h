@@ -99,19 +99,17 @@ class CSurface;
         //
         // Ui::Window_t virtual:
         //
-        virtual
+
         Ui::WindowId_t
         GetWindowId(
             const CSurface& Surface,
             const POINT*    pptHint) const override;
 
-        virtual
         bool
         GetWidgetRect(
             Ui::WidgetId_t  WidgetId,
                   Rect_t&   WidgetRect) const override;
 
-        virtual
         bool
         UpdateScrollPosition(
             Ui::Scroll::Bar_t ScrollBar,
@@ -120,7 +118,7 @@ class CSurface;
         //
         // TableWindow_t virtual:
         //
-        virtual
+
         void
         GetScrollOffsets(
             const CSurface& Surface,
@@ -130,6 +128,7 @@ class CSurface;
         //
         // Public methods:
         //
+
         const Rect_t&
         GetTableRect() const
         {
@@ -159,12 +158,12 @@ class CSurface;
             SetTableOffset(tableOffset);
         }
 
-
     private:
 
         //
         // Private methods:
         //
+
         bool
         FindTable(
             const CSurface& Surface,

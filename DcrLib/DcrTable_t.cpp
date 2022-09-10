@@ -64,7 +64,7 @@ TranslateSurface(
     Rect_t&   rcSurface)
 {
     LogInfo(L"DcrTable_t::TranslateSurface");
-    size_t RowCount = ReadTable(pSurface, rcSurface, m_pText, NULL);
+    size_t RowCount = ReadTable(pSurface, rcSurface, m_pText, nullptr);
     if (0 == RowCount)
     {
         LogInfo(L"  ReadTable(): Table is empty.");

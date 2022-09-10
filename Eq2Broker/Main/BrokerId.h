@@ -24,29 +24,12 @@ namespace Broker
     {
 
         constexpr auto MakeId(const unsigned id) {
-            //const unsigned max = 0x10000;
-            //if consteval {
-            //    static_assert(id < max);
-            //}
             constexpr auto first = static_cast<unsigned>(DP::Message::Id::Message_First); // TODO or User_First
             return DP::MessageId_t(first + id);
         }
 
         namespace Id
         {
-            /*
-            enum : DP::MessageId_t
-            {
-                First                              = DP::Message::Id::User_First,
-                Eq2Login                           = First,
-                Buy,
-                Sell,
-                SalesLog,
-                SetPrice,
-            };
-            */
-
-            //constexpr auto First = DP::Message::Id::User_First
             constexpr auto Eq2Login = MakeId(0);
             constexpr auto Buy =      MakeId(1);
             constexpr auto Sell =     MakeId(2);
@@ -54,27 +37,29 @@ namespace Broker
             constexpr auto SetPrice = MakeId(4);
 
         }
+
     } // Message
 
     namespace Transaction
     {
         namespace Id
         {
-            enum : DP::TransactionId_t
-            {
-                First                            = DP::Transaction::Id::User_First,
-                SetActiveWindow                  = First,
-                BuyTabGetItems,                          // get buy tab prices
-                SellTabGetItems,                         // get sell tab prices
-                GetItemPrices,                           // get buy tab prices of single item
-                GetItemsForSale,                         // get buy tab prices of all items for sale
-                RepriceItems,                    //5     // reprice owned items 
-                Logon,                                   // logon
-                SetWidgetText,                           // set the text of a widget
-                BuyItem,                                 // purchase an item 
-                BuySellItems,                            // combo (SellTabGetItems+itemsToBuySell)->(GetItemPrices)->(RepriceItems)
-                OpenBroker,                      //10    // click the broker npc (or market board)
-            };
+            constexpr auto MakeId(const unsigned id) -> DP::TransactionId_t {
+                const auto first = static_cast<unsigned>(DP::Transaction::Id::User_First);
+                return DP::TransactionId_t(first + id);
+            }
+
+            constexpr auto SetActiveWindow = MakeId(0);
+            constexpr auto BuyTabGetItems = MakeId(1);                          // get buy tab prices
+            constexpr auto SellTabGetItems = MakeId(2);                         // get sell tab prices
+            constexpr auto GetItemPrices = MakeId(3);                            // get buy tab prices of single item
+            constexpr auto GetItemsForSale = MakeId(4);                         // get buy tab prices of all items for sale
+            constexpr auto RepriceItems = MakeId(5);                    //5     // reprice owned items 
+            constexpr auto Logon = MakeId(6);                   // logon
+            constexpr auto SetWidgetText = MakeId(7);                           // set the text of a widget
+            constexpr auto BuyItem = MakeId(8);                                 // purchase an item 
+            constexpr auto BuySellItems = MakeId(9);                            // combo (SellTabGetItems+itemsToBuySell)->(GetItemPrices)->(RepriceItems)
+            constexpr auto OpenBroker = MakeId(10);                      //10    // click the broker npc (or market board)
         }
 
         namespace Error

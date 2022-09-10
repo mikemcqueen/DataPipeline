@@ -80,7 +80,7 @@ ResumeTransaction(
 HRESULT
 Handler_t::
 OnTransactionComplete(
-    DP::Transaction::Data_t&)
+    const DP::Transaction::Data_t&)
 {
     LogInfo(L"TxGetItemPrices::TransactionComplete()");
     return S_OK;
@@ -97,7 +97,7 @@ MessageHandler(
     LogInfo(L"TxGetItemPrices::MessageHandler()");
     DP::TransactionManager_t::AutoRelease_t TxData(GetTransactionManager().Acquire());
     DP::Transaction::Data_t* pTxData = TxData.get();
-    if (NULL == pTxData)
+    if (nullptr == pTxData)
     {
         throw logic_error("TxGetItemPrices::MessageHandler(): No transaction active");
     }
@@ -119,6 +119,7 @@ MessageHandler(
             txData.NextState();
         }
         break;
+
     case State::ValidateBuyTab:
         if (Message::Id::Buy != pMessage->Id)
         {
@@ -131,10 +132,11 @@ MessageHandler(
         }
         break;
 #endif
+
     case State::SetItemText:
         {
             wstring text(txData.itemName);
-            transform(text.begin(), text.end(), text.begin(), (int(*)(int))tolower);
+            transform(text.begin(), text.end(), text.begin(), [](wchar_t c) { return std::towlower(c); });
             DP::Transaction::Data_t* pTxSetText =
                 new SetWidgetText::Data_t(
                     kTopWindowId,
@@ -144,12 +146,14 @@ MessageHandler(
             GetTransactionManager().ExecuteTransaction(pTxSetText, true);
         }
         break;
+
     case State::Search:
         {
             m_broker.GetWindow(kTopWindowId).ClickWidget(Buy::Widget::Id::FindButton);
             txData.NextState();
         }
         break;
+
     case State::GetItems:
         {
             DP::Transaction::Data_t* pTxGetItems =
@@ -160,11 +164,13 @@ MessageHandler(
             GetTransactionManager().ExecuteTransaction(pTxGetItems, true);
         }
         break;
+
     case State::Done:
         {
             GetTransactionManager().CompleteTransaction(txData.Id);
         }
         break;
+
     default:
         LogError(L"TxGetItemPrices::Message(): Invalid state (%x)", txData.GetState());
         throw logic_error("TxGetItemPrices::Message() invalid state");
@@ -210,11 +216,10 @@ AddRow(
                     }
                     if (0 < quantity)
                     {
-                        PriceCountMap_t::_Pairib ibPair = 
-                            priceMap.insert(make_pair(price, quantity));
-                        if (!ibPair.second)
+                        auto [pq, pqInserted] = priceMap.insert(make_pair(price, quantity));
+                        if (!pqInserted)
                         {
-                            ibPair.first->second += quantity;
+                            pq->second += quantity;
                         }
                     }
                 }

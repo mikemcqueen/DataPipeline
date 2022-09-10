@@ -73,7 +73,7 @@ namespace SetWidgetText
 
 /////////////////////////////////////////////////////////////////////////////
 
-    class Handler_t :
+    class Handler_t final :
         public DP::Handler_t
     {
     private:
@@ -100,13 +100,13 @@ namespace SetWidgetText
 
         HRESULT
         OnTransactionComplete(
-            DP::Transaction::Data_t& Data) override;
+            const DP::Transaction::Data_t& Data) override;
 
     private:
 
         void
         ClearText(
-            Data_t&  txData,
+            Data_t& txData,
             const wstring& currentText) const;
     };
 

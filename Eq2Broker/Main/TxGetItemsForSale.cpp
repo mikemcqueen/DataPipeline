@@ -59,7 +59,7 @@ bool
 Handler_t::
 Initialize()
 {
-    return GetThread().Initialize(NULL, L"TxGetItemsForSale_t::");
+    return GetThread().Initialize(nullptr, L"TxGetItemsForSale_t::");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -102,7 +102,7 @@ Message;
 
     DP::Transaction::Data_t* pData = GetTransactionManager().Acquire();
     DP::TransactionManager_t::AutoRelease_t ar(pData);
-    if (NULL == pData)
+    if (nullptr == pData)
     {
         return S_FALSE;
     }

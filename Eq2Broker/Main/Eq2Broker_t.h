@@ -109,7 +109,7 @@ private:
 const wchar_t*
 GetCoinString(
     size_t   Value,
-    wchar_t* pBuffer = NULL,
+    wchar_t* pBuffer = nullptr,
     size_t   BufferCount = 0);
 
 /////////////////////////////////////////////////////////////////////////////

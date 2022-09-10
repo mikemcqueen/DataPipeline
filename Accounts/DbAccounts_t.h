@@ -41,7 +41,7 @@
     public:
 
         DbAccounts_t(
-            CDatabase* pDatabase = NULL,
+            CDatabase* pDatabase = nullptr,
             bool       bAllowDefaultConnect = false);
 
         DECLARE_DYNAMIC(DbAccounts_t)

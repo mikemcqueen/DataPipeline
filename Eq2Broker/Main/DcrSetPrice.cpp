@@ -66,7 +66,7 @@ PostData(
         LogAlways(L"DcrSetPrice::PostData() Price(%d)", Price);
     }
     void *pBuffer = GetPipelineManager().Alloc(sizeof(Data_t));
-    if (NULL == pBuffer)
+    if (nullptr == pBuffer)
     {
         LogError(L"DcrSetPrice::PostData(): Alloc callback data failed.");
     }

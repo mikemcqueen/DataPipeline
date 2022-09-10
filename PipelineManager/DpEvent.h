@@ -19,6 +19,7 @@ namespace DP
 {
 
 using EventId_t = MessageId_t;
+
 namespace Event
 {
     ////////////////////////////////////////////////////////////////////////////
@@ -35,23 +36,18 @@ namespace Event
     }
 #endif
 
-    constexpr auto MakeId(const unsigned id) {
-        //const unsigned max = 0x10000;
-        //if consteval {
-        //    static_assert(id < max);
-        //}
-        const auto first = static_cast<unsigned>(Message::Id::Event_First);
-        return EventId_t(first + id);
+    constexpr auto MakeId(const int id) noexcept {
+        const auto first = static_cast<int>(Message::Id::Event_First);
+        return Message::MakeId(first + id);
     }
 
     namespace Id
     {
-        //using namespace Message;
-        static const EventId_t Unknown    = EventId_t(0);
-        static const EventId_t Start      = EventId_t(MakeId(0)); // 0x00020000
-        static const EventId_t Stop       = EventId_t(MakeId(1));
-        static const EventId_t Ui_First   = EventId_t(MakeId(0x1000));
-        static const EventId_t User_First = EventId_t(MakeId(0x2000));
+        constexpr auto Unknown    = Message::Id::Unknown;
+        constexpr auto Start      = MakeId(0); // 0x00020000
+        constexpr auto Stop       = MakeId(1);
+        constexpr auto Ui_First   = MakeId(0x1000);
+        constexpr auto User_First = MakeId(0x2000);
     }
 
     ////////////////////////////////////////////////////////////////////////////

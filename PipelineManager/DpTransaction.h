@@ -21,12 +21,16 @@ namespace DP
 using TransactionId_t = MessageId_t;
 namespace Transaction
 {
+
+    constexpr auto MakeId(const unsigned id) -> TransactionId_t {
+        const auto first = static_cast<unsigned>(Message::Id::Transaction_First);
+        return TransactionId_t(first + id);
+    }
+
     namespace Id
     {
-        //using namespace Message;
-        static const TransactionId_t Unknown    = TransactionId_t(0);
+        static const TransactionId_t Unknown    = TransactionId_t(Message::Id::Unknown);
         static const TransactionId_t User_First = TransactionId_t(Message::MakeId(0x1000));
-           // = TransactionId_t(Message::Id::Txn_First) + 0x00001000
     }
 
     typedef unsigned State_t;

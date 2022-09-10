@@ -75,16 +75,16 @@ HWND RegisterAndCreate(__in HINSTANCE hInstance)
     wc.cbClsExtra       = 0;
     wc.cbWndExtra       = 0;
     wc.hInstance        = hInstance;
-    wc.hIcon            = NULL;
-    wc.hCursor          = LoadCursor(NULL, IDC_ARROW);
-    wc.hbrBackground    = NULL;
-    wc.lpszMenuName     = NULL;
+    wc.hIcon            = nullptr;
+    wc.hCursor          = LoadCursor(nullptr, IDC_ARROW);
+    wc.hbrBackground    = nullptr;
+    wc.lpszMenuName     = nullptr;
     wc.lpszClassName    = L"LogWindow_t";
 
     RegisterClass(&wc);
 
     return CreateWindow(wc.lpszClassName, L"Log Window", WS_OVERLAPPEDWINDOW | WS_VISIBLE,
-        CW_USEDEFAULT, CW_USEDEFAULT, 500, 300, NULL, NULL, hInstance, NULL);
+        CW_USEDEFAULT, CW_USEDEFAULT, 500, 300, nullptr, nullptr, hInstance, nullptr);
 }
 
 // ----------------------------------------------------------------------------
@@ -98,7 +98,7 @@ LRESULT CALLBACK FormWndProc(__in HWND hwnd, __in UINT message, __in WPARAM wPar
         case WM_CREATE:
         {
             g_hwndList = CreateWindow(L"listbox", L"", WS_CHILD | WS_VISIBLE | WS_BORDER | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | WS_VSCROLL,
-                                      0, 0, 1, 1, hwnd, NULL, (HINSTANCE)&__ImageBase, NULL);
+                                      0, 0, 1, 1, hwnd, nullptr, (HINSTANCE)&__ImageBase, nullptr);
             HFONT hFont = GetStockFont(DEFAULT_GUI_FONT);
             SendMessage(g_hwndList, WM_SETFONT, (WPARAM)hFont, MAKELPARAM(TRUE, 0));
             break;
@@ -108,7 +108,7 @@ LRESULT CALLBACK FormWndProc(__in HWND hwnd, __in UINT message, __in WPARAM wPar
         {
             RECT rc;
             GetClientRect(hwnd, & rc);
-            SetWindowPos(g_hwndList, NULL, rc.left, rc.top, rc.right, rc.bottom, SWP_NOZORDER | SWP_NOACTIVATE);
+            SetWindowPos(g_hwndList, nullptr, rc.left, rc.top, rc.right, rc.bottom, SWP_NOZORDER | SWP_NOACTIVATE);
             break;
         }
 
@@ -138,7 +138,7 @@ wParam;
         {
             RECT rc;
             GetClientRect(hwnd, &rc);
-            SetWindowPos(hChild, NULL, rc.left, rc.top, rc.right, rc.bottom, SWP_NOZORDER | SWP_NOACTIVATE);
+            SetWindowPos(hChild, nullptr, rc.left, rc.top, rc.right, rc.bottom, SWP_NOZORDER | SWP_NOACTIVATE);
         }
         return TRUE;
     case WM_USER:

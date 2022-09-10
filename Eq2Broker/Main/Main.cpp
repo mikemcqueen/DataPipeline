@@ -48,10 +48,10 @@ InitDirectDraw(
 void
 FreeDirectDraw()
 {
-    if (NULL != g_pDisplay)
+    if (nullptr != g_pDisplay)
     {
         delete g_pDisplay;
-        g_pDisplay = NULL;
+        g_pDisplay = nullptr;
     }
 }
 
@@ -86,14 +86,17 @@ ProcessCommandLine(
         case L'c': // Character:
             wcscpy_s(g_szCharName, optarg);
             break;
+
         case L'd': // Database:
             wcscpy_s(g_szDbName, optarg);
             LogWarning(L"Command line DB is ignored for now");
             bDbSupplied = true;
             break;
+
         case L'l': // Log level:
             InitLogLevel(optarg);
             break;
+
         case L'p': // Pause: Sleep @ startup 
             g_dwSleep = _wtoi(optarg);
             if (0 < g_dwSleep)
@@ -101,11 +104,14 @@ ProcessCommandLine(
                 Sleep(g_dwSleep * 1000);
             }
             break;
+
         case L's': // Server:
             wcscpy_s(g_szServerName, optarg);
             break;
+
         case L'?':
             return -1;
+
         default:
             break;
         }
@@ -121,11 +127,11 @@ StartupInitialize(
     int      argc,
     wchar_t* argv[])
 {
-	if (!AfxWinInit(::GetModuleHandle(NULL), NULL, ::GetCommandLine(), 0))
+	if (!AfxWinInit(::GetModuleHandle(nullptr), nullptr, ::GetCommandLine(), 0))
 	{
         throw logic_error("MFC initialization failed");
 	}
-	srand((unsigned)time(NULL));
+	srand((unsigned)time(nullptr));
     Log::SetOutput(Log::Output::Debug);
     if (!Log_t::Get().Initialize())
     {
@@ -231,7 +237,7 @@ wmain(
     }
     catch (CDBException* e)
     {
-        LogError(L"wmain() ### Caught CDBException: %s ###", e->m_strError);
+        LogError(L"wmain() ### Caught CDBException: %s ###", (LPCTSTR)e->m_strError);
         e->Delete();
     }
     catch (...)

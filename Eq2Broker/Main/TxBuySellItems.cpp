@@ -66,12 +66,12 @@ ExecuteTransaction(
 HRESULT
 Handler_t::
 OnTransactionComplete(
-    DP::Transaction::Data_t& data)
+    const DP::Transaction::Data_t& data)
 {
     LogInfo(L"TxBuySellItems::TransactionComplete()");
     //txData.buySellMap.Dump();
     LogAlways(L"BuySellItems:");
-    Data_t& txData = static_cast<Data_t&>(data);
+    const Data_t& txData = static_cast<const Data_t&>(data);
     ItemDataMap_t::const_iterator it = txData.buySellItemMap.begin();
     for (; txData.buySellItemMap.end() != it; ++it)
     {
@@ -182,14 +182,14 @@ InitItemNames(
          buySellMap.end() != it; ++it)
     {
         const wchar_t* pName = Accounts::Db::Items_t::GetItemName(it->first);
-        if (NULL != pName)
+        if (nullptr != pName)
         {
             itemNames.insert(pName);
             LogAlways(L"  itemNames.insert(%s)", pName);
         }
         else
         {
-            LogError(L"TxBuySellItems::InitItemNames() Item(%d) Name is NULL",
+            LogError(L"TxBuySellItems::InitItemNames() Item(%d) Name is nullptr",
                      it->first);
         }
     }
@@ -209,7 +209,7 @@ MessageHandler(
 {
     LogInfo(L"TxBuySellItems::MessageHandler()");
     DP::TransactionManager_t::AutoRelease_t tm(GetTransactionManager().Acquire());
-    if (NULL == tm.get())
+    if (nullptr == tm.get())
     {
         throw logic_error("TxBuySellItems::MessageHandler(): No transaction active");
     }
@@ -274,16 +274,16 @@ MessageHandler(
             txData.NextState();
         }
         break;
+
     case State::GetItemPrices:
         {
             txData.itemName = *txData.itemNames.begin();
-            ItemDataMap_t::_Pairib ibPair = txData.buySellItemMap.insert(
-                make_pair(txData.itemName, PriceCountMap_t()));
-            DP::Transaction::Data_t* pTxGetItems =
-                new GetItemPrices::Data_t(txData.itemName, ibPair.first->second);
+            auto [itMap, _] = txData.buySellItemMap.insert(make_pair(txData.itemName, PriceCountMap_t()));
+            DP::Transaction::Data_t* pTxGetItems = new GetItemPrices::Data_t(txData.itemName, itMap->second);
             pTxGetItems->Execute(true);
         }
         break;
+
     case State::SecondGotoSellTab:
         if (Message::Id::Sell != pMessage->Id)
         {

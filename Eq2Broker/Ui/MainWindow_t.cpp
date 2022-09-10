@@ -32,11 +32,10 @@ Rect_t MainWindow_t::m_PopupRect;
 MainWindow_t::
 MainWindow_t(
     bool bTest)
-:
+    :
     Ui::Window::Base_t(
         Ui::Window::Id::MainWindow,
-        bTest ? NULL : s_szClassName,
-        NULL)
+        bTest ? nullptr : s_szClassName)
 {
 }
 
@@ -113,8 +112,8 @@ GetWindow(
     case Window::Id::Zoning:              return zoningWindow;
     case Window::Id::MainChat:            return mainChatWindow;
     case Window::Id::BrokerFrame:         return brokerWindow;
-    case Window::Id::BrokerBuyTab:        // fall through;
-    case Window::Id::BrokerSellTab:       // fall through;
+    case Window::Id::BrokerBuyTab:        [[fallthrough]];
+    case Window::Id::BrokerSellTab:       [[fallthrough]];
     case Window::Id::BrokerSalesLogTab:   return brokerWindow.GetWindow(windowId);
     case Window::Id::BrokerSetPricePopup: return setPricePopup;
     default:

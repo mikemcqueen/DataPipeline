@@ -90,7 +90,7 @@ Items_t::
 GetItemId(
     const wchar_t* pItemName)
 {
-    if ((NULL == pItemName) || (L'\0' == *pItemName))
+    if ((nullptr == pItemName) || (L'\0' == *pItemName))
     {
         throw invalid_argument("Items_t::GetItemId()");
     }
@@ -121,7 +121,7 @@ GetItemId(
     rs.AddField(Field::ItemId);
     rs.m_strFilter = L"[item_name] = ?";
     rs.AddParam(Field::StringParam1);
-    if (0 == rs.Open(CRecordset::forwardOnly, NULL, DefaultReadOnlyFlags))
+    if (0 == rs.Open(CRecordset::forwardOnly, nullptr, DefaultReadOnlyFlags))
     {
         LogError(L"Items_t::GetItemId(): failed at rs.Open()");
         return false;
@@ -148,7 +148,7 @@ GetItemName(
         LogError(L"Items_t::GetItemName() Id(%d) exception: %ls", itemId, (LPCTSTR)e->m_strError);
         e->Delete();
     }
-    return NULL;
+    return nullptr;
 }
 
 
@@ -163,8 +163,8 @@ GetItemName(
     wchar_t* pName,
     size_t   NameCount)
 {
-    //TODO: AssertArg((NULL != pName) && (0 < NameCount))
-    if ((NULL == pName) || (0 == NameCount))
+    //TODO: AssertArg((nullptr != pName) && (0 < NameCount))
+    if ((nullptr == pName) || (0 == NameCount))
     {
         throw invalid_argument("ItemsId_t::GetItemName()");
     }
@@ -173,14 +173,14 @@ GetItemName(
     rs.m_strFilter = L"[item_id] = ?";
     rs.m_ItemIdParam = ItemId;
     rs.AddParam(Field::ItemIdParam);
-    if (0 == rs.Open(CRecordset::forwardOnly, NULL, DefaultReadOnlyFlags))
+    if (0 == rs.Open(CRecordset::forwardOnly, nullptr, DefaultReadOnlyFlags))
     {
         LogError(L"Items_t::GetItemName(): rs.Open() failed");
         return false;
     }
     if (rs.IsEOF())
     {
-        return NULL;
+        return nullptr;
     }
     wcscpy_s(pName, NameCount, rs.m_item_name);
     return pName;
@@ -227,7 +227,7 @@ AddItem(
     rs.AddField(Field::ItemName);
     rs.AddField(Field::ItemFlags);
     rs.m_strFilter = L"1 = 0";
-    if (0 == rs.Open(CRecordset::dynaset, NULL, CRecordset::appendOnly))
+    if (0 == rs.Open(CRecordset::dynaset, nullptr, CRecordset::appendOnly))
     {
         LogError(L"Items_t::AddItem(): failed at rs.Open()");
         return 0;

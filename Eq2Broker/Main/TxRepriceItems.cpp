@@ -115,7 +115,7 @@ pPrevTxData;
 HRESULT
 Handler_t::
 OnTransactionComplete(
-    DP::Transaction::Data_t&)
+    const DP::Transaction::Data_t&)
 {
     LogInfo(L"TxRepriceItems::TransactionComplete()");
     return S_OK;
@@ -130,7 +130,7 @@ MessageHandler(
 {
     LogInfo(L"TxRepriceItems::MessageHandler()");
     DP::TransactionManager_t::AutoRelease_t tm(GetTransactionManager().Acquire());
-    if (NULL == tm.get())
+    if (nullptr == tm.get())
     {
         throw logic_error("TxRepriceItems::MessageHandler(): No transaction active");
     }
@@ -473,7 +473,7 @@ EnterNumber(
           size_t        Number)  const
 {
     using namespace SetPrice::Widget::Id;
-    static const Ui::WindowId_t DigitWindowIds[] =
+    static const Ui::WidgetId_t DigitWindowIds[] =
     {
         ZeroButton,
         OneButton,

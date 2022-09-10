@@ -34,7 +34,6 @@ namespace Buy
         Window_t(
             const Ui::Window_t& parent);
 
-        virtual
         bool
         GetWidgetRect(
             Ui::WidgetId_t widgetId,

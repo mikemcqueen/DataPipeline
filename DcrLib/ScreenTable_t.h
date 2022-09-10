@@ -39,7 +39,7 @@ struct ScreenTable_t
     size_t        OffsetY;
     size_t        ColumnCount;
 
-    const size_t* pColumnWidths;
+    const int*    pColumnWidths;
     const RECT*   pTextRects;
 };
 

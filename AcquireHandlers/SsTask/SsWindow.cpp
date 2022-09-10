@@ -24,7 +24,7 @@ Handler_t::
 Handler_t(
     CDisplay&           Display,
     Ui::Window::Base_t& Window)
-:
+    :
     SsTask_t(Display, 1280, 1024),
     m_Window(Window),
     m_bClick(true)
@@ -49,35 +49,6 @@ EventHandler(
     using namespace Ui::Event;
     switch (Data.Id)
     {
-#if 0
-    case Id::Collection:
-        {
-            Lon::Event::Collection_t::Data_t&
-                CollData = static_cast<Lon::Event::Collection_t::Data_t&>(Data);
-            Lon::Event::Collection_t::EventVector_t::iterator
-                it = CollData.Events.begin();
-            bool bAnyScroll = false;
-            for (; CollData.Events.end() != it; ++it)
-            {
-                // Only allow certain events in a collection. 
-                switch ((*it)->Id)
-                {
-                case Id::ThumbPosition:
-                    OnThumbPositionEvent(static_cast<LonWindow_t::EventThumbPosition_t::Data_t&>(**it));
-                    break;
-                case Id::Scroll:
-                    bAnyScroll = true;
-                    break;
-                default:
-                    return S_FALSE;
-                }
-            }
-            // If no scroll events, return success
-            if (!bAnyScroll)
-                break;
-        }
-#endif
-        // Scroll events in collection - fall through to AsyncEvent
 
 //    case Id::Scroll:
     case Id::ClickPoint:
@@ -130,28 +101,7 @@ AsyncEvent(
     case Id::SendChars:
         SetEventData(Data);
         break;
-/*
-    case Id::Collection:
-        {
-            ClearEventData();
-            const Lon::Event::Collection_t::Data_t& CollData =
-                static_cast<const Lon::Event::Collection_t::Data_t&>(Data);
-            Lon::Event::Collection_t::EventVector_t::const_iterator
-                it = CollData.Events.begin();
-            for (; CollData.Events.end() != it; ++it)
-            {
-                switch ((*it)->Id)
-                {
-                case Id::Scroll:
-                    AddEventData(*it);
-                    break;
-                default:
-                    break;
-                }
-            }
-        }
-        break;
-*/
+
     default:
         ASSERT(false);
         return;
@@ -261,6 +211,7 @@ ThreadProcessEvent()
 */
         case Id::ClickPoint:
             [[fallthrough]];
+
         case Id::ClickWidget:
             {
                 Click::Data_t ClickData;
@@ -323,9 +274,9 @@ ScrollWindow(
     const LonWindow_t::EventScroll_t::Data_t&
         LonData = (LonWindow_t::EventScroll_t::Data_t&)Data;
     HWND hScroll = LonWindow_t::GetWindow(LonData.WindowType);
-    if ((NULL == hScroll) || !IsWindowVisible(hScroll))
+    if ((nullptr == hScroll) || !IsWindowVisible(hScroll))
     {
-        LogError(L"SsTrades::ScrollWindow(): Scroll hWnd is NULL or invisible (%d,%d)",
+        LogError(L"SsTrades::ScrollWindow(): Scroll hWnd is nullptr or invisible (%d,%d)",
                  hScroll, LonData.WindowType);
         return;
     }
@@ -438,7 +389,7 @@ ClickPoint(
     if (m_bClick && ValidateEventData(Data, sizeof(Data)))
     {
         HWND hWnd = ValidateWindow(Data.WindowId);
-        if (NULL != hWnd)
+        if (nullptr != hWnd)
         {
             size_t Count = Data.Count;
             using namespace Ui::Event;
@@ -477,7 +428,7 @@ ClickWidget(
     if (m_bClick && ValidateEventData(Data, sizeof(Data)))
     {    
         HWND hWnd = ValidateWindow(Data.WindowId);
-        if (NULL != hWnd)
+        if (nullptr != hWnd)
         {
             m_Window.GetWindow(Data.WindowId).ClickWidget(WidgetId, true);
         }
@@ -518,10 +469,10 @@ ValidateWindow(
     // TODO: Shouldn't we use GetMainWindow() for the GetForegroundWindow() check?
 
     HWND hWnd = m_Window.GetHwnd(WindowId);
-    if ((NULL == hWnd) || !IsWindowVisible(hWnd) || (hWnd != ::GetForegroundWindow()))
+    if ((nullptr == hWnd) || !IsWindowVisible(hWnd) || (hWnd != ::GetForegroundWindow()))
     {
         LogError(L"SsWindow::ValidateWindow() failed for hWnd (%08x)", hWnd);
-        return NULL;
+        return nullptr;
     }
     const Ui::Window::Handle_t Top = m_Window.GetTopWindow();
     // TODO : Window::IsParent
@@ -529,7 +480,7 @@ ValidateWindow(
     {
         LogError(L"SsWindow::ValidateWindow(): WindowId (%d) is not top window"
                  L" or a child of top window (%d)", WindowId, Top.WindowId);
-        return NULL;
+        return nullptr;
     }
     return hWnd;
 }
@@ -543,7 +494,7 @@ SendChars(
 {
     LogInfo(L"SsWindow::SendChars(%ls)", Data.Chars);
     HWND hWnd = ValidateWindow(Data.WindowId);
-    if (NULL == hWnd)
+    if (nullptr == hWnd)
     {
         return;
     }
@@ -608,7 +559,7 @@ PostData(
         }
     }
     void *pBuffer = GetPipelineManager().Alloc(sizeof(Data_t));
-    if (NULL == pBuffer)
+    if (nullptr == pBuffer)
     {
         LogError(L"SsWindow::PostData(): Alloc callback data failed.");
     }

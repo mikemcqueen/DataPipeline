@@ -262,7 +262,7 @@ AddSalePrices(
     const ItemSellerPair_t& ItemSellerPair,
     const PriceSet_t&       Prices)
 {
-    SaleData_t Data;
+    SaleData_t Data = { 0 };
     Data.ItemId = ItemSellerPair.first;
     Data.SellerId = ItemSellerPair.second;
     PriceSet_t::const_iterator it = Prices.begin();
@@ -290,7 +290,7 @@ AddSalePrices(
         for (; PriceDataMap.end() != itPrice; ++itPrice)
         {
             const ItemPriceData_t& Data = itPrice->second;
-            SaleData_t SaleData;
+            SaleData_t SaleData = { 0 };
             SaleData.ItemId   = itItem->first;
             SaleData.Price    = itPrice->first;
             SaleData.SellerId = Data.SellerId;
@@ -326,25 +326,25 @@ AddSaleData(
     ItemSaleVectorMap_t::iterator itSaleMap = m_SaleMap.find(Data.ItemId);
     if (m_SaleMap.end() == itSaleMap)
     {
-        ItemSaleVectorMap_t::_Pairib pairIB = m_SaleMap.insert(
+        auto [itMap, inserted] = m_SaleMap.insert(
             ItemSaleVectorMap_t::value_type(Data.ItemId, TimeSaleVectorMap_t()));
-        if (!pairIB.second)
+        if (!inserted)
         {
             throw std::logic_error("AddSaleData(): m_SaleMap.insert() failed");
         }
-        itSaleMap = pairIB.first;
+        itSaleMap = itMap;
     }
     TimeSaleVectorMap_t& timeMap = itSaleMap->second;
     TimeSaleVectorMap_t::iterator itTimeMap = timeMap.find(Data.Time);
     if (timeMap.end() == itTimeMap)
     {
-        TimeSaleVectorMap_t::_Pairib ibTimeMap = timeMap.insert(
+        auto [itMap, inserted] = timeMap.insert(
             TimeSaleVectorMap_t::value_type(Data.Time, SaleDataVector_t()));
-        if (!ibTimeMap.second)
+        if (!inserted)
         {
             throw std::logic_error("AddSaleData(): timeMap.insert() failed");
         }
-        itTimeMap = ibTimeMap.first;
+        itTimeMap = itMap;
     }
     SaleDataVector_t& saleVector = itTimeMap->second;
     saleVector.push_back(Data);
@@ -369,7 +369,7 @@ AddHiLoData(
         if (RemovedPrices.empty()) continue; // weird
 
         // item, date, volume sold, volume total, high total, high sold, low sold, low total
-        HiLoData_t hiloData;
+        HiLoData_t hiloData = { 0 };
 
         // item
         hiloData.ItemId = ItemId;
@@ -427,13 +427,13 @@ AddHiLoData(
     ItemHiLoMap_t::iterator itHiLoMap = m_HiLoMap.find(Data.ItemId);
     if (m_HiLoMap.end() == itHiLoMap)
     {
-        ItemHiLoMap_t::_Pairib pairIB = m_HiLoMap.insert(
+        auto [itMap, inserted] = m_HiLoMap.insert(
             make_pair(Data.ItemId, HiLoDataVector_t()));
-        if (!pairIB.second)
+        if (!inserted)
         {
             throw std::logic_error("AddHiLoData(): m_HiLoMap.insert() failed");
         }
-        itHiLoMap = pairIB.first;
+        itHiLoMap = itMap;
     }
     itHiLoMap->second.push_back(Data);
 }

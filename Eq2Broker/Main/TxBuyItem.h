@@ -73,7 +73,7 @@ namespace BuyItem
 
 /////////////////////////////////////////////////////////////////////////////
 
-    class Handler_t :
+    class Handler_t final :
         public DP::Handler_t
     {
     private:
@@ -88,20 +88,18 @@ namespace BuyItem
         //
         // DP::Handler_t virtual
         //
-        virtual
+
         HRESULT
         MessageHandler(
             const DP::Message::Data_t* pData) override;
 
-        virtual
         HRESULT
         ExecuteTransaction(
             DP::Transaction::Data_t& Data) override;
 
-        virtual
         HRESULT
         OnTransactionComplete(
-            DP::Transaction::Data_t& Data) override;
+            const DP::Transaction::Data_t& Data) override;
 
     private:
 

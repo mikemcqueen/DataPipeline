@@ -77,9 +77,9 @@ IDB_BROKER_SALESLOGTAB_ACTIVE BITMAP                  "res\\Broker_SalesLogTab_A
 IDB_BROKER_SALESLOGTAB_INACTIVE BITMAP                  "res\\Broker_SalesLogTab_Inactive.bmp"
 IDB_EQ2LOGIN_CONNECT    BITMAP                  "res\\Eq2Login_Connect.bmp"
 //IDB_LOGIN_CAPTION       BITMAP                  "res\\Login_Caption.bmp"
-IDB_EQ2LOADING_CANCEL   BITMAP                  "res\\Eq2Loading_Cancel.bmp"
-IDB_EQ2_TRANSITION      BITMAP                  "res\\Zoning_Caption.bmp"
-IDB_MAINCHAT_CAPTION    BITMAP                  "res\\MainChat_Caption.bmp"
+//IDB_EQ2LOADING_CANCEL   BITMAP                  "res\\Eq2Loading_Cancel.bmp"
+//IDB_EQ2_TRANSITION      BITMAP                  "res\\Zoning_Caption.bmp"
+//IDB_MAINCHAT_CAPTION    BITMAP                  "res\\MainChat_Caption.bmp"
 //IDB_BROKER_CURSOR_MASK  BITMAP                  "res\\Broker_Cursor_Mask.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
@@ -106,7 +106,7 @@ END
 // Cursor
 //
 
-IDC_BROKER_CURSOR             CURSOR                  "res\\Broker_Cursor.cur"
+//IDC_BROKER_CURSOR             CURSOR                  "res\\Broker_Cursor.cur"
 #endif    // English (U.S.) resources
 /////////////////////////////////////////////////////////////////////////////
 

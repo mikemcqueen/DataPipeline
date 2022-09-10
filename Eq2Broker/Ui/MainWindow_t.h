@@ -48,18 +48,17 @@ public:
     //
     // Ui::Window_t virtual:
     //
-    virtual
+
     Ui::Window::Base_t&
     GetWindow(
         Ui::WindowId_t WindowId) const override;
 
-    virtual 
     Ui::WindowId_t
     GetWindowId(
         const CSurface& Surface,
         const POINT*    pptHint) const override;
 
-    // Misc
+    //
 
     Ui::WindowId_t
     GetMessageWindowId(

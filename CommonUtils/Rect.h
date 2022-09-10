@@ -123,11 +123,11 @@ public:
         m_Data(Data)
     { }
 
-    // haxxor - just to support NULL/EmptyRect
+    // haxxor - just to support nullptr/EmptyRect
     RelativeRect_t(
         const Data_t* pData)
     {
-        if (NULL == pData)
+        if (nullptr == pData)
         {
             SecureZeroMemory(&m_Data, sizeof(Data_t));
         }

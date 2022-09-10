@@ -85,10 +85,7 @@ public:
             m_h = 0;
         }
     }
-/*    operator HANDLE()
-    {
-        return m_h;
-    }*/
+
     HANDLE get()
     {
         return m_h;

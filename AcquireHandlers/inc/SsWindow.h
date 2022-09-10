@@ -71,31 +71,27 @@ namespace Acquire
         // DP::Handler_t virtual:
         //
 
-        virtual
         HRESULT
         EventHandler(
-            DP::Event::Data_t& Event);
+            DP::Event::Data_t& Event) override;
 
         // 
         // SSTask virtual:
         //
 
-        virtual
         HWND
         GetSsWindowRect(
-            RECT& rcBounds) const;
+            RECT& rcBounds) const override;
 
-        virtual
         void
-        ThreadProcessEvent();
+        ThreadProcessEvent() override;
 
-        virtual
         void
         PostData(
             HWND              hWnd,
-            SurfacePoolItem_t* pPoolItem);
+            SurfacePoolItem_t* pPoolItem) override;
 
-        // Helper methods:
+        //
 
         bool
         ToggleClick()

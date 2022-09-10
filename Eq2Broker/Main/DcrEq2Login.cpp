@@ -73,7 +73,7 @@ PostData(
         return;
     }
     void *pBuffer = GetPipelineManager().Alloc(sizeof(Data_t));
-    if (NULL == pBuffer)
+    if (nullptr == pBuffer)
     {
         LogError(L"DcrEq2Login::PostData(): Alloc callback data failed.");
     }

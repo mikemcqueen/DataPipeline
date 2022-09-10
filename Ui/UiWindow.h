@@ -47,7 +47,7 @@ namespace Window
         WindowId_t WindowId;
 
         Handle_t(
-            HWND       InitHwnd       = NULL,
+            HWND       InitHwnd       = nullptr,
             WindowId_t InitWindowId   = Id::Unknown)
         :
             hWnd(InitHwnd),
@@ -65,7 +65,7 @@ namespace Window
     {
     private:
 
-        const Base_t&      m_parent;
+        const Base_t&      m_ParentWindow;
 
         WindowId_t         m_WindowId;
         HWND               m_hMainWindow;
@@ -85,17 +85,17 @@ namespace Window
         Base_t(
             WindowId_t     WindowId,
             const wchar_t* pClassName,
-            const wchar_t* pWindowName,
-                  Flag_t   Flags = 0);
+            const wchar_t* pWindowName = nullptr,
+            Flag_t         Flags = 0);
 
         explicit
         Base_t(
-                  WindowId_t      WindowId,
-            const Base_t&         parent,
+            WindowId_t            WindowId,
+            const Base_t&         ParentWindow,
             const wchar_t*        pWindowName,
-                  Flag_t          Flags = 0,
-            const Widget::Data_t* pWidgetData = NULL,
-                  size_t          WidgetCount = 0);
+            Flag_t                Flags = 0,
+            const Widget::Data_t* pWidgetData = nullptr,
+            size_t                WidgetCount = 0);
 
         virtual 
         ~Base_t();
@@ -155,13 +155,13 @@ namespace Window
         IsLocatedOn(
             const CSurface& Surface,
                   Flag_t    flags,
-                  POINT*    pptOrigin = NULL) const;
+                  POINT*    pptOrigin = nullptr) const;
 
         virtual
         const CSurface*
         GetOriginSurface() const
         {        
-            return NULL;
+            return nullptr;
         }
 
         virtual
@@ -178,7 +178,7 @@ namespace Window
         ClickWidget(
             WidgetId_t WidgetId,
                   bool    bDirect = false,
-            const Rect_t* pRect = NULL) const;
+            const Rect_t* pRect = nullptr) const;
 
         bool
         SetWidgetText(
@@ -276,7 +276,7 @@ namespace Window
                   Ui::WidgetId_t  WidgetId,
             const Rect_t&         RelativeRect,
                   Rect_t&         WidgetRect,
-            const Widget::Data_t* pWidgets = NULL,
+            const Widget::Data_t* pWidgets = nullptr,
                   size_t          mwidgetCount = 0) const;
 
         void
@@ -320,7 +320,7 @@ namespace Window
             const CSurface& image,
                   POINT*    pptOrigin) const;
 
-        const Base_t& GetParent() const { return m_parent; }
+        const Base_t& GetParent() const { return m_ParentWindow; }
 
     public:
 

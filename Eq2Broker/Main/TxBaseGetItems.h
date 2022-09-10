@@ -31,24 +31,24 @@ namespace BaseGetItems
 /////////////////////////////////////////////////////////////////////////////
 
     template<class Text_t>
-    struct TextRow_t
+    struct TextRow_t final
     {
         typename Text_t::Row_t textRow;
     };
 
 #if 1
-//    typedef function<bool (const wchar_t*, const wstring&, )> FnAddRow_t;
+//    typedef function<bool (const wchar_t*, const wstring&)> FnAddRow_t;
 #else
     typedef function<bool (const wstring&, const TextRow_t&)> FnAddRow_t;
 #endif
-
 
     template<class Text_t, class Param_t>
     struct Data_t :
         public DP::Transaction::Data_t
     {
         typedef TextRow_t<Text_t> TextRow_t;
-        typedef function<bool (const wchar_t*, const wstring&, Param_t&)> FnAddRow_t;
+//        typedef std::function<bool (const wchar_t*, const wstring&, Param_t&)> FnAddRow_t;
+        using FnAddRow_t = std::function<bool(const wchar_t*, const wstring&, Param_t&)>;
 
         const wstring  itemName;
         FnAddRow_t     fnAddRow;

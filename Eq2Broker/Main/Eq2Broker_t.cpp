@@ -23,7 +23,8 @@ using namespace Broker;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Eq2Broker_t static definitions.
-const wchar_t* Eq2Broker_t::s_pClass = NULL; // L"Eq2Broker";
+
+const wchar_t* Eq2Broker_t::s_pClass = nullptr; // L"Eq2Broker";
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -33,9 +34,9 @@ const wchar_t* Eq2Broker_t::s_pClass = NULL; // L"Eq2Broker";
 Eq2Broker_t::
 Eq2Broker_t(
     Broker::MainWindow_t& mainWindow)
-:
+    :
     m_mainWindow(mainWindow),
-    m_pImpl(new Eq2BrokerImpl_t(*this, mainWindow))
+    m_pImpl(std::make_unique<Eq2BrokerImpl_t>(*this, mainWindow))
 {
 }
 
@@ -152,8 +153,8 @@ Start()
         LogAlways(L"Sleeping %d ms...", g_dwSleep);
         Sleep(g_dwSleep);
     }
-    const size_t requiredTaskCount = 1; // 1 == SsTask
-    size_t startedTaskCount = GetPipelineManager().StartAcquiring();
+    constexpr size_t requiredTaskCount = 1; // 1 == SsTask
+    auto startedTaskCount = GetPipelineManager().StartAcquiring();
     if (requiredTaskCount != startedTaskCount)
     {
         LogError(L"Only (%d) of (%d) acquire handler(s) started",
@@ -210,7 +211,7 @@ CommandLoop(wchar_t* buf, DWORD size)
     for (;;)
     {
         MSG msg;
-        if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+        if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
         {
             if (msg.message == WM_QUIT)
             {
@@ -244,7 +245,7 @@ ReadConsoleCommand(TCHAR buf[], DWORD dwSize)
 {
     HANDLE h = GetStdHandle(STD_INPUT_HANDLE);
     DWORD dwRead;
-    bool bValid = FALSE != ReadConsole(h, buf, dwSize, &dwRead, NULL);
+    bool bValid = FALSE != ReadConsole(h, buf, dwSize, &dwRead, nullptr);
     if (bValid)
     {
         buf[dwRead] = L'\0';
@@ -334,7 +335,7 @@ GetCoinString(
     size_t   BufferCount)
 {
     static wchar_t Buffer[32];
-    if (NULL == pBuffer)
+    if (nullptr == pBuffer)
     {
         pBuffer = Buffer;
         BufferCount = _countof(Buffer);

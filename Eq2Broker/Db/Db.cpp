@@ -93,7 +93,7 @@ Initialize(
           bool     bInitBroker,
           DWORD    /*ThreadId*/)
 {
-    if ((NULL == pServerName) || (L'\0' == pServerName[0]))
+    if ((nullptr == pServerName) || (L'\0' == pServerName[0]))
     {
         throw std::invalid_argument("Db::Initialize()");
     }
@@ -103,7 +103,7 @@ Initialize(
     }
     if (bInitBroker)
     {
-        if ((NULL == pBrokerDbPath) || (L'\0' == pBrokerDbPath[0]))
+        if ((nullptr == pBrokerDbPath) || (L'\0' == pBrokerDbPath[0]))
         {
             swprintf_s(s_szBrokerDbPath, s_szBrokerDbFormat, pServerName);
             SYSTEMTIME LocalTime;
@@ -147,7 +147,7 @@ CopyDb(
     const wchar_t* ToPath,
     const wchar_t* FromPath)
 {
-    if (NULL == FromPath)
+    if (nullptr == FromPath)
     {
         FromPath = s_szBrokerDbBase;
     }
@@ -169,7 +169,7 @@ CopyDb(
     size_t         cNewFile,
     const wchar_t* FromPath)
 {
-    if (NULL == FromPath)
+    if (nullptr == FromPath)
     {
         FromPath = s_szBrokerDbPath;
     }
@@ -211,8 +211,8 @@ GetConnectString(
     {
         throw std::logic_error("Db::GetConnectString(): !bInitialized");
     }
-    wchar_t* pConnect = NULL;
-    const wchar_t* pDbPath = NULL;
+    wchar_t* pConnect = nullptr;
+    const wchar_t* pDbPath = nullptr;
 
     switch (DbType)
     {
@@ -227,10 +227,10 @@ GetConnectString(
     default:
         throw std::invalid_argument("Db::GetConnectString() invalid DbType");
     }
-    ASSERT(NULL != pConnect);
+    ASSERT(nullptr != pConnect);
     if (L'\0' == pConnect[0])
     {
-        ASSERT((NULL != pDbPath) && (L'\0' != pDbPath[0]));
+        ASSERT((nullptr != pDbPath) && (L'\0' != pDbPath[0]));
         FormatConnectString(pConnect, MAX_PATH, pDbPath);
     }
     return pConnect;

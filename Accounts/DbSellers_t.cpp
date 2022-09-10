@@ -95,7 +95,7 @@ Sellers_t::
 GetSellerId(
     const wchar_t* pSellerName)
 {
-    if ((NULL == pSellerName) || (L'\0' == *pSellerName))
+    if ((nullptr == pSellerName) || (L'\0' == *pSellerName))
     {
         throw std::invalid_argument("Sellers_t::GetSellerId()");
     }
@@ -138,7 +138,7 @@ GetSellerId(
     rs.AddField(Field::SellerId);
     rs.m_strFilter = L"[seller_name] = ?";
     rs.AddParam(Field::StringParam1);
-    if (0 == rs.Open(CRecordset::forwardOnly, NULL, DefaultReadOnlyFlags))
+    if (0 == rs.Open(CRecordset::forwardOnly, nullptr, DefaultReadOnlyFlags))
     {
         LogError(L"Sellers_t::GetSellerId(): failed at rs.Open()");
         return false;
@@ -199,7 +199,7 @@ AddSeller(
     rs.AddField(Field::AddedDate);
     rs.AddField(Field::VerifiedDate);
     rs.m_strFilter = L"1 = 0";
-    if (0 == rs.Open(CRecordset::dynaset, NULL, CRecordset::appendOnly))
+    if (0 == rs.Open(CRecordset::dynaset, nullptr, CRecordset::appendOnly))
     {
         LogError(L"DbSellers_t::AddSeller(): failed at rs.Open()");
         return 0;

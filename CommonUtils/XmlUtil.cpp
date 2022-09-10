@@ -28,7 +28,7 @@ CreateXmlWriter(
         LogError(L"Error creating file writer, error is %08.8lx", hr);
         return false;
     }
-    hr = ::CreateXmlWriter(__uuidof(IXmlWriter), reinterpret_cast<void**>(&pWriter), NULL);
+    hr = ::CreateXmlWriter(__uuidof(IXmlWriter), reinterpret_cast<void**>(&pWriter), nullptr);
     if (FAILED(hr))
     {
         LogError(L"Error creating xml writer, error is %08.8lx", hr);
@@ -75,7 +75,7 @@ CreateXmlReader(
         LogError(L"CreateStreamOnFile('%ls') %08.8lx", pszFilename, hr);
         return false;
     }
-    hr = ::CreateXmlReader(__uuidof(IXmlReader), reinterpret_cast<void**>(&pReader), NULL);
+    hr = ::CreateXmlReader(__uuidof(IXmlReader), reinterpret_cast<void**>(&pReader), nullptr);
     if (FAILED(hr))
     {
         LogError(L"::CreateXmlReader(), error is %08.8lx", hr);
@@ -165,12 +165,12 @@ bQuiet;
             }
             return false;
         }
-        if (NULL != pNodeName)
+        if (nullptr != pNodeName)
         {
             return CompareXmlNode(pReader, NodeType, pNodeName, bQuiet);
 /*
             const wchar_t* pLocalName;
-            hr = pReader->GetLocalName(&pLocalName, NULL);
+            hr = pReader->GetLocalName(&pLocalName, nullptr);
             if (FAILED(hr))
             {
                 LogError(L"ReadNextXml(): GetLocalName (%08x)", hr);
@@ -210,14 +210,14 @@ CompareXmlNode(
         {
             LogError(L"CompareXmlNode(): NodeType (%d) expected (%d) (%ls)",
                      ReadType, NodeType, 
-                     (NULL == pNodeName) ? L"" : pNodeName);
+                     (nullptr == pNodeName) ? L"" : pNodeName);
         }
         return false;
     }
-    if (NULL != pNodeName)
+    if (nullptr != pNodeName)
     {
         const wchar_t* pLocalName;
-        hr = pReader->GetLocalName(&pLocalName, NULL);
+        hr = pReader->GetLocalName(&pLocalName, nullptr);
         if (FAILED(hr))
         {
             LogError(L"CompareXmlNode(): GetLocalName (%08x)", hr);
@@ -257,7 +257,7 @@ WriteElement_t(
     m_pElementName(ElementName),
     m_bFullEndElement(bFullEndElement)
 {
-    HRESULT hr = pWriter->WriteStartElement(NULL, ElementName, NULL);
+    HRESULT hr = pWriter->WriteStartElement(nullptr, ElementName, nullptr);
     if (FAILED(hr))
     {
         LogError(L"WriteElement_t(%s) error is %08.8lx", ElementName, hr);
@@ -318,7 +318,7 @@ WriteAttribute(
     const wchar_t* pAttributeName,
     const wchar_t* Value)
 {
-    HRESULT hr = m_pWriter->WriteAttributeString(NULL, pAttributeName, NULL, Value);
+    HRESULT hr = m_pWriter->WriteAttributeString(nullptr, pAttributeName, nullptr, Value);
     if (FAILED(hr))
     {
         LogError(L"WriteAttributeString(%ls) Value(%ls) failed (%08x)",
@@ -369,7 +369,7 @@ ReadValue(
     if (!ReadNextXml(m_pReader, XmlNodeType_Text))
         throw std::runtime_error("ReadValue::ReadNextXml()");
     const wchar_t* pValue;
-    HRESULT hr = m_pReader->GetValue(&pValue, NULL);
+    HRESULT hr = m_pReader->GetValue(&pValue, nullptr);
     if (FAILED(hr))
     {
         LogError(L"ReadValue::GetValue(%ls) failed (%08x)", m_pElementName, hr);
@@ -386,7 +386,7 @@ ReadAttribute(
     const wchar_t* pAttributeName,
           size_t&  Value)
 {
-    const wchar_t* pValue = NULL;
+    const wchar_t* pValue = nullptr;
     ReadAttribute(pAttributeName, pValue);
     Value = _wtoi(pValue);
     HRESULT hr = m_pReader->MoveToElement();
@@ -405,7 +405,7 @@ ReadAttribute(
     const wchar_t* pAttributeName,
     std::wstring&  Value)
 {
-    const wchar_t* pValue = NULL;
+    const wchar_t* pValue = nullptr;
     ReadAttribute(pAttributeName, pValue);
     Value.assign(pValue);
     HRESULT hr = m_pReader->MoveToElement();
@@ -425,13 +425,13 @@ ReadAttribute(
     const wchar_t*& pValue)
 {
     HRESULT hr;
-    hr = m_pReader->MoveToAttributeByName(pAttributeName, NULL);
+    hr = m_pReader->MoveToAttributeByName(pAttributeName, nullptr);
     if (S_OK != hr)
     {
         LogError(L"MoveToAttributeByName(%ls) failed (%08x)", pAttributeName, hr);
         throw std::runtime_error("MoveToAttributeByName");
     }
-    hr = m_pReader->GetValue(&pValue, NULL);
+    hr = m_pReader->GetValue(&pValue, nullptr);
     if (S_OK != hr)
     {
         LogError(L"ReadAttribute::GetValue(%ls) failed (%08x)", pAttributeName, hr);

@@ -118,7 +118,7 @@ public:
                 wprintf(L"ThreadQueue_t<%ls>::Initialize() already called.", m_pszName);
             return false;
         }
-        if ((NULL == pszName) || (L'\0' == pszName[0]))
+        if ((nullptr == pszName) || (L'\0' == pszName[0]))
         {
             if (bUseLog)
                 LogError(L"ThreadQueue_t<>::Initialize() Invalid name.");
@@ -135,19 +135,19 @@ public:
         }
 
         m_hAddEvent = CreateEvent(0, FALSE, FALSE, 0);
-        if (NULL == m_hAddEvent.get())
+        if (nullptr == m_hAddEvent.get())
             return false;
 
         m_hExitEvent = CreateEvent(0, TRUE, FALSE, 0);
-        if (NULL == m_hExitEvent.get())
+        if (nullptr == m_hExitEvent.get())
             return false;
 
         m_hIdleEvent = CreateEvent(0, TRUE, FALSE, 0);
-        if (NULL == m_hIdleEvent.get())
+        if (nullptr == m_hIdleEvent.get())
             return false;
 
         m_hThread = util::CreateThread(0, 0, ThreadFunc, (void *)this, 0, &m_dwThreadId);
-        if (NULL == m_hThread.get())
+        if (nullptr == m_hThread.get())
             return false;
 
         m_pParam  = pParam;
@@ -173,7 +173,7 @@ public:
 
         m_bInitialized = false;
 
-        if (NULL != m_hThread.get())
+        if (nullptr != m_hThread.get())
         {
             SetEvent(m_hExitEvent.get());
             WaitForSingleObjectEx(m_hThread.get(), INFINITE, FALSE);
@@ -237,7 +237,7 @@ public:
         size_t Size = 0;
         {
             CLock lock(m_csQueue);
-            Queue_t::iterator it = m_Queue.begin();
+            auto it = m_Queue.begin();
             while (m_Queue.end() != it)
             {
                 if (m_Compare.operator()(Data, *it))
@@ -391,10 +391,10 @@ private:
                 LogInfo(L"ProcessQueue: Found entry, queue size was %d", Count);
             }
 /*
-            if (NULL == pData)
+            if (nullptr == pData)
             {
-                ASSERT(NULL != pData);
-                LogError(L"ThreadQueue_t<%s>::ProcessQueue() error: pData == NULL (%d)",
+                ASSERT(nullptr != pData);
+                LogError(L"ThreadQueue_t<%s>::ProcessQueue() error: pData == nullptr (%d)",
                     m_pszName, m_Queue.size());
                 return;
             }

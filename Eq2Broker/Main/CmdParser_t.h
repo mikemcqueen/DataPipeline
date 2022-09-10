@@ -71,7 +71,7 @@ public:
             cout << endl << all << endl;
             return false;
         }
-        else if ((NULL != commands) && (0 == GetCount(vm, *commands)))
+        else if ((nullptr != commands) && (0 == GetCount(vm, *commands)))
         {
             LogError(L"Missing command: -? for help");
             return false;
@@ -101,7 +101,7 @@ public:
         else
         {
             id = vm["id"].as<long>();
-            if ((0 >= id) || (NULL == Accounts::Db::Items_t::GetItemName(id)))
+            if ((0 >= id) || (nullptr == Accounts::Db::Items_t::GetItemName(id)))
             {
                 LogError(L"Invalid item id(%d)", id);
                 id = 0;

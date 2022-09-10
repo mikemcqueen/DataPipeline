@@ -30,7 +30,7 @@ namespace SetPrice
         //
         // Ui::Window_t virtual:
         //
-        virtual
+
         bool
         GetWidgetRect(
             Ui::WidgetId_t WidgetId,

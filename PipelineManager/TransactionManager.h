@@ -56,7 +56,7 @@ public:
 
         ~AutoRelease_t()
         {
-            if (NULL != m_pData)
+            if (nullptr != m_pData)
             {
                 GetTransactionManager().Release(m_pData);
             }
@@ -117,7 +117,7 @@ public:
 
     void
     Release(
-        Transaction::Data_t*,
+        Transaction::Data_t* pData,
         bool bQuiet = true);
 
 private:
@@ -146,7 +146,7 @@ private:
     void
     SendEvent(
         const wchar_t*       name,
-        Transaction::Data_t* pPrevTxData = NULL);
+        Transaction::Data_t* pPrevTxData = nullptr);
 
     bool
     DoExecuteTransaction(

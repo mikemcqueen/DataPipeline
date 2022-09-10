@@ -31,7 +31,7 @@ public:
     };
 
 	Sellers_t(
-        CDatabase* pDatabase = NULL);
+        CDatabase* pDatabase = nullptr);
 
     explicit
     Sellers_t(

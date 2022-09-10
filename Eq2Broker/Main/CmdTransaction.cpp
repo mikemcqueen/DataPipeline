@@ -184,7 +184,7 @@ Execute(
 {
     static ItemDataMap_t sellTabMap;
 
-    DP::Transaction::Data_t* pTxData = NULL;
+    DP::Transaction::Data_t* pTxData = nullptr;
     wstring itemName;
     if (0 != itemId)
     {
@@ -193,7 +193,7 @@ Execute(
     if (vm["info"].as<bool>())
     {
         DP::TransactionManager_t::AutoRelease_t tm(GetTransactionManager().Acquire());
-        if (NULL == tm.get())
+        if (nullptr == tm.get())
         {
             LogAlways(L"No transaction active.");
         }
@@ -207,7 +207,7 @@ Execute(
     else if (vm["kill"].as<bool>())
     {
         DP::TransactionManager_t::AutoRelease_t txData(GetTransactionManager().Acquire());
-        if (NULL == txData.get())
+        if (nullptr == txData.get())
         {
             LogAlways(L"No transaction active.");
         }
@@ -267,7 +267,7 @@ Execute(
     {
         pTxData = new SellTabGetItems::Data_t(sellTabMap);
     }
-    if (NULL != pTxData)
+    if (nullptr != pTxData)
     {
         GetTransactionManager().ExecuteTransaction(pTxData);
         if (vm["camp"].as<bool>() && !vm["logon"].as<bool>())
@@ -316,7 +316,7 @@ CmdTransaction(
     StringVector_t args = po::split_winmain(pszCmd);
 
     using namespace Broker::Transaction;
-    DP::Transaction::Data_t *pData = NULL;
+    DP::Transaction::Data_t *pData = nullptr;
     switch (pszCmd[Pos++]) 
     {
     case L'b': // TxBuyItem, TxBuyTabGetItems
@@ -331,6 +331,7 @@ CmdTransaction(
             }
         }
         break;
+
     case L't': // SetWidgetText transaction
         if (L'\0' == pszCmd[Pos])
         {
@@ -346,6 +347,7 @@ CmdTransaction(
                 Buy::Widget::Id::SearchLabel);
         }
         break;
+
     default:
         return cmdTxExecute.Parse(args);
     }

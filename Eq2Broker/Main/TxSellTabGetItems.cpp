@@ -57,7 +57,7 @@ ExecuteTransaction(
 HRESULT
 Handler_t::
 OnTransactionComplete(
-    DP::Transaction::Data_t&)
+    const DP::Transaction::Data_t&)
 {
     LogInfo(L"TxSellTabGetItems::TransactionComplete()");
     return S_OK;
@@ -71,9 +71,9 @@ MessageHandler(
     const DP::Message::Data_t* pMessage)
 {
     LogInfo(L"TxSellTabGetItems::MessageHandler()");
-    DP::TransactionManager_t::AutoRelease_t txData(GetTransactionManager().Acquire());
-    DP::Transaction::Data_t* pTxData = txData.get();
-    if (NULL != pTxData)
+    DP::TransactionManager_t::AutoRelease_t arTxData(GetTransactionManager().Acquire());
+    DP::Transaction::Data_t* pTxData = arTxData.get();
+    if (nullptr != pTxData)
     {
         Data_t& txData = static_cast<Data_t&>(*pTxData);
         if (Message::Id::Sell != pMessage->Id)
@@ -199,13 +199,11 @@ AddRow(
         {
             Quantity = 1;
         }
-        ItemDataMap_t::_Pairib ibItemData =
-            itemDataMap.insert(make_pair(itemName, PriceCountMap_t()));
-        PriceCountMap_t::_Pairib ibPair = 
-            ibItemData.first->second.insert(make_pair(Price, Quantity));
-        if (!ibPair.second)
+        auto [itMap, _] = itemDataMap.insert(make_pair(itemName, PriceCountMap_t()));
+        auto [pq, pqInserted] = itMap->second.insert(make_pair(Price, Quantity));
+        if (!pqInserted)
         {
-            ibPair.first->second += Quantity;
+            pq->second += Quantity;
         }
     }
     return true;

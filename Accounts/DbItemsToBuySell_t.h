@@ -68,7 +68,7 @@ namespace Db
     public:
 
         ItemsToBuySell_t(
-            CDatabase* pDatabase = NULL,
+            CDatabase* pDatabase = nullptr,
             bool       bAllowDefaultConnect = false);
 
         DECLARE_DYNAMIC(ItemsToBuySell_t)

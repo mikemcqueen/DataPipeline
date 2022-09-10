@@ -109,10 +109,10 @@ StartupInitialize()
 void
 FreeDirectDraw()
 {
-    if (NULL != g_pDisplay)
+    if (nullptr != g_pDisplay)
     {
         delete g_pDisplay;
-        g_pDisplay = NULL;
+        g_pDisplay = nullptr;
     }
 }
 
@@ -232,7 +232,7 @@ usage:
         wprintf(L"### unhandled exception ###\n");
     }
 #endif
-    timer.Show(NULL, true);
+    timer.Show(nullptr, true);
     pSurface->WriteBMP(L"diag\\UTScreenDcr_After.bmp");
 	return 0;
 }
@@ -254,14 +254,14 @@ void Execute(CSurface& Surface, size_t iterations)
     }
     Ui::Window_t& Window = MainWindow.GetWindow(WindowId);
     Rect_t TableRect;
-    Tab_t Tab = Tab::None;
+    Tab_t Tab = Tab::Id::None;
     switch (WindowId)
     {
-    case Window::Id::BrokerBuyTab:  Tab = Tab::Buy; break;
-    case Window::Id::BrokerSellTab: Tab = Tab::Sell; break;
+    case Window::Id::BrokerBuyTab:  Tab = Tab::Id::Buy; break;
+    case Window::Id::BrokerSellTab: Tab = Tab::Id::Sell; break;
     default: break;
     }
-    if (Tab::None != Tab)
+    if (Tab::Id::None != Tab)
     {
         Window.UpdateScrollPosition(Ui::Scroll::Bar::Vertical, Surface);
     }
@@ -293,17 +293,17 @@ void Execute(CSurface& Surface, size_t iterations)
 
     while (0 < iterations--)
     {
-        SsWindow.PostData(NULL, &poolItem);
+        SsWindow.PostData(nullptr, &poolItem);
         WaitForSingleObject(GetPipelineManager().GetIdleEvent(), INFINITE);
         switch (WindowId)
         {
         case Window::Id::BrokerBuyTab:
-            BrokerBuy.GetTranslator().GetText().Dump(NULL, true);
+            BrokerBuy.GetTranslator().GetText().Dump(nullptr, true);
             if (0 == iterations)
                 Window.DumpWidgets(Surface, BrokerBuy.GetWindow().GetTableRect());
             break;
         case Window::Id::BrokerSellTab:
-            BrokerSell.GetTranslator().GetText().Dump(NULL, true);
+            BrokerSell.GetTranslator().GetText().Dump(nullptr, true);
             if (0 == iterations)
                 Window.DumpWidgets(Surface, BrokerSell.GetWindow().GetTableRect());
             break;

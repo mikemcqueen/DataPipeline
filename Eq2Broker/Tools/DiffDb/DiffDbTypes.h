@@ -399,7 +399,7 @@ namespace DiffDb
     class CountItemMap_t :
         public multimap<size_t, ItemId_t>
     {
-        typedef tr1::function<size_t(const TimeSaleVectorMap_t&)> FnCount_t;
+        typedef std::function<size_t(const TimeSaleVectorMap_t&)> FnCount_t;
 
     public:
 

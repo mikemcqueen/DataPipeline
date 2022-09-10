@@ -60,7 +60,7 @@ Character_t&
 Character_t::
 GetCharacter()
 {
-    if (NULL == s_pCharacter)
+    if (nullptr == s_pCharacter)
     {
         throw logic_error("Character_t::GetCharacter()");
     }

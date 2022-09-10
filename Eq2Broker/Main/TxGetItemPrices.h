@@ -38,7 +38,7 @@ namespace GetItemPrices
         };
     }
 
-    class Handler_t :
+    class Handler_t final :
         public DP::Handler_t
     {
     private:
@@ -60,7 +60,7 @@ namespace GetItemPrices
 
         HRESULT
         ExecuteTransaction(
-            const DP::Transaction::Data_t& Data) override;
+            DP::Transaction::Data_t& Data) override;
 
         HRESULT
         ResumeTransaction(
@@ -87,7 +87,7 @@ namespace GetItemPrices
 
 /////////////////////////////////////////////////////////////////////////////
 
-    struct Data_t :
+    struct Data_t final :
         public BuyTabGetItems::Data<PriceCountMap_t>
     {
         typedef BuyTabGetItems::Data<PriceCountMap_t> Base_t;

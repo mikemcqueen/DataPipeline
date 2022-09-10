@@ -97,7 +97,7 @@ namespace Logon
 
         HRESULT
         ExecuteTransaction(
-            const DP::Transaction::Data_t& Data) override;
+            DP::Transaction::Data_t& Data) override;
 
         HRESULT
         OnTransactionComplete(

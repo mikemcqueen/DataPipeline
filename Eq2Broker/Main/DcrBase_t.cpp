@@ -30,7 +30,7 @@ static const wchar_t g_CharsetChars[] =
     L"abcdefghijklmnopqrstuvwxyz{|}~’";
 
 const wchar_t     DcrBase_t::CharsetFacename[] = L"Zapf Calligraphic 801 Bold BT";
-//static const Charset_t* s_pBoldCharset = NULL;
+//static const Charset_t* s_pBoldCharset = nullptr;
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -99,18 +99,18 @@ InitAllCharsets()
 #if 1
     GetCharset();
 #else
-    if (NULL == s_pCharset)
+    if (nullptr == s_pCharset)
     {
         LOGFONT lf;
         InitLogFont(lf, CharsetPointSize, CharsetFacename);
         s_pCharset = InitCharset(lf);
-        if (NULL == s_pCharset)
+        if (nullptr == s_pCharset)
             return false;
         s_pCharset->WriteBmp(L"DcrBase");
     }
 #endif
 #if 0
-    if (NULL == s_pBoldCharset)
+    if (nullptr == s_pBoldCharset)
     {
         LOGFONT lf;
         InitLogFont(lf, 8, L"Lucida Sans Unicode"););
@@ -118,7 +118,7 @@ InitAllCharsets()
         lf.lfWeight = FW_BOLD;
 
         s_pBoldCharset = InitCharset(lf);
-        if (NULL == s_pBoldCharset)
+        if (nullptr == s_pBoldCharset)
             return false;
         s_pBoldCharset->WriteBmp(L"DcrBase_Bold");
     }
@@ -139,7 +139,7 @@ InitCharset(
     if (!pCharset->IsValid())
     {
         LogError(L"DcrBase_t: Charset invalid.");
-        return NULL;
+        return nullptr;
     }
     pCharset->SetCharFlags(L"abcdfhikmnpqtuwxzACGKOQTUVWX27':\",./[\\", DCR_NO_RIGHT_SPACING);
     ABC abc_s = { 0, 4, 0 };
@@ -161,9 +161,9 @@ InitLogFont(
     static int logPixY = 0;
     if (0 == logPixY)
     {
-        HDC hDC = GetDC(NULL);
+        HDC hDC = GetDC(nullptr);
         logPixY = GetDeviceCaps(hDC, LOGPIXELSY);
-        ReleaseDC(NULL, hDC);
+        ReleaseDC(nullptr, hDC);
     }
 
     lf.lfHeight          = -MulDiv(int(PointSize), logPixY, 72);

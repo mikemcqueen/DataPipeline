@@ -14,7 +14,7 @@ in the public domain.
 #include "stdafx.h"
 #include "Log.h"
 
-#define NULL	0
+#define nullptr	0
 #define EOF	(-1)
 
 
@@ -38,12 +38,12 @@ getopt(int argc,
 		if(optind >= argc ||
 		   argv[optind][0] != '-' || argv[optind][1] == '\0')
 			return(EOF);
-		else if(wcscmp(argv[optind], L"--") == NULL) {
+		else if(wcscmp(argv[optind], L"--") == nullptr) {
 			optind++;
 			return(EOF);
 		}
 	optopt = c = argv[optind][sp];
-	if(c == ':' || (cp = wcschr(opts, c)) == NULL) {
+	if(c == ':' || (cp = wcschr(opts, c)) == nullptr) {
 		LogError(L"%ls: illegal option -- %c", argv[0], c);
 		if(argv[optind][++sp] == '\0') {
 			optind++;
@@ -66,7 +66,7 @@ getopt(int argc,
 			sp = 1;
 			optind++;
 		}
-		optarg = NULL;
+		optarg = nullptr;
 	}
 	return(c);
 }

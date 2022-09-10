@@ -51,11 +51,11 @@ SsTask_t(
 SsTask_t::
 ~SsTask_t()
 {
-    if (NULL != m_hTimer.get())
+    if (nullptr != m_hTimer.get())
     {
         CancelWaitableTimer(m_hTimer.get());
     }
-	if (NULL != m_hThread.get())
+	if (nullptr != m_hThread.get())
 	{
         if (!IsSuspended())
             Suspend();
@@ -104,27 +104,27 @@ Initialize(
     }
 
 	m_hTimer = CreateWaitableTimer(0, FALSE, 0);
-    if (NULL == m_hTimer.get())
+    if (nullptr == m_hTimer.get())
         return false;
 
 	m_hExitEvent = CreateEvent(0, TRUE, FALSE, 0);
-    if (NULL == m_hExitEvent.get())
+    if (nullptr == m_hExitEvent.get())
         return false;
 
 	m_hSuspendEvent = CreateEvent(0, FALSE, FALSE, 0);
-    if (NULL == m_hSuspendEvent.get())
+    if (nullptr == m_hSuspendEvent.get())
         return false;
 
 	m_hSuspendNotifyEvent = CreateEvent(0, FALSE, FALSE, 0);
-    if (NULL == m_hSuspendNotifyEvent.get())
+    if (nullptr == m_hSuspendNotifyEvent.get())
         return false;
 
 	m_hEvent = CreateEvent(0, FALSE, FALSE, 0);
-    if (NULL == m_hEvent.get())
+    if (nullptr == m_hEvent.get())
         return false;
 
 	m_hThread = util::CreateThread(0, 0, ThreadFunc, (void *)this, 0, &m_dwThreadId);
-    if (NULL == m_hThread.get())
+    if (nullptr == m_hThread.get())
         return false;
 
     return true;
@@ -149,7 +149,7 @@ InitSurfacePool(
         if (FAILED(hr))
         {
             LogError(L"CreateSurface(%d,%d) failed. (0x%08x)", cx, cy, hr);
-            if (NULL != pSurface)
+            if (nullptr != pSurface)
                 delete pSurface;
             return hr;
         }
@@ -291,7 +291,7 @@ SsTask_t::
 AddEventData(
     const DP::Event::Data_t* pData)
 {
-    ASSERT(NULL != pData);
+    ASSERT(nullptr != pData);
     if ((0 == pData->Size) || (MaxEventDataSize < pData->Size))
     {
         throw invalid_argument("SsTask_t::AddEventData() invalid size");
@@ -484,7 +484,7 @@ SsTask_t::
 Shutter()
 {
 	SurfacePoolItem_t* pPoolItem = GetAvailableSurface();
-    if (NULL == pPoolItem) {
+    if (nullptr == pPoolItem) {
         LogWarning(L"SSTask_t::Shutter(): No surface available");
         return;
     }
@@ -498,7 +498,7 @@ Shutter()
 
     RECT rc;
     HWND hWnd = GetSsWindowRect(rc);
-    if (NULL != hWnd) {
+    if (nullptr != hWnd) {
         CSurface* pSurface = pPoolItem->get();
         if (TakeSnapShot(hWnd, rc, pSurface))
         {
@@ -506,7 +506,7 @@ Shutter()
             PostData(hWnd, pPoolItem);
         }
     } else {
-        LogWarning(L"SSTask_t::Shutter(): NULL hWnd");
+        LogWarning(L"SSTask_t::Shutter(): nullptr hWnd");
     }
 }
 
@@ -529,8 +529,8 @@ TakeSnapShot(
     const RECT& rc,
     CSurface*   pSurface)
 {
-    ASSERT(NULL != hWnd);
-	if (NULL != hWnd)
+    ASSERT(nullptr != hWnd);
+	if (nullptr != hWnd)
 	{
 		if(SUCCEEDED(pSurface->BltWindow(hWnd, &rc)))
         {
@@ -556,7 +556,7 @@ SsTask_t::
 SetTestSurface(
     wchar_t* pszPath)
 {
-	ASSERT(NULL != pszPath);
+	ASSERT(nullptr != pszPath);
 	wcscpy_s(m_szTestSurface, sizeof(m_szTestSurface), pszPath);
 }
 

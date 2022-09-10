@@ -37,7 +37,7 @@ namespace Sell
         static const size_t CharColumnWidths[ColumnCount] =  { 10, 100,  10, 30 };
 
         // ScreenTable_t data
-        static const size_t PixelColumnWidths[ColumnCount] = { 44, 0, 48, 100 };
+        static const int PixelColumnWidths[ColumnCount] = { 44, 0, 48, 100 };
     }
 
     typedef TextTableData_t<Table::RowCount, Table::CharsPerRow, Table::ColumnCount> Text_t;

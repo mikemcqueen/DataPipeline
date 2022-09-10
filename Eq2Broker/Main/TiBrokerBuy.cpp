@@ -96,7 +96,7 @@ MessageHandler(
         Message = static_cast<const Translate::Data_t&>(*pMessage);
     DP::Transaction::Data_t* pData = GetTransactionManager().Acquire();
     DP::TransactionManager_t::AutoRelease_t ar(pData);
-    if (NULL != pData)
+    if (nullptr != pData)
     {
         using namespace Transaction;
         switch (pData->Id)

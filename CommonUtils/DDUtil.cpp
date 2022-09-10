@@ -23,10 +23,10 @@
 //-----------------------------------------------------------------------------
 CDisplay::CDisplay()
 {
-	m_pDD				 = NULL;
-	m_pddsFrontBuffer	 = NULL;
-	m_pddsBackBuffer	 = NULL;
-	m_pddsBackBufferLeft = NULL;
+	m_pDD				 = nullptr;
+	m_pddsFrontBuffer	 = nullptr;
+	m_pddsBackBuffer	 = nullptr;
+	m_pddsBackBufferLeft = nullptr;
 }
 
 
@@ -94,8 +94,8 @@ HRESULT CDisplay::CreateFullScreenDisplay( HWND hWnd, DWORD dwWidth,
 	DestroyObjects();
 
 	// DDraw stuff begins here
-	if( FAILED( hr = DirectDrawCreateEx( NULL, (VOID**)&m_pDD,
-										 IID_IDirectDraw7, NULL ) ) )
+	if( FAILED( hr = DirectDrawCreateEx( nullptr, (VOID**)&m_pDD,
+										 IID_IDirectDraw7, nullptr ) ) )
 		return E_FAIL;
 
 	// Set cooperative level
@@ -117,7 +117,7 @@ HRESULT CDisplay::CreateFullScreenDisplay( HWND hWnd, DWORD dwWidth,
 	ddsd.dwBackBufferCount = 1;
 
 	if( FAILED( hr = m_pDD->CreateSurface( &ddsd, &m_pddsFrontBuffer,
-										   NULL ) ) )
+										   nullptr ) ) )
 		return E_FAIL;
 
 	// Get a pointer to the back buffer
@@ -153,8 +153,8 @@ HRESULT CDisplay::CreateWindowedDisplay( HWND hWnd, DWORD dwWidth, DWORD dwHeigh
 	DestroyObjects();
 
 	// DDraw stuff begins here
-	if( FAILED( hr = DirectDrawCreateEx( NULL, (VOID**)&m_pDD,
-										 IID_IDirectDraw7, NULL ) ) )
+	if( FAILED( hr = DirectDrawCreateEx( nullptr, (VOID**)&m_pDD,
+										 IID_IDirectDraw7, nullptr ) ) )
 		return E_FAIL;
 
 	// Set cooperative level
@@ -178,10 +178,10 @@ if( bNormal )
 	// Aet window size
 	SetRect( &rc, 0, 0, dwWidth, dwHeight );
 
-	AdjustWindowRectEx( &rc, GetWindowStyle(hWnd), GetMenu(hWnd) != NULL,
+	AdjustWindowRectEx( &rc, GetWindowStyle(hWnd), GetMenu(hWnd) != nullptr,
 						GetWindowExStyle(hWnd) );
 
-	SetWindowPos( hWnd, NULL, 0, 0, rc.right-rc.left, rc.bottom-rc.top,
+	SetWindowPos( hWnd, nullptr, 0, 0, rc.right-rc.left, rc.bottom-rc.top,
 				  SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE );
 
 	SetWindowPos( hWnd, HWND_NOTOPMOST, 0, 0, 0, 0,
@@ -192,7 +192,7 @@ if( bNormal )
 	GetWindowRect( hWnd, &rc );
 	if( rc.left < rcWork.left ) rc.left = rcWork.left;
 	if( rc.top	< rcWork.top )	rc.top	= rcWork.top;
-	SetWindowPos( hWnd, NULL, rc.left, rc.top, 0, 0,
+	SetWindowPos( hWnd, nullptr, rc.left, rc.top, 0, 0,
 				  SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE );
 
 	LPDIRECTDRAWCLIPPER pcClipper;
@@ -204,7 +204,7 @@ if( bNormal )
 	ddsd.dwFlags		= DDSD_CAPS;
 	ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
 
-	if( FAILED( m_pDD->CreateSurface( &ddsd, &m_pddsFrontBuffer, NULL ) ) )
+	if( FAILED( m_pDD->CreateSurface( &ddsd, &m_pddsFrontBuffer, nullptr ) ) )
 		return E_FAIL;
 
 	// Create the backbuffer surface
@@ -213,10 +213,10 @@ if( bNormal )
 	ddsd.dwWidth		= dwWidth;
 	ddsd.dwHeight		= dwHeight;
 
-	if( FAILED( hr = m_pDD->CreateSurface( &ddsd, &m_pddsBackBuffer, NULL ) ) )
+	if( FAILED( hr = m_pDD->CreateSurface( &ddsd, &m_pddsBackBuffer, nullptr ) ) )
 		return E_FAIL;
 
-	if( FAILED( hr = m_pDD->CreateClipper( 0, &pcClipper, NULL ) ) )
+	if( FAILED( hr = m_pDD->CreateClipper( 0, &pcClipper, nullptr ) ) )
 		return E_FAIL;
 
 	if( FAILED( hr = pcClipper->SetHWnd( 0, hWnd ) ) )
@@ -301,24 +301,24 @@ DWORD		dwDesiredHeight
 )
 {
 	HRESULT		   hr;
-	HBITMAP		   hBMP = NULL;
+	HBITMAP		   hBMP = nullptr;
 	BITMAP		   bmp;
 
-	if( m_pDD == NULL || strBMP == NULL || ppSurface == NULL ) 
+	if( m_pDD == nullptr || strBMP == nullptr || ppSurface == nullptr ) 
 		return E_INVALIDARG;
 
 	*ppSurface = 0;
 
 	//	Try to load the bitmap as a resource, if that fails, try it as a file
-	hBMP = (HBITMAP) LoadImage( GetModuleHandle(NULL), strBMP, 
+	hBMP = (HBITMAP) LoadImage( GetModuleHandle(nullptr), strBMP, 
 								IMAGE_BITMAP, dwDesiredWidth, dwDesiredHeight, 
 								LR_CREATEDIBSECTION );
-	if( hBMP == NULL )
+	if( hBMP == nullptr )
 	{
-		hBMP = (HBITMAP) LoadImage( NULL, strBMP, 
+		hBMP = (HBITMAP) LoadImage( nullptr, strBMP, 
 									IMAGE_BITMAP, dwDesiredWidth, dwDesiredHeight, 
 									LR_LOADFROMFILE | LR_CREATEDIBSECTION );
-		if( hBMP == NULL )
+		if( hBMP == nullptr )
 			return E_FAIL;
 	}
 
@@ -381,22 +381,22 @@ DWORD		dwDesiredHeight
 )
 {
 	HRESULT		   hr;
-	HBITMAP		   hBMP = NULL;
+	HBITMAP		   hBMP = nullptr;
 	BITMAP		   bmp;
 
-	if( m_pDD == NULL || strBMP == NULL || pSurface == NULL ) 
+	if( m_pDD == nullptr || strBMP == nullptr || pSurface == nullptr ) 
 		return E_INVALIDARG;
 
 	//	Try to load the bitmap as a resource, if that fails, try it as a file
-	hBMP = (HBITMAP) LoadImage( GetModuleHandle(NULL), strBMP, 
+	hBMP = (HBITMAP) LoadImage( GetModuleHandle(nullptr), strBMP, 
 								IMAGE_BITMAP, dwDesiredWidth, dwDesiredHeight, 
 								LR_CREATEDIBSECTION );
-	if( hBMP == NULL )
+	if( hBMP == nullptr )
 	{
-		hBMP = (HBITMAP) LoadImage( NULL, strBMP, 
+		hBMP = (HBITMAP) LoadImage( nullptr, strBMP, 
 									IMAGE_BITMAP, dwDesiredWidth, dwDesiredHeight, 
 									LR_LOADFROMFILE | LR_CREATEDIBSECTION );
-		if( hBMP == NULL )
+		if( hBMP == nullptr )
 			return E_FAIL;
 	}
 
@@ -428,23 +428,23 @@ DWORD		dwDesiredHeight
 //-----------------------------------------------------------------------------
 // Name: CDisplay::CreateSurfaceFromText()
 // Desc: Creates a DirectDrawSurface from a text string using hFont or the default 
-//		 GDI font if hFont is NULL.
+//		 GDI font if hFont is nullptr.
 //-----------------------------------------------------------------------------
 HRESULT CDisplay::CreateSurfaceFromText( CSurface** ppSurface,
 										 HFONT hFont, wchar_t* strText, 
 										 COLORREF crBackground, COLORREF crForeground )
 {
-	HDC					 hDC  = NULL;
+	HDC					 hDC  = nullptr;
 	HRESULT				 hr;
 	DDSURFACEDESC2		 ddsd;
 	SIZE				 sizeText;
 
-	if( m_pDD == NULL || strText == NULL || ppSurface == NULL )
+	if( m_pDD == nullptr || strText == nullptr || ppSurface == nullptr )
 		return E_INVALIDARG;
 
-	*ppSurface = NULL;
+	*ppSurface = nullptr;
 
-	hDC = GetDC( NULL );
+	hDC = GetDC( nullptr );
 
 	HFONT hOldFont = 0;
 	if( hFont )
@@ -454,7 +454,7 @@ HRESULT CDisplay::CreateSurfaceFromText( CSurface** ppSurface,
 
 	if( hOldFont )
 		SelectObject( hDC, hOldFont );
-	ReleaseDC( NULL, hDC );
+	ReleaseDC( nullptr, hDC );
 
 	// Create a DirectDrawSurface for this bitmap
 	ZeroMemory( &ddsd, sizeof(ddsd) );
@@ -489,16 +489,16 @@ HRESULT CDisplay::Present()
 {
 	HRESULT hr;
 
-	if( NULL == m_pddsFrontBuffer && NULL == m_pddsBackBuffer )
+	if( nullptr == m_pddsFrontBuffer && nullptr == m_pddsBackBuffer )
 		return E_POINTER;
 
 	for (;;)
 	{
 		if( m_bWindowed )
 			hr = m_pddsFrontBuffer->Blt( &m_rcWindow, m_pddsBackBuffer,
-										 NULL, DDBLT_WAIT, NULL );
+										 nullptr, DDBLT_WAIT, nullptr );
 		else
-			hr = m_pddsFrontBuffer->Flip( NULL, 0 );
+			hr = m_pddsFrontBuffer->Flip( nullptr, 0 );
 
 		if( hr == DDERR_SURFACELOST )
 		{
@@ -520,7 +520,7 @@ HRESULT CDisplay::Present()
 //-----------------------------------------------------------------------------
 HRESULT CDisplay::ShowBitmap( HBITMAP hbm, LPDIRECTDRAWPALETTE pPalette )
 {
-	if( NULL == m_pddsFrontBuffer ||  NULL == m_pddsBackBuffer )
+	if( nullptr == m_pddsFrontBuffer ||  nullptr == m_pddsBackBuffer )
 		return E_POINTER;
 
 	// Set the palette before loading the bitmap
@@ -546,7 +546,7 @@ HRESULT CDisplay::ShowBitmap( HBITMAP hbm, LPDIRECTDRAWPALETTE pPalette )
 HRESULT CDisplay::ColorKeyBlt( DWORD x, DWORD y, LPDIRECTDRAWSURFACE7 pdds,
 							   RECT* prc )
 {
-	if( NULL == m_pddsBackBuffer )
+	if( nullptr == m_pddsBackBuffer )
 		return E_POINTER;
 
 	return m_pddsBackBuffer->BltFast( x, y, pdds, prc, DDBLTFAST_SRCCOLORKEY );
@@ -562,7 +562,7 @@ HRESULT CDisplay::ColorKeyBlt( DWORD x, DWORD y, LPDIRECTDRAWSURFACE7 pdds,
 HRESULT CDisplay::Blt( DWORD x, DWORD y, LPDIRECTDRAWSURFACE7 pdds, RECT* prc,
 					   DWORD dwFlags )
 {
-	if( NULL == m_pddsBackBuffer )
+	if( nullptr == m_pddsBackBuffer )
 		return E_POINTER;
 
 	return m_pddsBackBuffer->BltFast( x, y, pdds, prc, dwFlags );
@@ -577,7 +577,7 @@ HRESULT CDisplay::Blt( DWORD x, DWORD y, LPDIRECTDRAWSURFACE7 pdds, RECT* prc,
 //-----------------------------------------------------------------------------
 HRESULT CDisplay::Blt( DWORD x, DWORD y, CSurface* pSurface, RECT* prc )
 {
-	if( NULL == pSurface )
+	if( nullptr == pSurface )
 		return E_INVALIDARG;
 
 	if( pSurface->IsColorKeyed() )
@@ -595,7 +595,7 @@ HRESULT CDisplay::Blt( DWORD x, DWORD y, CSurface* pSurface, RECT* prc )
 //-----------------------------------------------------------------------------
 HRESULT CDisplay::Clear( DWORD dwColor )
 {
-	if( NULL == m_pddsBackBuffer )
+	if( nullptr == m_pddsBackBuffer )
 		return E_POINTER;
 
 	// Erase the background
@@ -604,7 +604,7 @@ HRESULT CDisplay::Clear( DWORD dwColor )
 	ddbltfx.dwSize		= sizeof(ddbltfx);
 	ddbltfx.dwFillColor = dwColor;
 
-	return m_pddsBackBuffer->Blt( NULL, NULL, NULL, DDBLT_COLORFILL, &ddbltfx );
+	return m_pddsBackBuffer->Blt( nullptr, nullptr, nullptr, DDBLT_COLORFILL, &ddbltfx );
 }
 
 
@@ -616,7 +616,7 @@ HRESULT CDisplay::Clear( DWORD dwColor )
 //-----------------------------------------------------------------------------
 HRESULT CDisplay::SetPalette( LPDIRECTDRAWPALETTE pPalette )
 {
-	if( NULL == m_pddsFrontBuffer )
+	if( nullptr == m_pddsFrontBuffer )
 		return E_POINTER;
 
 	return m_pddsFrontBuffer->SetPalette( pPalette );
@@ -632,34 +632,34 @@ HRESULT CDisplay::SetPalette( LPDIRECTDRAWPALETTE pPalette )
 HRESULT CDisplay::CreatePaletteFromBitmap( LPDIRECTDRAWPALETTE* ppPalette,
 										   const TCHAR* strBMP )
 {
-	HRSRC			  hResource		 = NULL;
-	RGBQUAD*		  pRGB			 = NULL;
-	BITMAPINFOHEADER* pbi = NULL;
+	HRSRC			  hResource		 = nullptr;
+	RGBQUAD*		  pRGB			 = nullptr;
+	BITMAPINFOHEADER* pbi = nullptr;
 	PALETTEENTRY	  aPalette[256];
-	HANDLE			  hFile = NULL;
+	HANDLE			  hFile = nullptr;
 	DWORD			  iColor;
 	DWORD			  dwColors;
 	BITMAPFILEHEADER  bf;
 	BITMAPINFOHEADER  bi;
 	DWORD			  dwBytesRead;
 
-	if( m_pDD == NULL || strBMP == NULL || ppPalette == NULL )
+	if( m_pDD == nullptr || strBMP == nullptr || ppPalette == nullptr )
 		return E_INVALIDARG;
 
-	*ppPalette = NULL;
+	*ppPalette = nullptr;
 
 	//	Try to load the bitmap as a resource, if that fails, try it as a file
-	hResource = FindResource( NULL, strBMP, RT_BITMAP );
+	hResource = FindResource( nullptr, strBMP, RT_BITMAP );
 	if( hResource )
 	{
-		pbi = (LPBITMAPINFOHEADER) LockResource( LoadResource( NULL, hResource ) );		  
-		if( NULL == pbi )
+		pbi = (LPBITMAPINFOHEADER) LockResource( LoadResource( nullptr, hResource ) );		  
+		if( nullptr == pbi )
 			return E_FAIL;
 
 		pRGB = (RGBQUAD*) ( (BYTE*) pbi + pbi->biSize );
 
 		// Figure out how many colors there are
-		if( pbi == NULL || pbi->biSize < sizeof(BITMAPINFOHEADER) )
+		if( pbi == nullptr || pbi->biSize < sizeof(BITMAPINFOHEADER) )
 			dwColors = 0;
 		else if( pbi->biBitCount > 8 )
 			dwColors = 0;
@@ -678,16 +678,16 @@ HRESULT CDisplay::CreatePaletteFromBitmap( LPDIRECTDRAWPALETTE* ppPalette,
 			aPalette[iColor].peFlags = 0;
 		}
 
-		return m_pDD->CreatePalette( DDPCAPS_8BIT, aPalette, ppPalette, NULL );
+		return m_pDD->CreatePalette( DDPCAPS_8BIT, aPalette, ppPalette, nullptr );
 	}
 
 	// Attempt to load bitmap as a file
-	hFile = CreateFile( strBMP, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL );
-	if( NULL == hFile )
+	hFile = CreateFile( strBMP, GENERIC_READ, 0, nullptr, OPEN_EXISTING, 0, nullptr );
+	if( nullptr == hFile )
 		return E_FAIL;
 
 	// Read the BITMAPFILEHEADER
-	ReadFile( hFile, &bf, sizeof(bf), &dwBytesRead, NULL );
+	ReadFile( hFile, &bf, sizeof(bf), &dwBytesRead, nullptr );
 	if( dwBytesRead != sizeof(bf) )
 	{
 		CloseHandle( hFile );
@@ -695,7 +695,7 @@ HRESULT CDisplay::CreatePaletteFromBitmap( LPDIRECTDRAWPALETTE* ppPalette,
 	}
 
 	// Read the BITMAPINFOHEADER
-	ReadFile( hFile, &bi, sizeof(bi), &dwBytesRead, NULL );
+	ReadFile( hFile, &bi, sizeof(bi), &dwBytesRead, nullptr );
 	if( dwBytesRead != sizeof(bi) )
 	{
 		CloseHandle( hFile );
@@ -703,7 +703,7 @@ HRESULT CDisplay::CreatePaletteFromBitmap( LPDIRECTDRAWPALETTE* ppPalette,
 	}
 
 	// Read the PALETTEENTRY 
-	ReadFile( hFile, aPalette, sizeof(aPalette), &dwBytesRead, NULL );
+	ReadFile( hFile, aPalette, sizeof(aPalette), &dwBytesRead, nullptr );
 	if( dwBytesRead != sizeof(aPalette) )
 	{
 		CloseHandle( hFile );
@@ -731,7 +731,7 @@ HRESULT CDisplay::CreatePaletteFromBitmap( LPDIRECTDRAWPALETTE* ppPalette,
 		aPalette[iColor].peBlue = r;
 	}
 
-	return m_pDD->CreatePalette( DDPCAPS_8BIT, aPalette, ppPalette, NULL );
+	return m_pDD->CreatePalette( DDPCAPS_8BIT, aPalette, ppPalette, nullptr );
 }
 
 
@@ -772,7 +772,7 @@ HRESULT CDisplay::InitClipper()
 	HRESULT hr;
 
 	// Create a clipper when using GDI to draw on the primary surface 
-	if( FAILED( hr = m_pDD->CreateClipper( 0, &pClipper, NULL ) ) )
+	if( FAILED( hr = m_pDD->CreateClipper( 0, &pClipper, nullptr ) ) )
 		return hr;
 
 	pClipper->SetHWnd( 0, m_hWnd );
@@ -797,7 +797,7 @@ HRESULT CDisplay::InitClipper()
 //-----------------------------------------------------------------------------
 CSurface::CSurface()
 {
-	m_pdds = NULL;
+	m_pdds = nullptr;
 	m_bColorKeyed = NULL;
     ::SetRect(&m_rcLastBlt, 0, 0, 0, 0);
 }
@@ -850,7 +850,7 @@ HRESULT CSurface::Create( LPDIRECTDRAW7 pDD, DDSURFACEDESC2* pddsd )
 	HRESULT hr;
 
 	// Create the DDraw surface
-	if( FAILED( hr = pDD->CreateSurface( pddsd, &m_pdds, NULL ) ) )
+	if( FAILED( hr = pDD->CreateSurface( pddsd, &m_pdds, nullptr ) ) )
 		return hr;
 
 	m_ddsd.dwSize = sizeof(m_ddsd);
@@ -891,7 +891,7 @@ HRESULT CSurface::DrawBitmap( HBITMAP hBMP,
 	DDSURFACEDESC2 ddsd;
 	HRESULT		   hr;
 
-	if( hBMP == NULL || m_pdds == NULL )
+	if( hBMP == nullptr || m_pdds == nullptr )
 		return E_INVALIDARG;
 
 	// Make sure this surface is restored.
@@ -906,8 +906,8 @@ HRESULT CSurface::DrawBitmap( HBITMAP hBMP,
 		return E_NOTIMPL;
 
 	// Select bitmap into a memoryDC so we can use it.
-	hDCImage = CreateCompatibleDC( NULL );
-	if( NULL == hDCImage )
+	hDCImage = CreateCompatibleDC( nullptr );
+	if( nullptr == hDCImage )
 		return E_FAIL;
 
 	SelectObject( hDCImage, hBMP );
@@ -944,16 +944,16 @@ HRESULT CSurface::DrawBitmap( HBITMAP hBMP,
 //-----------------------------------------------------------------------------
 // Name: CSurface::DrawText()
 // Desc: Draws a text string on a DirectDraw surface using hFont or the default
-//		 GDI font if hFont is NULL.	 
+//		 GDI font if hFont is nullptr.	 
 //-----------------------------------------------------------------------------
 HRESULT CSurface::DrawText( HFONT hFont, LPCTSTR strText, 
 							DWORD dwOriginX, DWORD dwOriginY,
 							COLORREF crBackground, COLORREF crForeground )
 {
-	HDC		hDC = NULL;
+	HDC		hDC = nullptr;
 	HRESULT hr;
 
-	if( m_pdds == NULL || strText == NULL )
+	if( m_pdds == nullptr || strText == nullptr )
 		return E_INVALIDARG;
 
 	// Make sure this surface is restored.
@@ -1004,19 +1004,19 @@ HRESULT CSurface::DrawBitmap( TCHAR* strBMP,
 	HBITMAP hBMP;
 	HRESULT hr;
 
-	if( m_pdds == NULL || strBMP == NULL )
+	if( m_pdds == nullptr || strBMP == nullptr )
 		return E_INVALIDARG;
 
 	//	Try to load the bitmap as a resource, if that fails, try it as a file
-	hBMP = (HBITMAP) LoadImage( GetModuleHandle(NULL), strBMP, 
+	hBMP = (HBITMAP) LoadImage( GetModuleHandle(nullptr), strBMP, 
 								IMAGE_BITMAP, dwDesiredWidth, dwDesiredHeight, 
 								LR_CREATEDIBSECTION );
-	if( hBMP == NULL )
+	if( hBMP == nullptr )
 	{
-		hBMP = (HBITMAP) LoadImage( NULL, strBMP, IMAGE_BITMAP, 
+		hBMP = (HBITMAP) LoadImage( nullptr, strBMP, IMAGE_BITMAP, 
 									dwDesiredWidth, dwDesiredHeight, 
 									LR_LOADFROMFILE | LR_CREATEDIBSECTION );
-		if( hBMP == NULL )
+		if( hBMP == nullptr )
 			return E_FAIL;
 	}
 
@@ -1041,7 +1041,7 @@ HRESULT CSurface::DrawBitmap( TCHAR* strBMP,
 //-----------------------------------------------------------------------------
 HRESULT CSurface::SetColorKey( DWORD dwColorKey )
 {
-	if( NULL == m_pdds )
+	if( nullptr == m_pdds )
 		return E_POINTER;
 
 	m_bColorKeyed = TRUE;
@@ -1064,7 +1064,7 @@ HRESULT CSurface::SetColorKey( DWORD dwColorKey )
 //-----------------------------------------------------------------------------
 DWORD CSurface::ConvertGDIColor( COLORREF dwGDIColor )
 {
-	if( m_pdds == NULL )
+	if( m_pdds == nullptr )
 		return 0x00000000;
 
 	COLORREF	   rgbT = 0;
@@ -1083,13 +1083,13 @@ DWORD CSurface::ConvertGDIColor( COLORREF dwGDIColor )
 
 	// Now lock the surface so we can read back the converted color
 	ddsd.dwSize = sizeof(ddsd);
-	hr = m_pdds->Lock( NULL, &ddsd, DDLOCK_WAIT, NULL );
+	hr = m_pdds->Lock( nullptr, &ddsd, DDLOCK_WAIT, nullptr );
 	if( hr == DD_OK)
 	{
 		dw = *(DWORD *) ddsd.lpSurface; 
 		if( ddsd.ddpfPixelFormat.dwRGBBitCount < 32 ) // Mask it to bpp
 			dw &= ( 1 << ddsd.ddpfPixelFormat.dwRGBBitCount ) - 1;	
-		m_pdds->Unlock(NULL);
+		m_pdds->Unlock(nullptr);
 	}
 
 	//	Now put the color that was there back.
@@ -1114,7 +1114,7 @@ HRESULT CSurface::GetBitMaskInfo( DWORD dwBitMask, DWORD* pdwShift, DWORD* pdwBi
 	DWORD dwShift = 0;
 	DWORD dwBits  = 0; 
 
-	if( pdwShift == NULL || pdwBits == NULL )
+	if( pdwShift == nullptr || pdwBits == nullptr )
 		return E_INVALIDARG;
 
 	if( dwBitMask )
@@ -1143,7 +1143,7 @@ HRESULT CSurface::GetBitMaskInfo( DWORD dwBitMask, DWORD* pdwShift, DWORD* pdwBi
 
 HRESULT CSurface::Lock( DDSURFACEDESC2 *pDDSD, RECT *pRect/*=0*/ ) const
 {
-	ASSERT( NULL != pDDSD );
+	ASSERT( nullptr != pDDSD );
 	pDDSD->dwSize = sizeof(DDSURFACEDESC2);
 	return m_pdds->Lock( pRect, pDDSD, 0, 0 );
 }
@@ -1528,7 +1528,7 @@ CSurface::BltWindow( HWND hWnd, const RECT *pRect )
 	HDC hdcSurface = GetDC();
 	ASSERT( hdcWnd && hdcSurface );
 	RECT rc;
-	if (NULL == pRect)
+	if (nullptr == pRect)
 	{
 		// min(rcclient.width(),getwidth()), min(rcclient.height(),getheight())
 		SetRect( &rc, 0, 0, GetWidth(), GetHeight() );
@@ -1777,7 +1777,7 @@ FindSurfaceInRect(
     const POINT*    pptHint) const
 {
     // Check if origin is found at hint location
-    if ((NULL != pptHint) && ((0 < pptHint->x) || (0 < pptHint->y)))
+    if ((nullptr != pptHint) && ((0 < pptHint->x) || (0 < pptHint->y)))
     {
         if (Compare(pptHint->x, pptHint->y, surface))
         {

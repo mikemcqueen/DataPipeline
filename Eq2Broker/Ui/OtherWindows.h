@@ -28,11 +28,9 @@ public:
 
     Eq2LoadingWindow_t();
 
-    virtual
     const CSurface*
     GetOriginSurface() const override;
 
-    virtual
     void
     GetOriginSearchRect(
         const CSurface& surface,
@@ -57,11 +55,9 @@ public:
 
     TransitionWindow_t();
 
-    virtual
     const CSurface*
     GetOriginSurface() const override;
 
-    virtual
     void
     GetOriginSearchRect(
         const CSurface& surface,
@@ -86,11 +82,9 @@ public:
 
     MainChatWindow_t();
 
-    virtual
     const CSurface*
     GetOriginSurface() const override;
 
-    virtual
     void
     GetOriginSearchRect(
         const CSurface& surface,

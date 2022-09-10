@@ -28,47 +28,48 @@ namespace Broker
         static const COLORREF SelectedLowColor  = RGB(30,30,30);// RGB=0x252025
         static const COLORREF SelectedHighColor = RGB(39,39,39);
 
-        static const size_t RowHeight            = 42;
-        static const size_t QuantityTextHeight   = 14;
-        static const size_t GapSizeY             = 2;
-        static const size_t CharHeight           = 12;
-        static const SIZE   BorderSize           = { 2, 2 };
-        static const SIZE   DoubleBorderSize     = { BorderSize.cx * 2, BorderSize.cy * 2 };
-    }
+        constexpr int RowHeight            = 42;
+        constexpr int QuantityTextHeight   = 14;
+        constexpr int GapSizeY             = 2;
+        constexpr int CharHeight           = 12;
+        static const SIZE BorderSize           = { 2, 2 };
+        static const SIZE DoubleBorderSize     = { BorderSize.cx * 2, BorderSize.cy * 2 };
+    } // Table
 
     class Window_t;
     class MainWindow_t;
 
     namespace Window
     {
-        namespace Id
-        {
-            enum : Ui::WindowId_t
-            {
-                Eq2Login                         = Ui::Window::Id::User_First,
-                Eq2Loading,
-                Zoning,
-                MainChat,
-                BrokerFrame,
-                BrokerBuyTab,                    // 5
-                BrokerSellTab,
-                BrokerSalesLogTab,
-                BrokerSetPricePopup,
-            };
+
+        constexpr auto MakeId(const int id) noexcept {
+            constexpr auto first = static_cast<int>(Ui::Window::Id::User_First);
+            return static_cast<Ui::WindowId_t>(first + id);
         }
+
+        namespace Id {
+            constexpr auto Eq2Login = MakeId(0);
+            constexpr auto Eq2Loading = MakeId(1);
+            constexpr auto Zoning = MakeId(2);
+            constexpr auto MainChat = MakeId(3);
+            constexpr auto BrokerFrame = MakeId(4);
+            constexpr auto BrokerBuyTab = MakeId(5);
+            constexpr auto BrokerSellTab = MakeId(6);
+            constexpr auto BrokerSalesLogTab = MakeId(7);
+            constexpr auto BrokerSetPricePopup = MakeId(8);
+        } // Id
+
     } // Window
 
-    namespace Tab
-    {
-        enum E : unsigned
-        {
+    namespace Tab {
+        enum class Id {
             None,
             Buy,
             Sell,
             SalesLog,
         };
     } // Tab
-    typedef Tab::E Tab_t;
+    using Tab_t = Tab::Id;
 
     namespace Widget
     {

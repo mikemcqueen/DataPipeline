@@ -111,7 +111,7 @@ PostData(
         return;
     }
     void *pBuffer = GetPipelineManager().Alloc(sizeof(Data_t));
-    if (NULL == pBuffer)
+    if (nullptr == pBuffer)
     {
         LogError(L"DcrBrokerBuy::PostData(): Alloc callback data failed.");
     }

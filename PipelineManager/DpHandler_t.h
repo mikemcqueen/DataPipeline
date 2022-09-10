@@ -108,7 +108,7 @@ public:
     virtual
     HRESULT
     ExecuteTransaction(
-        const Transaction::Data_t& /*txData*/) // changed const
+        Transaction::Data_t& /*txData*/)
     {
         LogWarning(L"DP::Handler_t::ExecutionTransaction fall-through (S_FALSE)");
         return S_FALSE;
@@ -117,7 +117,7 @@ public:
     virtual
     HRESULT
     ResumeTransaction(
-        const Transaction::Data_t& /*txData*/, // changed const
+        Transaction::Data_t& /*txData*/,
         const Transaction::Data_t* /*pPrevTxData*/)
     {
         LogWarning(L"DP::Handler_t::ResumeTransaction fall-through (S_FALSE)");

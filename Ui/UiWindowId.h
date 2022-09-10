@@ -2,21 +2,28 @@
 
 namespace Ui
 {
-    typedef unsigned WindowId_t;
     typedef unsigned WidgetId_t;
+
+    enum class WindowId_t : int {};
+
+    constexpr bool operator==(const WindowId_t lhs, const WindowId_t rhs) noexcept {
+        return static_cast<int>(lhs) == static_cast<int>(rhs);
+    }
+
+    constexpr bool operator!=(const WindowId_t lhs, const WindowId_t rhs) noexcept {
+        return !(lhs == rhs);
+    }
 
     namespace Window
     {
-        namespace Id
-        {
-            enum WindowId_t
-            {
-                Unknown    = 0,
-                MainWindow = 1,   // main application overlapped window
 
-                User_First = 100
-            };
-        }
+    namespace Id
+    {
+        constexpr auto Unknown = static_cast<WindowId_t>(0);
+        constexpr auto MainWindow = static_cast<WindowId_t>(1);   // main application overlapped window
+        constexpr auto User_First = static_cast<WindowId_t>(100);
+    }
+
     } // Window
 
     namespace Widget
@@ -35,4 +42,5 @@ namespace Ui
             };
         }
     } // Widget
+
 } // Ui

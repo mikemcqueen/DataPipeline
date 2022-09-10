@@ -230,7 +230,7 @@ GetNextHandler(
     while (m_Handlers.end() != it)
     {
         if ((0 != (it->Stage & Stage)) &&
-            ((NULL == pszClass) || (0 == it->pHandler->GetClass().compare(pszClass))))
+            ((nullptr == pszClass) || (0 == it->pHandler->GetClass().compare(pszClass))))
         {
             return true;
         }
@@ -266,10 +266,10 @@ AddTransactionHandler(
     Stage_t         stage,
     TransactionId_t transactionId,
     Handler_t&      handler,
-    const wchar_t*  displayName /*= NULL*/)
+    const wchar_t*  displayName /*= nullptr*/)
 {
     bool added = false;
-    if (handler.Initialize(NULL))
+    if (handler.Initialize(nullptr))
     {
         // NOTE: obviously this only allows for one handler per transaction Id,
         // regardless of stage.
@@ -279,7 +279,7 @@ AddTransactionHandler(
         if (m_txHandlerMap.end() == itFind)
         {
             wchar_t stringId[16];
-            if (NULL == displayName)
+            if (nullptr == displayName)
             {
                 swprintf_s(stringId, L"TX-0%x", transactionId);
                 displayName = stringId;
@@ -327,7 +327,7 @@ SendEvent(
     size_t Handled = 0;
     CLock lock(m_csHandlers);
     HandlerVector_t::const_iterator it = m_Handlers.begin();
-    const wchar_t* pClass = NULL;
+    const wchar_t* pClass = nullptr;
     if (L'\0' != Data.Class[0])
     {
         pClass = Data.Class;
@@ -364,7 +364,7 @@ HRESULT
 PipelineManager_t::
 SendTransactionEvent(
     Transaction::Data_t& Data,
-    Transaction::Data_t* pPrevTxData /*= NULL*/)
+    Transaction::Data_t* pPrevTxData /*= nullptr*/)
 {
     //using namespace DP::Message;
     if (DP::Message::Type::Transaction != Data.Type)
@@ -428,7 +428,7 @@ PipelineManager_t::
 Callback(
     Message::Data_t* pMessage)
 {
-    if (NULL == pMessage)
+    if (nullptr == pMessage)
     {
         throw std::invalid_argument("PipelineManager_t::Callback(): Invalid message");
     }
@@ -544,7 +544,7 @@ TrySendTransactionMessage(
     HRESULT hr = E_FAIL;
     DP::TransactionManager_t::AutoRelease_t TxData(GetTransactionManager().Acquire());
     const DP::Transaction::Data_t* pTxData = TxData.get();
-    if (NULL != pTxData)
+    if (nullptr != pTxData)
     {
         // There is a transaction active: see if we have a handler registered
         // for the active transaction & specified stage

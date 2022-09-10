@@ -46,7 +46,7 @@ Window_t(
         parent,
         L"BrokerSalesLogTab",
         WindowFlags,
-        NULL,
+        nullptr,
         0,
         DefaultTableOffset,
         InnerTableRect,

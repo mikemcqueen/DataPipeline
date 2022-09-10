@@ -176,9 +176,9 @@ GetTabWindow(
     using namespace Broker::Window;
     switch (Tab)
     {
-    case Tab::Buy:      return static_cast<TabWindow_t&>(GetWindow(Id::BrokerBuyTab));
-    case Tab::Sell:     return static_cast<TabWindow_t&>(GetWindow(Id::BrokerSellTab));
-    case Tab::SalesLog: return static_cast<TabWindow_t&>(GetWindow(Id::BrokerSalesLogTab));
+    case Tab::Id::Buy:      return static_cast<TabWindow_t&>(GetWindow(Id::BrokerBuyTab));
+    case Tab::Id::Sell:     return static_cast<TabWindow_t&>(GetWindow(Id::BrokerSellTab));
+    case Tab::Id::SalesLog: return static_cast<TabWindow_t&>(GetWindow(Id::BrokerSalesLogTab));
     default:
         throw std::invalid_argument("BrokerWindow::GetTabWindow()");
     }
@@ -196,14 +196,14 @@ GetWindowId(
     const CSurface& surface,
     const POINT*    /*pptHint*/) const
 {
-    using namespace Ui::Window;
-    Ui::WindowId_t windowId = Id::Unknown;
+    ///using namespace Ui::Window;
+    Ui::WindowId_t windowId = Ui::Window::Id::Unknown;
     POINT ptCaption;
-    if (IsLocatedOn(surface, Locate::CompareLastOrigin | Locate::Search, &ptCaption))
+    if (IsLocatedOn(surface, Ui::Window::Locate::CompareLastOrigin | Ui::Window::Locate::Search, &ptCaption))
     {
         POINT ptTab;
         Tab_t Tab = FindActiveTab(surface, ptCaption, ptTab);
-        if (Tab::None != Tab)
+        if (Tab::Id::None != Tab)
         {
             Ui::Window_t& tabWindow = GetTabWindow(Tab);
             LogInfo(L"BrokerWindow::GetWindowId() Found %ls Tab @ (%d, %d)",
@@ -225,7 +225,7 @@ IsLocatedOn(
           Flag_t    flags,
           POINT*    pptOrigin) const
 {
-    static const CSurface* pLastCaption = NULL;
+    static const CSurface* pLastCaption = nullptr;
     static const CSurface Window_t::* captions[] =
     {
         &Window_t::m_marketCaption,
@@ -233,7 +233,7 @@ IsLocatedOn(
     };
 
     using namespace Ui::Window;
-    if (flags.Test(Locate::CompareLastOrigin) && (NULL != pLastCaption) &&
+    if (flags.Test(Locate::CompareLastOrigin) && (nullptr != pLastCaption) &&
         CompareLastOrigin(surface, *pLastCaption, pptOrigin))
     {
         return true;
@@ -242,23 +242,19 @@ IsLocatedOn(
     {
         size_t index = 0;
         const CSurface* pCaption = pLastCaption;
-        if (NULL == pCaption)
-        {
+        if (nullptr == pCaption) {
             pCaption = &(this->*captions[index++]);
         }
-        for (;;)
-        {
+        for (;;) {
             // Look for caption bitmap on the supplied surface
             if (((0 == index) || (pCaption != pLastCaption)) &&
-                OriginSearch(surface, *pCaption, pptOrigin))
-            {
+                    OriginSearch(surface, *pCaption, pptOrigin)) {
                 SetLayout((pCaption == &m_marketCaption) ? Frame::Layout::Market
                                                          : Frame::Layout::Broker);
                 pLastCaption = pCaption;
                 return true;
             }
-            if (_countof(captions) == index)
-            {
+            if (_countof(captions) == index) {
                 break;
             }
             pCaption = &(this->*captions[index++]);
@@ -323,12 +319,12 @@ FindActiveTab(
         Tab_t           tab;
         const CSurface* pSurface;
     };
-    static TabSurface_t lastTab = { Tab::None, NULL };
+    static TabSurface_t lastTab = { Tab::Id::None, nullptr };
 
     // First, try the last known tab window
-    if (Tab::None != lastTab.tab)
+    if (Tab::Id::None != lastTab.tab)
     {
-        if (NULL != lastTab.pSurface)
+        if (nullptr != lastTab.pSurface)
         {
             if (GetTabWindow(lastTab.tab).FindTab(surface, GetTabAreaRect(ptOrigin),
                     *lastTab.pSurface, ptOrigin, ptFoundTab))
@@ -338,11 +334,11 @@ FindActiveTab(
         }
         else
         {
-            throw logic_error("BrokerWindow::FindActiveTab() lastTab.pSurface is NULL");
+            throw logic_error("BrokerWindow::FindActiveTab() lastTab.pSurface is nullptr");
         }
     }
     // Next, try all the other tabs
-    const CSurface* pBuyTab = NULL;
+    const CSurface* pBuyTab = nullptr;
     switch (m_layout)
     {
     case Frame::Layout::Broker:
@@ -356,9 +352,9 @@ FindActiveTab(
     }
     const TabSurface_t allTabs[] =
     {
-        Tab::Buy,       pBuyTab,
-        Tab::Sell,      &m_sellTabActive,
-        Tab::SalesLog,  &m_salesLogTabActive,
+        Tab::Id::Buy,       pBuyTab,
+        Tab::Id::Sell,      &m_sellTabActive,
+        Tab::Id::SalesLog,  &m_salesLogTabActive,
     };
     for (size_t index = 0; index < _countof(allTabs); ++index)
     {
@@ -375,7 +371,7 @@ FindActiveTab(
     }
     // TODO: throw
     LogError(L"BrokerWindow::FindActiveTab(): No tab active");
-    return Tab::None;
+    return Tab::Id::None;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

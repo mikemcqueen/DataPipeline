@@ -74,6 +74,7 @@ OpenAll()
         return false;
     }
     LogInfo(L"Global Items DB opened");
+ /*
     if (!GetDb(Sellers).OpenEx(Db::GetConnectString(Sellers), Flags))
     {
         LogError(L"Db::OpenAll(): Open Sellers failed");
@@ -86,6 +87,7 @@ OpenAll()
         return false;
     }
     LogInfo(L"Global BuySell DB opened");
+ */
     return true;
 }
 
@@ -105,7 +107,7 @@ bool
 Initialize(
     const wchar_t* pServerName)
 {
-    if ((NULL == pServerName) || (L'\0' == pServerName[0]))
+    if ((nullptr == pServerName) || (L'\0' == pServerName[0]))
     {
         throw invalid_argument("Accounts::Db::Initialize()");
     }
@@ -144,8 +146,8 @@ GetConnectString(
     {
         throw std::logic_error("Db::GetConnectString(): !bInitialized");
     }
-    wchar_t* pConnect = NULL;
-    const wchar_t* pDbPath = NULL;
+    wchar_t* pConnect = nullptr;
+    const wchar_t* pDbPath = nullptr;
 
     switch (DbType)
     {
@@ -164,12 +166,13 @@ GetConnectString(
     default:
         throw std::invalid_argument("Db::GetConnectString()");
     }
-    ASSERT(NULL != pConnect);
+    ASSERT(nullptr != pConnect);
     if (L'\0' == pConnect[0])
     {
-        ASSERT((NULL != pDbPath) && (L'\0' != pDbPath[0]));
+        ASSERT((nullptr != pDbPath) && (L'\0' != pDbPath[0]));
         FormatConnectString(pConnect, MAX_PATH, pDbPath);
     }
+    LogInfo(L"DB connect string: %ls", pConnect);
     return pConnect;
 }
 
@@ -182,7 +185,7 @@ FormatConnectString(
     const wchar_t* pDbPath)
 {
     static const wchar_t szConnectFormat[] =
-        L"DSN=MS Access Database;DBQ=%ls;DriverId=25;FIL=MS Access;"
+        L"DSN=Microsoft Access Database;DBQ=%ls;DriverId=25;FIL=MS Access;"
         L"MaxBufferSize=2048;PageTimeout=5;UID=admin;";
     swprintf(pBuffer, Count, szConnectFormat, pDbPath);
     return pBuffer;

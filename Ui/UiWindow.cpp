@@ -26,24 +26,24 @@ Base_t::
 Base_t(
     WindowId_t     WindowId,
     const wchar_t* pClassName,
-    const wchar_t* pWindowName,
-          Flag_t   Flags)
+    const wchar_t* pWindowName /* = nullptr */,
+    Flag_t         Flags /* = 0 */)
     :
     m_WindowId(WindowId),
-    m_parent(*this),         // a bit weird; parent of mainwindow is self
-    m_hMainWindow(NULL),
-    m_strClassName((NULL == pClassName) ? L"" : pClassName),
-    m_strWindowName((NULL == pWindowName) ? L"" : pWindowName),
+    m_ParentWindow(*this),         // a bit weird; parent of mainwindow is self
+    m_hMainWindow(nullptr),
+    m_strClassName((nullptr == pClassName) ? L"" : pClassName),
+    m_strWindowName((nullptr == pWindowName) ? L"" : pWindowName),
     m_Flags(Flags),
     m_VertScrollPos(Scroll::Position::Unknown),
     m_HorzScrollPos(Scroll::Position::Unknown),
-    m_pWidgets(NULL),
+    m_pWidgets(nullptr),
     m_WidgetCount(0)
 {
-    if ((NULL != pClassName) || (NULL != pWindowName))
+    if ((nullptr != pClassName) || (nullptr != pWindowName))
     {
         HWND hWnd = ::FindWindow(pClassName, pWindowName);
-        if (NULL == hWnd)
+        if (nullptr == hWnd)
         {
             LogError(L"Window not found: ClassName(%ls) WindowName(%ls)",
                      pClassName, pWindowName);
@@ -61,16 +61,16 @@ Base_t(
 Base_t::
 Base_t(
     WindowId_t            WindowId,
-    const Base_t&         parent,
+    const Base_t&         ParentWindow,
     const wchar_t*        pWindowName,
     Flag_t                Flags       /*= 0*/,
-    const Widget::Data_t* pWidgets    /*= NULL*/,
+    const Widget::Data_t* pWidgets    /*= nullptr*/,
     size_t                WidgetCount /*= 0*/)
 :
     m_WindowId(WindowId),
-    m_parent(parent),
-    m_hMainWindow(parent.GetHwnd()),
-    m_strWindowName((NULL == pWindowName) ? L"Undefined" : pWindowName),
+    m_ParentWindow(ParentWindow),
+    m_hMainWindow(ParentWindow.GetHwnd()),
+    m_strWindowName((nullptr == pWindowName) ? L"Undefined" : pWindowName),
     m_Flags(Flags),
     m_pWidgets(pWidgets),
     m_WidgetCount(WidgetCount)
@@ -91,7 +91,7 @@ Base_t::
 GetSsWindowRect(
     RECT& Rect) const
 {
-    if (NULL != m_hMainWindow)
+    if (nullptr != m_hMainWindow)
     {
         if (::IsWindow(m_hMainWindow))
         {
@@ -99,14 +99,14 @@ GetSsWindowRect(
             if (::GetForegroundWindow() != m_hMainWindow)
             {
                 // don't screenshot if we're not foreground
-                return NULL;
+                return nullptr;
             }
             ::GetClientRect(m_hMainWindow, &Rect);
         }
         else
         {
             // TODO: make m_hMainWindow mutable?
-            const_cast<Base_t*>(this)->m_hMainWindow = NULL;
+            const_cast<Base_t*>(this)->m_hMainWindow = nullptr;
         }
     }
     return m_hMainWindow;
@@ -157,15 +157,15 @@ GetWidgetRect(
           Ui::WidgetId_t  WidgetId,
     const Rect_t&         RelativeRect,
           Rect_t&         WidgetRect,
-    const Widget::Data_t* pWidgets /*= NULL*/,
+    const Widget::Data_t* pWidgets /*= nullptr*/,
           size_t          widgetCount /*= 0*/) const
 {
-    if (NULL == pWidgets)
+    if (nullptr == pWidgets)
     {
         pWidgets = m_pWidgets;
         widgetCount = m_WidgetCount;
     }
-    if (NULL != pWidgets)
+    if (nullptr != pWidgets)
     {
         for (size_t Widget = 0; Widget < widgetCount; ++Widget)
         {
@@ -187,10 +187,10 @@ Base_t::
 IsLocatedOn(
     const CSurface& surface,
           Flag_t    flags,
-          POINT*    pptOrigin /*= NULL*/) const
+          POINT*    pptOrigin /*= nullptr*/) const
 {
     const CSurface* pOriginSurface = GetOriginSurface();
-    if (NULL != pOriginSurface)
+    if (nullptr != pOriginSurface)
     {
         using namespace Ui::Window;
         if (flags.Test(Locate::CompareLastOrigin) &&
@@ -233,7 +233,7 @@ CompareLastOrigin(
     {
         if (surface.Compare(pt.x, pt.y, image))
         {
-            if (NULL != pptOrigin)
+            if (nullptr != pptOrigin)
             {
                 *pptOrigin = pt;
             }
@@ -257,11 +257,11 @@ OriginSearch(
     GetOriginSearchRect(surface, searchRect);
     // search for the supplied origin bitmap on the supplied surface
     POINT ptOrigin;
-    if (surface.FindSurfaceInRect(image, searchRect, ptOrigin, NULL))
+    if (surface.FindSurfaceInRect(image, searchRect, ptOrigin, nullptr))
     {
         LogInfo(L"%s::OriginSearch(): Found @ (%d, %d)", GetWindowName(),
                 ptOrigin.x, ptOrigin.y);
-        if (NULL != pptOrigin)
+        if (nullptr != pptOrigin)
         {
             *pptOrigin = ptOrigin;
         }
@@ -278,12 +278,12 @@ Base_t::
 ClickWidget(
     WidgetId_t    WidgetId,
           bool    bDirect /*= false*/,
-    const Rect_t* pRect /*= NULL*/) const
+    const Rect_t* pRect /*= nullptr*/) const
 {
     if (bDirect)
     {
         Rect_t Rect;
-        if (NULL == pRect)
+        if (nullptr == pRect)
         {
             if (!GetWidgetRect(WidgetId, Rect))
             {
@@ -366,7 +366,7 @@ Base_t::
 GetWidgetData(
     WidgetId_t widgetId) const
 {
-    if (NULL != m_pWidgets)
+    if (nullptr != m_pWidgets)
     {
         for (size_t Widget = 0; Widget < m_WidgetCount; ++Widget)
         {

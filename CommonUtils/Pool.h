@@ -169,7 +169,7 @@ public:
                 return &m_Items[i];
             }
         }
-        return NULL;
+        return nullptr;
     }
 
     T& get_ready(size_t first = 0)

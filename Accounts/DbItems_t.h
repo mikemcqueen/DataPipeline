@@ -47,7 +47,7 @@ public:
 
     // Constructor:
 
-	Items_t(CDatabase* pDatabase = NULL);
+	Items_t(CDatabase* pDatabase = nullptr);
 
     explicit
     Items_t(CDatabase* pdb, const wchar_t* pParam);

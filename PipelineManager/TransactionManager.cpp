@@ -27,36 +27,36 @@ namespace DP
 
 ///////////////////////////////////////////////////////////////////////////////
 
-    namespace Transaction
+namespace Transaction
+{
+    void
+    Data_t::Complete(
+        Transaction::Error_t Error /*= Transaction::Error::None*/) const
     {
-        void
-        Data_t::Complete(
-            Transaction::Error_t Error /*= Transaction::Error::None*/) const
-        {
-            GetTransactionManager().CompleteTransaction(Id, Error);
-        }
+        GetTransactionManager().CompleteTransaction(Id, Error);
+    }
 
-        bool
-        Data_t::Execute(
-            bool fInterrupt)
-        {
-            return GetTransactionManager().ExecuteTransaction(this, fInterrupt);
-        }
+    bool
+    Data_t::Execute(
+        bool fInterrupt)
+    {
+        return GetTransactionManager().ExecuteTransaction(this, fInterrupt);
+    }
 
-        void
-        Data_t::SetState(
-            State_t state)
+    void
+    Data_t::SetState(
+        State_t state)
+    {
+        if (State::Complete == State)
         {
-            if (State::Complete == State)
-            {
-                throw logic_error("TxData::SetState() Transaction already completed");
-            }
-            State = state;
-            stateTimeout = 0;
-            LogAlways(L"%s::SetState(%x)",
-                      GetPipelineManager().GetTransactionName(Id), state);
+            throw logic_error("TxData::SetState() Transaction already completed");
         }
-    } // Transaction
+        State = state;
+        stateTimeout = 0;
+        LogAlways(L"%s::SetState(%x)",
+                    GetPipelineManager().GetTransactionName(Id), state);
+    }
+} // Transaction
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -132,7 +132,7 @@ CompleteTransaction(
 {
     CLock lock(m_cs);
     Data_t* pData = GetTransactionExecuting();
-    if (NULL == pData)
+    if (nullptr == pData)
     {
         throw logic_error("TM::CompleteTransaction() No transaction executing");
     }
@@ -192,11 +192,11 @@ void
 TransactionManager_t::
 SendEvent(
     const wchar_t*       eventName,
-    Transaction::Data_t* pPrevTxData /*= NULL*/)
+    Transaction::Data_t* pPrevTxData /*= nullptr*/)
 {
     CLock lock(m_cs);
     Data_t* pData = GetTransactionExecuting();
-    if (NULL == pData)
+    if (nullptr == pData)
     {
         throw logic_error("TM::CompleteTransaction() No transaction executing");
     }
@@ -228,7 +228,7 @@ GetTransactionExecuting()
     {
         return &m_queue.front();
     }
-    return NULL;
+    return nullptr;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -261,15 +261,12 @@ Acquire()
 {
     CLock lock(m_cs);
     Data_t* pData = GetTransactionExecuting();
-    if (NULL != pData)
-    {
-        ++pData->refCount;
+    if (nullptr == pData) return nullptr;
+    ++pData->refCount;
 #ifdef EXTRALOG
-    LogAlways(L"XM: Acquire(%x) refCount(%d)", pData->pTxData->Id, pData->refCount);
+    LogAlways(L"TM: Acquire(%x) refCount(%d)", pData->pTxData->Id, pData->refCount);
 #endif
-        return pData->pTxData;
-    }
-    return NULL;
+    return pData->pTxData;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -282,9 +279,9 @@ Release(
 {
     CLock lock(m_cs);
     Data_t* pData = FindTransaction(pTxData);
-    if (NULL == pData)
+    if (nullptr == pData)
     {
-        throw logic_error("XM::Release() FindTransaction failed");
+        throw std::invalid_argument("XM::Release() FindTransaction failed");
     }
     long refCount = --pData->refCount;
 #ifdef EXTRALOG
@@ -306,7 +303,7 @@ FindTransaction(
     CLock lock(m_cs);
     if (!m_stack.empty())
     {
-        Stack_t::reverse_iterator it = m_stack.rbegin();
+        auto it = m_stack.rbegin();
         for (; m_stack.rend() != it; ++it)
         {
             if (pTxData == it->pTxData)
@@ -317,16 +314,14 @@ FindTransaction(
     }
     if (!m_queue.empty())
     {
-        Queue_t::iterator it = m_queue.begin();
-        for (; m_queue.end() != it; ++it)
-        {
-            if (pTxData == it->pTxData)
-            {
-                return &*it;
+        //auto it = m_queue.begin();
+        for (auto& data: m_queue) { //; m_queue.end() != it; ++it)
+            if (pTxData == data.pTxData) {
+                return &data;
             }
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -335,7 +330,7 @@ void
 TransactionManager_t::
 ExecuteNext()
 {
-    Transaction::Data_t* pPrevTxData = NULL;
+    Transaction::Data_t* pPrevTxData = nullptr;
     CLock lock(m_cs);
     if (!m_stack.empty())
     {

@@ -50,12 +50,12 @@ public:
         Ui::WindowId_t     WindowId,
         TranslatePolicy_t& TranslatePolicy,
         ValidatePolicy_t&  ValidatePolicy,
-        const wchar_t*     pName = NULL)
+        const wchar_t*     pName = nullptr)
     :
         m_WindowId(WindowId),
         m_TranslatePolicy(TranslatePolicy),
         m_ValidatePolicy(ValidatePolicy),
-        m_name((NULL != pName) ? pName : L"[unnamed]")
+        m_name((nullptr != pName) ? pName : L"[unnamed]")
     { }
 
     virtual
@@ -160,7 +160,7 @@ public:
     Ui::WindowId_t TopWindowId,
     Ui::WindowId_t DcrWindowId,
         DCR&       Dcr);
-//,        RECT*      pRect = NULL);
+//,        RECT*      pRect = nullptr);
 
     ~OneTable_t();
 
@@ -239,7 +239,7 @@ public:
               Lon::Window::Type_e TopWindowType,
               DcrTrades_t&        DcrTrades,
         const GetDcrWindowType_t* pGetDcrWindowType,
-              RECT*               pRect = NULL)
+              RECT*               pRect = nullptr)
     :
         OneTablePolicy_t(
             TopWindowType,

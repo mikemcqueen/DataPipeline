@@ -22,8 +22,8 @@ class ItemQuantityMap_t :
 public:
 
     ItemQuantityMap_t(
-         const wchar_t* mapName = NULL) :
-         m_mapName((mapName != NULL) ? mapName : L"ItemQuantityMap_t")
+         const wchar_t* mapName = nullptr) :
+         m_mapName((mapName != nullptr) ? mapName : L"ItemQuantityMap_t")
     {
     }
 

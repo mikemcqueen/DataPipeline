@@ -118,8 +118,8 @@ AddItem(
           size_t   Quantity,
     const wchar_t* pSellerName)
 {
-    if ((NULL == pItemName)   || (L'\0' == *pItemName)   ||
-        (NULL == pSellerName) || (L'\0' == *pSellerName) ||
+    if ((nullptr == pItemName)   || (L'\0' == *pItemName)   ||
+        (nullptr == pSellerName) || (L'\0' == *pSellerName) ||
         (0 == Price))
     {
         LogError(L"Db::ItemsForSale_t::AddItem(): "
@@ -208,7 +208,7 @@ AddItem(
     rs.AddField(Field::MarketId);
     rs.AddField(Field::AddedDate);
     rs.AddField(Field::VerifiedDate);
-    if (0 == rs.Open(CRecordset::dynaset, NULL, CRecordset::appendOnly))
+    if (0 == rs.Open(CRecordset::dynaset, nullptr, CRecordset::appendOnly))
     {
         LogError(L"DbItemForSale_t::AddItem(): failed at rs.Open()");
         return 0;
@@ -283,7 +283,7 @@ ItemForSale_t::
 GetItemId(
     const wchar_t* pItemName)
 {
-    if ((NULL == pItemName) || (L'\0' == *pItemName))
+    if ((nullptr == pItemName) || (L'\0' == *pItemName))
     {
         throw std::invalid_argument("ItemForSale_t::GetItemId()");
     }

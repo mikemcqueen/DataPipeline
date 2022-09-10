@@ -45,12 +45,12 @@ GetText(
     const CharsetVector_t& Charsets,
           DWORD            flags) const
 {
-    ASSERT(NULL != pSurface);
-    ASSERT(NULL != pRect);
-    ASSERT(NULL != pszText);
+    ASSERT(nullptr != pSurface);
+    ASSERT(nullptr != pRect);
+    ASSERT(nullptr != pszText);
 	ASSERT(2 <= iMaxLen);
 
-    if (NULL != pCharset)
+    if (nullptr != pCharset)
     {
         return GetText(pSurface, pRect, pszText, iMaxLen, pCharset, flags & DCR_GETTEXT_ALLOW_BAD);
     }
@@ -76,9 +76,9 @@ GetText(
     const Charset_t* pCharset,
           DWORD      getTextFlags /*= 0*/) const
 {
-    ASSERT(NULL != pSurface);
-    ASSERT(NULL != pRect);
-    ASSERT(NULL != pszText);
+    ASSERT(nullptr != pSurface);
+    ASSERT(nullptr != pRect);
+    ASSERT(nullptr != pszText);
 	ASSERT(2 <= iMaxLen);
 
 	DWORD dwFlags = 0;
@@ -220,9 +220,9 @@ ReadTable(
     const size_t     CharHeight,
     const Charset_t* pCharset) const
 {
-    ASSERT(NULL != pSurface);
-    ASSERT(NULL != pColumnRects);
-    ASSERT(NULL != pText);
+    ASSERT(nullptr != pSurface);
+    ASSERT(nullptr != pColumnRects);
+    ASSERT(nullptr != pText);
     ASSERT(0 < RowHeight);
 
     int MaxCharHeight = 0;
@@ -337,11 +337,11 @@ ReadTableRow(
     size_t          CharHeight,
     const Charset_t* pCharset) const
 {
-    ASSERT(NULL != pSurface);
-    ASSERT(NULL != pRect);
-    ASSERT(NULL != prcColumns);
-    ASSERT(NULL != pTextLengths);
-    ASSERT(NULL != pszText);
+    ASSERT(nullptr != pSurface);
+    ASSERT(nullptr != pRect);
+    ASSERT(nullptr != prcColumns);
+    ASSERT(nullptr != pTextLengths);
+    ASSERT(nullptr != pszText);
 
     bool bFail = false;
     bool bAnyText = false;
@@ -385,7 +385,7 @@ ReadTableRow(
         {
             bAnyText = true;
         }
-        if (g_bWriteBmps && (NULL != wcschr(pszText, L'?')))
+        if (g_bWriteBmps && (nullptr != wcschr(pszText, L'?')))
         {
             WriteBadBmp(pSurface, rc, pszText);
         }
@@ -531,7 +531,7 @@ WriteBadBmp(
     wsprintf(szFile2, L"Diag\\dcr_bad_%s.bmp", pszText);
     for (WCHAR* p = szFile2; L'\0' != *p; ++p)
     {
-        if (NULL != wcschr(L",'?", *p))
+        if (nullptr != wcschr(L",'?", *p))
         {
             *p = L'_';
         }

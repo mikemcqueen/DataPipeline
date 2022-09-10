@@ -113,7 +113,7 @@ public:
     void 
     WriteBmp(
         const wchar_t* pszFile,
-        const RECT*    pRect = NULL) const;
+        const RECT*    pRect = nullptr) const;
 
     bool                    IsValid() { return m_valid; }
 

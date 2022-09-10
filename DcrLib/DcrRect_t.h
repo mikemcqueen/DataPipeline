@@ -51,13 +51,13 @@ public:
     :
         m_window(window),
         m_widgetId(widgetId),
-        m_Rect(NULL),
+        m_Rect(nullptr),
         m_pCharset(pCharset),
         m_checkCaret(checkCaret),
         m_hasCaret(false),
         m_highBkColor(highBkColor)
     {
-        if (NULL == m_pCharset)
+        if (nullptr == m_pCharset)
         {
             throw std::invalid_argument("DcrRect_t::DcrRect_t()");
         }

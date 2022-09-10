@@ -64,10 +64,10 @@ StartupInitialize()
 void
 FreeDirectDraw()
 {
-    if (NULL != g_pDisplay)
+    if (nullptr != g_pDisplay)
     {
         delete g_pDisplay;
-        g_pDisplay = NULL;
+        g_pDisplay = nullptr;
     }
 }
 

@@ -39,7 +39,7 @@ namespace Buy
         static const size_t CharColumnWidths[ColumnCount] = { 10, 100, 30, 5, 100 };
 
         // ScreenTable_t data:
-        static const size_t PixelColumnWidths[ColumnCount] = { 50, 273, 88, 100, 0 };
+        static const int PixelColumnWidths[ColumnCount] = { 50, 273, 88, 100, 0 };
     }
 
     class Text_t;

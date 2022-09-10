@@ -43,14 +43,14 @@ namespace Db
     bool 
     CopyDb(
         const wchar_t* ToPath,
-        const wchar_t* FromPath = NULL);
+        const wchar_t* FromPath = nullptr);
 
     bool
     CopyDb(
               SYSTEMTIME& t,
               wchar_t*    pszNewFile,
               size_t      cNewFile,
-        const wchar_t*    FromPath = NULL);
+        const wchar_t*    FromPath = nullptr);
 
     void
     SetDbName(

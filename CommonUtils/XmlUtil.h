@@ -23,14 +23,14 @@ bool
 ReadNextXml(
           IXmlReader* pReader,
     const XmlNodeType NodeType,
-    const wchar_t*    pNodeName = NULL,
+    const wchar_t*    pNodeName = nullptr,
           bool        bQuiet    = false);
 
 bool
 CompareXmlNode(
           IXmlReader* pReader,
     const XmlNodeType NodeType,
-    const wchar_t*    pNodeName = NULL,
+    const wchar_t*    pNodeName = nullptr,
           bool        bQuiet = false);
 
 namespace XmlUtil

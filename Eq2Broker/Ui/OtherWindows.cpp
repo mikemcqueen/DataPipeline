@@ -41,12 +41,14 @@ Eq2LoadingWindow_t::
 loadSurfaces()
 {
     extern CDisplay* g_pDisplay;
+    #if 0 // TODO
     HRESULT hr = g_pDisplay->CreateSurfaceFromBitmap(&m_cancelButton,
         MAKEINTRESOURCE(IDB_EQ2LOADING_CANCEL));
     if (FAILED(hr))
     {
         throw runtime_error("Create Eq2Loading_Cancel surface");
     }
+#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -100,6 +102,7 @@ void
 TransitionWindow_t::
 loadSurfaces()
 {
+#if 0 // TODO
     extern CDisplay* g_pDisplay;
     HRESULT hr = S_OK;
     hr = g_pDisplay->CreateSurfaceFromBitmap(&m_transitionImage, MAKEINTRESOURCE(IDB_EQ2_TRANSITION));
@@ -107,6 +110,7 @@ loadSurfaces()
     {
         throw runtime_error("Create Eq2_Transition surface");
     }
+#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -158,6 +162,7 @@ void
 MainChatWindow_t::
 loadSurfaces()
 {
+#if 0
     extern CDisplay* g_pDisplay;
     HRESULT hr = g_pDisplay->CreateSurfaceFromBitmap(&m_mainChatCaption,
         MAKEINTRESOURCE(IDB_MAINCHAT_CAPTION));
@@ -165,6 +170,7 @@ loadSurfaces()
     {
         throw runtime_error("Create MainChat_Caption surface");
     }
+#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////

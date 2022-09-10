@@ -63,7 +63,7 @@ ExecuteTransaction(
 HRESULT
 Handler_t::
 OnTransactionComplete(
-    DP::Transaction::Data_t&)
+    const DP::Transaction::Data_t&)
 {
     LogInfo(L"TxLogon::TransactionComplete()");
     return S_OK;
@@ -79,7 +79,7 @@ MessageHandler(
     LogInfo(L"TxLogon::MessageHandler()");
     DP::TransactionManager_t::AutoRelease_t ar(GetTransactionManager().Acquire());
     DP::Transaction::Data_t* pTxData = ar.get();
-    if (NULL == pTxData)
+    if (nullptr == pTxData)
     {
         throw logic_error("TxLogon::MessageHandler() No transaction active");
     }

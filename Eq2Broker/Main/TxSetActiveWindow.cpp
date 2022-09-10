@@ -38,7 +38,7 @@ ExecuteTransaction(
 HRESULT
 Handler_t::
 OnTransactionComplete(
-    DP::Transaction::Data_t&)
+    const DP::Transaction::Data_t&)
 {
     LogInfo(L"TxSetActiveWindow::TransactionComplete()");
     return S_OK;
@@ -54,7 +54,7 @@ MessageHandler(
     LogInfo(L"TxSetActiveWindow::MessageHandler()");
     DP::TransactionManager_t::AutoRelease_t TxData(GetTransactionManager().Acquire());
     DP::Transaction::Data_t* pTxData = TxData.get();
-    if (NULL == pTxData)
+    if (nullptr == pTxData)
     {
         throw logic_error("TxSetActiveWindow::MessageHandler(): No transaction active");
     }

@@ -22,7 +22,7 @@
 #include "Character_t.h"
 
 class Eq2Broker_t;
-class TableWindow_t;
+//class TableWindow_t;
 
 namespace Broker
 {
@@ -57,24 +57,15 @@ namespace BuySellItems
         ItemDataMap_t buySellItemMap;       // combo of my items + Char.itemsToBuySell via TxGetItemPrices
         bool          hasScrolledToTop;
 
-        Data_t()
-        :
+        Data_t():
             DP::Transaction::Data_t(
                 Id::BuySellItems,
-                sizeof(Data_t))
-        {
-        }
-
-#if 0
-    private:
-
-        Data_t();
-#endif
+                sizeof(Data_t)) {}
     };
 
 /////////////////////////////////////////////////////////////////////////////
 
-    class Handler_t :
+    class Handler_t final :
         public DP::Handler_t
     {
     private:
@@ -89,24 +80,26 @@ namespace BuySellItems
         //
         // DP::Handler_t virtual
         //
+
+        HRESULT
+            MessageHandler(
+                const DP::Message::Data_t* pData) override;
+
         HRESULT
         ExecuteTransaction(
             DP::Transaction::Data_t& Data) override;
 
         HRESULT
+            ResumeTransaction(
+                DP::Transaction::Data_t& txData,
+                const DP::Transaction::Data_t* pPrevTxData) override;
+
+        HRESULT
         OnTransactionComplete(
-            DP::Transaction::Data_t& Data) override;
-
-        HRESULT
-        MessageHandler(
-            const DP::Message::Data_t* pData) override;
-
-        HRESULT
-        ResumeTransaction(
-            DP::Transaction::Data_t& txData,
-            const DP::Transaction::Data_t* pPrevTxData) override;
+            const DP::Transaction::Data_t& Data) override;
 
         // Implementation:
+ 
         void
         InitItemNames(
             StringSet_t&            itemNames,

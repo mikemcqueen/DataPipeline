@@ -217,12 +217,12 @@ public:
     bool
     IsMarkedRow(
               size_t   Row,
-        const wchar_t* pszTag = NULL) const
+        const wchar_t* pszTag = nullptr) const
     {
         const wchar_t* pszRow = GetRow(Row);
         if (Marker == pszRow[0])
         {
-            if (NULL != pszTag)
+            if (nullptr != pszTag)
             {
                 return 0 == wcscmp(&pszRow[1], pszTag);
             }
@@ -261,11 +261,11 @@ public:
 
     void
     Dump(
-        const wchar_t* pszText = NULL,
+        const wchar_t* pszText = nullptr,
               bool     bAlways = false) const
     {
-        wchar_t* pszTag = NULL;
-        if (NULL != pszText)
+        wchar_t* pszTag = nullptr;
+        if (nullptr != pszText)
             LogInfo(pszText);
         for (size_t Row = 0; Row < RowCount; ++Row)
         {
@@ -276,13 +276,13 @@ public:
     void
     DumpRow(
         size_t Row,
-        const wchar_t* pszTag = NULL,
+        const wchar_t* pszTag = nullptr,
         bool   bAlways = false) const
     {
         ASSERT(Row < RowCount);
 
         wchar_t buf[CharsPerRow * 2]; // probably big enough, not exact
-        if (NULL != pszTag)
+        if (nullptr != pszTag)
             wsprintf(buf, L"%ls: %02d: ", pszTag, Row);
         else
             wsprintf(buf, L"%02d: ", Row);
@@ -432,7 +432,7 @@ public:
 
     void
     Dump(
-        const wchar_t* pszText = NULL,
+        const wchar_t* pszText = nullptr,
               bool     bAlways = false) const
     {
         m_Data.Dump(pszText, bAlways);
@@ -441,7 +441,7 @@ public:
     void
     DumpRow(
         size_t Row,
-        const wchar_t* pszTag = NULL) const
+        const wchar_t* pszTag = nullptr) const
     {
         m_Data.DumpRow(Row, pszTag);
     }
@@ -485,7 +485,7 @@ protected:
     bool
     IsMarkedRow(
         size_t         Row,
-        const wchar_t* pszTag = NULL) const
+        const wchar_t* pszTag = nullptr) const
     {
         return Data.IsMarkedRow(Row, pszTag);
     }
@@ -618,7 +618,7 @@ public:
 
     void
     Dump(
-        const wchar_t* pszText = NULL,
+        const wchar_t* pszText = nullptr,
               bool     bAlways = false) const
     {
         m_Data.Dump(pszText, bAlways);
@@ -627,7 +627,7 @@ public:
     void
     DumpRow(
         size_t Row,
-        const wchar_t* pszTag = NULL) const
+        const wchar_t* pszTag = nullptr) const
     {
         m_Data.DumpRow(Row, pszTag);
     }
@@ -669,7 +669,7 @@ protected:
     bool
     IsMarkedRow(
         size_t         Row,
-        const wchar_t* pszTag = NULL) const
+        const wchar_t* pszTag = nullptr) const
     {
         return Data.IsMarkedRow(Row, pszTag);
     }

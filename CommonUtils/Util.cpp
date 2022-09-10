@@ -69,7 +69,7 @@ IsParent(HWND hParent, HWND hWnd)
         if (hParent == h)
             return true;
     }
-    while (NULL != h);
+    while (nullptr != h);
     return false;
 }
 

@@ -97,7 +97,7 @@ GetWindowId(
     // State: the broker sell tab window is active, but something is preventing
     //        its table from being validated.
     Rect_t popupRect;
-    if (NULL == pptHint)
+    if (nullptr == pptHint)
     {
         throw invalid_argument("BrokerSellWindow::GetWindowId()");
     }

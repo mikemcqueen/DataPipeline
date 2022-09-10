@@ -114,7 +114,7 @@ Load(
     rs.m_strFilter = L"[character_id] = ?";
     rs.m_CharacterIdParam = itemId;
     rs.AddParam(ItemsOwned_t::Field::CharacterIdParam);
-    if (0 == rs.Open(CRecordset::forwardOnly, NULL, Recordset_t::DefaultReadOnlyFlags))
+    if (0 == rs.Open(CRecordset::forwardOnly, nullptr, Recordset_t::DefaultReadOnlyFlags))
     {
         throw logic_error("ItemsOwned_t::Load(): rs.Open() failed");
     }
@@ -166,7 +166,7 @@ Write(
     rs.AddField(ItemsOwned_t::Field::ItemId);
     rs.AddField(ItemsOwned_t::Field::Quantity);
     rs.AddField(ItemsOwned_t::Field::CharacterId);
-    if (0 == rs.Open(CRecordset::dynaset, NULL, CRecordset::appendOnly))
+    if (0 == rs.Open(CRecordset::dynaset, nullptr, CRecordset::appendOnly))
     {
         LogError(L"ItemsOwned_t::Write(): failed at rs.Open()");
         return 0;
@@ -219,7 +219,7 @@ AdjustQuantity(
         rs.AddParam(ItemsOwned_t::Field::ItemIdParam);
         long remaining = quantity;
         bool updateFail = false;
-        if (rs.Open(CRecordset::dynaset, NULL, CRecordset::skipDeletedRecords))
+        if (rs.Open(CRecordset::dynaset, nullptr, CRecordset::skipDeletedRecords))
         {
             if (!rs.IsEOF())
             {

@@ -59,7 +59,7 @@ ExecuteTransaction(
 HRESULT
 Handler_t::
 OnTransactionComplete(
-    DP::Transaction::Data_t&)
+    const DP::Transaction::Data_t&)
 {
     LogInfo(L"TxBuyTabGetItems::TransactionComplete()");
     return S_OK;
@@ -73,9 +73,9 @@ MessageHandler(
     const DP::Message::Data_t* pMessage)
 {
     LogInfo(L"TxBuyTabGetItems::MessageHandler()");
-    DP::TransactionManager_t::AutoRelease_t txData(GetTransactionManager().Acquire());
-    DP::Transaction::Data_t* pTxData = txData.get();
-    if (NULL != pTxData)
+    DP::TransactionManager_t::AutoRelease_t arTxData(GetTransactionManager().Acquire());
+    DP::Transaction::Data_t* pTxData = arTxData.get();
+    if (nullptr != pTxData)
     {
         Data_t& txData = static_cast<Data_t&>(*pTxData);
         if (Message::Id::Buy != pMessage->Id)
@@ -100,9 +100,9 @@ HasSameWords(
     const wstring& d)
 {
     wstring src(s);
-    transform(src.begin(), src.end(), src.begin(), (int(*)(int))tolower);
+    transform(src.begin(), src.end(), src.begin(), [](wchar_t c) { return std::towlower(c); });
     wstring dst(d);
-    transform(dst.begin(), dst.end(), dst.begin(), (int(*)(int))tolower);
+    transform(dst.begin(), dst.end(), dst.begin(), [](wchar_t c) { return std::towlower(c); });
     using namespace boost;
     size_t count = 0;
     char_separator<wchar_t> sep(L" ");
@@ -329,13 +329,11 @@ AddRow(
             if (0 != Price)
             {
                 size_t Quantity = text.GetQuantity(pTextRow);
-                ItemDataMap_t::_Pairib ibItemData =
-                    itemDataMap.insert(make_pair(textItemName, PriceCountMap_t()));
-                PriceCountMap_t::_Pairib ibPair = 
-                    ibItemData.first->second.insert(make_pair(Price, Quantity));
-                if (!ibPair.second)
+                auto [itMap, _] = itemDataMap.insert(make_pair(textItemName, PriceCountMap_t()));
+                auto [pq, pqInserted] = itMap->second.insert(make_pair(Price, Quantity));
+                if (!pqInserted)
                 {
-                    ibPair.first->second += Quantity;
+                    pq->second += Quantity;
                 }
             }
         }

@@ -45,7 +45,7 @@ TrWindowType_t(
 :
     m_mainWindow(mainWindow),
     m_lastWindowId(Ui::Window::Id::Unknown),
-    m_lastWindowIdFunc(NULL)
+    m_lastWindowIdFunc(nullptr)
 {
 }
 
@@ -93,7 +93,7 @@ GetWindowId(
 {
     using namespace Ui::Window;
     Ui::WindowId_t windowId = Id::Unknown;
-    if (NULL != m_lastWindowIdFunc)
+    if (nullptr != m_lastWindowIdFunc)
     {
         windowId = (this->*m_lastWindowIdFunc)(surface, Locate::CompareLastOrigin);
     }

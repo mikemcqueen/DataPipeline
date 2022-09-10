@@ -55,7 +55,7 @@ ExecuteTransaction(
 HRESULT
 Handler_t::
 OnTransactionComplete(
-    DP::Transaction::Data_t& txData)
+    const DP::Transaction::Data_t& txData)
 {
     LogInfo(L"TxBuyItem::TransactionComplete()");
     if (DP::Transaction::Error::None != txData.Error)
@@ -82,7 +82,7 @@ MessageHandler(
     LogInfo(L"TxBuyItem::MessageHandler()");
     DP::TransactionManager_t::AutoRelease_t TxData(GetTransactionManager().Acquire());
     DP::Transaction::Data_t* pTxData = TxData.get();
-    if (NULL == pTxData)
+    if (nullptr == pTxData)
     {
         throw logic_error("TxBuyItem::MessageHandler(): No transaction active");
     }

@@ -110,7 +110,7 @@ Translate(
         LogError(L"OneTablePolicy_t::Translate() failed.");
         return false;
     }
-//    if (NULL != m_pRect)
+//    if (nullptr != m_pRect)
 //        *m_pRect = Rect;
     return true;
 }
@@ -337,7 +337,7 @@ InitAllBitmaps()
 
     for (size_t Bitmap = 0; Bitmap < BitmapCount; ++Bitmap)
     {
-        if (NULL == s_rgpCornerSurfaces[Bitmap])
+        if (nullptr == s_rgpCornerSurfaces[Bitmap])
         {
             CSurface* pSurface = new CSurface();
             HRESULT hr = g_pDisplay->CreateSurfaceFromBitmap(pSurface,
@@ -347,7 +347,7 @@ InitAllBitmaps()
             else
                 delete pSurface;
         }
-        if (NULL == s_rgpSideSurfaces[Bitmap])
+        if (nullptr == s_rgpSideSurfaces[Bitmap])
         {
             CSurface* pSurface = new CSurface();
             HRESULT hr = g_pDisplay->CreateSurfaceFromBitmap(pSurface,
