@@ -56,30 +56,34 @@ TrWindowType_t::
 MessageHandler(
     const DP::Message::Data_t* pMessage)
 {
-    using namespace SsWindow;
-    if (typeid(*pMessage) != typeid(Acquire::Data_t))
-    {
+    LogInfo(L"TrWindowType::MessageHandler()");
+    // TODO: access SsWindow::GetClass() from instance? make class static? why is there a class.
+    if (0 != wcscmp(pMessage->Class, L"SsWindow")) {
+        LogInfo(L"TrWindowType_t::MessageHandler(): Data type not supported, %s - expected %s",
+            pMessage->Class, L"SsWindow");
         return S_FALSE;
     }
-    const Acquire::Data_t& SsData = *static_cast<const Acquire::Data_t*>(pMessage);
+    auto& ssData = *static_cast<const SsWindow::Acquire::Data_t*>(pMessage);
     using namespace Ui::Window;
     // If the acquire handler didn't initialize the Window Id
-    if (Id::Unknown == SsData.WindowId)
+    if (Id::Unknown == ssData.WindowId)
     {
         // Try to determine the Window Id by looking at the screenshot bits
-        Ui::WindowId_t windowId = GetWindowId(*SsData.pPoolItem->get());
+        Ui::WindowId_t windowId = GetWindowId(*ssData.pPoolItem->get());
         // If we determined a valid Window Id, hack the id into the message
         if (Id::Unknown != windowId)
         {
-            LogInfo(L"TrWindowType_t::MessageHandler() Found Id(%d) Name(%s)", windowId,
+            LogInfo(L"TrWindowType_t::MessageHandler() Matched window Id(%d) Name(%s)", windowId,
                     m_mainWindow.GetWindow(windowId).GetWindowName());
-            const_cast<Acquire::Data_t&>(SsData).WindowId = windowId;
+            const_cast<SsWindow::Acquire::Data_t&>(ssData).WindowId = windowId;
             return S_OK;
         }
         LogInfo(L"TrWindowType_t: Unknown WindowId");
         // Can't determine the Window Id, give up on translating this message
         return E_ABORT;
     }
+    LogInfo(L"TrWindowType_t::MessageHandler() Already set window Id(%d) Name(%s)", ssData.WindowId,
+        m_mainWindow.GetWindow(ssData.WindowId).GetWindowName());
     // Acquire handler set Window Id, we didn't handle this message
     return S_FALSE;
 }
@@ -93,32 +97,24 @@ GetWindowId(
 {
     using namespace Ui::Window;
     Ui::WindowId_t windowId = Id::Unknown;
-    if (nullptr != m_lastWindowIdFunc)
-    {
+    if (nullptr != m_lastWindowIdFunc) {
         windowId = (this->*m_lastWindowIdFunc)(surface, Locate::CompareLastOrigin);
     }
-    if ((Id::Unknown == windowId) || (Window::Id::MainChat == windowId))
-    {
+    if ((Id::Unknown == windowId) || (Window::Id::MainChat == windowId)) {
         windowId = CompareAllLastOrigins(surface);
-        if (Window::Id::MainChat == windowId)
-        {
+        if (Window::Id::MainChat == windowId) {
             Ui::WindowId_t loggedInWindowId = SearchLoggedInWindows(surface);
-            if (Id::Unknown != loggedInWindowId)
-            {
+            if (Id::Unknown != loggedInWindowId) {
                 windowId = loggedInWindowId;
             }
-        }
-        else
-        {
+        } else {
             windowId = SearchAllWindows(surface);
         }
-        if (Window::Id::MainChat == windowId)
-        {
+        if (Window::Id::MainChat == windowId) {
             m_lastWindowIdFunc = s_mainChatFunc;
         }
     }
-    if (m_lastWindowId != windowId)
-    {
+    if (m_lastWindowId != windowId) {
         m_lastWindowId = windowId;
         LogAlways(L"Window(%s)", GetWindowName(windowId));
     }
@@ -213,6 +209,7 @@ GetWindowName(
     case Ui::Window::Id::Unknown:
         pName = L"Unknown";
         break;
+
     default:
         pName = m_mainWindow.GetWindow(windowId).GetWindowName();
         break;
@@ -245,8 +242,7 @@ GetOtherWindowId(
     const CSurface& surface,
           Flag_t    flags) const
 {
-    static const Ui::WindowId_t otherWindowIds[] = 
-    {
+    static const Ui::WindowId_t otherWindowIds[] = {
         Window::Id::Eq2Loading,
         Window::Id::Zoning,
     };
@@ -271,11 +267,9 @@ GetBrokerWindowId(
 {
     Ui::WindowId_t windowId = Ui::Window::Id::Unknown;
     POINT origin = { 0, 0 };
-    if (m_mainWindow.GetBrokerWindow().IsLocatedOn(surface, flags, &origin))
-    {
+    if (m_mainWindow.GetBrokerWindow().IsLocatedOn(surface, flags, &origin)) {
         windowId = m_mainWindow.GetBrokerWindow().GetWindowId(surface);
-        if (Ui::Window::Id::Unknown == windowId)
-        {
+        if (Ui::Window::Id::Unknown == windowId) {
             windowId = Window::Id::BrokerFrame;
         }
     }
@@ -290,8 +284,7 @@ GetMainChatWindowId(
     const CSurface& surface,
           Flag_t    flags) const
 {
-    if (m_mainWindow.GetWindow(Window::Id::MainChat).IsLocatedOn(surface, flags))
-    {
+    if (m_mainWindow.GetWindow(Window::Id::MainChat).IsLocatedOn(surface, flags)) {
         return Window::Id::MainChat;
     }
     return Ui::Window::Id::Unknown;

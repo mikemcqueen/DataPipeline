@@ -1,31 +1,38 @@
-lon::window_t::  should probably become lonwindow namespace
-with manager_t type
-   get rid of static methods
 
 add event:: namespace
 	event types inside this
 
-TransactionManager_t::ExecuteTransaction const TxData
-
 figure out the Class[] hack in DP::Message.
 
-g_pDisplay in LonTraderImpl.
+g_pDisplay
 
 SSTask::Acquire::Data_t has a virtual destructor to release pool item. destructor i understand.  why does it need to be virtual?
    because if it's not virtual it won't be called.  only the top-level derived class will be called.  in the case of SSWindow::Data_t
    for Eq2Broker this is a real issue.
-
-the whole TrSurface_t -> TrWindow_t (no template type) -> TrTable_t -> ?? inheritance heirarchy looks bad
+   - when do i need a virtual destructor vs. unique_ptr (or release_ptr)
+   - TODO: typeid is not working as I expect.  it's mimicking the declared (base ptr) class name, not allocated class type
 
 static charsets in DcrTrades_t
 
-typedef SsTrades_t::ScreenShotData_t TranslateData_t; is in several files in the TrSurface -> TrWindows -> Tr?? heirarchy. looks unnecessary.
+pool template type is <pool_item<type>> instead of just <type>  why?
+   member vector can still be <pool_item<type>>
+   maybe i can remove_reference<>() here somewhere (type_traits?)
 
-c++17:
+widget IDs as empty enum class + constexpr + MakeId
+
+DcrWindow.cpp, remove inline code from .h
+
+review some of the enable_if/concepts ideas for restricting MakeId to specific types (WindowId_t, WidgetId_t, EventId_t, etc.)
+	maybe i can use typeid(T) == typeid(type1) || typeid(type2) etc.
+
+DP::Message::Data_t could have an (optionally initialized) releaseFunction callback that defaults to nullptr.
+   it gets called at DP::Release().
+
+c++17: * == done(ish)
 	range_for (as_const? or just const auto) whereever const_iterator is defined. read up on as_const vs. const auto
 	public + delete instead of private copy/assignment/move
 	* (done-ish) override instead of virtual for all derived virtual functiond decls
-	nullptr instead of nullptr
+	* nullptr
 	enum class
 	constexpr
 		static const -> constexpr

@@ -21,6 +21,19 @@
 class Eq2BrokerImpl_t;
 class CSurface;
 
+namespace Broker {
+
+    struct Options_t {
+/*
+        std::wstring dbName;
+*/
+        std::wstring characterName{ L"Human" };
+        std::wstring serverName{ L"Mistmoore" };
+        std::wstring testImagePath;
+    };
+
+}
+
 class Eq2Broker_t
 {
 
@@ -30,14 +43,16 @@ public:
 
 private:
 
-    Broker::MainWindow_t&     m_mainWindow;
+    Broker::MainWindow_t& m_mainWindow;
+    const Broker::Options_t& m_options;
     std::unique_ptr<Eq2BrokerImpl_t> m_pImpl;
 
 public:
 
     // Constructor & destructor:
     Eq2Broker_t(
-        Broker::MainWindow_t& Window);
+        Broker::MainWindow_t& mainWindow,
+        const Broker::Options_t& options);
 
     ~Eq2Broker_t();
 
@@ -97,6 +112,9 @@ private:
     bool
     CmdCharacter(
         const wchar_t* pszCmd);
+
+    void
+    LoadAndSendTestImage(const wstring& testImagePath);
 
 private:
 

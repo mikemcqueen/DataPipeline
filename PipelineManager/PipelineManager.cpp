@@ -51,7 +51,7 @@ operator()(
         pPM->Dispatch(pData);
         break;
 
-    case State::Free:
+    case State::Free:   
         pPM->Release(pData);
         pPM->Free(pData);
         break;
@@ -229,9 +229,14 @@ GetNextHandler(
 {
     while (m_Handlers.end() != it)
     {
-        if ((0 != (it->Stage & Stage)) &&
-            ((nullptr == pszClass) || (0 == it->pHandler->GetClass().compare(pszClass))))
+        if ((0 != (it->Stage & Stage))) 
+            // TODO: revisit this class nonsense when necessary. maybe
+            // consider adding an "application" or "domain" message::Data
+            // member in addition to "class".
+            // 
+            // && ((nullptr == pszClass) || (0 == it->pHandler->GetClass().compare(pszClass))))
         {
+            pszClass;
             return true;
         }
         ++it;
@@ -268,7 +273,6 @@ AddTransactionHandler(
     Handler_t&      handler,
     const wchar_t*  displayName /*= nullptr*/)
 {
-    bool added = false;
     if (handler.Initialize(nullptr))
     {
         // NOTE: obviously this only allows for one handler per transaction Id,
@@ -285,30 +289,22 @@ AddTransactionHandler(
                 displayName = stringId;
             }
             HandlerData_t handlerData(stage, &handler, displayName);
-            //TxIdHandlerMap_t::_Pairib ibPair = m_txHandlerMap.insert(
             auto [ _, added ] = m_txHandlerMap.insert(
                 make_pair(transactionId, handlerData));
-            //added = ibPair.second;
-            if (!added)
-            {
+            if (added) {
+                return; // Success
+            } else {
                 LogError(L"PM::AddTransactionHandler(): HandlerMap.insert() failed");
             }
-        }
-        else
-        {
+        } else {
             LogError(L"PM::AddTransactionHandler(): Handler already registered for id (%d)",
                      transactionId);
         }
-    }
-    else
-    {
+    } else {
         LogError(L"PM::AddTransactionHandler(): Handler.Initialize(%d, %d) failed",
                  stage, transactionId);
     }
-    if (!added)
-    {
-        throw runtime_error("PM::AddTransactionHandler()");
-    }
+    throw runtime_error("PM::AddTransactionHandler()");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -428,6 +424,8 @@ PipelineManager_t::
 Callback(
     Message::Data_t* pMessage)
 {
+    LogInfo(L"PipelineManager_t::Callback pMessage %S", typeid(*pMessage).name());
+
     if (nullptr == pMessage)
     {
         throw std::invalid_argument("PipelineManager_t::Callback(): Invalid message");
@@ -573,12 +571,20 @@ PipelineManager_t::
 Release(
     DP::Message::Data_t* pData)
 {
+    if (nullptr != pData->ReleaseFn) {
+        pData->ReleaseFn(*pData);
+    }
+
+#if 0
     switch (pData->Stage)
     {
     case DP::Stage::Acquire:
         {
             // Haxoid
-            pData->~Data_t();
+            //pData->~Data_t();
+            
+            // TOOD: move to outside switch;
+
 /*
             const DP::AcquireData_t& ad = *(DP::AcquireData_t*)pData;
             switch (ad.Format)
@@ -608,6 +614,7 @@ Release(
         LogError(L"PM::ReleaseData('%ls', %d)", pData->Class, pData->Stage);
         throw std::invalid_argument("PM::ReleaseData() invalid stage");
     }
+#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -58,28 +58,28 @@ public:
         m_name((nullptr != pName) ? pName : L"[unnamed]")
     { }
 
+    #if 1
     virtual
     ~Handler_t()
     { }
+    #endif
 
     // 
     // DP::Handler_t virtual:
     //
 
-    virtual
     bool
     Initialize(
-        const wchar_t* pClass)
+        const wchar_t* pClass) override
     {
-        return DP::Handler_t::Initialize(pClass) &&
-               m_TranslatePolicy.Initialize()    &&
-               m_ValidatePolicy.Initialize();
+        return DP::Handler_t::Initialize(pClass)
+            && m_TranslatePolicy.Initialize()
+            && m_ValidatePolicy.Initialize();
     }
 
-    virtual
     HRESULT
     MessageHandler(
-        const DP::Message::Data_t* pMessage)
+        const DP::Message::Data_t* pMessage) override
     {
         LogInfo(L"Dcr%s::MessageHandler()", m_name.c_str());
         if (Validate(pMessage, m_WindowId))

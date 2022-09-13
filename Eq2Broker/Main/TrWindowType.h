@@ -47,7 +47,7 @@ public:
     //
     // DP::Handler_t virtual:
     //
-    virtual
+
     HRESULT
     MessageHandler(
         const DP::Message::Data_t* pMessage) override;

@@ -44,7 +44,7 @@ EventHandler(
     if (S_FALSE != hr)
         return hr;
 
-    ASSERT(DP::Message::Type::Event == Data.Type);
+    assert(DP::Message::Type::Event == Data.Type);
 
     using namespace Ui::Event;
     switch (Data.Id)
@@ -572,6 +572,9 @@ PostData(
                 Top.WindowId,
                 SurfaceRect,
                 pPoolItem);
+
+        LogInfo(L"SsWindow_t::PostData: data %S", typeid(*pData).name());
+
         HRESULT hr = GetPipelineManager().Callback(pData);
         if (FAILED(hr))
         {

@@ -232,34 +232,27 @@ namespace SsTask
 {
 namespace Acquire
 {
-
     struct Data_t :
         public DP::Message::Data_t
     {
         SurfacePoolItem_t* pPoolItem;
 
+        static void ReleaseFn(DP::Message::Data_t&);
+
         Data_t(
-            const wchar_t*           pClass,
-                  SurfacePoolItem_t* InitPoolItem,
-                  size_t             Size = sizeof(Data_t))
-        :
+            const wchar_t* pClass,
+            SurfacePoolItem_t* InitPoolItem,
+            size_t             Size = sizeof(Data_t))
+            :
             DP::Message::Data_t(
                 DP::Stage::Acquire,
                 SsTask_t::GetMessageId(),
                 Size,
-                pClass),
+                pClass,
+                DP::Message::Type::Message,
+                ReleaseFn),
             pPoolItem(InitPoolItem)
         { }
-
-        virtual
-        ~Data_t()
-        {
-            pPoolItem->release();
-        }
-
-    private:
-
-        Data_t();
     };
 
 } // Acquire

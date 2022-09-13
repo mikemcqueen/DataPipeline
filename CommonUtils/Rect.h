@@ -42,18 +42,6 @@ public:
         ::SetRect(this, left, top, right, bottom);
     }
 
-/*
-    const Rect_t&
-    operator=(
-        const Rect_t& rhs)
-    {
-        if (&rhs != this)
-        {
-            CopyRect(this, &rhs);
-        }
-        return *this;
-    }
-*/
     int Width() const     { return right - left; }
     int Height() const    { return bottom - top; }
 

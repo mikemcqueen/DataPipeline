@@ -116,7 +116,7 @@ namespace Translate
         //
         // DcrWindow virtual:
         //
-        virtual 
+        
         void
         PostData(
             DWORD /*Unused*/) override;

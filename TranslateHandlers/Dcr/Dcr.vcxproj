@@ -88,7 +88,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\Ui\TrScrollThumb_t.cpp" />
-    <ClCompile Include="DcrWindow.cpp" />
+    <ClCompile Include="DcrWindowPolicy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\inc\DcrWindow.h" />

@@ -24,8 +24,8 @@ static const wchar_t g_szLogPrefix[] = L"eq2";
 
 static CWinApp   theApp;
 /*static*/ wchar_t   g_szDbName[MAX_PATH];
-/*static*/ wchar_t   g_szCharName[MAX_PATH] = L"Human";
-/*static*/ wchar_t   g_szServerName[MAX_PATH] = L"Mistmoore";
+///*static*/ wchar_t   g_szCharName[MAX_PATH] = L"Human";
+///*static*/ wchar_t   g_szServerName[MAX_PATH] = L"Mistmoore";
 
 CDisplay*        g_pDisplay;
 DWORD            g_dwSleep = 0;
@@ -74,17 +74,18 @@ extern wchar_t* optarg;
 int
 ProcessCommandLine(
     int      argc,
-    wchar_t* argv[])
+    wchar_t* argv[],
+    Broker::Options_t* pOptions)
 {
     bool bDbSupplied = false;
     int c;
 
-    while ((c = util::getopt (argc, argv, L"c:d:l:s:p:")) != -1)
+    while ((c = util::getopt (argc, argv, L"c:d:l:p:s:t:")) != -1)
     {
         switch (wchar_t(c))
         {
-        case L'c': // Character:
-            wcscpy_s(g_szCharName, optarg);
+        case L'c': // Character name
+            pOptions->characterName.assign(optarg);
             break;
 
         case L'd': // Database:
@@ -105,8 +106,12 @@ ProcessCommandLine(
             }
             break;
 
-        case L's': // Server:
-            wcscpy_s(g_szServerName, optarg);
+        case L's': // Server name
+            pOptions->serverName.assign(optarg);
+            break;
+
+        case L't': // Test image path
+            pOptions->testImagePath.assign(optarg);
             break;
 
         case L'?':
@@ -124,46 +129,38 @@ ProcessCommandLine(
 
 void
 StartupInitialize(
-    int      argc,
-    wchar_t* argv[])
+    int argc,
+    wchar_t* argv[],
+    Broker::Options_t* pOptions)
 {
-	if (!AfxWinInit(::GetModuleHandle(nullptr), nullptr, ::GetCommandLine(), 0))
-	{
-        throw logic_error("MFC initialization failed");
+	if (!AfxWinInit(::GetModuleHandle(NULL), NULL, ::GetCommandLine(), 0)) {
+        throw runtime_error("MFC initialization failed");
 	}
-	srand((unsigned)time(nullptr));
+	srand(static_cast<unsigned>(time(nullptr)));
     Log::SetOutput(Log::Output::Debug);
-    if (!Log_t::Get().Initialize())
-    {
-        throw logic_error("Log_t::Initialize() failed");
+    if (!Log_t::Get().Initialize()) {
+        throw runtime_error("Log_t::Initialize() failed");
     }
-    if (!Log_t::Get().Open(g_szLogPrefix))
-    {
-        throw logic_error("Log_t::Open() failed");
+    if (!Log_t::Get().Open(g_szLogPrefix)) {
+        throw runtime_error("Log_t::Open() failed");
     }
-    HRESULT hr;
-    hr = InitDirectDraw(GetDesktopWindow());
-    if (FAILED(hr))
-    {
-        throw logic_error("InitDirectDraw() failed");
+    HRESULT hr = InitDirectDraw(GetDesktopWindow());
+    if (FAILED(hr)) {
+        throw runtime_error("InitDirectDraw() failed");
     }
-    if (!GetPipelineManager().Initialize())
-    {
-        throw logic_error("GetPipelineManager().Initialize() failed");
+    if (!GetPipelineManager().Initialize()) {
+        throw runtime_error("GetPipelineManager().Initialize() failed");
     }
-    int iRet = ProcessCommandLine(argc, argv);
-    if (0 >= iRet)
-    {
-        if (0 > iRet)
-        {
-            throw logic_error("ProcessCommandLine() failed.");
+    int result = ProcessCommandLine(argc, argv, pOptions);
+    if (result <= 0) {
+        if (result < 0) {
+            throw invalid_argument("ProcessCommandLine() failed.");
         }
-        exit(iRet);
+        exit(result);
     }
 #if 0
-    if (!Accounts::Db::Initialize(m_pImpl->m_strServerName.c_str()))
-    {
-        throw logic_error("Accounts::Db::Initialize() failed");
+    if (!Accounts::Db::Initialize(m_pImpl->m_strServerName.c_str())) {
+        throw runtime_error("Accounts::Db::Initialize() failed");
     }
 #endif
 }
@@ -182,32 +179,28 @@ ShutdownCleanup()
 
 void
 BrokerLoop(
-    const wchar_t* pServerName)
+    const Broker::Options_t& options)
 {
     // TODO: account move to broker class?
     AccountManager_t am;
     Account_t& acct = am.GetAccount(Game::Id::Eq2);
-    Character_t& chr = acct.GetCharacter(0, g_szCharName);    // 0 == serverid
+    Character_t& chr = acct.GetCharacter(0, options.characterName.c_str());    // 0 == serverid
     Character_t::SetCharacter(&chr);
-    LogAlways(L"Server: %s - Char: %s", pServerName, chr.GetName().c_str());
+    LogAlways(L"Server: %s - Char: %s", options.serverName.c_str(), chr.GetName().c_str());
     // move to broker.init()?
-    if (!Accounts::Db::Initialize(pServerName))
-    {
-        throw logic_error("AccountsDb::Initialize() failed");
+    if (!Accounts::Db::Initialize(options.serverName.c_str())) {
+        throw runtime_error("AccountsDb::Initialize() failed");
     }
     Broker::MainWindow_t window;
-    Eq2Broker_t broker(window);
-    if (broker.Initialize())
-    {
-        if (broker.Start())
-        {
-            broker.ReadConsoleLoop();
-            broker.Stop();
-            return;
-        }
-        throw logic_error("broker.Start() failed");
+    Eq2Broker_t broker(window, options);
+    if (!broker.Initialize()) {
+        throw runtime_error("broker.Initialize() failed");
     }
-    throw logic_error("broker.Initialize() failed");
+    if (!broker.Start()) {
+        throw runtime_error("broker.Start() failed");
+    }
+    broker.ReadConsoleLoop();
+    broker.Stop();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -218,30 +211,23 @@ wmain(
     wchar_t* argv[],
     wchar_t* /*envp[]*/)
 {
-    struct Cleanup_t
-    {
+    struct Cleanup_t {
         ~Cleanup_t() { ShutdownCleanup(); }
-    } Cleanup;
+    } cleanup;
 
     extern bool g_bTableFixColor;
     g_bTableFixColor = false;
 
-    try
-    {
-        StartupInitialize(argc, argv);
-        BrokerLoop(g_szServerName);
-    }
-    catch (std::exception& e)
-    {
+    Broker::Options_t options;
+    try {
+        StartupInitialize(argc, argv, &options);
+        BrokerLoop(options);
+    } catch (std::exception& e) {
         LogError(L"wmain() ### Caught %hs: %hs ###", typeid(e).name(), e.what());
-    }
-    catch (CDBException* e)
-    {
+    } catch (CDBException* e) {
         LogError(L"wmain() ### Caught CDBException: %s ###", (LPCTSTR)e->m_strError);
         e->Delete();
-    }
-    catch (...)
-    {
+    } catch (...) {
         LogError(L"wmain() ### Unhandled exception ###");
     }
     return 0;

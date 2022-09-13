@@ -41,7 +41,7 @@ Eq2LoadingWindow_t::
 loadSurfaces()
 {
     extern CDisplay* g_pDisplay;
-    #if 0 // TODO
+#if 0 // TODO
     HRESULT hr = g_pDisplay->CreateSurfaceFromBitmap(&m_cancelButton,
         MAKEINTRESOURCE(IDB_EQ2LOADING_CANCEL));
     if (FAILED(hr))
@@ -57,7 +57,8 @@ const CSurface*
 Eq2LoadingWindow_t::
 GetOriginSurface() const
 {
-    return &m_cancelButton;
+    return nullptr;
+    //return &m_cancelButton;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -119,7 +120,8 @@ const CSurface*
 TransitionWindow_t::
 GetOriginSurface() const
 {
-    return &m_transitionImage;
+    return nullptr;
+    //return &m_transitionImage;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -179,7 +181,8 @@ const CSurface*
 MainChatWindow_t::
 GetOriginSurface() const
 {
-    return &m_mainChatCaption;
+    return nullptr;
+    //return &m_mainChatCaption;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

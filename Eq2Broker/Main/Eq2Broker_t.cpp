@@ -18,6 +18,7 @@
 #include "MainWindow_t.h"
 #include "Character_t.h"
 #include "Log_t.h"
+#include "SurfacePoolItem_t.h"
 
 using namespace Broker;
 
@@ -33,9 +34,11 @@ const wchar_t* Eq2Broker_t::s_pClass = nullptr; // L"Eq2Broker";
 
 Eq2Broker_t::
 Eq2Broker_t(
-    Broker::MainWindow_t& mainWindow)
+    Broker::MainWindow_t& mainWindow,
+    const Broker::Options_t& options)
     :
     m_mainWindow(mainWindow),
+    m_options(options),
     m_pImpl(std::make_unique<Eq2BrokerImpl_t>(*this, mainWindow))
 {
 }
@@ -53,8 +56,7 @@ bool
 Eq2Broker_t::
 Initialize()
 {
-    if (!InitHandlers())
-    {
+    if (!InitHandlers()) {
         LogError(L"InitHandlers() failed");
         return false;
     }
@@ -71,7 +73,7 @@ InitHandlers()
     DP::PipelineManager_t& pm = GetPipelineManager();
     using namespace DP::Stage;
     using namespace Broker::Transaction;
-    pm.AddHandler(Acquire,   m_pImpl->m_SsWindow,                       s_pClass);
+    pm.AddHandler(Acquire, m_pImpl->m_SsWindow, L"SsWindow");
 
     //
     // Translators
@@ -110,14 +112,6 @@ InitHandlers()
     pm.AddTransactionHandler(Interpret, Id::BuyItem,         m_pImpl->m_txBuyItem,          L"TxBuyItem");
     pm.AddTransactionHandler(Interpret, Id::BuySellItems,    m_pImpl->m_txBuySellItems,     L"TxBuySellItems");
 
-#if 0
-    // NOTE: Manager before Player
-    // NOTE: Player before Poster
-    pm.AddHandler(Analyze,   m_pImpl->m_TradeManager,                  szLonPostedTrades)
-    pm.AddHandler(Analyze,   m_pImpl->m_Player,                        szLonPostedTrades)
-    pm.AddHandler(Analyze,   m_pImpl->m_TradePoster,                   szLonPostedTrades)
-    pm.AddHandler(Analyze,   m_pImpl->m_TradeExecutor,                 szLonPostedTrades)
-#endif
     return true;
 }
 
@@ -153,13 +147,17 @@ Start()
         LogAlways(L"Sleeping %d ms...", g_dwSleep);
         Sleep(g_dwSleep);
     }
-    constexpr size_t requiredTaskCount = 1; // 1 == SsTask
-    auto startedTaskCount = GetPipelineManager().StartAcquiring();
-    if (requiredTaskCount != startedTaskCount)
-    {
-        LogError(L"Only (%d) of (%d) acquire handler(s) started",
-                 startedTaskCount, requiredTaskCount);
-        return false;
+    if (!m_options.testImagePath.empty()) {
+        LoadAndSendTestImage(m_options.testImagePath);
+    } else {
+        constexpr size_t requiredTaskCount = 1; // 1 == SsTask
+        auto startedTaskCount = GetPipelineManager().StartAcquiring();
+        if (requiredTaskCount != startedTaskCount)
+        {
+            LogError(L"Only (%d) of (%d) acquire handler(s) started",
+                startedTaskCount, requiredTaskCount);
+            return false;
+        }
     }
     return true;
 }
@@ -386,3 +384,50 @@ GetWindowId(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+
+void
+Eq2Broker_t::
+LoadAndSendTestImage(const wstring& testImagePath)
+{
+    LogInfo(L"Loading and processing test image: %s", testImagePath.c_str());
+
+    extern CDisplay* g_pDisplay;
+
+    CSurface* pSurface = new CSurface();
+    HRESULT hr = g_pDisplay->CreateSurfaceFromBitmap(pSurface, testImagePath.c_str());
+    if (FAILED(hr)) {
+        throw invalid_argument("CreateSurfaceFromBitmap failed");
+    }
+
+    SurfacePool_t* pPool = new SurfacePool_t();
+    pPool->reserve(1);
+    CSurface& cs = *pSurface;
+    SurfacePoolItem_t* pPoolItem = new SurfacePoolItem_t(pPool, (CSurface*&)cs);
+    pPoolItem->addref();
+    pPool->add(*pPoolItem);
+
+    m_pImpl->m_SsWindow.PostData(nullptr, pPoolItem);
+    /*
+    WaitForSingleObject(GetPipelineManager().GetIdleEvent(), INFINITE);
+    switch (WindowId)
+    {
+    case Window::Id::BrokerBuyTab:
+        BrokerBuy.GetTranslator().GetText().Dump(nullptr, true);
+        if (0 == iterations)
+            Window.DumpWidgets(Surface, BrokerBuy.GetWindow().GetTableRect());
+        break;
+    case Window::Id::BrokerSellTab:
+        BrokerSell.GetTranslator().GetText().Dump(nullptr, true);
+        if (0 == iterations)
+            Window.DumpWidgets(Surface, BrokerSell.GetWindow().GetTableRect());
+        break;
+    case Window::Id::BrokerSetPricePopup:
+        if (0 == iterations)
+            Window.DumpWidgets(Surface, MainWindow.GetPopupRect());
+        break;
+    default:
+        break;
+    }
+    LogAlways(L"VScroll = %ls", GetScrollPosString(Window.GetScrollPosition(Ui::Scroll::Bar::Vertical)));
+    */
+}

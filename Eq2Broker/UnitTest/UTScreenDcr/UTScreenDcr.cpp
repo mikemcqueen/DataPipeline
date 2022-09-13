@@ -205,7 +205,7 @@ usage:
 
     Log::SetLevel(logLevel);
 
-    std::auto_ptr<CSurface> spSurface(new CSurface());
+    std::unique_ptr<CSurface> spSurface(new CSurface());
     CSurface* pSurface = spSurface.get();
     HRESULT hr = g_pDisplay->CreateSurfaceFromBitmap(pSurface, argv[FileArg]);
     if (FAILED(hr))
@@ -268,7 +268,6 @@ void Execute(CSurface& Surface, size_t iterations)
     SsWindow::Acquire::Handler_t SsWindow(*g_pDisplay, MainWindow);
     SsWindow.Initialize(Class);
 
-    // hack to init charsets
     DcrBase_t::InitAllCharsets();
 
     Buy::Window::ManagerBase_t      BrokerBuy(MainWindow.GetBrokerBuyWindow());

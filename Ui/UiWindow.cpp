@@ -40,6 +40,8 @@ Base_t(
     m_pWidgets(nullptr),
     m_WidgetCount(0)
 {
+    LogError(L"FIXME: MainWindow hWnd initialization - move out of UiWindow.cpp");
+    /*
     if ((nullptr != pClassName) || (nullptr != pWindowName))
     {
         HWND hWnd = ::FindWindow(pClassName, pWindowName);
@@ -51,6 +53,7 @@ Base_t(
         }
         m_hMainWindow = hWnd;
     }
+    */
 }
 
 ////////////////////////////////////////////////////////////////////////////////

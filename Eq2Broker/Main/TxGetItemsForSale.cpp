@@ -16,8 +16,8 @@
 #include "DbItemsForSale_t.h"
 #include "Db.h"
 
-extern wchar_t g_szDbName[];
-extern wchar_t g_szServerName[];
+//extern wchar_t g_szDbName[];
+//extern wchar_t g_szServerName[];
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -43,9 +43,11 @@ operator()(
     {
     case State::Startup:
         return Handler_t::ThreadStartup();
+
     case State::Execute:
         Handler_t::ThreadMessage(Message);
         break;
+
     case State::Shutdown:
         Handler_t::ThreadShutdown();
         break;
@@ -192,12 +194,15 @@ Handler_t::
 ThreadStartup()
 {
     //TODO threadqueue_t::onstartup look at return value
+    throw runtime_error("implementation removed");
+#if 0
     if (!Db::Initialize(g_szDbName, g_szServerName, true, GetCurrentThreadId()))
     {
         LogError(L"TxGetItemsForSale_t::ThreadStartup(): Db::Initialize() failed");
         return false;
     }
     return true;
+#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////

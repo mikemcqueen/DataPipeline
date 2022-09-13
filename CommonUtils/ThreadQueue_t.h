@@ -200,16 +200,16 @@ public:
 
     void
     QueueData(
-        const Data_t& Data)
+        const Data_t& data)
     {
         if (!IsInitialized())
         {
             wprintf(L"ERROR: ThreadQueue_t<%s>::QueueData(): Object is not intialized", m_pszName);
             throw E_FAIL;
         }
-        m_Process.operator()(ThreadQueue::State::Display, Data, m_pParam);
+        m_Process.operator()(ThreadQueue::State::Display, data, m_pParam);
         CLock lock(m_csQueue);
-        m_Queue.push_back(Data);
+        m_Queue.push_back(data);
         SetEvent(m_hAddEvent.get());
         ResetEvent(m_hIdleEvent.get());
     }
@@ -388,7 +388,7 @@ private:
             }
             if (ThreadQueue::High == m_LogLevel)
             {
-                LogInfo(L"ProcessQueue: Found entry, queue size was %d", Count);
+                LogInfo(L"ProcessQueue: Found entry, %S, queue size was %d", typeid(Data).name(), Count);
             }
 /*
             if (nullptr == pData)
@@ -414,7 +414,8 @@ private:
                 LogError(L"ThreadQueue_t<%s>::ProcessData: Caught std::exception '%hs'",
                          m_pszName, e.what());
             }
-            m_Process(ThreadQueue::State::Free, Data, m_pParam);
+//            LogError(L"FIXME: free data in threadqueue_t");
+//           m_Process(ThreadQueue::State::Free, Data, m_pParam);
             if (ThreadQueue::High == m_LogLevel)
             {
                 LogInfo(L"--ThreadQueue_t<%s>::ProcessData", m_pszName);

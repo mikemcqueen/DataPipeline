@@ -71,42 +71,40 @@ namespace Message
         return static_cast<MessageId_t>(first + id);
     }
 
+    struct Data_t;
+    using ReleaseFn_t = void (*)(Data_t& data);
+
     struct Data_t
     {
-        static const size_t ClassLength = 32;
+        static constexpr int ClassLength = 32;
 
         Stage_t       Stage;
         MessageId_t   Id;
         size_t        Size;
         wchar_t       Class[ClassLength];
         Message::Type Type;
+        ReleaseFn_t   ReleaseFn;
 
         Data_t(
             Stage_t        stage       = Stage::Any,
             MessageId_t    messageId   = Message::Id::Unknown,
             size_t         size        = sizeof(Data_t),
             const wchar_t* className   = nullptr,
-            Message::Type  messageType = Type::Message)
+            Message::Type  messageType = Type::Message,
+            ReleaseFn_t    releaseFn   = nullptr)
             :
             Stage(stage),
             Type(messageType),
             Id(messageId),
-            Size(size)
+            Size(size),
+            ReleaseFn(releaseFn)
         {
             Class[0] = L'\0';
             if (nullptr != className) {
                 wcscpy_s(Class, className);
             }
         }
-
-        ~Data_t() = default; 
-        
-        /*
-        virtual
-        ~Data_t()
-        {
-        }
-        */
+        //~Data_t() = delete;
     };
 
 ////////////////////////////////////////////////////////////////////////////////

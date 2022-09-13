@@ -24,6 +24,20 @@ DP::MessageId_t SsTask_t::s_MessageId = DP::Message::Id::Unknown;
 
 /////////////////////////////////////////////////////////////////////////////
 
+/* static */
+void
+SsTask::Acquire::Data_t::
+ReleaseFn(DP::Message::Data_t& data)
+{
+    auto& ssData = static_cast<SsTask::Acquire::Data_t&>(data);
+    if (nullptr == ssData.pPoolItem) {
+        throw invalid_argument("SsData::pPoolItem is null");
+    }
+    ssData.pPoolItem->release();
+}
+
+/////////////////////////////////////////////////////////////////////////////
+
 SsTask_t::
 SsTask_t(
     CDisplay&   Display,
@@ -97,8 +111,7 @@ Initialize(
             m_SurfaceWidth,
             m_SurfaceHeight,
             m_PoolSize);
-    if (FAILED(hr))
-    {
+    if (FAILED(hr)) {
         LogError(L"InitSurfacePool(%d) failed.", m_PoolSize);
         return false;
     }
