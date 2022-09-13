@@ -18,41 +18,36 @@ namespace Buy
 
 ////////////////////////////////////////////////////////////////////////////////
 
-    class Window_t :
-        public TableWindow_t
-    {
-    public:
+class Window_t :
+    public TableWindow_t
+{
+public:
+    explicit
+    Window_t(
+        const Ui::Window_t& parent);
 
-        static
-        const Ui::Widget::Data_t&
-        GetWidgetData(
-            Ui::WidgetId_t widgetId);
+    static
+    const Ui::Widget::Data_t&
+    GetWidgetData(
+        Ui::WidgetId_t widgetId);
 
-    public:
+    bool
+    GetWidgetRect(
+        Ui::WidgetId_t widgetId,
+        Rect_t&        rect) const override;
 
-        explicit
-        Window_t(
-            const Ui::Window_t& parent);
+    void
+    SetLayout(Frame::Layout_t layout);
 
-        bool
-        GetWidgetRect(
-            Ui::WidgetId_t widgetId,
-            Rect_t&        rect) const override;
+private:
 
-        void
-        SetLayout(Frame::Layout_t layout);
+    MainWindow_t&
+    GetMainWindow() const;
 
-    private:
-
-        MainWindow_t&
-        GetMainWindow() const;
-
-    private:
-
-        Window_t();
-        Window_t(const Window_t&);
-        Window_t& operator=(const Window_t&);
-    };
+    Window_t();
+    Window_t(const Window_t&);
+    Window_t& operator=(const Window_t&);
+};
 
 ////////////////////////////////////////////////////////////////////////////////
 

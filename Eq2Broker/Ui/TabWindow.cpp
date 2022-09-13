@@ -106,12 +106,11 @@ GetWindowId(
     const CSurface& Surface,
     const POINT*    pptHint) const
 {
+    if (nullptr == pptHint) {
+        throw invalid_argument("TableWindow_t::GetWindowId()");
+    }
     Rect_t TableRect;
     SIZE ScrollOffsets;
-if (nullptr == pptHint)
-{
-    throw invalid_argument("TableWindow_t::GetWindowId()");
-}
     if (FindTable(Surface, *pptHint, TableRect, ScrollOffsets))
     {
         m_TableRect = TableRect;
@@ -215,24 +214,23 @@ FindTable(
         ptTab.x + m_TableOffset.x,
         ptTab.y + m_TableOffset.y
     };
-    {
-        if ((0 < m_TableSize.cx) && (0 < m_TableSize.cy))
+
+    if ((0 < m_TableSize.cx) && (0 < m_TableSize.cy)) {
+        Rect_t LastKnownTableRect(ptTable, m_TableSize);
+        if (ValidateTable(Surface, LastKnownTableRect, ScrollOffsets))
         {
-            Rect_t LastKnownTableRect(ptTable, m_TableSize);
-            if (ValidateTable(Surface, LastKnownTableRect, ScrollOffsets))
-            {
-                LogInfo(L"%ls::FindTable(): Valid", GetWindowName());
-                TableRect = LastKnownTableRect;
-                return true;
-            }
-            // Don't clear table size. Just because we couldn't validate the table
-            // doesn't mean it's not still the table size. There may be a another
-            // window on top obscuring the table and preventing validation.
-            //
-            // m_TableSize.cx = 0;
-            // m_TableSize.cy = 0;
+            LogInfo(L"%ls::FindTable(): Valid", GetWindowName());
+            TableRect = LastKnownTableRect;
+            return true;
         }
+        // Don't clear table size. Just because we couldn't validate the table
+        // doesn't mean it's not still the table size. There may be a another
+        // window on top obscuring the table and preventing validation.
+        //
+        // m_TableSize.cx = 0;
+        // m_TableSize.cy = 0;
     }
+
     DWORD Flags = 1;// set to 1 to debug
     const int TopBorderWidth = Surface.GetWidthInColorRange(
         ptTable.x, ptTable.y, BorderLowColor, BorderHighColor, Flags);
@@ -245,60 +243,66 @@ FindTable(
     }
     // TODO: use CompareColorRange(Rect)
     // ValidateBrokerTableBorder()
-    int y;
-    for (y = 1; (y < BorderSize.cy) && (ptTable.y + y < int(Surface.GetHeight())); ++y)
+    auto y = 1;
+    for (; (y < BorderSize.cy) && (ptTable.y + y < int(Surface.GetHeight())); ++y)
     {
         const int BorderWidth = Surface.GetWidthInColorRange(
             ptTable.x, ptTable.y + y, BorderLowColor, BorderHighColor);
         if (BorderWidth != TopBorderWidth)
         {
             LogInfo(L"%ls::FindTable(): Top BorderWidth(%d) @ (%d, %d) Row(%d) TopBorderWidth(%d)",
-                    GetWindowName(),
-                    BorderWidth, ptTable.x, ptTable.y + y, y, TopBorderWidth);
+                GetWindowName(),
+                BorderWidth, ptTable.x, ptTable.y + y, y, TopBorderWidth);
             return false;
         }
     }
     if (y < BorderSize.cy)
     {
-        LogInfo(L"%ls::FindTable(): border probably out of range",
+        LogInfo(L"%ls::FindTable(): top border out of view?",
                 GetWindowName());
         return false;
     }
-    int Offset = BorderSize.cy;
-    for (; ptTable.y + Offset < int(Surface.GetHeight()); ++Offset)
+    auto tableHeight = 0;
+    for (; ptTable.y + y < int(Surface.GetHeight()); ++tableHeight, ++y)
     {
-        const int BorderWidth = Surface.GetWidthInColorRange(
-            ptTable.x, ptTable.y + Offset, BorderLowColor, BorderHighColor);
-        if (BorderWidth < BorderSize.cx)
+        const int borderWidth = Surface.GetWidthInColorRange(
+            ptTable.x, ptTable.y + y, BorderLowColor, BorderHighColor);
+        if (borderWidth < BorderSize.cx)
         {
-            LogInfo(L"%ls::FindTable(): Left BorderWidth (%d) < %d, Offset (%d) @ (%d, %d)",
+            LogInfo(L"%ls::FindTable(): Left BorderWidth (%d) < %d, tableHeight (%d) @ (%d, %d)",
                     GetWindowName(),
-                    BorderWidth, BorderSize.cx, Offset, ptTable.x, ptTable.y + Offset);
+                    borderWidth, BorderSize.cx, tableHeight, ptTable.x, ptTable.y + y);
             return false;
         }
-        if (BorderWidth == TopBorderWidth)
+        if (borderWidth == TopBorderWidth)
             break;
     }
+    if (tableHeight < 10) {
+        LogInfo(L"%ls::FindTable(): small tableHeight (%d)",
+            GetWindowName(), tableHeight);
+        return false;
+    }
     // ValidateBrokerTableBorder()
-    for (y = Offset; (y < BorderSize.cy) && (ptTable.y + Offset + y < int(Surface.GetHeight())); ++y)
+    auto bottomBorderHeight = 0;
+    for (; (bottomBorderHeight < BorderSize.cy) && (ptTable.y + y < int(Surface.GetHeight())); ++bottomBorderHeight, ++y)
     {
-        const int BorderWidth = Surface.GetWidthInColorRange(
-            ptTable.x, ptTable.y + y, BorderLowColor, BorderHighColor);
-        if (BorderWidth != TopBorderWidth)
+        const int borderWidth = Surface.GetWidthInColorRange(
+            ptTable.x, ptTable.y + y, BorderLowColor, BorderHighColor, Flags);
+        if (borderWidth != TopBorderWidth)
         {
             LogInfo(L"%ls::FindTable(): Bottom BorderWidth (%d) @ (%d, %d) Row (%d) TopBorderWidth (%d)",
                     GetWindowName(),
-                    BorderWidth, ptTable.x, ptTable.y + y, y, TopBorderWidth);
+                    borderWidth, ptTable.x, ptTable.y + y, y, TopBorderWidth);
             return false;
         }
     }
-    if (y < BorderSize.cy)
+    if (bottomBorderHeight < BorderSize.cy)
     {
-        LogInfo(L"%ls::FindTable(): border probably out of range",
-                GetWindowName());
+        LogInfo(L"%ls::FindTable(): bottom border out of view? height (%d) of (%d)",
+            GetWindowName(), bottomBorderHeight, BorderSize.cy);
         return false;
     }
-    SIZE TableSize = { TopBorderWidth, Offset + BorderSize.cy };
+    SIZE TableSize = { TopBorderWidth, tableHeight + BorderSize.cy * 2 };
     Rect_t ProposedTableRect(ptTable, TableSize);
     if (ValidateClient(Surface, ProposedTableRect, ScrollOffsets))
     {
@@ -321,7 +325,7 @@ GetClientRect(
     using namespace Broker::Table;
     const int x = TableRect.left + BorderSize.cx + m_InnerTableRect.left + ScrollOffsets.cx;
     const int y = TableRect.top  + BorderSize.cy + m_InnerTableRect.top  + ScrollOffsets.cy;
-    SetRect(&ClientRect, x, y,
+    ::SetRect(&ClientRect, x, y,
             x + TableRect.Width() - DoubleBorderSize.cx - ScrollOffsets.cx -
                 m_InnerTableRect.left - m_InnerTableRect.right,
             y + TableRect.Height() - DoubleBorderSize.cy - ScrollOffsets.cy -

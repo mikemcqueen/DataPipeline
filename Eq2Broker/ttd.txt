@@ -14,10 +14,6 @@ SSTask::Acquire::Data_t has a virtual destructor to release pool item. destructo
 
 static charsets in DcrTrades_t
 
-pool template type is <pool_item<type>> instead of just <type>  why?
-   member vector can still be <pool_item<type>>
-   maybe i can remove_reference<>() here somewhere (type_traits?)
-
 widget IDs as empty enum class + constexpr + MakeId
 
 DcrWindow.cpp, remove inline code from .h
@@ -25,8 +21,8 @@ DcrWindow.cpp, remove inline code from .h
 review some of the enable_if/concepts ideas for restricting MakeId to specific types (WindowId_t, WidgetId_t, EventId_t, etc.)
 	maybe i can use typeid(T) == typeid(type1) || typeid(type2) etc.
 
-DP::Message::Data_t could have an (optionally initialized) releaseFunction callback that defaults to nullptr.
-   it gets called at DP::Release().
+BrokerFrame *contains* a tab.  Tab is not a window type.
+TableWindow does not inherit from TabWidnow.  Tab is not a window type.
 
 c++17: * == done(ish)
 	range_for (as_const? or just const auto) whereever const_iterator is defined. read up on as_const vs. const auto

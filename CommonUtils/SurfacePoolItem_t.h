@@ -17,8 +17,8 @@
 
 class CSurface;
 
-typedef pool_item<CSurface*>    SurfacePoolItem_t;
-typedef pool<SurfacePoolItem_t> SurfacePool_t;
+//typedef pool_item<CSurface*>    SurfacePoolItem_t;
+using SurfacePool_t = pool<CSurface>;
 
 ///////////////////////////////////////////////////////////////////////////////
 

@@ -31,58 +31,57 @@ template<class T> class pool;
 /////////////////////////////////////////////////////////////////////////////
 
 template<class T>
-class pool_item
+class pool_item final
 {
-    typedef pool_item<T>    PoolItemT;
-    typedef pool<PoolItemT> PoolT;
+    //typedef pool_item<T>    PoolItemT;
+    //typedef pool<PoolItemT> PoolT;
 
-protected:
-            volatile LONG   m_iRefCount;
-    mutable volatile LONG   m_state;
-                     PoolT* m_pPool;
-                     T      m_item;
+private:
+    pool<T>* m_pPool;
+    T* m_pData;
+    LONG m_refCount;
+    mutable LONG m_state;
 
 public:
     pool_item(
-        PoolT* pPool,
-        T&     item)
+        pool<T>* pPool,
+        T* pData)
         :   
         m_pPool(pPool),
-        m_iRefCount(0),
-        m_item(item),
+        m_pData(pData),
+        m_refCount(0),
         m_state(0)
     {
     }
 
-    const T& get( void ) const
+    T* get() const
     {
-        return m_item;
+        return m_pData;
     }
 
-    int addref( void )
+    int addref()
     {
-        return InterlockedIncrement(&m_iRefCount);
+        return InterlockedIncrement(&m_refCount);
     }
 
-    int release( void )
+    int release()
     {
-        LONG lRef = InterlockedDecrement(&m_iRefCount);
-        if (0 == lRef)
-        {
-            m_pPool->release(*this);
+        LONG refCount = InterlockedDecrement(&m_refCount);
+        if (0L == refCount) {
+            m_pPool->release(this);
         }
-        else if (0 > lRef)
-        {
-//            LogInfo(L"pool_item::release(): refcount = %d", lRef);
+        else if (0L > refCount) {
+            LogError(L"pool_item::release(): refcount = %d", refCount);
             // InterlockedExchange(&m_iRefCount, 0);
-            m_iRefCount = 0;
+            m_refCount = 0;
         }
-        return lRef;
+        return refCount;
     }
 
-    bool operator ==(const pool_item<T>& x)
+    // TODO: sketchy. remove this. 
+    bool operator==(const pool_item<T>& x)
     {
-        return m_item == x.m_item;
+        return m_pData == x.m_pData;
     }
 
     void set_state(LONG state)
@@ -95,7 +94,7 @@ public:
         return InterlockedCompareExchange(&m_state, 0, 0);
     }
 
-#if 1
+#if 0
     const T& T() const
     {
         return m_item;
@@ -108,116 +107,111 @@ public:
 template<class T>
 class pool
 {
-protected:
-    std::vector<T> m_Items;
-
-    //private:
-    size_t               m_sizeMin;
-private:
-    mutable CAutoCritSec m_cs;
-
-protected:
-    void Lock() { m_cs.lock(); }
-
 public:
-    pool(size_t size = 0)
+    using item_t = pool_item<T>;
+
+    explicit 
+    pool(int size = 0)
     {
-        m_Items.reserve(size);
-        m_sizeMin = 0;
+        m_items.reserve(size);
+        m_minSize = 0;
     }
 
-    T& at(int iPos)
+    item_t& at(int index)
     {
         CLock lock(m_cs);
-        return m_Items.at(iPos);
+        return m_items.at(index);
     }
 
-    size_t minsize() const
+    int minsize() const
     {
-        return m_sizeMin;
+        return m_minSize;
     }
 
-    size_t size() const
-    {
-        CLock lock(m_cs);
-        return m_Items.size();
-    }
-
-    void reserve(size_t count)
+    int size() const
     {
         CLock lock(m_cs);
-        m_Items.reserve(count);
+        return m_items.size();
     }
 
-    void add(T& item)
+    void reserve(int count)
     {
         CLock lock(m_cs);
-        item.set_state(PF_UNUSED);
-        m_Items.push_back(item);
-        m_sizeMin = size();
+        m_items.reserve(count);
     }
 
-    T* get_unused()
+    void add(const item_t& item)
     {
         CLock lock(m_cs);
-        for (size_t i = 0; i < size(); ++i )
-        {
-            if (PF_UNUSED == m_Items[i].get_state())
-            {
-                m_Items[i].set_state(PF_USED);
-                m_Items[i].addref();
-                return &m_Items[i];
+        // TODO: possible allocation + copy here. With a CSurface* that gets lost
+        // if we throw. Maybe a good spot for a unique_ptr?
+        m_items.push_back(item);
+        m_items.back().set_state(PF_UNUSED);
+        m_minSize = size();
+    }
+
+    item_t* get_unused()
+    {
+        CLock lock(m_cs);
+        for (auto& item: m_items) {
+            if (PF_UNUSED == item.get_state()) {
+                item.set_state(PF_USED);
+                item.addref();
+                return &item;
             }
         }
         return nullptr;
     }
 
-    T& get_ready(size_t first = 0)
+    item_t* get_ready(int first = 0)
     {
         CLock lock(m_cs);
-        for (size_t i = first; i < size(); ++i)
-        {
-            if (PF_READY == m_Items[i].get_state())
-            {
-                m_Items[i].addref();
-                return m_Items[i];
+        for (int i = first; i < size(); ++i) {
+            auto& item = a_items.at(i);
+            if (PF_READY == item.get_state()) {
+                item.addref();
+                return &item;
             }
         }
         throw E_FAIL;
     }
 
-    void release(const T& item)
+    void release(const item_t* pItem)
     {
         CLock lock(m_cs);
-        for (size_t i = 0; i < size(); ++i)
-        {
-            if (m_Items[i] == item)
-            {
-                m_Items[i].set_state(PF_UNUSED);
+        for (auto& item : m_items) {
+            if (&item == pItem) {
+                item.set_state(PF_UNUSED);
                 return;
             }
         }
         throw E_FAIL;
     }
 
-    size_t
-    unused() const
+    int unused() const
     {
-        long count = 0;
+        int count = 0;
         CLock lock(m_cs);
-        for (size_t i = 0; i < size(); ++i )
-        {
-            if (PF_UNUSED == m_Items[i].get_state())
+        for (auto& item : m_items) {
+            if (PF_UNUSED == item.get_state()) {
                 ++count;
+            }
         }
         return count;
     }
 
-    bool
-    all_unused() const
+    bool all_unused() const
     {
         return unused() == size();
     }
+
+protected:
+    void Lock() { m_cs.lock(); }
+
+private:
+    std::vector<item_t> m_items;
+    int m_minSize;
+    mutable CAutoCritSec m_cs;
 };
 
 /////////////////////////////////////////////////////////////////////////////

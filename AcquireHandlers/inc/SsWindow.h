@@ -39,7 +39,7 @@ namespace Acquire
             const wchar_t*     pClass,
             Ui::WindowId_t     InitWindowId,
             Rect_t&            InitSurfaceRect,
-            SurfacePoolItem_t* pPoolItem,
+            pool<CSurface>::item_t* pPoolItem,
             size_t             Size = sizeof(Data_t))
         :
             SsTask::Acquire::Data_t(
@@ -89,7 +89,7 @@ namespace Acquire
         void
         PostData(
             HWND              hWnd,
-            SurfacePoolItem_t* pPoolItem) override;
+            pool<CSurface>::item_t* pPoolItem) override;
 
         //
 

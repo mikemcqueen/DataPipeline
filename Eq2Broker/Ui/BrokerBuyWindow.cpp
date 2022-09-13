@@ -23,7 +23,7 @@ namespace Buy
 static const Flag_t WindowFlags;
 
 static const POINT  BrokerDefaultTabOffset   = { -55, 41 }; // Broker Buy
-static const POINT  BrokerDefaultTableOffset = { -11, 98 };
+static const POINT  BrokerDefaultTableOffset = { -11, 103 };
 static const POINT  MarketDefaultTabOffset   = { -54, 41 }; // Market Browse
 static const POINT  MarketDefaultTableOffset = { -11, 98 };
 static const RECT   InnerTableRect           = {   0,  5, 0, 0 };

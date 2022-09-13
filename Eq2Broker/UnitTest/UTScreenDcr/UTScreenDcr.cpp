@@ -286,7 +286,7 @@ void Execute(CSurface& Surface, size_t iterations)
     SurfacePool_t Pool;
     Pool.reserve(1);
     CSurface* pSurface = &Surface;
-    SurfacePoolItem_t poolItem(&Pool, pSurface);
+    pool<CSurface>::item_t poolItem(&Pool, pSurface);
     poolItem.addref();
     Pool.add(poolItem);
 

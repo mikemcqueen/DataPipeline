@@ -24,7 +24,7 @@
 namespace DcrWindow
 {
 
-typedef SsWindow::Acquire::Data_t AcquireData_t;
+using AcquireData_t = SsWindow::Acquire::Data_t;
 
 namespace Translate
 {
@@ -112,12 +112,9 @@ private:
         const DP::Message::Data_t* pMessage,
               Ui::WindowId_t       WindowId) const
     {
-        if (typeid(*pMessage) == typeid(AcquireData_t))
-        {
-            const AcquireData_t*
-                pData = static_cast<const AcquireData_t*>(pMessage);
-            if (pData->WindowId == WindowId)
-            {
+        if (0 == wcscmp(pMessage->Class, L"SsWindow")) {
+            auto& ssData = static_cast<const AcquireData_t&>(*pMessage);
+            if (ssData.WindowId == WindowId) {
                 return true;
             }
         }

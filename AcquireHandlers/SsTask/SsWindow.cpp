@@ -519,7 +519,7 @@ void
 Handler_t::
 PostData(
     HWND               hWnd,
-    SurfacePoolItem_t* pPoolItem)
+    pool<CSurface>::item_t* pPoolItem)
 {
     LogInfo(L"SsWindow::PostData()");
     using namespace Ui::Window;

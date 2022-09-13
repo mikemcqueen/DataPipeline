@@ -20,8 +20,8 @@ namespace Broker
     static const COLORREF BkLowColor             = Black;
     static const COLORREF BkHighColor            = RGB(50,50,50);
 
-    static const COLORREF BorderLowColor         = RGB(50,50,50);
-    static const COLORREF BorderHighColor        = RGB(255,255,255);
+    static const COLORREF BorderLowColor         = RGB(0, 0, 0);
+    static const COLORREF BorderHighColor        = RGB(6,6,6);
 
     namespace Table
     {
@@ -32,7 +32,7 @@ namespace Broker
         constexpr int QuantityTextHeight   = 14;
         constexpr int GapSizeY             = 2;
         constexpr int CharHeight           = 12;
-        static const SIZE BorderSize           = { 2, 2 };
+        static const SIZE BorderSize           = { 3, 3 };
         static const SIZE DoubleBorderSize     = { BorderSize.cx * 2, BorderSize.cy * 2 };
     } // Table
 

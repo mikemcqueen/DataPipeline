@@ -398,15 +398,13 @@ LoadAndSendTestImage(const wstring& testImagePath)
     if (FAILED(hr)) {
         throw invalid_argument("CreateSurfaceFromBitmap failed");
     }
-
+    // TODO: pool leaks.
     SurfacePool_t* pPool = new SurfacePool_t();
     pPool->reserve(1);
-    CSurface& cs = *pSurface;
-    SurfacePoolItem_t* pPoolItem = new SurfacePoolItem_t(pPool, (CSurface*&)cs);
-    pPoolItem->addref();
-    pPool->add(*pPoolItem);
-
-    m_pImpl->m_SsWindow.PostData(nullptr, pPoolItem);
+    pool<CSurface>::item_t item(pPool, pSurface);
+    item.addref();
+    pPool->add(item);
+    m_pImpl->m_SsWindow.PostData(nullptr, pPool->get_unused());
     /*
     WaitForSingleObject(GetPipelineManager().GetIdleEvent(), INFINITE);
     switch (WindowId)

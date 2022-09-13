@@ -80,13 +80,12 @@ SsTask_t::
     // translation, or being actively translated by the DCR thread.
     if (!m_Pool.all_unused())
     {
-        LogError(L"~SsTask_t(): Used SurfacePoolItems...");
+        LogError(L"~SsTask_t(): Used SurfacePoolItems.. forced deleting...");
+        for (auto index = 0; index < m_Pool.size(); ++index) {
+            auto& item = m_Pool.at(index);
+            delete item.get(); // delete CSurface
+        }
     }
-	for (size_t iSurface = 0; iSurface < m_Pool.size(); ++iSurface)
-	{
-        SurfacePoolItem_t& t = m_Pool.at(int(iSurface));
-		delete t.get();
-	}
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -166,8 +165,8 @@ InitSurfacePool(
                 delete pSurface;
             return hr;
         }
-		SurfacePoolItem_t Item(&Pool, pSurface);
-	    Pool.add(Item);
+		pool<CSurface>::item_t item(&Pool, pSurface);
+	    Pool.add(item);
 	}
     return S_OK;
 }
@@ -496,16 +495,16 @@ void
 SsTask_t::
 Shutter()
 {
-	SurfacePoolItem_t* pPoolItem = GetAvailableSurface();
+	pool<CSurface>::item_t* pPoolItem = GetAvailableSurface();
     if (nullptr == pPoolItem) {
         LogWarning(L"SSTask_t::Shutter(): No surface available");
         return;
     }
         
     struct AutoRelease_t {
-        SurfacePoolItem_t* pPoolItem;
+        pool<CSurface>::item_t* pPoolItem;
 
-        AutoRelease_t(SurfacePoolItem_t* pItem) : pPoolItem(pItem) {}
+        AutoRelease_t(pool<CSurface>::item_t* pItem) : pPoolItem(pItem) {}
         ~AutoRelease_t() { pPoolItem->release(); }
     } AutoRelease(pPoolItem);
 
@@ -526,7 +525,7 @@ Shutter()
 
 /////////////////////////////////////////////////////////////////////////////
 
-SurfacePoolItem_t*
+pool<CSurface>::item_t*
 SsTask_t::
 GetAvailableSurface( void )
 {

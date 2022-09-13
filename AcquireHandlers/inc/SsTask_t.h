@@ -123,7 +123,7 @@ public:
     void
     PostData(
         HWND               hWnd,
-        SurfacePoolItem_t* pPoolItem) = 0;
+        pool<CSurface>::item_t* pPoolItem) = 0;
 
 protected:
 
@@ -191,7 +191,7 @@ private:
 
     HRESULT            InitSurfacePool(size_t Size);
     SurfacePool_t&     GetSurfacePool()              { return m_Pool; }
-    SurfacePoolItem_t* GetAvailableSurface();
+    pool<CSurface>::item_t* GetAvailableSurface();
 
     void
     Shutter();
@@ -235,13 +235,13 @@ namespace Acquire
     struct Data_t :
         public DP::Message::Data_t
     {
-        SurfacePoolItem_t* pPoolItem;
+        pool<CSurface>::item_t* pPoolItem;
 
         static void ReleaseFn(DP::Message::Data_t&);
 
         Data_t(
             const wchar_t* pClass,
-            SurfacePoolItem_t* InitPoolItem,
+            pool<CSurface>::item_t* InitPoolItem,
             size_t             Size = sizeof(Data_t))
             :
             DP::Message::Data_t(
