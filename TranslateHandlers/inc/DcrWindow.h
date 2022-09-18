@@ -84,10 +84,9 @@ public:
         LogInfo(L"Dcr%s::MessageHandler()", m_name.c_str());
         if (Validate(pMessage, m_WindowId))
         {
-            const AcquireData_t*
-                pData = static_cast<const AcquireData_t*>(pMessage);
-            if (m_ValidatePolicy.Validate(*pData) &&
-                m_TranslatePolicy.Translate(*pData))
+            auto& ssData = static_cast<const AcquireData_t&>(*pMessage);
+            if (m_ValidatePolicy.Validate(ssData) &&
+                m_TranslatePolicy.Translate(ssData))
             {
                 PostData(0);
                 return S_OK;

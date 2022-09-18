@@ -133,6 +133,8 @@ StartupInitialize(
     wchar_t* argv[],
     Broker::Options_t* pOptions)
 {
+    InitCommonControls(); // DrawShadowText
+
 	if (!AfxWinInit(::GetModuleHandle(NULL), NULL, ::GetCommandLine(), 0)) {
         throw runtime_error("MFC initialization failed");
 	}

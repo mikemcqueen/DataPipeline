@@ -23,7 +23,7 @@ struct CharData_t
 
     size_t      Width;
     int         cLeadingPixels;
-    int         cTrailingPixels;
+//    int         cTrailingPixels;
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -33,41 +33,46 @@ typedef std::vector<KERNINGPAIR>	KernPairVector;
 
 /////////////////////////////////////////////////////////////////////////////
 
+
+constexpr unsigned kDrawSimulatedShadowText = 0x0001;
+constexpr unsigned kDrawShadowText =          0x0002;
+
 class CSurface;
 
 class Charset_t
 {
 
-    static const COLORREF DefaultBkColor   = RGB(  0,   0,   0);
-    static const COLORREF DefaultTextColor = RGB(255, 255, 255); 
+//    static const COLORREF DefaultBkColor   = RGB(  0,   0,   0);
+//    static const COLORREF DefaultTextColor = RGB(255, 255, 255); 
 
 private:
 
 	mutable std::vector<POINT> m_vecOverlapPoints;
-	std::vector<wchar_t>  m_vszCharset;
+	std::vector<wchar_t>  m_charset;
 	CharDataVector        m_vCharData;
 	KernPairVector        m_vKernPairs;
-	std::vector<int>      m_viDx;
-	CSurface*             m_spSurface;
+	std::vector<int>      m_charWidths;
+	unique_ptr<CSurface>  m_pSurface;
 	int                   m_iSpaceWidth;
     bool                  m_valid;
-    size_t                m_charsetSize;
 
 public:	
 
     explicit
 	Charset_t(
         HFONT hFont,
-        const wchar_t* pszCharset);
+        const wchar_t* pCharset,
+        unsigned flags = 0);
 
     explicit
 	Charset_t(
-        const LOGFONT& lf,
-        const wchar_t* pszCharset );
+        const LOGFONT& logFont,
+        const wchar_t* pCharset,
+        unsigned flags = 0);
 
 	~Charset_t();
 
-//    CSurface* GetSurface()  { return m_spSurface; }
+//    CSurface* GetSurface()  { return m_pSurface; }
 
 	void SetSpaceWidth(int iWidth) { m_iSpaceWidth = iWidth; }
 	int  GetSpaceWidth(void) const { return m_iSpaceWidth; }
@@ -75,13 +80,13 @@ public:
 	void SetCharFlags(wchar_t ch, DWORD dwFlags);
 	void SetCharFlags(const wchar_t* pszChars, DWORD dwFlags);
 
-	const CharData_t& GetCharData(unsigned Char) const;
+	const CharData_t& GetCharData(int index) const;
 //	CharData_t&       GetCharData(unsigned Char);
 
     void SetCharWidths(wchar_t ch, const ABC& abc);
 
 
-	wchar_t  GetChar(unsigned Char) const;
+	wchar_t  GetChar(int index) const;
 
 	HRESULT
     Compare(
@@ -108,7 +113,7 @@ public:
               DWORD     dwFlags = 0);
 
 	static int
-    SkipChar( const CSurface *pSurface, int& x, int& y, const RECT *pRect=0 );
+    SkipChar( const CSurface *pSurface, int& x, int& y, const RECT *pRect= nullptr );
 	
     void 
     WriteBmp(
@@ -119,16 +124,29 @@ public:
 
 private:
 
-    unsigned GetCharIndex(wchar_t ch);
+    int GetCharIndex(wchar_t ch);
 
     void Init(
         HFONT          hFont,
-        const wchar_t* pszCharset);
+        const wchar_t* pszCharset,
+        unsigned flags);
 
-	void					InitFontInfo( HFONT hFont, SIZE& size );
-    void					GetKernPairs(const HDC hDC);
-	void					DrawTextToSurface( HFONT hFont );
-	void					InitCharData( void );
+	void
+    InitFontInfo( HFONT hFont, bool shadow, SIZE& size );
+    
+    void
+    GetKernPairs(const HDC hDC);
+	
+    void DrawTextToSurface(
+        HFONT hFont,
+        bool transparent = false,
+        bool shadow = false);
+
+    void DrawShadowTextToSurface(
+        HFONT hFont);
+	
+    void
+    InitCharData( void );
 
 	HRESULT
     CompareChar(
@@ -140,7 +158,8 @@ private:
               DWORD     dwFlags,
               size_t&   MatchCount) const;
 
-	bool					MatchOverlapPointY( const POINT& pt, int& y ) const;
+	bool
+    MatchOverlapPointY( const POINT& pt, int& y ) const;
 
 };
 

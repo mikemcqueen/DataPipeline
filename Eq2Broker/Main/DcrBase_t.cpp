@@ -24,12 +24,14 @@ namespace Broker
 // last char: 
 // right single quotation mark (U+2019) 
 
-static const wchar_t g_CharsetChars[] =
-    L"!\"#$%&'()*+,-./0123456789:;<=>?@"
-    L"ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`"
-    L"abcdefghijklmnopqrstuvwxyz{|}~’";
+constexpr wchar_t CharsetChars[] = L"!\"#$%&'()*+,-./0123456789:;<=>?@"
+                                   L"ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`"
+                                   L"abcdefghijklmnopqrstuvwxyz{|}~’";
 
-const wchar_t     DcrBase_t::CharsetFacename[] = L"Zapf Calligraphic 801 Bold BT";
+constexpr wchar_t CharsetFacename[] = L"Zapf Calligraphic 801 Bold BT";
+constexpr int CharsetPointSize = 10;
+constexpr unsigned CharsetFlags = kDrawShadowText; // kDrawSimulatedShadowText
+
 //static const Charset_t* s_pBoldCharset = nullptr;
 
 /////////////////////////////////////////////////////////////////////////////
@@ -81,7 +83,7 @@ GetCharset()
     {
         LOGFONT lf;
         InitLogFont(lf, CharsetPointSize, CharsetFacename);
-        spCharset.reset(InitCharset(lf));
+        spCharset.reset(InitCharset(lf, CharsetFlags));
         if (!spCharset)
         {
         }
@@ -133,12 +135,14 @@ InitAllCharsets()
 const Charset_t*
 DcrBase_t::
 InitCharset(
-    const LOGFONT& LogFont)
+    const LOGFONT& LogFont,
+    unsigned flags)
 {
-    Charset_t* pCharset = new Charset_t(LogFont, g_CharsetChars);
+    Charset_t* pCharset = new Charset_t(LogFont, CharsetChars, flags);
     if (!pCharset->IsValid())
     {
         LogError(L"DcrBase_t: Charset invalid.");
+        delete pCharset;
         return nullptr;
     }
     pCharset->SetCharFlags(L"abcdfhikmnpqtuwxzACGKOQTUVWX27':\",./[\\", DCR_NO_RIGHT_SPACING);
@@ -170,14 +174,14 @@ InitLogFont(
 	lf.lfWidth			 = 0; 
 	lf.lfEscapement		 = 0;
 	lf.lfOrientation	 = 0;
-	lf.lfWeight			 = FW_NORMAL;
+    lf.lfWeight =          FW_NORMAL;
 	lf.lfItalic			 = FALSE;
 	lf.lfUnderline		 = FALSE;
 	lf.lfStrikeOut		 = FALSE;
 	lf.lfCharSet		 = DEFAULT_CHARSET;
 	lf.lfOutPrecision	 = OUT_TT_PRECIS;
 	lf.lfClipPrecision	 = CLIP_DEFAULT_PRECIS;
-	lf.lfQuality		 = DEFAULT_QUALITY;
+    lf.lfQuality =         DEFAULT_QUALITY;
 	lf.lfPitchAndFamily	 = DEFAULT_PITCH | FF_DONTCARE;
     wcscpy_s(lf.lfFaceName, pszFaceName);
 }

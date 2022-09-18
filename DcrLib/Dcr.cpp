@@ -54,7 +54,7 @@ GetText(
     {
         return GetText(pSurface, pRect, pszText, iMaxLen, pCharset, flags & DCR_GETTEXT_ALLOW_BAD);
     }
-    CharsetVector_t::const_iterator it(Charsets.begin());
+    auto it = Charsets.begin();
     for (; Charsets.end() != it; ++it)
     {
         HRESULT hr = GetText(pSurface, pRect, pszText, iMaxLen, *it, flags);

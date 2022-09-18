@@ -35,6 +35,11 @@ namespace Stage
 
 enum class MessageId_t : int {};
 
+// dpid.h
+// concept:
+// underlying_type(T) == int
+// T.PmIdType_Marker == PmIdType_MarkerValue;
+
 constexpr bool operator==(const MessageId_t lhs, const MessageId_t rhs) {
     return static_cast<int>(lhs) == static_cast<int>(rhs);
 }
@@ -51,16 +56,15 @@ namespace Message
 
     namespace Id {
 
-    constexpr auto Unknown           = static_cast<MessageId_t>(0);
+        constexpr auto Unknown           = static_cast<MessageId_t>(0);
+        constexpr auto Screenshot        = static_cast<MessageId_t>(1);
 
-    constexpr auto Screenshot        = static_cast<MessageId_t>(1);
+        constexpr auto Message_First     = static_cast<MessageId_t>(0x10000);
+        constexpr auto Message_Last      = static_cast<MessageId_t>(0x1FFFF);
 
-    constexpr auto Message_First     = static_cast<MessageId_t>(0x10000);
-    constexpr auto Message_Last      = static_cast<MessageId_t>(0x1FFFF);
+        constexpr auto Event_First       = static_cast<MessageId_t>(0x20000);
 
-    constexpr auto Event_First       = static_cast<MessageId_t>(0x20000);
-
-    constexpr auto Transaction_First = static_cast<MessageId_t>(0x30000);
+        constexpr auto Transaction_First = static_cast<MessageId_t>(0x30000);
 
     }
 

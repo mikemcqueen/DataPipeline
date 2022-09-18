@@ -14,24 +14,27 @@
 #include "Log.h"
 #include <intrin.h>
 #include <algorithm>
+#include "commctrl.h"
 
 extern CDisplay * g_pDisplay;
 
 /////////////////////////////////////////////////////////////////////////////
 
-static const COLORREF kMaxTransColor = RGB(50,50,50);
-static const size_t ASCII_SPACE  = 32;
-static const size_t CHAR_SPACING = 2;
+constexpr COLORREF DefaultBkColor = RGB(19, 11, 12);
+constexpr COLORREF DefaultTextColor = RGB(255, 48, 48);
+constexpr COLORREF DefaultShadowColor = RGB(0, 0, 0);
+constexpr COLORREF kMaxTransColor = RGB(50, 50, 50);
+
+constexpr int ASCII_SPACE  = 32;
+constexpr int CHAR_SPACING = 2;
 
 /////////////////////////////////////////////////////////////////////////////
 
 Charset_t::
 Charset_t(
     const LOGFONT& lf,
-    const wchar_t* pszCharset)
-:
-    m_spSurface(nullptr),
-    m_charsetSize(0)
+    const wchar_t* pCharset,
+    unsigned flags /* = 0 */)
 {
 	HFONT hFont = CreateFontIndirect(&lf);
 	if (!hFont)
@@ -39,7 +42,7 @@ Charset_t(
         wprintf(L"Charset_t::Charset(): CreateFontIndirect failed.");
         throw EVENT_E_COMPLUS_NOT_INSTALLED;
     }
-    Init(hFont, pszCharset);
+    Init(hFont, pCharset, flags);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -47,12 +50,10 @@ Charset_t(
 Charset_t::
 Charset_t(
     HFONT          hFont,
-    const wchar_t* pszCharset)
-:
-    m_spSurface(nullptr),
-    m_charsetSize(0)
+    const wchar_t* pCharset,
+    unsigned flags /* = false */)
 {
-    Init(hFont, pszCharset);
+    Init(hFont, pCharset, flags);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -60,38 +61,68 @@ Charset_t(
 void
 Charset_t::
 Init(
-    HFONT          hFont,
-    const wchar_t* pszCharset)
+    HFONT hFont,
+    const wchar_t* pCharset,
+    unsigned flags)
 {
-	ASSERT(nullptr != hFont);
-    ASSERT(nullptr != pszCharset);
+	assert(nullptr != hFont);
+    assert(nullptr != pCharset);
 
     m_valid = false;
 	m_iSpaceWidth = 0;
 
-	size_t cChars = wcslen( pszCharset );
-
-	m_vszCharset.resize( cChars );
-	std::copy(pszCharset, pszCharset+cChars, m_vszCharset.begin());
-    m_charsetSize = cChars;
-	m_vCharData.resize( cChars );
-	m_viDx.resize( cChars );
+	int numChars = wcslen(pCharset);
+	m_charset.resize(numChars);
+	std::copy(pCharset, pCharset + numChars, m_charset.begin());
+	m_vCharData.resize(numChars);
+	m_charWidths.resize(numChars);
 
 	SIZE size;
-	InitFontInfo( hFont, size );
+    bool shadow = 0 != (flags & (kDrawSimulatedShadowText | kDrawShadowText));
+	InitFontInfo(hFont, shadow, size);
 
-    CSurface *pS = new CSurface;
-	HRESULT hr = g_pDisplay->CreateSurface( pS, size.cx, size.cy );
+    m_pSurface = std::make_unique<CSurface>();
+	HRESULT hr = g_pDisplay->CreateSurface(m_pSurface.get(), size.cx, size.cy );
 	if( FAILED(hr) )
         return; // TODO: throw hr;
-	m_spSurface = pS;
+//	m_pSurface = pS;
 
-	DrawTextToSurface( hFont );
+    if (flags & kDrawShadowText) {
+        DrawShadowTextToSurface(hFont);
+    } else {
+        if (shadow) {
+            DrawTextToSurface(hFont, false, true);
+        }
+        DrawTextToSurface(hFont, shadow);
+    }
 
 	InitCharData();
 
-	m_viDx.clear();
+	m_charWidths.clear();
     m_valid = true;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+
+void
+Charset_t::
+DrawShadowTextToSurface(
+    HFONT hFont)
+{
+    HDC hDC = m_pSurface->GetDC();
+    if (nullptr == hDC)
+    {
+        _putws(L"Charset_t::DrawTextToSurface(): hDC == nullptr");
+        throw EVENT_E_ALL_SUBSCRIBERS_FAILED;
+    }
+    HFONT hOldFont = (HFONT)::SelectObject(hDC, hFont);
+    COLORREF oldBkColor = ::SetBkColor(hDC, DefaultBkColor);
+    RECT rc = { 0, 0, LONG(m_pSurface->GetWidth()), LONG(m_pSurface->GetHeight()) };
+    ::DrawShadowText(hDC, &*m_charset.cbegin(), m_charset.size(), &rc, 0,
+        DefaultTextColor, DefaultShadowColor, 0, 0);
+    ::SetBkColor(hDC, oldBkColor); 
+    ::SelectObject(hDC, hOldFont);
+    m_pSurface->ReleaseDC(hDC);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -110,11 +141,11 @@ WriteBmp(
     RECT rc = { 0 };
     if (nullptr == pRect)
     {
-        rc.right = m_spSurface->GetWidth();
-        rc.bottom = m_spSurface->GetHeight();
+        rc.right = m_pSurface->GetWidth();
+        rc.bottom = m_pSurface->GetHeight();
         pRect = &rc;
     }
-    m_spSurface->WriteBMP(szFile, *pRect);
+    m_pSurface->WriteBMP(szFile, *pRect);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -122,35 +153,29 @@ WriteBmp(
 Charset_t::
 ~Charset_t()
 {
-    if (nullptr != m_spSurface)
-    {
-        delete m_spSurface;
-        m_spSurface = nullptr;
-    }
 }
 
 /////////////////////////////////////////////////////////////////////////////
 
 void
 Charset_t::
-InitFontInfo( HFONT hFont, SIZE& size )
+InitFontInfo(HFONT hFont, bool shadow, SIZE& size)
 {
 	HDC hDC = ::GetDC( 0 );
 	HFONT hOldFont = (HFONT)SelectObject( hDC, hFont );
 
-	int iTotal = 0;
-	for (size_t iChar = 0; iChar < m_charsetSize; ++iChar)
-	{
-		int iWidth;
-        const wchar_t ch = m_vszCharset[iChar];
+	int totalWidth = 0;
+    for (size_t index = 0; index < m_charset.size(); ++index) {
+        auto ch = m_charset.at(index);
         ABC abc;
 		GetCharABCWidths(hDC, ch, ch, &abc);
-        m_vCharData[iChar].ABCWidths = abc;
-		GetTextExtentPoint32( hDC, &ch, 1, &size );
-		iWidth = size.cx;
-		iWidth += CHAR_SPACING;
-		m_viDx[iChar] = iWidth;
-		iTotal += iWidth;
+        m_vCharData[index].ABCWidths = abc;
+		GetTextExtentPoint32(hDC, &ch, 1, &size);
+		int width = size.cx;
+        if (shadow) width += 1;
+		width += CHAR_SPACING;
+		m_charWidths[index] = width;
+		totalWidth += width;
 	}
 
     const wchar_t space = L' ';
@@ -164,12 +189,12 @@ InitFontInfo( HFONT hFont, SIZE& size )
 	GetKernPairs(hDC);
 
 	TEXTMETRIC tm;
-	GetTextMetrics( hDC, &tm );
-	size.cx = iTotal;
-	size.cy = tm.tmHeight;
+	GetTextMetrics(hDC, &tm);
+	size.cx = totalWidth;
+	size.cy = tm.tmHeight + (shadow ? 1 : 0);
 
-	SelectObject( hDC, hOldFont );
-	ReleaseDC( 0, hDC );
+	SelectObject(hDC, hOldFont);
+	ReleaseDC(0, hDC);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -195,10 +220,10 @@ GetKernPairs(const HDC hDC)
             throw std::runtime_error(msg); // "GetKerningPairs failed");
         }
     }
-	for (size_t iChar = 0; iChar < m_charsetSize; ++iChar) {
+	for (size_t iChar = 0; iChar < m_charset.size(); ++iChar) {
 		m_vCharData[iChar].iFirstKernPair = -1;
 		for (size_t pair = 0; pair < numPairs; ++pair) {
-			if (m_vKernPairs[pair].wFirst == (WORD)m_vszCharset[iChar]) {
+			if (m_vKernPairs[pair].wFirst == (WORD)m_charset[iChar]) {
 				m_vCharData[iChar].iFirstKernPair = pair;
 				break;
 			}
@@ -210,9 +235,12 @@ GetKernPairs(const HDC hDC)
 
 void
 Charset_t::
-DrawTextToSurface( HFONT hFont )
+DrawTextToSurface(
+    HFONT hFont,
+    bool transparent /* = false */,
+    bool shadow /* = false */)
 {
-	HDC hDC = m_spSurface->GetDC();
+	HDC hDC = m_pSurface->GetDC();
 	if (nullptr == hDC)
     {
         _putws(L"Charset_t::DrawTextToSurface(): hDC == nullptr");
@@ -220,23 +248,35 @@ DrawTextToSurface( HFONT hFont )
     }
 	HFONT hOldFont = (HFONT)SelectObject( hDC, hFont );
 
-	SetBkColor(hDC, DefaultBkColor);
-	SetTextColor(hDC, DefaultTextColor);
+    COLORREF oldBkColor = ::SetBkColor(hDC, DefaultBkColor);
+	COLORREF oldTextColor = ::SetTextColor(hDC, shadow
+        ? DefaultShadowColor : DefaultTextColor);
 
-    wchar_t& t = *m_vszCharset.begin();
-    int& i = *m_viDx.begin();
-	BOOL bGood = ExtTextOut( hDC, 0, 0, 0, 0, &t, (UINT)m_charsetSize, &i );
+    int oldBkMode = 0;
+    if (transparent) {
+        oldBkMode = ::SetBkMode(hDC, TRANSPARENT);
+    }
 
-	SelectObject( hDC, hOldFont );
-	m_spSurface->ReleaseDC( hDC );
+    auto x = shadow ? 1 : 0;
+    auto y = shadow ? 1 : 0;
+    BOOL bGood = ::ExtTextOut(hDC, x, y, 0, 0, &*m_charset.begin(),
+        m_charset.size(), &*m_charWidths.begin());
+
+	::SelectObject(hDC, hOldFont);
+    ::SetBkColor(hDC, oldBkColor);
+    ::SetTextColor(hDC, oldTextColor);
+    if (0 != oldBkMode) {
+        ::SetBkMode(hDC, oldBkMode);
+    }
+	m_pSurface->ReleaseDC(hDC);
 
 	#if 0 && defined(_DEBUG)
-	{
-		static int iCharset = 0;
-		TCHAR szFile[32];
-		wsprintf( szFile, _T("Charset%d.bmp"), iCharset++ );
-		CRect rc( 0, 0, m_spSurface->GetWidth(), m_spSurface->GetHeight() );
-		m_spSurface->WriteBMP( szFile, rc );
+    {
+        static int iCharset = 0;
+        WCHAR szFile[32];
+        swprintf_s(szFile, L"Charset%d.bmp", iCharset++);
+        RECT rc = { 0, 0, (LONG)m_pSurface->GetWidth(), (LONG)m_pSurface->GetHeight() };
+		m_pSurface->WriteBMP( szFile, rc );
 	}
 	#endif
 
@@ -258,9 +298,9 @@ InitCharData( void )
 	int y;
     
 RECT rc = { 0 };
-rc.bottom  = m_spSurface->GetHeight();
+rc.bottom  = m_pSurface->GetHeight();
 
-	for (size_t iChar = 0; iChar < m_charsetSize; ++iChar)
+	for (size_t iChar = 0; iChar < m_charset.size(); ++iChar)
 	{
 		x = xPrev;
 		y = 0;
@@ -268,12 +308,12 @@ rc.bottom  = m_spSurface->GetHeight();
         // TODO: some way to specify charset flags early,
         // if flags & left_overlap, x--
 
-		size_t cLeftPixels = FindNextChar(m_spSurface, x, y);
+		size_t cLeftPixels = FindNextChar(m_pSurface.get(), x, y);
 		if (0 == cLeftPixels)
 			break;
 
 rc.left = x;
-rc.right = min((x+20), int(m_spSurface->GetWidth()));
+rc.right = min((x+20), int(m_pSurface->GetWidth()));
 wchar_t szFile[10] = { 0 };
 _itow_s(int(iChar), szFile, 10);
 WriteBmp(szFile, &rc);
@@ -287,13 +327,14 @@ WriteBmp(szFile, &rc);
 
         x += cd.ABCWidths.abcB;
         y = 0;
-		cd.Width			= SkipChar(m_spSurface, x, y) + 1;
+		cd.Width			= SkipChar(m_pSurface.get(), x, y) + 1;
 
-		cd.cTrailingPixels	= char(m_viDx[iChar] - cd.Width - cd.cLeadingPixels - CHAR_SPACING);
+        // CHAR_SPACING doesn't take into account shadow here
+//		cd.cTrailingPixels	= char(m_charWidths[iChar] - cd.Width - cd.cLeadingPixels - CHAR_SPACING);
 
 		cd.dwFlags			= 0;
 
-		xPrev += m_viDx[iChar];
+		xPrev += m_charWidths[iChar];
 	}
 }
 
@@ -318,19 +359,19 @@ GetKernAmount(
 
 /////////////////////////////////////////////////////////////////////////////
 
-unsigned
+int
 Charset_t::
 GetCharIndex(
     wchar_t ch)
 {
     std::vector<wchar_t>::const_iterator it =
-        std::find(m_vszCharset.begin(), m_vszCharset.end(), ch);
-    if (m_vszCharset.end() == it)
+        std::find(m_charset.begin(), m_charset.end(), ch);
+    if (m_charset.end() == it)
     {
         LogError(L"Can't find '%c'", ch);
         throw std::invalid_argument("Charset_t::GetCharIndex");
     }
-    return unsigned(it - m_vszCharset.begin());
+    return it - m_charset.begin();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -338,10 +379,10 @@ GetCharIndex(
 const CharData_t&
 Charset_t::
 GetCharData(
-    size_t Char) const
+    int index) const
 {
-	ASSERT(m_charsetSize > Char);
-	return m_vCharData[Char];
+	assert(index < int(m_vCharData.size()));
+	return m_vCharData.at(index);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -349,10 +390,10 @@ GetCharData(
 wchar_t
 Charset_t::
 GetChar(
-    size_t Char) const
+    int index) const
 {
-    ASSERT((0 <= Char) && (Char < m_charsetSize));
-	return m_vszCharset[Char];
+    assert((0 <= index) && (index < int(m_charset.size())));
+	return m_charset.at(index);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -364,20 +405,19 @@ SetCharFlags(
     DWORD   dwFlags )
 {
 /*
-        it = std::find(m_vszCharset.begin(), m_vszCharset.end(), Char);
-        if (m_vszCharset.end() == it)
+        it = std::find(m_charset.begin(), m_charset.end(), Char);
+        if (m_charset.end() == it)
         {
             LogError(L"Can't find '%c'", Char);
             return false;
         }
-        int iChar = (int)(it - m_vszCharset.begin());
+        int iChar = (int)(it - m_charset.begin());
 */
 
-	for (unsigned iChar = 0; iChar < m_charsetSize; ++iChar)
-	{
-		if (m_vszCharset[iChar] == ch)
+	for (size_t index = 0; index < m_charset.size(); ++index) {
+		if (m_charset[index] == ch)
 		{
-			m_vCharData[iChar].dwFlags |= dwFlags;
+			m_vCharData[index].dwFlags |= dwFlags;
             return;
 		}
 	}
@@ -395,8 +435,8 @@ SetCharFlags(
 {
 	ASSERT(nullptr != pszChars);
     // TODO: this is retarded.
-	size_t cChars = wcslen( pszChars );
-	for (unsigned iChar=0; iChar<cChars; ++iChar )
+	const int cChars = wcslen(pszChars);
+	for (int iChar=0; iChar<cChars; ++iChar )
 	{
 		SetCharFlags(pszChars[iChar], dwFlags);
 	}
@@ -410,7 +450,7 @@ SetCharWidths(
     wchar_t    ch,
     const ABC& abc)
 {
-    m_vCharData[GetCharIndex(ch)].ABCWidths = abc;
+    m_vCharData.at(GetCharIndex(ch)).ABCWidths = abc;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -563,7 +603,7 @@ Compare(
     unsigned BestChar = 0;
     HRESULT hrBest = E_UNEXPECTED;
 	
-    for (iChar = 0; iChar < m_charsetSize; ++iChar)
+    for (iChar = 0; iChar < m_charset.size(); ++iChar)
 	{
 		const CharData_t& cd = m_vCharData[iChar];
         if (0 != (dwFlags & DCR_ADJACENT_RIGHT_OVERLAP))
@@ -632,7 +672,7 @@ CompareChar(
 		return hr;
 
 	DDSURFACEDESC2 ddsdCharset;
-	hr = m_spSurface->Lock(&ddsdCharset);
+	hr = m_pSurface->Lock(&ddsdCharset);
 	if( FAILED(hr) )
 	{
 		pSurface->Unlock();
@@ -705,9 +745,9 @@ CompareChar(
             if (bCharsetOpaque && bOverlap)
             {
                 ASSERT(iWidth == iCharsetWidth);
-                POINT pt;
-                pt.x = yPos;
-                pt.y = ptCharset.y;
+                POINT pt = { yPos, ptCharset.y };
+                //pt.x = yPos;
+                //pt.y = ptCharset.y;
                 m_vecOverlapPoints.push_back(pt);
             }
             const DWORD dwSurfacePixel = *(pSurfaceBits + yOffset * SurfaceBitsPerLine) & 0x00ffffff;
@@ -741,14 +781,14 @@ CompareChar(
                         bAdjacentOverlap = true;
                         if (iWidth == iCharsetWidth)
                         {
-                            POINT pt;
-                            pt.x = yPos;
-                            pt.y = ptCharset.y;
+                            POINT pt = { yPos, ptCharset.y };
+                            //pt.x = yPos;
+                            //pt.y = ptCharset.y;
                             m_vecOverlapPoints.push_back(pt);
                         }
                     }
                     //LogAlways(L"mismatch char='%c', width=%d, charsetwidth=%d",
-                    //            m_vszCharset[iChar], iWidth, iCharsetWidth);
+                    //            m_charset[iChar], iWidth, iCharsetWidth);
 
                     // If we're on the last column, and the character we're matching has
                     // no right spacing, we can allow up to 1 mismatched surface-opaque
@@ -814,7 +854,7 @@ CompareChar(
             }
         }
     }
-    m_spSurface->Unlock();
+    m_pSurface->Unlock();
     pSurface->Unlock();
 
     if (bMatch)

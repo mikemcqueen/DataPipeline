@@ -104,13 +104,13 @@ Ui::WindowId_t
 TableWindow_t::
 GetWindowId(
     const CSurface& Surface,
-    const POINT*    pptHint) const
+    const POINT* pptHint) const
 {
     if (nullptr == pptHint) {
         throw invalid_argument("TableWindow_t::GetWindowId()");
     }
     Rect_t TableRect;
-    SIZE ScrollOffsets;
+    SIZE ScrollOffsets = { 0, 0 };
     if (FindTable(Surface, *pptHint, TableRect, ScrollOffsets))
     {
         m_TableRect = TableRect;
@@ -304,13 +304,13 @@ FindTable(
     }
     SIZE TableSize = { TopBorderWidth, tableHeight + BorderSize.cy * 2 };
     Rect_t ProposedTableRect(ptTable, TableSize);
-    if (ValidateClient(Surface, ProposedTableRect, ScrollOffsets))
+    //if (ValidateClient(Surface, ProposedTableRect, ScrollOffsets))
     {
         m_TableSize = TableSize;
         TableRect = ProposedTableRect;
         return true;
     }
-    return false;
+    //return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

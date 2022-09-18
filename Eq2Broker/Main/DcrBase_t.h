@@ -30,8 +30,8 @@ private:
 
     typedef DcrTable_t Base_t;
 
-    static const int     CharsetPointSize     = 9;
-    static const wchar_t CharsetFacename[];
+//    static const int     CharsetPointSize     = 10;
+//    static const wchar_t CharsetFacename[];
 
 private:
 
@@ -86,7 +86,8 @@ private:
     static
     const Charset_t*
     InitCharset(
-        const LOGFONT& LogFont);
+        const LOGFONT& LogFont,
+        unsigned flags);
 
     static
     const Charset_t*

@@ -22,6 +22,10 @@
 #define IDB_EQ2_TRANSITION              1013
 #define IDB_MAINCHAT_CAPTION            1014
 
+#if 0
+CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "Eq2Broker.exe.manifest"
+#endif
+
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
