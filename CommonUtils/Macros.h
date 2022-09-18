@@ -55,7 +55,7 @@ void                    ExitThread( DWORD dwCode );
 int
 getopt(int argc,
        wchar_t* argv[],
-       wchar_t* opts);
+       const wchar_t* opts);
 
 /*
 bool                    FileExists( LPCTSTR pszFile );

@@ -20,6 +20,14 @@
 
 namespace Broker
 {
+
+template<typename T>
+concept underlying_type_int = std::is_same_v<std::underlying_type_t<T>, int>;
+
+int intValue(underlying_type_int auto val) {
+    return static_cast<int>(val);
+}
+
     namespace Message
     {
 

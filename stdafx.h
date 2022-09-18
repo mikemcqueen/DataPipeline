@@ -33,6 +33,7 @@
 #else
 	#include <windows.h>
 	#include <windowsx.h>
+    #include <minwinbase.h>
 #endif
 
 #if 0 // debug stuff
@@ -49,7 +50,10 @@
 #include <time.h>
 
 #include <chrono>
+#include <concepts>
+#include <type_traits>
 #include <cassert>
+#include <format>
 #include <vector>
 #include <queue>
 #include <stack>

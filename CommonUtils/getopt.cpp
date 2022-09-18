@@ -14,7 +14,7 @@ in the public domain.
 #include "stdafx.h"
 #include "Log.h"
 
-#define nullptr	0
+//#define nullptr	0
 #define EOF	(-1)
 
 
@@ -28,17 +28,17 @@ namespace util
 int
 getopt(int argc,
        wchar_t* argv[],
-       wchar_t* opts)
+       const wchar_t* opts)
 {
 	static int sp = 1;
 	wchar_t c;
-	wchar_t *cp;
+	const wchar_t *cp;
 
 	if(sp == 1)
 		if(optind >= argc ||
 		   argv[optind][0] != '-' || argv[optind][1] == '\0')
 			return(EOF);
-		else if(wcscmp(argv[optind], L"--") == nullptr) {
+		else if(wcscmp(argv[optind], L"--") == 0) {
 			optind++;
 			return(EOF);
 		}
@@ -71,4 +71,4 @@ getopt(int argc,
 	return(c);
 }
 
-};
+}

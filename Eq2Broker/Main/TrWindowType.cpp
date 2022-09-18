@@ -32,9 +32,9 @@ const TrWindowType_t::FnGetWindowId_t TrWindowType_t::s_mainChatFunc = &TrWindow
 
 const TrWindowType_t::FnGetWindowId_t TrWindowType_t::s_windowIdFuncs[] = 
 {
-    &TrWindowType_t::GetBrokerWindowId,
-    &TrWindowType_t::GetLogonWindowId,
-    &TrWindowType_t::GetOtherWindowId,
+    &TrWindowType_t::GetBrokerWindowId
+//    &TrWindowType_t::GetLogonWindowId,
+//    &TrWindowType_t::GetOtherWindowId,
 };
 
 ////////////////////////////////////////////////////////////////////////////////

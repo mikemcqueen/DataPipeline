@@ -9,8 +9,8 @@
 #include "stdafx.h"
 #include "BrokerWindow.h"
 #include "BrokerBuyWindow.h"
-#include "BrokerSellWindow.h"
-#include "BrokerSalesLogTab.h"
+//#include "BrokerSellWindow.h"
+//#include "BrokerSalesLogTab.h"
 #include "BrokerUi.h"
 #include "Log.h"
 #include "Rect.h"
@@ -152,15 +152,15 @@ GetWindow(
     Ui::WindowId_t windowId) const
 {
     static Buy::Window_t      buyTab(GetParent());
-    static Sell::Window_t     sellTab(GetParent());
-    static SalesLog::Window_t salesLogTab(GetParent());
+//    static Sell::Window_t     sellTab(GetParent());
+//    static SalesLog::Window_t salesLogTab(GetParent());
 
     using namespace Broker::Window;
     switch (windowId)
     {
     case Id::BrokerBuyTab:      return buyTab;
-    case Id::BrokerSellTab:     return sellTab;
-    case Id::BrokerSalesLogTab: return salesLogTab;
+//    case Id::BrokerSellTab:     return sellTab;
+//    case Id::BrokerSalesLogTab: return salesLogTab;
     default:
         throw std::invalid_argument("BrokerWindow::GetWindow()");
     }
@@ -299,7 +299,7 @@ SetLayout(
         m_layout = layout;
         const MainWindow_t& mainWindow = GetMainWindow();//static_cast<const MainWindow_t&>(GetParent());
         mainWindow.GetBrokerBuyWindow().SetLayout(layout);
-        mainWindow.GetBrokerSellWindow().SetLayout(layout);
+//       mainWindow.GetBrokerSellWindow().SetLayout(layout);
 //        mainWindow.GetBrokerSalesLogWindow().SetLayout(layout);
     }
 }

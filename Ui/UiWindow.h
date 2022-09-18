@@ -314,7 +314,6 @@ namespace Window
                   POINT*    pptOrigin) const;
 
         bool
-        Base_t::
         OriginSearch(
             const CSurface& surface,
             const CSurface& image,

@@ -80,7 +80,7 @@ ProcessCommandLine(
     bool bDbSupplied = false;
     int c;
 
-    while ((c = util::getopt (argc, argv, L"c:d:l:p:s:t:")) != -1)
+    while ((c = util::getopt(argc, argv, L"c:d:l:p:s:t:")) != -1)
     {
         switch (wchar_t(c))
         {

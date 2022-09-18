@@ -27,6 +27,5 @@ public:
     }
 };
 
-
 typedef vector<wstring> StringVector_t;
 

@@ -487,7 +487,7 @@ protected:
         size_t         Row,
         const wchar_t* pszTag = nullptr) const
     {
-        return Data.IsMarkedRow(Row, pszTag);
+        return m_Data.IsMarkedRow(Row, pszTag);
     }
 
     void
@@ -571,7 +571,7 @@ public:
     GetRow(
         size_t Row) const
     {
-        return Data.GetRow(Row);
+        return m_Data.GetRow(Row);
     }
 
     size_t
@@ -671,13 +671,13 @@ protected:
         size_t         Row,
         const wchar_t* pszTag = nullptr) const
     {
-        return Data.IsMarkedRow(Row, pszTag);
+        return m_Data.IsMarkedRow(Row, pszTag);
     }
 
     void
     MarkRow(
         size_t Row,
-        wchar_t* pszTag)
+        const wchar_t* pszTag)
     {
 //Data.MarkRow(Row, pszTag);
         wchar_t* pszRow = (wchar_t*)m_Data.GetRow(Row);

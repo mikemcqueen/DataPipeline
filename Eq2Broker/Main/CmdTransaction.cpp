@@ -182,6 +182,9 @@ Execute(
     const po::variables_map& vm,
           ItemId_t           itemId)
 {
+    vm;
+    itemId;
+#if 0
     static ItemDataMap_t sellTabMap;
 
     DP::Transaction::Data_t* pTxData = nullptr;
@@ -276,6 +279,9 @@ Execute(
                 new Logon::Data_t(Logon::Method::Camp));
         }
     }
+#else
+    throw runtime_error("not implemented");
+#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -306,6 +312,7 @@ Eq2Broker_t::
 CmdTransaction(
     const wchar_t* pszCmd)
 {
+#if 0
     // execute
     size_t Pos = 0;
     if (L'x' != pszCmd[Pos++])
@@ -351,6 +358,7 @@ CmdTransaction(
     default:
         return cmdTxExecute.Parse(args);
     }
+#endif
     return false;
 }
 

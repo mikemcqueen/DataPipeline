@@ -8,11 +8,11 @@
 
 #include "stdafx.h"
 #include "MainWindow_t.h"
-#include "Eq2LoginWindow.h"
+//#include "Eq2LoginWindow.h"
 #include "BrokerWindow.h"
 #include "BrokerBuyWindow.h"
-#include "BrokerSellWindow.h"
-#include "SetPriceWindow.h"
+//#include "BrokerSellWindow.h"
+//#include "SetPriceWindow.h"
 #include "BrokerUi.h"
 #include "BrokerId.h"
 #include "Log.h"
@@ -60,7 +60,7 @@ GetBrokerBuyWindow() const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
+#if 0
 Broker::Sell::Window_t&
 MainWindow_t::
 GetBrokerSellWindow() const
@@ -88,6 +88,7 @@ GetEq2LoginWindow() const
     using namespace Broker::Window;
     return static_cast<Eq2Login::Window_t&>(GetWindow(Id::Eq2Login));
 }
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -96,28 +97,30 @@ MainWindow_t::
 GetWindow(
     Ui::WindowId_t windowId) const
 {
-#if 1
+#if 0
     static Eq2Login::Window_t eq2LoginWindow(*this);
     static Eq2LoadingWindow_t eq2LoadingWindow;
     static TransitionWindow_t zoningWindow;
-    static MainChatWindow_t   mainChatWindow;
-    static Broker::Window_t   brokerWindow(*this);
     static SetPrice::Window_t setPricePopup(*this);
 #endif
+    static MainChatWindow_t   mainChatWindow;
+    static Broker::Window_t   brokerWindow(*this);
 
     switch (windowId)
     {
+#if 0
     case Window::Id::Eq2Login:            return eq2LoginWindow;
     case Window::Id::Eq2Loading:          return eq2LoadingWindow;
     case Window::Id::Zoning:              return zoningWindow;
-    case Window::Id::MainChat:            return mainChatWindow;
-    case Window::Id::BrokerFrame:         return brokerWindow;
-    case Window::Id::BrokerBuyTab:        [[fallthrough]];
-    case Window::Id::BrokerSellTab:       [[fallthrough]];
-    case Window::Id::BrokerSalesLogTab:   return brokerWindow.GetWindow(windowId);
     case Window::Id::BrokerSetPricePopup: return setPricePopup;
+    case Window::Id::BrokerSellTab:       [[fallthrough]];
+    case Window::Id::BrokerSalesLogTab:   [[fallthrough]];
+#endif
+    case Window::Id::BrokerBuyTab:        return brokerWindow.GetWindow(windowId); 
+    case Window::Id::BrokerFrame:         return brokerWindow;
+    case Window::Id::MainChat:            return mainChatWindow;
     default:
-        throw std::invalid_argument("MainWindow_t::GetWindow()");
+        throw std::invalid_argument(std::format("MainWindow_t::GetWindow() unknown window({})", intValue(windowId)));
     }
 }
 

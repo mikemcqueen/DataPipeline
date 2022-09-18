@@ -167,7 +167,7 @@ public:
     {
         CLock lock(m_cs);
         for (int i = first; i < size(); ++i) {
-            auto& item = a_items.at(i);
+            auto& item = m_items.at(i);
             if (PF_READY == item.get_state()) {
                 item.addref();
                 return &item;

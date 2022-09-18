@@ -20,6 +20,7 @@
 #include "TrScrollThumb_t.h"
 
 #include "BrokerBuy.h"
+#if 0
 #include "BrokerSell.h"
 #include "SetPrice.h"
 #include "Eq2Login.h"
@@ -35,6 +36,7 @@
 #include "TxBuyItem.h"
 #include "TxBuySellItems.h"
 #include "TxOpenBroker.h"
+#endif
 
 #include "Character_t.h"
 
@@ -58,6 +60,7 @@ public:
 
     // Translate/Interpret handlers
     Buy::Window::Manager_t       m_BuyWindow;
+#if 0
     Sell::Window::Manager_t      m_SellWindow;
     SetPrice::Window::Manager_t  m_SetPricePopup;
     Eq2Login::Window::Manager_t  m_eq2LoginWindow;
@@ -74,6 +77,7 @@ public:
     BuyItem::Handler_t           m_txBuyItem;
     BuySellItems::Handler_t      m_txBuySellItems;
     OpenBroker::Handler_t        m_txOpenBroker;
+#endif
 
 public:
 

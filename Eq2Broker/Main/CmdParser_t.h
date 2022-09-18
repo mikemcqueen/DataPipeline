@@ -19,12 +19,12 @@ public:
     virtual
     bool
     Parse(
-        const StringVector_t& args) = 0;
+        const std::vector<wstring>& args) = 0;
 
     static
     bool
     Parse(
-        const StringVector_t&          args,
+        const std::vector<wstring>&          args,
               po::variables_map&       vm,
               po::options_description& all,
         const po::options_description* commands = 0)

@@ -10,7 +10,7 @@
 
 #include "stdafx.h"
 #include "BrokerBuy.h"
-#include "TxGetItemsForSale.h"
+//#include "TxGetItemsForSale.h"
 #include "PipelineManager.h"
 #include "BrokerId.h"
 #include "TransactionManager.h"
@@ -45,8 +45,10 @@ Initialize(
     LogInfo(L"TiBrokerBuy::Initialize()");
     if (!DP::Handler_t::Initialize(pClass))
         return false;
+#if 0
     if (!Transaction::GetItemsForSale::Handler_t::Initialize())
         return false;
+#endif
     return true;
 }
 
@@ -67,17 +69,20 @@ Shutdown()
 HRESULT
 Handler_t::
 ExecuteTransaction(
-    DP::Transaction::Data_t& Data)
+    DP::Transaction::Data_t&) //Data)
 {
+#if 0
     using namespace Transaction;
     switch (Data.Id)
     {
     case Id::GetItemsForSale:
         GetItemsForSale::Handler_t::Start(static_cast<GetItemsForSale::Data_t&>(Data));
         break;
+
     default:
         return S_FALSE;
     }
+#endif
     return S_OK;
 }
 
@@ -92,6 +97,7 @@ MessageHandler(
     {
         return S_FALSE;
     }
+#if 0
     const Translate::Data_t&
         Message = static_cast<const Translate::Data_t&>(*pMessage);
     DP::Transaction::Data_t* pData = GetTransactionManager().Acquire();
@@ -101,6 +107,7 @@ MessageHandler(
         using namespace Transaction;
         switch (pData->Id)
         {
+
         case Id::GetItemsForSale:
             return GetItemsForSale::Handler_t::Message(Message,
                        static_cast<GetItemsForSale::Data_t&>(*pData),
@@ -109,6 +116,7 @@ MessageHandler(
             break;
         }
     }
+#endif
     return S_FALSE;
 }
 

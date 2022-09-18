@@ -71,7 +71,7 @@
       <WarningLevel>Level4</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
     </ClCompile>
     <Link>
@@ -97,7 +97,7 @@
       <WarningLevel>Level4</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
     </ClCompile>
     <Link>
@@ -113,13 +113,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Main\CmdCharacter.cpp" />
-    <ClCompile Include="Main\CmdTransaction.cpp" />
     <ClCompile Include="Main\DcrBase_t.cpp" />
     <ClCompile Include="Main\DcrBrokerBuy.cpp" />
-    <ClCompile Include="Main\DcrBrokerSell.cpp" />
-    <ClCompile Include="Main\DcrEq2Login.cpp" />
-    <ClCompile Include="Main\DcrSetPrice.cpp" />
     <ClCompile Include="Main\Eq2BrokerImpl_t.cpp" />
     <ClCompile Include="Main\Eq2Broker_t.cpp" />
     <ClCompile Include="Main\Main.cpp" />
@@ -130,60 +125,23 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Main\TiBrokerBuy.cpp" />
-    <ClCompile Include="Main\TiBrokerSell.cpp" />
-    <ClCompile Include="Main\TiSetPrice.cpp" />
     <ClCompile Include="Main\TrWindowType.cpp" />
-    <ClCompile Include="Main\TxBaseGetItems.cpp" />
-    <ClCompile Include="Main\TxBuyItem.cpp" />
-    <ClCompile Include="Main\TxBuySellItems.cpp" />
-    <ClCompile Include="Main\TxBuyTabGetItems.cpp" />
-    <ClCompile Include="Main\TxGetItemPrices.cpp" />
-    <ClCompile Include="Main\TxGetItemsForSale.cpp" />
-    <ClCompile Include="Main\TxLogon.cpp" />
-    <ClCompile Include="Main\TxOpenBroker.cpp" />
-    <ClCompile Include="Main\TxRepriceItems.cpp" />
-    <ClCompile Include="Main\TxSellTabGetItems.cpp" />
-    <ClCompile Include="Main\TxSetActiveWindow.cpp" />
-    <ClCompile Include="Main\TxSetWidgetText.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main\BrokerBuy.h" />
     <ClInclude Include="Main\BrokerBuyText.h" />
     <ClInclude Include="Main\BrokerBuyTypes.h" />
     <ClInclude Include="Main\BrokerId.h" />
-    <ClInclude Include="Main\BrokerSell.h" />
-    <ClInclude Include="Main\BrokerSellTypes.h" />
     <ClInclude Include="Main\CmdParser_t.h" />
     <ClInclude Include="Main\DcrBase_t.h" />
     <ClInclude Include="Main\DcrBrokerBuy.h" />
-    <ClInclude Include="Main\DcrBrokerSell.h" />
-    <ClInclude Include="Main\DcrEq2Login.h" />
-    <ClInclude Include="Main\DcrSetPrice.h" />
     <ClInclude Include="Main\Eq2BrokerImpl_t.h" />
     <ClInclude Include="Main\Eq2Broker_t.h" />
-    <ClInclude Include="Main\Eq2Login.h" />
-    <ClInclude Include="Main\Eq2LoginTypes.h" />
     <ClInclude Include="Main\PageNumber_t.h" />
     <ClInclude Include="Main\Price_t.h" />
-    <ClInclude Include="Main\SetPrice.h" />
-    <ClInclude Include="Main\SetPriceTypes.h" />
     <ClInclude Include="Main\stdafx.h" />
     <ClInclude Include="Main\TiBrokerBuy.h" />
-    <ClInclude Include="Main\TiBrokerSell.h" />
-    <ClInclude Include="Main\TiSetPrice.h" />
     <ClInclude Include="Main\TrWindowType.h" />
-    <ClInclude Include="Main\TxBaseGetItems.h" />
-    <ClInclude Include="Main\TxBuyItem.h" />
-    <ClInclude Include="Main\TxBuySellItems.h" />
-    <ClInclude Include="Main\TxBuyTabGetItems.h" />
-    <ClInclude Include="Main\TxGetItemPrices.h" />
-    <ClInclude Include="Main\TxGetItemsForSale.h" />
-    <ClInclude Include="Main\TxLogon.h" />
-    <ClInclude Include="Main\TxOpenBroker.h" />
-    <ClInclude Include="Main\TxRepriceItems.h" />
-    <ClInclude Include="Main\TxSellTabGetItems.h" />
-    <ClInclude Include="Main\TxSetActiveWindow.h" />
-    <ClInclude Include="Main\TxSetWidgetText.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>

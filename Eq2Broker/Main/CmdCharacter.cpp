@@ -178,7 +178,7 @@ Execute(
 bool
 CmdBuySell_t::
 Parse(
-    const StringVector_t& args)
+    const std::vector<wstring>& args)
 {
     Init();
     po::variables_map vm;
@@ -200,8 +200,9 @@ Eq2Broker_t::
 CmdCharacter(
     const wchar_t* pszCmd)
 {
+#if 0
     static CmdBuySell_t cmdBuySell;
-    StringVector_t args = po::split_winmain(pszCmd);
+    std::vector<wstring> args = po::split_winmain(pszCmd);
 
     size_t Pos = 0;
     switch (pszCmd[Pos++]) 
@@ -238,6 +239,7 @@ CmdCharacter(
     default:
         break;
     }
+#endif
     return false;
 }
 

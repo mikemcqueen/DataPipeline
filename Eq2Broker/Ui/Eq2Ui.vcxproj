@@ -69,7 +69,7 @@
       <WarningLevel>Level4</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <FunctionLevelLinking>false</FunctionLevelLinking>
     </ClCompile>
   </ItemDefinitionGroup>
@@ -87,18 +87,14 @@
       <WarningLevel>Level4</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BrokerBuyWindow.cpp" />
-    <ClCompile Include="BrokerSalesLogTab.cpp" />
-    <ClCompile Include="BrokerSellWindow.cpp" />
     <ClCompile Include="BrokerWindow.cpp" />
-    <ClCompile Include="Eq2LoginWindow.cpp" />
     <ClCompile Include="MainWindow_t.cpp" />
     <ClCompile Include="OtherWindows.cpp" />
-    <ClCompile Include="SetPriceWindow.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -107,14 +103,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BrokerBuyWindow.h" />
-    <ClInclude Include="BrokerSalesLogTab.h" />
-    <ClInclude Include="BrokerSellWindow.h" />
     <ClInclude Include="BrokerUi.h" />
     <ClInclude Include="BrokerWindow.h" />
-    <ClInclude Include="Eq2LoginWindow.h" />
     <ClInclude Include="MainWindow_t.h" />
     <ClInclude Include="OtherWindows.h" />
-    <ClInclude Include="SetPriceWindow.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TabWindow.h" />
   </ItemGroup>

@@ -11,9 +11,9 @@
 #include "UiWindow.h"
 #include "BrokerUi.h"
 #include "BrokerBuyTypes.h"
-#include "BrokerSellTypes.h"
-#include "SetPriceTypes.h"
-#include "Eq2LoginTypes.h"
+//#include "BrokerSellTypes.h"
+//#include "SetPriceTypes.h"
+//#include "Eq2LoginTypes.h"
 #include "DpMessage.h"
 
 namespace Broker
@@ -41,9 +41,11 @@ public:
 
     Broker::Window_t&                  GetBrokerWindow() const;
     Broker::Buy::Window_t&             GetBrokerBuyWindow() const;
+#if 0
     Broker::Sell::Window_t&            GetBrokerSellWindow() const;
     Broker::SetPrice::Window_t&        GetSetPricePopup() const;
     Broker::Eq2Login::Window_t&        GetEq2LoginWindow() const;
+#endif
 
     //
     // Ui::Window_t virtual:

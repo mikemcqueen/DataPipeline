@@ -81,36 +81,12 @@ InitHandlers()
     // NOTE: TrWindowType must be first translator
     pm.AddHandler(Translate, m_pImpl->m_TrWindowType,                   s_pClass);
     // NOTE: Scroll before window managers.
-    //pm.AddHandler(Translate, m_pImpl->m_TrPrompts,                      s_pClass);
     pm.AddHandler(Translate, m_pImpl->m_TrScroll,                       s_pClass);
-    pm.AddHandler(Translate, m_pImpl->m_eq2LoginWindow.GetTranslator(), s_pClass);
-    pm.AddHandler(Translate, m_pImpl->m_BuyWindow.GetTranslator(),      s_pClass);
-    pm.AddHandler(Translate, m_pImpl->m_SellWindow.GetTranslator(),     s_pClass);
-    pm.AddHandler(Translate, m_pImpl->m_SetPricePopup.GetTranslator(),  s_pClass);
-
-    pm.AddTransactionHandler(Translate, Id::OpenBroker,      m_pImpl->m_txOpenBroker,       L"TxOpenBroker");
 
     //
     // Interpreters
     //
-#if 1
     pm.AddHandler(Interpret, m_pImpl->m_BuyWindow.GetInterpreter(),      s_pClass);
-#if 0 // no current use for these, but can always re-enable them as necessary
-    pm.AddHandler(Interpret, m_pImpl->m_SellWindow.GetInterpreter(),     s_pClass);
-    pm.AddHandler(Interpret, m_pImpl->m_SetPricePopup.GetInterpreter(),  s_pClass);
-#endif
-#else
-    pm.AddTransactionHandler(Interpret, Id::GetItemsForSale, m_pImpl->m_txGetItemsForSale);
-#endif
-    pm.AddTransactionHandler(Interpret, Id::Logon,           m_pImpl->m_txLogon,            L"TxLogon");
-    pm.AddTransactionHandler(Interpret, Id::SetActiveWindow, m_pImpl->m_txSetActiveWindow,  L"TxSetActiveWindow");
-    pm.AddTransactionHandler(Interpret, Id::BuyTabGetItems,  m_pImpl->m_txBuyTabGetItems,   L"TxBuyTabGetItems");
-    pm.AddTransactionHandler(Interpret, Id::SellTabGetItems, m_pImpl->m_txSellTabGetItems,  L"TxSellTabGetItems");
-    pm.AddTransactionHandler(Interpret, Id::SetWidgetText,   m_pImpl->m_txSetWidgetText,    L"TxSetWidgetText");
-    pm.AddTransactionHandler(Interpret, Id::GetItemPrices,   m_pImpl->m_txGetItemPrices,    L"TxGetItemPrices");
-    pm.AddTransactionHandler(Interpret, Id::RepriceItems,    m_pImpl->m_txRepriceItems,     L"TxRepriceItems");
-    pm.AddTransactionHandler(Interpret, Id::BuyItem,         m_pImpl->m_txBuyItem,          L"TxBuyItem");
-    pm.AddTransactionHandler(Interpret, Id::BuySellItems,    m_pImpl->m_txBuySellItems,     L"TxBuySellItems");
 
     return true;
 }
@@ -267,11 +243,9 @@ DispatchCommand(
     bool bCmd = false;
     switch(buf[0])
     {
-/*
-    case L'b': bCmd = CmdBuilder(&buf[1]); break;
-*/
-    case L'c': bCmd = CmdCharacter(&buf[1]);   break;
-    case L'k': bCmd = CmdControl(&buf[1]); break;
+//    case L'b': bCmd = CmdBuilder(&buf[1]); break;
+//    case L'c': bCmd = CmdCharacter(&buf[1]);   break;
+//    case L'k': bCmd = CmdControl(&buf[1]); break;
     case L'l':
         {
             int iLevel = _wtoi(&buf[1]);
@@ -280,10 +254,8 @@ DispatchCommand(
             bCmd = true;
         }
         break;
-    case L't': bCmd = CmdTransaction(&buf[1]); break;
-/*
+//    case L't': bCmd = CmdTransaction(&buf[1]); break;
 //  case L'?': ShowHelp(commands);         break;
-*/  
     case L'.' : return false;
     default:   bHandled = false;           break;
     }
