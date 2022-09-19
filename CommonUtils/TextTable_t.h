@@ -25,10 +25,8 @@ public:
     virtual size_t           GetRowCount() const        = 0;
     virtual wchar_t*         GetRow(size_t Row)         = 0;
     virtual size_t           GetRowWidth() const        = 0;
-
     virtual size_t           GetColumnCount() const     = 0;
     virtual const size_t*    GetColumnWidths() const    = 0;
-
     virtual void             SetEndRow(size_t Row)      = 0;
 
     size_t
@@ -363,14 +361,12 @@ public:
     // TextTable_i virtual:
     //
 
-    virtual size_t           GetRowCount() const     { return m_Data.GetRowCount(); }
-    virtual wchar_t*         GetRow(size_t Row)      { return m_Data.GetBuffer(Row); }
-    virtual size_t           GetRowWidth() const     { return m_Data.GetCharsPerRow(); }
-
-    virtual size_t           GetColumnCount() const  { return ColumnCount; }
-    virtual const size_t*    GetColumnWidths() const { return m_Data.GetColumnWidths(); }
-
-    virtual void             SetEndRow(size_t Row)
+    size_t           GetRowCount() const override { return m_Data.GetRowCount(); }
+    wchar_t*         GetRow(size_t Row) override { return m_Data.GetBuffer(Row); }
+    size_t           GetRowWidth() const override { return m_Data.GetCharsPerRow(); }
+    size_t           GetColumnCount() const override { return ColumnCount; }
+    const size_t*    GetColumnWidths() const override { return m_Data.GetColumnWidths(); }
+    void             SetEndRow(size_t Row) override
     {
         m_Data.SetEndRow(Row);
 #if 1

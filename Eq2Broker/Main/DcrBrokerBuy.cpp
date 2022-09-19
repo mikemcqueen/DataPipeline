@@ -22,8 +22,6 @@ namespace Buy
 namespace Translate
 {
 
-//DP::Message::Id_t Data_t::s_MessageId      = Broker::Message::Id::Buy; // DP::Message::Id::Unknown;
-
 static RECT
 TextRects[Table::ColumnCount] =
 {
@@ -37,11 +35,10 @@ TextRects[Table::ColumnCount] =
 };
 
 const ScreenTable_t
-Handler_t::s_ScreenTable = 
-{
-    Broker::Table::RowHeight + Broker::Table::GapSizeY,
+Handler_t::s_ScreenTable = {
+    Broker::Table::RowHeight,//+ Broker::Table::GapSizeY,
     Broker::Table::CharHeight,
-    Broker::Table::GapSizeY,
+    Broker::Table::RowGapSize,
     Table::ColumnCount,
     Table::PixelColumnWidths,
     TextRects

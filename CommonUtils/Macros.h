@@ -22,8 +22,12 @@
 #define MINUTE2MS(m)            ((DWORD)(m)*60000)
 #define SECOND2MS(s)            ((DWORD)(s)*1000)
 
-#define RECTWIDTH(r)            ((r).right-(r).left)
-#define RECTHEIGHT(r)            ((r).bottom-(r).top)
+constexpr auto RECTWIDTH(const RECT& r) {
+    return r.right - r.left;
+}
+constexpr auto RECTHEIGHT(const RECT& r) {
+    return r.bottom - r.top;
+}
 
 #ifdef _DEBUG
 #define SET_CRT_DEBUG_FIELD(a)        _CrtSetDbgFlag((a) | _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG))

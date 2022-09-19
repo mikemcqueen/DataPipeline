@@ -127,14 +127,15 @@ public:
         const Charset_t* pCharSet,
         DWORD            dwFlags = 0) const;
 
-    size_t
+    int
     ReadTable(
         const CSurface*  pSurface,
         const RECT&      rcTable,
-        const size_t     RowHeight,
+        const int     RowHeight,
+        const int        RowGapSize,
         const RECT*      pColumnRects,
         TextTable_i*     pText,
-        const size_t     CharHeight,
+        const int     CharHeight,
         const Charset_t* pCharset) const;
 
     bool
@@ -161,7 +162,7 @@ private:
               size_t     LineGapSize,
         const Charset_t* pCharset) const;
 
-    size_t
+    auto
     GetLineCount(
         const CSurface* pSurface,
         const RECT&     Rect,

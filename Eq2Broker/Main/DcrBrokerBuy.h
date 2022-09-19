@@ -48,11 +48,11 @@ struct Data_t :
 
     Data_t(
         const wchar_t*       pClass,
-        const TextTable_t&   TextTable,
-                size_t         initSelectedRow,
+        const TextTable_t&   textTable,
+        size_t               initSelectedRow,
         const PageNumber_t&  InitPageNumber,
         const wstring&       initSearchText,
-                bool           initSearchBoxHasCaret,
+        bool                 initSearchBoxHasCaret,
         const wstring&       initSavedSearch)
     :
         DP::Message::Data_t(
@@ -60,7 +60,7 @@ struct Data_t :
             Message::Id::Buy,
             sizeof(Data_t),
             pClass),
-        tableText(TextTable.GetData()),
+        tableText(textTable.GetData()),
         selectedRow(initSelectedRow),
         pageNumber(InitPageNumber),
         searchBoxHasCaret(initSearchBoxHasCaret)

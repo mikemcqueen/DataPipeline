@@ -37,7 +37,7 @@ private:
 public:
 
     DcrTable_t(
-              TextTable_i*  pText,
+              TextTable_i* pText,
         const ScreenTable_t& ScreenTable);
 
     ~DcrTable_t() override = default;
@@ -65,18 +65,14 @@ public:
 
     const ScreenTable_t& GetScreenTable() const { return m_ScreenTable; }
 
-    size_t GetRowHeight() const   { return GetScreenTable().RowHeight; }
-    size_t GetCharHeight() const  { return GetScreenTable().CharHeight; }
+    auto GetRowHeight() const { return GetScreenTable().RowHeight; }
+    auto GetRowGapSize() const { return GetScreenTable().RowGapSize; }
+    auto GetCharHeight() const { return GetScreenTable().CharHeight; }
+    auto GetColumnCount() const { return GetScreenTable().ColumnCount; }
 
-    size_t
-    GetColumnCount() const
-    {
-        return GetScreenTable().ColumnCount;
-    }
-
-    size_t
+    auto
     GetColumnWidth(
-        size_t Column) const;
+        int Column) const;
 
 #if 0
     void
@@ -89,8 +85,8 @@ public:
 
     void
     SetColumnWidths(
-        const size_t* pPixelColumnWidths,
-              size_t  ColumnCount);
+        const int* pPixelColumnWidths,
+              int  ColumnCount);
 
     void
     SetGridline(
@@ -107,18 +103,18 @@ public:
 
 private:
 
-    size_t
+    int
     GetTotalColumnWidths() const;
 
     void
     Shutdown();
 
-    size_t
+    int
     ReadTable(
-        const CSurface*    pSurface,
-        const Rect_t&        rcTable,
-              TextTable_i* pText,
-        const Charset_t*   pCharset);
+        const CSurface* pSurface,
+        const Rect_t& rcTable,
+        TextTable_i* pText,
+        const Charset_t* pCharset);
 
 private:
 

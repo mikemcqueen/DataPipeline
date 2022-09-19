@@ -34,13 +34,13 @@ struct ColumnData_t
 
 struct ScreenTable_t
 {
-    size_t        RowHeight;
-    size_t        CharHeight;
-    size_t        OffsetY;
-    size_t        ColumnCount;
+    int RowHeight;
+    int CharHeight;
+    int RowGapSize;
+    int ColumnCount;
 
-    const int*    pColumnWidths;
-    const RECT*   pTextRects;
+    const int*  pColumnWidths;
+    const RECT* pTextRects;
 };
 
 #endif // Include_SCREENTABLE_T_H

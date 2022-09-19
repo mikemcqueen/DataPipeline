@@ -26,14 +26,12 @@ namespace Broker
 class DcrBase_t :
     public DcrTable_t
 {
-private:
-
-    typedef DcrTable_t Base_t;
-
 //    static const int     CharsetPointSize     = 10;
 //    static const wchar_t CharsetFacename[];
 
 private:
+
+    using Base_t = DcrTable_t;
 
     const TableWindow_t& m_tableWindow;
     size_t m_selectedRow;
@@ -44,21 +42,19 @@ public:
     // Constructor and destructor:
     //
     DcrBase_t(
-              TextTable_i*   pText,
+        TextTable_i* pText,
         const TableWindow_t& tableWindow,
         const ScreenTable_t& ScreenTable);
 
-    virtual
-    ~DcrBase_t();
+    ~DcrBase_t() override;
 
     //
     // DCR virtual
     //
-    virtual
+
     bool
     Initialize() override;
 
-    virtual 
     bool
     PreTranslateSurface(
         CSurface* pSurface,

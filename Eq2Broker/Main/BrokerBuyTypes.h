@@ -28,18 +28,19 @@ namespace Buy
     namespace Table
     {
         // TextTable_t data
-        static const size_t RowCount             = 8;
-        static const size_t CharsPerRow          = 245;
-        static const size_t QuantityColumn       = 0;
-        static const size_t ItemNameColumn       = 1;
-        static const size_t PriceColumn          = 2;
-        static const size_t LevelColumn          = 3;
-        static const size_t SellerNameColumn     = 4;
-        static const size_t ColumnCount          = 5;
+        constexpr auto RowCount             = 8;
+        constexpr auto CharsPerRow          = 245;
+        constexpr auto QuantityColumn       = 0;
+        constexpr auto ItemNameColumn       = 1;
+        constexpr auto PriceColumn          = 2;
+        constexpr auto LevelColumn          = 3;
+        constexpr auto SellerNameColumn     = 4;
+        constexpr auto ColumnCount          = 5;
         static const size_t CharColumnWidths[ColumnCount] = { 10, 100, 30, 5, 100 };
 
         // ScreenTable_t data:
-        static const int PixelColumnWidths[ColumnCount] = { 50, 273, 88, 100, 0 };
+        static const int PixelColumnWidths[ColumnCount] = { 50, 560, 145, 50, 0 };
+        // RowHeightPix = 40;
     }
 
     class Text_t;

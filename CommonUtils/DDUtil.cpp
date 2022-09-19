@@ -1517,6 +1517,25 @@ CSurface::ColorFill( const RECT *pRect, COLORREF clr )
 	return m_pdds->Blt( const_cast<RECT*>(pRect), 0, 0, DDBLT_COLORFILL, &fx );
 }
 
+//
+
+HRESULT
+CSurface::SlowRectangle(const RECT* pRect, COLORREF clr)
+{
+	DDBLTFX fx;
+	ZeroMemory(&fx, sizeof(fx));
+	fx.dwSize = sizeof(fx);
+	fx.dwFillColor = clr;
+	RECT left = { pRect->left, pRect->top, pRect->left + 1, pRect->top + RECTHEIGHT(*pRect) };
+	m_pdds->Blt(&left, 0, 0, DDBLT_COLORFILL, &fx);
+	RECT top = { pRect->left, pRect->top, pRect->right, pRect->top + 1 };
+	m_pdds->Blt(&top, 0, 0, DDBLT_COLORFILL, &fx);
+	RECT right = { pRect->right - 1, pRect->top, pRect->right, pRect->top + RECTHEIGHT(*pRect) };
+	m_pdds->Blt(&right, 0, 0, DDBLT_COLORFILL, &fx);
+	RECT bottom = { pRect->left, pRect->bottom - 1, pRect->right, pRect->bottom };
+	return m_pdds->Blt(&bottom, 0, 0, DDBLT_COLORFILL, &fx);
+}
+
 /////////////////////////////////////////////////////////////////////////////
 
 HRESULT

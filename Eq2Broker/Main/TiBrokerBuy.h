@@ -54,13 +54,11 @@ public:
     // DP::Handler_t virtual:
     //
 
-    virtual
     bool
     Initialize(
         const wchar_t* pszClass) override;
 
 #if 0
-    virtual
     void
     Shutdown() override;
 #endif

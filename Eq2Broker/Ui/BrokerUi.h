@@ -28,12 +28,13 @@ namespace Broker
         static const COLORREF SelectedLowColor  = RGB(30,30,30);// RGB=0x252025
         static const COLORREF SelectedHighColor = RGB(39,39,39);
 
+        constexpr int TopRowOffset = 0;
         constexpr int RowHeight            = 42;
-        constexpr int QuantityTextHeight   = 14;
-        constexpr int GapSizeY             = 2;
+        constexpr int QuantityTextHeight   = 16;
+        constexpr int RowGapSize           = 2;
         constexpr int CharHeight           = 12;
-        static const SIZE BorderSize           = { 3, 3 };
-        static const SIZE DoubleBorderSize     = { BorderSize.cx * 2, BorderSize.cy * 2 };
+        static const SIZE BorderSize       = { 3, 3 };
+        static const SIZE DoubleBorderSize = { BorderSize.cx * 2, BorderSize.cy * 2 };
     } // Table
 
     class Window_t;
@@ -41,7 +42,6 @@ namespace Broker
 
     namespace Window
     {
-
         constexpr auto MakeId(const int id) noexcept {
             constexpr auto first = static_cast<int>(Ui::Window::Id::User_First);
             return static_cast<Ui::WindowId_t>(first + id);
@@ -58,7 +58,6 @@ namespace Broker
             constexpr auto BrokerSalesLogTab = MakeId(7);
             constexpr auto BrokerSetPricePopup = MakeId(8);
         } // Id
-
     } // Window
 
     namespace Tab {

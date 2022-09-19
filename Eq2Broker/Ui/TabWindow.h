@@ -32,13 +32,13 @@ private:
 public:
 
     TabWindow_t(
-                Ui::WindowId_t      WindowId,
+        Ui::WindowId_t            WindowId,
         const Ui::Window_t&       parent,
         const wchar_t*            pWindowName,
-                Flag_t              Flags,
+        Flag_t                    Flags,
         const Ui::Widget::Data_t* pWidget,
-                size_t              WidgetCount,
-                POINT               TabOffset);
+        size_t                    WidgetCount,
+        POINT                     TabOffset);
 
     bool
     FindTab(
@@ -46,7 +46,7 @@ public:
         const Rect_t&   tabAreaRect,
         const CSurface& tabSurface,
         const POINT&    ptOrigin,
-                POINT&    ptTabFound) const;
+        POINT&          ptTabFound) const;
 
     const POINT&
     GetTabOffset() const

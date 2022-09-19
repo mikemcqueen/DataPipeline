@@ -16,7 +16,7 @@
 
 #undef DCR
 
-bool g_bWriteBmps = false;
+bool g_bWriteBmps = true;
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -207,17 +207,18 @@ VerifyBlankRows(
 
 /////////////////////////////////////////////////////////////////////////////
 
-size_t g_Bad = 0;
+int g_Bad = 0;
 
-size_t
+int
 DCR::
 ReadTable(
     const CSurface*  pSurface,
     const RECT&      rcTable,
-    const size_t     RowHeight,
+    const int        RowHeight,
+    const int        RowGapSize,
     const RECT*      pColumnRects,
     TextTable_i*     pText,
-    const size_t     CharHeight,
+    const int        CharHeight,
     const Charset_t* pCharset) const
 {
     ASSERT(nullptr != pSurface);
@@ -255,8 +256,7 @@ g_Bad = 0;
             break;
         }
         // TODO: intersectrect.  or bounds checking.
-        if (g_bWriteBmps)
-        {
+        if (g_bWriteBmps) {
             WCHAR szFile[MAX_PATH];
             wsprintf( szFile, L"diag\\dcr_row_%d.bmp", iRow);
             pSurface->WriteBMP(szFile, rc);
@@ -297,10 +297,10 @@ g_iRow = iRow;
                 CharHeight,
                 pCharset);
         if (!bValidRow)
-            break;
+            bValidRow;// TODO break;
 
         //LogInfo(L"DCRRow%02: '%ls'", iRow, pszRow);
-        OffsetRect(&rc, 0, int(RowHeight));
+        OffsetRect(&rc, 0, RowHeight + RowGapSize);
     }
     pText->SetEndRow(iRow);
 
@@ -358,6 +358,7 @@ ReadTableRow(
             WCHAR szFile[MAX_PATH];
             wsprintf(szFile, L"Diag\\dcr_row_%d_column_%d.bmp", g_iRow, iColumn);
             pSurface->WriteBMP(szFile, rc);
+            const_cast<CSurface*>(pSurface)->SlowRectangle(&rc, RGB(0, 0, 0));
         }
 
         size_t TextLen = pTextLengths[iColumn];
@@ -399,6 +400,36 @@ ReadTableRow(
         }
     }
     return !bFail && bAnyText;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// Count the lines of text in a column (identified by Rect) of a table row.
+auto
+DCR::
+GetLineCount(
+    const CSurface* pSurface,
+    const RECT& Rect,
+    size_t    CharHeight,
+    size_t    LineGapSize) const
+{
+    LineData_t LineData;
+    InitLineData(pSurface, Rect, LineData);
+    LineData_t::const_iterator itFirst = find(LineData.begin(), LineData.end(), 1);
+    if (LineData.end() == itFirst)
+        return 0;
+    // TODO: totally insufficient for arbitrary # of lines.
+    // we walk backwards from bottom of rect because individual "samecolor" lines
+    // are possible in a block of text, e.g. "'.", the lines between apostrophe
+    // and period don't delineate a "new line" even if the gapsize is sufficient.
+    LineData_t::const_reverse_iterator ritFirst(itFirst);
+    LineData_t::const_reverse_iterator ritLast = find(LineData.rbegin(), LineData.rend(), 1);
+    size_t TotalHeight = ritFirst - ritLast;
+    if (TotalHeight <= CharHeight)
+        return 1;
+    // ValidateGap();
+    if (TotalHeight <= CharHeight * 2 + LineGapSize)
+        return 2;
+    return 3;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -463,35 +494,6 @@ ReadColumnLines(
     return hr;
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// Count the lines of text in a column (identified by Rect) of a table row.
-size_t
-DCR::
-GetLineCount(
-    const CSurface* pSurface,
-    const RECT&     Rect,
-          size_t    CharHeight,
-          size_t    LineGapSize) const 
-{
-    LineData_t LineData;
-    InitLineData(pSurface, Rect, LineData);
-    LineData_t::const_iterator itFirst = find(LineData.begin(), LineData.end(), 1);
-    if (LineData.end() == itFirst)
-        return 0;
-    // TODO: totally insufficient for arbitrary # of lines.
-    // we walk backwards from bottom of rect because individual "samecolor" lines
-    // are possible in a block of text, e.g. "'.", the lines between apostrophe
-    // and period don't delineate a "new line" even if the gapsize is sufficient.
-    LineData_t::const_reverse_iterator ritFirst(itFirst);
-    LineData_t::const_reverse_iterator ritLast = find(LineData.rbegin(), LineData.rend(), 1);
-    size_t TotalHeight = ritFirst - ritLast;
-    if (TotalHeight <= CharHeight)
-        return 1;
-    // ValidateGap();
-    if (TotalHeight <= CharHeight * 2 + LineGapSize)
-        return 2;
-    return 3;
-}
 
 /////////////////////////////////////////////////////////////////////////////
 

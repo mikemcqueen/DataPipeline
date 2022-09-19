@@ -196,10 +196,11 @@ PreTranslateSurface(
 {
     extern bool g_bTableFixColor;
 
+    //rcSurface;
     Rect_t rect = m_tableWindow.GetClientRect();
     if (!IsRectEmpty(&rect))
     {
-        rect.top += GetScreenTable().OffsetY;
+        rect.top += Broker::Table::TopRowOffset;
         m_selectedRow = GetSelectedRow(*pSurface, rect);
         if (g_bTableFixColor)
         {

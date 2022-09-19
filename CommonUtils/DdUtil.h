@@ -125,7 +125,7 @@ CreateSurfaceFromResource(HINSTANCE hInst, UINT resourceId);
 // Name: class CSurface
 // Desc: Class to handle aspects of a DirectDrawSurface.
 //-----------------------------------------------------------------------------
-class CSurface
+class CSurface final
 {
 private:
 
@@ -183,6 +183,7 @@ public:
     HRESULT                    Blt( DWORD x, DWORD y, CSurface * pSurface, RECT* prc = 0 );
 
     HRESULT                    ColorFill( const RECT *pRect, COLORREF clr );
+    HRESULT                   SlowRectangle(const RECT* pRect, COLORREF clr);
 
     bool                    Compare(DWORD dwDstX, DWORD dwDstY,
                                      const CSurface *pSrcSurface, DWORD dwSrcX, DWORD dwSrcY,

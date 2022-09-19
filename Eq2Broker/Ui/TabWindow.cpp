@@ -182,13 +182,13 @@ TableWindow_t::
 ClickRow(
     size_t Row) const
 {
-    size_t RowHeight = Broker::Table::RowHeight + Broker::Table::GapSizeY;
+    size_t RowHeight = Broker::Table::RowHeight + Broker::Table::RowGapSize; // hacky
 
     Rect_t RowRect = GetClientRect();
+    RowRect.top += Broker::Table::TopRowOffset;
     RowRect.top += Row * RowHeight;
-    int bottom = RowRect.top + RowHeight;
-    if (bottom < RowRect.bottom)
-    {
+    int bottom = RowRect.top + Broker::Table::RowHeight;
+    if (bottom < RowRect.bottom) {
         RowRect.bottom = bottom;
     }
     // LogAlways(L"Row (%d) Rect = { %d, %d, %d, %d}", Row, RowRect.left, RowRect.top, RowRect.right, RowRect.bottom);
@@ -423,7 +423,7 @@ ValidateClient(
     GetClientRect(GridRect, TableRect, ScrollOffsets);
     Surface.WriteBMP(L"diag\\table_gridrect.bmp", GridRect);
     const int Bottom = GridRect.bottom;
-    GridRect.bottom = GridRect.top + GapSizeY;
+    GridRect.bottom = GridRect.top + RowGapSize;
     for (size_t Line = 0; Bottom >= GridRect.bottom; ++Line)
     {
 //        if (!Surface.CompareColorRange(GridRect, BkLowColor, BkHighColor))
@@ -433,7 +433,7 @@ ValidateClient(
                        GetWindowName(), Line, GridRect.left, GridRect.top);
             return false;
         }
-        OffsetRect(&GridRect, 0, RowHeight + GapSizeY);
+        OffsetRect(&GridRect, 0, RowHeight + RowGapSize);
     }
     return true;
 }

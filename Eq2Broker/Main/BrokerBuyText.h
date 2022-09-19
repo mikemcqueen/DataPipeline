@@ -44,7 +44,7 @@ public:
     Text_t(
         const size_t* pColumnWidths,
               size_t  ColumnCount)
-    :
+        :
         TextBase_t(pColumnWidths, ColumnCount)
     {
     }

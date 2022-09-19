@@ -79,14 +79,15 @@ InitHandlers()
     // Translators
     //
     // NOTE: TrWindowType must be first translator
-    pm.AddHandler(Translate, m_pImpl->m_TrWindowType,                   s_pClass);
+    pm.AddHandler(Translate, m_pImpl->m_TrWindowType, s_pClass);
     // NOTE: Scroll before window managers.
-    pm.AddHandler(Translate, m_pImpl->m_TrScroll,                       s_pClass);
+    //pm.AddHandler(Translate, m_pImpl->m_TrScroll, s_pClass);
+    pm.AddHandler(Translate, m_pImpl->m_BuyWindow.GetTranslator(), s_pClass);
 
     //
     // Interpreters
     //
-    pm.AddHandler(Interpret, m_pImpl->m_BuyWindow.GetInterpreter(),      s_pClass);
+    pm.AddHandler(Interpret, m_pImpl->m_BuyWindow.GetInterpreter(), s_pClass);
 
     return true;
 }
