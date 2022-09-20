@@ -38,14 +38,20 @@ constexpr unsigned CharsetFlags = kDrawShadowText; // kDrawSimulatedShadowText
 
 DcrBase_t::
 DcrBase_t(
-          TextTable_i*   pText,
+    TextTable_i* pText,
     const TableWindow_t& tableWindow,
-    const ScreenTable_t& ScreenTable)
-:
-    DcrTable_t(pText, ScreenTable),
-    m_tableWindow(tableWindow)
-{
-}
+    const TableParams_t& tableParams,
+    std::span<const int> columnWidths,
+    std::span<const RECT> textRects)
+    :
+    m_tableWindow(
+        tableWindow),
+    DcrTable_t(
+        pText,
+        tableParams,
+        columnWidths,
+        textRects)
+{ }
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -200,13 +206,15 @@ PreTranslateSurface(
     Rect_t rect = m_tableWindow.GetClientRect();
     if (!IsRectEmpty(&rect))
     {
-        rect.top += Broker::Table::TopRowOffset;
+        rect.top += Broker::Table::TopRowOffset; // TODO HACK
         m_selectedRow = GetSelectedRow(*pSurface, rect);
+#if 0
         if (g_bTableFixColor)
         {
             // TODO: pSurface->ReplaceColorRange
             pSurface->FixColor(rect, BkLowColor, BkHighColor, Black);
         }
+#endif
         rcSurface = rect;
         return true;
     }
@@ -221,7 +229,7 @@ GetSelectedRow(
     CSurface& surface,
     const Rect_t&   tableRect) const
 {
-    const int rowHeight = GetScreenTable().RowHeight;
+    auto rowHeight = GetScreenTable().GetRowHeight();
     const size_t width = 4;
     const size_t height = 1;
     Rect_t selectRect;
@@ -232,7 +240,7 @@ GetSelectedRow(
     size_t selectedRow = 0;
     for (size_t row = 1; selectRect.top + rowHeight <= tableRect.bottom; ++row)
     {
-        using namespace Broker::Table;
+        using namespace Broker::Table; // HACK
         if (surface.CompareColorRange(selectRect, SelectedLowColor, SelectedHighColor))
         {
             if (0 < selectedRow)

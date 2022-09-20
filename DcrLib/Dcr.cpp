@@ -20,17 +20,21 @@ bool g_bWriteBmps = true;
 
 /////////////////////////////////////////////////////////////////////////////
 
+DCR::DCR() : DCR(true)
+{ }
+
+/////////////////////////////////////////////////////////////////////////////
+
 DCR::
-DCR()
-{
-}
+DCR(bool useTesseract) :
+    useTesseract_(useTesseract)
+{ }
 
 /////////////////////////////////////////////////////////////////////////////
 
 DCR::
 ~DCR()
-{
-}
+{ }
 	
 /////////////////////////////////////////////////////////////////////////////
 
@@ -285,19 +289,20 @@ g_Bad = 0;
             continue;
         }
 g_iRow = iRow;
-        const bool bValidRow = 
-            ReadTableRow(
-                pSurface,
-                &rc,
-                pText->GetColumnCount(),
-                pColumnRects,
-                pText->GetColumnWidths(),
-                pszRow,
-                pText->GetRowWidth(),
-                CharHeight,
-                pCharset);
-        if (!bValidRow)
-            bValidRow;// TODO break;
+
+        bool validRow = false;
+        validRow = ReadTableRow(
+            pSurface,
+            &rc,
+            pText->GetColumnCount(),
+            pColumnRects,
+            pText->GetColumnWidths(),
+            pszRow,
+            pText->GetRowWidth(),
+            CharHeight,
+            pCharset);
+        if (!validRow)
+            break;
 
         //LogInfo(L"DCRRow%02: '%ls'", iRow, pszRow);
         OffsetRect(&rc, 0, RowHeight + RowGapSize);

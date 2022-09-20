@@ -27,20 +27,24 @@ class TextTable_i;
 class DcrTable_t :
     public DCR
 {
-
-private:
-
-    const ScreenTable_t& m_ScreenTable;
-    TextTable_i*         m_pText;
-    size_t               m_Gridline;
+    const ScreenTable_t screenTable_;
+    TextTable_i* pTextTable_;
+    std::vector<RECT> columnRects_;
+    std::vector<std::unique_ptr<CSurface>> columnSurfaces_;
 
 public:
 
     DcrTable_t(
-              TextTable_i* pText,
-        const ScreenTable_t& ScreenTable);
+        TextTable_i* pText,
+        const TableParams_t& tableParams,
+        std::span<const int> columnWidths,
+        std::span<const RECT> textRects);
 
     ~DcrTable_t() override = default;
+
+    DcrTable_t() = delete;
+    DcrTable_t(const DcrTable_t&) = delete;
+    DcrTable_t& operator=(const DcrTable_t&) = delete;
 
     //
     // DCR virtual:
@@ -51,64 +55,40 @@ public:
         CSurface* pSurface,
         Rect_t&   rcSurface) override;
 
+    bool
+    Initialize() override;
+    
     //
 
     void
     SetTextTable(
         TextTable_i* pTextTable)
     {
-        m_pText = pTextTable;
+        pTextTable_ = pTextTable;
     }
 
-    const TextTable_i*
-    GetTextTable() const { return m_pText; }
+    const TextTable_i* GetTextTable() const { return pTextTable_; }
+    const ScreenTable_t& GetScreenTable() const { return screenTable_; }
 
-    const ScreenTable_t& GetScreenTable() const { return m_ScreenTable; }
-
-    auto GetRowHeight() const { return GetScreenTable().RowHeight; }
-    auto GetRowGapSize() const { return GetScreenTable().RowGapSize; }
-    auto GetCharHeight() const { return GetScreenTable().CharHeight; }
-    auto GetColumnCount() const { return GetScreenTable().ColumnCount; }
-
-    auto
-    GetColumnWidth(
-        int Column) const;
-
-#if 0
-    void
-    GetRect(
-        const RECT&  rcBounds,
-              size_t StartLine,
-              size_t EndLine,
-              RECT&  rc) const;
-#endif
-
-    void
-    SetColumnWidths(
-        const int* pPixelColumnWidths,
-              int  ColumnCount);
-
-    void
-    SetGridline(
-        size_t Size)
-    {
-        m_Gridline = Size;
-    }
-
-    size_t
-    GetGridline() const
-    {
-        return m_Gridline;
-    }
+    //auto GetRowHeight() const { return GetScreenTable().RowHeight; }
+    //auto GetRowGapSize() const { return GetScreenTable().RowGapSize; }
+    //auto GetCharHeight() const { return GetScreenTable().CharHeight; }
+    //auto GetColumnCount() const { return GetScreenTable().ColumnCount; }
 
 private:
 
-    int
-    GetTotalColumnWidths() const;
+    // move to screentable_t
+    //int
+    //GetTotalColumnWidths() const;
 
-    void
-    Shutdown();
+    std::vector<RECT>
+    InitColumnRects(
+        const ScreenTable_t& screenTable) const;
 
+    std::vector<unique_ptr<CSurface>>
+    InitColumnSurfaces(
+        const std::vector<RECT>& columnRects) const;
+        
     int
     ReadTable(
         const CSurface* pSurface,
@@ -116,11 +96,15 @@ private:
         TextTable_i* pText,
         const Charset_t* pCharset);
 
-private:
-
-    DcrTable_t() = delete;
-    DcrTable_t(const DcrTable_t&) = delete;
-    DcrTable_t& operator=(const DcrTable_t&) = delete;
+    int
+    TesseractReadTable(
+        const CSurface* pSurface,
+        const RECT& rcTable,
+        const int RowHeight,
+        const int RowGapSize,
+        const std::vector<RECT>& columnRects,
+        const std::vector<std::unique_ptr<CSurface>>& columnSurfaces,
+        TextTable_i* pText) const;
 };
 
 /////////////////////////////////////////////////////////////////////////////

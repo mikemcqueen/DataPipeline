@@ -1486,17 +1486,17 @@ void CSurface::ReleaseDC( HDC hDC )
 /////////////////////////////////////////////////////////////////////////////
 
 HRESULT
-CSurface::Blt( DWORD x, DWORD y, LPDIRECTDRAWSURFACE7 pdds, RECT* prc, DWORD dwFlags )
+CSurface::Blt( DWORD x, DWORD y, LPDIRECTDRAWSURFACE7 pdds, const RECT* prc, DWORD dwFlags )
 {
 	if( !m_pdds )
 		return E_POINTER;
-	return m_pdds->BltFast( x, y, pdds, prc, dwFlags );
+	return m_pdds->BltFast( x, y, pdds, const_cast<RECT*>(prc), dwFlags );
 }
 
 /////////////////////////////////////////////////////////////////////////////
 
 HRESULT
-CSurface::Blt( DWORD x, DWORD y, CSurface* pSurface, RECT* prc )
+CSurface::Blt( DWORD x, DWORD y, const CSurface* pSurface, const RECT* prc )
 {
 	if( !pSurface )
 		return E_INVALIDARG;

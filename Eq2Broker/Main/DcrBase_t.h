@@ -26,9 +26,6 @@ namespace Broker
 class DcrBase_t :
     public DcrTable_t
 {
-//    static const int     CharsetPointSize     = 10;
-//    static const wchar_t CharsetFacename[];
-
 private:
 
     using Base_t = DcrTable_t;
@@ -38,15 +35,18 @@ private:
 
 public:
 
-    //
-    // Constructor and destructor:
-    //
     DcrBase_t(
         TextTable_i* pText,
         const TableWindow_t& tableWindow,
-        const ScreenTable_t& ScreenTable);
+        const TableParams_t& tableParams,
+        std::span<const int> columnWidths,
+        std::span<const RECT> textRects);
 
     ~DcrBase_t() override;
+
+    DcrBase_t() = delete;
+    DcrBase_t(const DcrBase_t&) = delete;
+    DcrBase_t& operator=(const DcrBase_t&) = delete;
 
     //
     // DCR virtual
@@ -96,12 +96,6 @@ private:
               LOGFONT& lf,
               int      Height,
         const wchar_t* pszFaceName);
-
-private:
-
-    DcrBase_t();
-    DcrBase_t(const DcrBase_t&);
-    DcrBase_t& operator=(const DcrBase_t&);
 };
 
 ////////////////////////////////////////////////////////////////////////////////

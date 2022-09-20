@@ -65,11 +65,15 @@ private:
 
 private:
 
+    static std::unique_ptr<tesseract::TessBaseAPI> tesseract_;
+
+    bool useTesseract_;
     CharsetVector_t m_Charsets;
 
 public:
 
-	DCR();
+    DCR();
+    DCR(bool useTesseract);
     virtual ~DCR();
 
     virtual
@@ -150,6 +154,24 @@ public:
         size_t           CharHeight, // could be part of Charset_t
         const Charset_t* pCharSet) const;
 
+    bool
+    useTesseract() {
+        return useTesseract_;
+    }
+
+    static
+    int
+    InitTesseract(
+        const char* dataPath,
+        const char* languageCode)
+    {
+        if (tesseract_.get()) {
+            throw new logic_error("Tesseract already initialized");
+        }
+        tesseract_ = std::make_unique<tesseract::TessBaseAPI>();
+        return tesseract_->Init(dataPath, languageCode);
+    }
+
 private:
     
     HRESULT
@@ -179,8 +201,6 @@ private:
     wchar_t* CreateSpacedText(const wchar_t* pszText ) const;
 //	HRESULT  CalcTextRect(const wchar_t* pszText, HFONT hFont, RECT& rc) const;
 };
-
-typedef std::vector<DCR*> DcrVector_t;
 
 /////////////////////////////////////////////////////////////////////////////
 

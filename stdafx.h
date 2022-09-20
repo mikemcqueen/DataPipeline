@@ -70,6 +70,7 @@
 #include <functional>
 #include <numeric>
 #include <memory>
+#include <span>
 
 #include "xmllite.h"
 

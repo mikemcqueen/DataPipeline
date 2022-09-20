@@ -23,8 +23,7 @@ namespace Translate
 {
 
 static RECT
-TextRects[Table::ColumnCount] =
-{
+TextRects[Table::ColumnCount] = {
     // Quantity text is bottom "QuantityTextHeight" lines of first column
     { 0, Broker::Table::RowHeight - Broker::Table::QuantityTextHeight,
       Table::PixelColumnWidths[0], Broker::Table::RowHeight },
@@ -34,14 +33,14 @@ TextRects[Table::ColumnCount] =
     { 0 }
 };
 
-const ScreenTable_t
-Handler_t::s_ScreenTable = {
+constexpr TableParams_t TableParams = {
     Broker::Table::RowHeight,//+ Broker::Table::GapSizeY,
     Broker::Table::CharHeight,
     Broker::Table::RowGapSize,
-    Table::ColumnCount,
-    Table::PixelColumnWidths,
-    TextRects
+    Table::ColumnCount
+    //,
+    //std::vector{ begin(Table::PixelColumnWidths), end(Table::PixelColumnWidths) },
+    //std::vector{ begin(TextRects), end(TextRects) }
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -49,7 +48,7 @@ Handler_t::s_ScreenTable = {
 Handler_t::
 Handler_t(
     Window::ManagerBase_t& windowManager)
-:
+    :
     HandlerBase_t(
         TopWindowId,
         m_TranslatePolicy,
@@ -60,7 +59,9 @@ Handler_t(
     m_DcrTable(
         &m_TextTable,
         windowManager.GetWindow(),
-        s_ScreenTable),
+        TableParams,
+        std::span{ Table::PixelColumnWidths },
+        std::span{ TextRects }),
     m_TextTable(
         Table::CharColumnWidths,
         Table::ColumnCount),

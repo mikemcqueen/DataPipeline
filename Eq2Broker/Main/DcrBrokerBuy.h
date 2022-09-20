@@ -32,14 +32,13 @@ namespace Translate
 
 ////////////////////////////////////////////////////////////////////////////////
 
+constexpr auto kSearchTextMax = 101;
+constexpr auto kSavedSearchMax = 30;
+
 struct Data_t :
     public DP::Message::Data_t
 {
-    typedef Buy::Text_t Text_t;
-    static const size_t kSearchTextMax  = 101;
-    static const size_t kSavedSearchMax = 30;
-
-    Text_t       tableText;
+    Buy::Text_t  tableText;
     size_t       selectedRow;
     PageNumber_t pageNumber;
     wchar_t      searchText[kSearchTextMax];
@@ -50,7 +49,7 @@ struct Data_t :
         const wchar_t*       pClass,
         const TextTable_t&   textTable,
         size_t               initSelectedRow,
-        const PageNumber_t&  InitPageNumber,
+        const PageNumber_t&  initPageNumber,
         const wstring&       initSearchText,
         bool                 initSearchBoxHasCaret,
         const wstring&       initSavedSearch)
@@ -62,7 +61,7 @@ struct Data_t :
             pClass),
         tableText(textTable.GetData()),
         selectedRow(initSelectedRow),
-        pageNumber(InitPageNumber),
+        pageNumber(initPageNumber),
         searchBoxHasCaret(initSearchBoxHasCaret)
     {
         wcscpy_s(searchText, initSearchText.c_str());
@@ -93,7 +92,7 @@ public:
 
     //static const Ui::WindowId_t         DcrWindowId      = Broker::Window::Id::BrokerBuy_Main;
 
-    static const ScreenTable_t          s_ScreenTable;
+    //static const ScreenTable_t          s_ScreenTable;
 
 private:
 

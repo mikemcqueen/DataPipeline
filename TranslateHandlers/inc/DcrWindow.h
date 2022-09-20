@@ -19,7 +19,10 @@
 #include "DpHandler_t.h"
 #include "SsWindow.h"
 #include "UiWindowId.h"
-#include "Dcr.h"
+//#include "Dcr.h"
+
+class DCR;
+using DcrVector_t = std::vector<DCR*>;
 
 namespace DcrWindow
 {

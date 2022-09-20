@@ -111,7 +111,6 @@ public:
         return *this;
     }
 
-
     void Clear()
     {
         SecureZeroMemory(&m_Buffer, sizeof(m_Buffer));
@@ -345,16 +344,15 @@ public:
 
     TextTable_t(
         const size_t* pColumnWidths,
-        size_t        MaxColumnCount)
-    :
-        m_Data(pColumnWidths, MaxColumnCount)
-    {
-    }
+        size_t        maxColumns)
+        :
+        m_Data(pColumnWidths, maxColumns)
+    { }
 
-    This_t& operator=(const Data_t& Data)
+    This_t& operator=(const Data_t& data)
     {
-        m_Data = Data;
-		return *this; // NOTE added to get to compile
+        m_Data = data;
+		return *this;
     }
 
     //
@@ -366,22 +364,22 @@ public:
     size_t           GetRowWidth() const override { return m_Data.GetCharsPerRow(); }
     size_t           GetColumnCount() const override { return ColumnCount; }
     const size_t*    GetColumnWidths() const override { return m_Data.GetColumnWidths(); }
-    void             SetEndRow(size_t Row) override
+    void             SetEndRow(size_t row) override
     {
-        m_Data.SetEndRow(Row);
+        m_Data.SetEndRow(row);
 #if 1
-        if (Row < RowCount)
-            MarkRow(Row, L"END");
-        for (++Row; Row < RowCount; ++Row)
-            MarkRow(Row, L"UNUSED");
+        if (row < RowCount)
+            MarkRow(row, L"END");
+        for (++row; row < RowCount; ++row)
+            MarkRow(row, L"UNUSED");
 #endif
     }
 
     const wchar_t*
     GetRow(
-        size_t Row) const
+        size_t row) const
     {
-        return m_Data.GetRow(Row);
+        return m_Data.GetRow(row);
     }
 
     size_t
@@ -404,9 +402,9 @@ public:
 
     size_t
     GetColumnOffset(
-        size_t Column) const
+        size_t column) const
     {
-        return m_Data.GetColumnOffset(Column);
+        return m_Data.GetColumnOffset(column);
     }
 
     bool
@@ -421,9 +419,9 @@ public:
     void
     SetColumnWidths(
         const size_t* pColumnWidths,
-        size_t        ColumnCount)
+        size_t        columnCount)
     {
-        m_Data.SetColumnWidths(pColumnWidths, ColumnCount);
+        m_Data.SetColumnWidths(pColumnWidths, columnCount);
     }
 
     void
@@ -436,10 +434,10 @@ public:
 
     void
     DumpRow(
-        size_t Row,
+        size_t row,
         const wchar_t* pszTag = nullptr) const
     {
-        m_Data.DumpRow(Row, pszTag);
+        m_Data.DumpRow(row, pszTag);
     }
 
 // NOTE made this public to get it compiling
@@ -454,25 +452,25 @@ private:
 
     size_t
     GetColumnWidth(
-        size_t Column) const
+        size_t column) const
     {
-        return m_Data.GetColumnWidth(Column);
+        return m_Data.GetColumnWidth(column);
     }
 
     bool
     IsEndRow(
-        size_t Row) const
+        size_t row) const
     {
-        return IsMarkedRow(Row, L"END");
+        return IsMarkedRow(row, L"END");
     }
 
     bool
     IsBadRow(
-        size_t Row) const
+        size_t row) const
     {
         // TODO: hacko until TextTable_t becomes DCR::TextTable_t,
         // and DCR::ReadTable() takes it as a parameter.
-        const wchar_t* pszRow = GetRow(Row);
+        const wchar_t* pszRow = GetRow(row);
         return 0 == wcscmp(pszRow, L"BAD");
     }
 
@@ -480,19 +478,19 @@ protected:
 
     bool
     IsMarkedRow(
-        size_t         Row,
+        size_t         row,
         const wchar_t* pszTag = nullptr) const
     {
-        return m_Data.IsMarkedRow(Row, pszTag);
+        return m_Data.IsMarkedRow(row, pszTag);
     }
 
     void
     MarkRow(
-        size_t Row,
+        size_t row,
         wchar_t* pszTag)
     {
 //Data.MarkRow(Row, pszTag);
-        wchar_t* pszRow = (wchar_t*)m_Data.GetRow(Row);
+        wchar_t* pszRow = (wchar_t*)m_Data.GetRow(row);
         pszRow[0] = Data_t::Marker;
         wcscpy_s(&pszRow[1], CharsPerRow - 1, pszTag);
     }
@@ -545,29 +543,27 @@ public:
     // TextTable_i virtual:
     //
 
-    virtual size_t           GetRowCount() const     { return m_Data.GetRowCount(); }
-    virtual wchar_t*         GetRow(size_t Row)      { return m_Data.GetBuffer(Row); }
-    virtual size_t           GetRowWidth() const     { return m_Data.GetCharsPerRow(); }
-
-    virtual size_t           GetColumnCount() const  { return m_Data.GetColumnCount(); }
-    virtual const size_t*    GetColumnWidths() const { return m_Data.GetColumnWidths(); }
-
-    virtual void             SetEndRow(size_t Row)
+    size_t         GetRowCount() const override { return m_Data.GetRowCount(); }
+    wchar_t*       GetRow(size_t Row) override { return m_Data.GetBuffer(Row); }
+    size_t         GetRowWidth() const override { return m_Data.GetCharsPerRow(); }
+    size_t         GetColumnCount() const override { return m_Data.GetColumnCount(); }
+    const size_t*  GetColumnWidths() const override { return m_Data.GetColumnWidths(); }
+    void           SetEndRow(size_t row) override
     {
-        m_Data.SetEndRow(Row);
+        m_Data.SetEndRow(row);
 #if 1
-        if (Row < GetRowCount())
-            MarkRow(Row, L"END");
-        for (++Row; Row < GetRowCount(); ++Row)
-            MarkRow(Row, L"UNUSED");
+        if (row < GetRowCount())
+            MarkRow(row, L"END");
+        for (++row; row < GetRowCount(); ++row)
+            MarkRow(row, L"UNUSED");
 #endif
     }
 
     const wchar_t*
     GetRow(
-        size_t Row) const
+        size_t row) const
     {
-        return m_Data.GetRow(Row);
+        return m_Data.GetRow(row);
     }
 
     size_t
@@ -615,17 +611,17 @@ public:
     void
     Dump(
         const wchar_t* pszText = nullptr,
-              bool     bAlways = false) const
+        bool bAlways = false) const
     {
         m_Data.Dump(pszText, bAlways);
     }
 
     void
     DumpRow(
-        size_t Row,
+        size_t row,
         const wchar_t* pszTag = nullptr) const
     {
-        m_Data.DumpRow(Row, pszTag);
+        m_Data.DumpRow(row, pszTag);
     }
 
 private:
@@ -645,18 +641,18 @@ private:
 
     bool
     IsEndRow(
-        size_t Row) const
+        size_t row) const
     {
-        return IsMarkedRow(Row, L"END");
+        return IsMarkedRow(row, L"END");
     }
 
     bool
     IsBadRow(
-        size_t Row) const
+        size_t row) const
     {
         // TODO: hacko until TextTable_t becomes DCR::TextTable_t,
         // and DCR::ReadTable() takes it as a parameter.
-        const wchar_t* pszRow = GetRow(Row);
+        const wchar_t* pszRow = GetRow(row);
         return 0 == wcscmp(pszRow, L"BAD");
     }
 
@@ -664,19 +660,19 @@ protected:
 
     bool
     IsMarkedRow(
-        size_t         Row,
+        size_t         row,
         const wchar_t* pszTag = nullptr) const
     {
-        return m_Data.IsMarkedRow(Row, pszTag);
+        return m_Data.IsMarkedRow(row, pszTag);
     }
 
     void
     MarkRow(
-        size_t Row,
+        size_t row,
         const wchar_t* pszTag)
     {
 //Data.MarkRow(Row, pszTag);
-        wchar_t* pszRow = (wchar_t*)m_Data.GetRow(Row);
+        wchar_t* pszRow = (wchar_t*)m_Data.GetRow(row);
         pszRow[0] = Data_t::Marker;
         wcscpy_s(&pszRow[1], GetRowWidth() - 1, pszTag);
     }

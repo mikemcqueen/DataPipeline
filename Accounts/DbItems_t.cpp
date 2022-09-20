@@ -176,7 +176,7 @@ GetItemName(
     if (0 == rs.Open(CRecordset::forwardOnly, nullptr, DefaultReadOnlyFlags))
     {
         LogError(L"Items_t::GetItemName(): rs.Open() failed");
-        return false;
+        return nullptr;
     }
     if (rs.IsEOF())
     {

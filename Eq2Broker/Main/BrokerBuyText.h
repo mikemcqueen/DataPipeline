@@ -30,24 +30,21 @@ class Text_t :
 {
 public:
 
-    Text_t()
-    {
-    }
+    Text_t() = default;
 
+    explicit
     Text_t(
         const TextBase_t& textBase)
-    :
+        :
         TextBase_t(textBase)
-    {
-    }
+    { }
 
     Text_t(
         const size_t* pColumnWidths,
               size_t  ColumnCount)
         :
         TextBase_t(pColumnWidths, ColumnCount)
-    {
-    }
+    { }
 
     long
     GetQuantity(
@@ -122,9 +119,9 @@ public:
 
     long
     GetPrice(
-        size_t Row) const
+        size_t row) const
     {
-        return GetPrice(GetRow(Row));
+        return GetPrice(GetRow(row));
     }
 
     long
@@ -141,8 +138,7 @@ public:
               size_t   priceOffset)
     {
         Price_t Price;
-        if (Price.Parse(&pRow[priceOffset]))
-        {
+        if (Price.Parse(&pRow[priceOffset])) {
             return Price.GetPrice();
         }
         return 0;

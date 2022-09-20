@@ -152,8 +152,8 @@ public:
 
     const DDPIXELFORMAT& GetPixelFormat() const { return m_pf; }
 
-    LPDIRECTDRAWSURFACE7 GetDDrawSurface() { return m_pdds; }
-    BOOL                 IsColorKeyed()       { return m_bColorKeyed; }
+    LPDIRECTDRAWSURFACE7 GetDDrawSurface() const { return m_pdds; }
+    BOOL                 IsColorKeyed()    const    { return m_bColorKeyed; }
 
     HRESULT DrawBitmap( HBITMAP hBMP, DWORD dwBMPOriginX = 0, DWORD dwBMPOriginY = 0, 
                         DWORD dwBMPWidth = 0, DWORD dwBMPHeight = 0 );
@@ -179,8 +179,8 @@ public:
     HRESULT                    Unlock( RECT *pRect=0 ) const;
 
     HRESULT                    Blt( DWORD x, DWORD y, LPDIRECTDRAWSURFACE7 pdds,
-                                 RECT* prc=nullptr, DWORD dwFlags=DDBLTFAST_NOCOLORKEY );
-    HRESULT                    Blt( DWORD x, DWORD y, CSurface * pSurface, RECT* prc = 0 );
+                                 const RECT* prc=nullptr, DWORD dwFlags=DDBLTFAST_NOCOLORKEY );
+    HRESULT                    Blt( DWORD x, DWORD y, const CSurface * pSurface, const RECT* prc = nullptr );
 
     HRESULT                    ColorFill( const RECT *pRect, COLORREF clr );
     HRESULT                   SlowRectangle(const RECT* pRect, COLORREF clr);
@@ -238,7 +238,6 @@ public:
     bool
     CompareColorIntensityFunc(COLORREF color1, COLORREF color2) const;
 };
-
 
 void *                GetBitsAt( const DDSURFACEDESC2 *pDDSD, int x, int y );
 

@@ -17,7 +17,7 @@
 
 /////////////////////////////////////////////////////////////////////////////
 
-class PageNumber_t
+class PageNumber_t final
 {
 
 public:
@@ -37,7 +37,7 @@ private:
 
 public:
 
-    PageNumber_t() {}
+    PageNumber_t() = default;
     PageNumber_t(const Data_t& Data) : m_Data(Data) {}
 
     bool

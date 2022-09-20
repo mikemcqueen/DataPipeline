@@ -10,6 +10,7 @@
 #include "DcrWindow.h"
 #include "DdUtil.h"
 #include "PipelineManager.h"
+#include "Dcr.h"
 
 extern CDisplay *g_pDisplay;
 bool g_noDcrPost = false;
