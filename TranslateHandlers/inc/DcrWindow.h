@@ -62,8 +62,7 @@ public:
     { }
 
     #if 1
-    virtual
-    ~Handler_t()
+    ~Handler_t() override
     { }
     #endif
 

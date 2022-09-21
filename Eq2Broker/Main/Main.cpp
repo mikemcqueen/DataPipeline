@@ -17,6 +17,7 @@
 #include "AccountManager_t.h"
 #include "Character_t.h"
 #include "AccountsDb.h"
+#include "Dcr.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -149,6 +150,10 @@ StartupInitialize(
     HRESULT hr = InitDirectDraw(GetDesktopWindow());
     if (FAILED(hr)) {
         throw runtime_error("InitDirectDraw() failed");
+    }
+    const int tess = DCR::InitTesseract("g:\\tesseract\\5.2\\tessdata", "eng");
+    if (tess < 0) {
+        throw runtime_error(std::format("InitTesseract() failed, {}", tess));
     }
     if (!GetPipelineManager().Initialize()) {
         throw runtime_error("GetPipelineManager().Initialize() failed");

@@ -18,6 +18,9 @@
 
 bool g_bWriteBmps = true;
 
+/*static*/
+std::unique_ptr<tesseract::TessBaseAPI> DCR::tesseract_;
+
 /////////////////////////////////////////////////////////////////////////////
 
 DCR::DCR() : DCR(true)
@@ -231,7 +234,7 @@ ReadTable(
     ASSERT(0 < RowHeight);
 
     int MaxCharHeight = 0;
-    for (size_t col = 0; col < pText->GetColumnCount(); ++col)
+    for (auto col = 0; col < pText->GetColumnCount(); ++col)
     {
         if (pColumnRects[col].bottom > MaxCharHeight)
         {
@@ -246,8 +249,8 @@ ReadTable(
 
 g_Bad = 0;
 
-    const size_t RowCount = pText->GetRowCount();
-    size_t iRow = 0;
+    auto RowCount = pText->GetRowCount();
+    auto iRow = 0;
     for (; iRow < RowCount; ++iRow)
     {
         // TODO: Hack. not needed? verifyblankRows doesn't compare bottom Row?  huh?
@@ -278,8 +281,8 @@ g_Bad = 0;
         if (b && !VerifyBlankRows(pSurface, pColumnRects[0], MaxCharHeight, bBottom))
         {
             // TODO: text.SetInvalidRow(iRow);
-            size_t Pos = 0;
-            for (size_t Column = 0; Column < pText->GetColumnCount(); ++Column)
+            auto Pos = 0;
+            for (auto Column = 0; Column < pText->GetColumnCount(); ++Column)
             {
                 size_t Width = pText->GetColumnWidth(Column);
                 wcscpy_s(&pszRow[Pos], Width, L"BAD");

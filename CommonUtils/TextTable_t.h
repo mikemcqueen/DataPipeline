@@ -10,6 +10,7 @@
 #pragma once
 #endif
 
+#include <exception> // temp
 #include "Log.h"
 
 #ifndef Include_TEXTTABLE_T_H
@@ -22,12 +23,15 @@ class TextTable_i
 
 public:
 
-    virtual size_t           GetRowCount() const        = 0;
-    virtual wchar_t*         GetRow(size_t Row)         = 0;
-    virtual size_t           GetRowWidth() const        = 0;
-    virtual size_t           GetColumnCount() const     = 0;
-    virtual const size_t*    GetColumnWidths() const    = 0;
-    virtual void             SetEndRow(size_t Row)      = 0;
+    virtual int GetRowCount() const = 0;
+    virtual int GetColumnCount() const = 0;
+    virtual void ClearRow(int row) = 0;
+    virtual void SetText(int row, const int column, std::string& str) = 0;
+
+    virtual wchar_t* GetRow(size_t) { throw std::runtime_error("not implemented");  };
+    virtual size_t           GetRowWidth() const { throw std::runtime_error("not implemented"); };
+    virtual const size_t* GetColumnWidths() const { throw std::runtime_error("not implemented"); };
+    virtual void             SetEndRow(size_t ) { throw std::runtime_error("not implemented"); };
 
     size_t
     GetColumnWidth(
@@ -59,18 +63,18 @@ public:
 /////////////////////////////////////////////////////////////////////////////
 
 template<
-    size_t RowCount,
-    size_t CharsPerRow,
+    int RowCount,
+    int CharsPerRow,
     size_t MaxColumnCount>
 class TextTableData_t
 {
 private:
 
-    typedef TextTableData_t<RowCount, CharsPerRow, MaxColumnCount> This_t;
+    using type = TextTableData_t<RowCount, CharsPerRow, MaxColumnCount>;
 
 public:
 
-    typedef wchar_t Row_t[CharsPerRow];
+    using Row_t = wchar_t[CharsPerRow];
     static const wchar_t Marker     = L'\1';
 
 private:
@@ -85,28 +89,27 @@ public:
     // allowed, for threadqueue_t, should init everything to zero
     TextTableData_t()
     {
-        SecureZeroMemory(this, sizeof(This_t));
+        SecureZeroMemory(this, sizeof(type));
     }
 
     TextTableData_t(
         const size_t* pColumnWidths,
               size_t  ColumnCount)
-    :
+        :
         m_ColumnCount(ColumnCount)
     {
         SetColumnWidths(pColumnWidths, ColumnCount);
     }
 
-    TextTableData_t(const This_t& rhs)
+    TextTableData_t(const type& rhs)
     {
         *this = rhs;
     }
 
-    This_t& operator=(const This_t& rhs)
+    auto& operator=(const type& rhs)
     {
-        if (this != &rhs)
-        {
-            memcpy(this, &rhs, sizeof(This_t));
+        if (this != &rhs) {
+            memcpy(this, &rhs, sizeof(type));
         }
         return *this;
     }
@@ -122,7 +125,7 @@ public:
         return 0 == GetEndRow();
     }
 
-    size_t GetRowCount() const    { return RowCount; }
+    int GetRowCount() const    { return RowCount; }
     size_t GetCharsPerRow() const { return CharsPerRow; }
 
 #if 1
@@ -130,14 +133,14 @@ public:
     GetRow(
         size_t Row) const
     {
-        return const_cast<This_t*>(this)->GetBuffer(Row);
+        return const_cast<type*>(this)->GetBuffer(Row);
     }
 #else
     const Row_t&
     GetRow(
         size_t Row) const
     {
-        return reinterpret_cast<Row_t&>(*const_cast<This_t*>(this)->GetBuffer(Row));
+        return reinterpret_cast<Row_t&>(*const_cast<type*>(this)->GetBuffer(Row));
     }
 #endif
 
@@ -231,7 +234,7 @@ public:
     bool
     CompareRow(
         size_t        iMyRow,
-        const This_t& text,
+        const type& text,
         size_t        iTheRow) const
     {
         //
@@ -317,6 +320,7 @@ public:
     }
 };
 
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // TextTable_t
@@ -327,14 +331,13 @@ template<
     size_t RowCount,
     size_t CharsPerRow,
     size_t ColumnCount>
-class TextTable_t :
+class TextTable1_t :
     public TextTable_i
 {
 public:
 
-    typedef TextTable_t<RowCount, CharsPerRow, ColumnCount> This_t;
-
-    typedef TextTableData_t<RowCount, CharsPerRow, ColumnCount> Data_t;
+    using type = TextTable1_t<RowCount, CharsPerRow, ColumnCount>;
+    using Data_t = TextTableData_t<RowCount, CharsPerRow, ColumnCount>;
 
 private:
 
@@ -342,14 +345,14 @@ private:
 
 public:
 
-    TextTable_t(
+    TextTable1_t(
         const size_t* pColumnWidths,
         size_t        maxColumns)
         :
         m_Data(pColumnWidths, maxColumns)
     { }
 
-    This_t& operator=(const Data_t& data)
+    type& operator=(const Data_t& data)
     {
         m_Data = data;
 		return *this;
@@ -359,10 +362,13 @@ public:
     // TextTable_i virtual:
     //
 
-    size_t           GetRowCount() const override { return m_Data.GetRowCount(); }
+    void ClearRow(int ) override { throw std::runtime_error("not implemented"); }
+    void SetText(int , int , std::string& )override { throw std::runtime_error("not implemented"); }
+
+    int           GetRowCount() const override { return m_Data.GetRowCount(); }
     wchar_t*         GetRow(size_t Row) override { return m_Data.GetBuffer(Row); }
     size_t           GetRowWidth() const override { return m_Data.GetCharsPerRow(); }
-    size_t           GetColumnCount() const override { return ColumnCount; }
+    int           GetColumnCount() const override { return ColumnCount; }
     const size_t*    GetColumnWidths() const override { return m_Data.GetColumnWidths(); }
     void             SetEndRow(size_t row) override
     {
@@ -410,7 +416,7 @@ public:
     bool
     CompareRow(
         size_t        iMyRow,
-        const This_t& text,
+        const type& text,
         size_t        iTheRow) const
     {
         return m_Data.CompareRow(iMyRow, text.GetData(), iTheRow);
@@ -498,9 +504,9 @@ protected:
 private:
 
     // Explicitly disabled:
-    TextTable_t();
-    TextTable_t(const TextTable_t&);
-    TextTable_t& operator=(const TextTable_t&);
+    TextTable1_t();
+    TextTable1_t(const TextTable1_t&);
+    TextTable1_t& operator=(const TextTable1_t&);
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -515,7 +521,7 @@ class TextTable2 :
 {
 public:
 
-    typedef TextTable2<Data_t> This_t;
+    using type = TextTable2<Data_t>;
 
 private:
 
@@ -532,7 +538,7 @@ public:
     }
 
 /*
-    This_t&
+    type&
     operator=(const Data_t& Data)
     {
         m_Data = Data;
@@ -543,18 +549,21 @@ public:
     // TextTable_i virtual:
     //
 
-    size_t         GetRowCount() const override { return m_Data.GetRowCount(); }
+    void ClearRow(int) override { throw std::runtime_error("not implemented"); }
+    void SetText(int, int, std::string&)override { throw std::runtime_error("not implemented"); }
+
+    int         GetRowCount() const override { return m_Data.GetRowCount(); }
     wchar_t*       GetRow(size_t Row) override { return m_Data.GetBuffer(Row); }
     size_t         GetRowWidth() const override { return m_Data.GetCharsPerRow(); }
-    size_t         GetColumnCount() const override { return m_Data.GetColumnCount(); }
+    int         GetColumnCount() const override { return m_Data.GetColumnCount(); }
     const size_t*  GetColumnWidths() const override { return m_Data.GetColumnWidths(); }
     void           SetEndRow(size_t row) override
     {
         m_Data.SetEndRow(row);
 #if 1
-        if (row < GetRowCount())
+        if ((int)row < GetRowCount())
             MarkRow(row, L"END");
-        for (++row; row < GetRowCount(); ++row)
+        for (++row; (int)row < GetRowCount(); ++row)
             MarkRow(row, L"UNUSED");
 #endif
     }
@@ -594,7 +603,7 @@ public:
     bool
     CompareRow(
         size_t        iMyRow,
-        const This_t& text,
+        const type& text,
         size_t        iTheRow) const
     {
         return m_Data.CompareRow(iMyRow, text, iTheRow);
@@ -683,6 +692,150 @@ private:
     TextTable2();
     TextTable2(const TextTable2&);
     TextTable2& operator=(const TextTable2&);
+};
+
+
+/////////////////////////////////////////////////////////////////////////////
+
+template<
+    int RowCount,
+    int CharsPerRow,
+    int ColumnCount>
+class NewTextTableData_t
+{
+    //    using type = NewTextTableData_t<RowCount, CharsPerRow, ColumnCount>;
+public:
+
+    /////////////////////////////////////////////////////////////////////////////
+    // Column_t
+    struct Column_t final
+    {
+        std::span<char> view;
+
+        //auto len = std::min<int>(text.size(), str.length());
+        void SetText(std::string& str) { memcpy_s(view.data(), view.size(), str.c_str(), str.size()); }
+        const std::string GetText() const { return std::string{ view.data(), view.size() }; }
+    };
+
+    /////////////////////////////////////////////////////////////////////////////
+    // Row_t
+    template<int CharsPerRow, int ColumnCount>
+    struct RowData_t final
+    {
+    protected:
+        friend class NewTextTableData_t;
+
+        void
+            init(std::span<const int> charsPerColumn) {
+            auto row = span{ text };
+            auto start = 0;
+            for (size_t i = 0; i < charsPerColumn.size(); ++i) {
+                auto len = charsPerColumn[i];
+                columns[i].view = row.subspan(start, len);
+                start += len;
+            }
+        }
+
+    public:
+
+        void Clear() { SecureZeroMemory(text.data(), text.size()); }
+
+        std::array<char, CharsPerRow>     text;
+        std::array<Column_t, ColumnCount> columns;
+    };
+    using Row_t = RowData_t<CharsPerRow, ColumnCount>;
+ 
+    /////////////////////////////////////////////////////////////////////////////
+    // NewTextTableData_t
+
+    NewTextTableData_t(std::span<const int> charsPerColumn)
+    {
+        for (auto& row : rows_) {
+            row.init(charsPerColumn);
+        }
+    }
+
+    int GetRowCount() const { return RowCount; }
+    int GetColumnCount() const { return ColumnCount; }
+    Row_t& GetRow(int row) /*const*/ { return rows_[row]; }
+    const Row_t& GetRow(int row) const { return rows_[row]; }
+
+    void fill() {
+        stringstream ss;
+        for (auto i = 0; i < 10; ++i) {
+            for (auto j = 0; j < 10; ++j) {
+                ss << std::format("{}", j);
+            }
+        }
+        auto len = std::min<int>(CharsPerRow, ss.str().length());
+        memcpy_s(rows_[0].text.data(), CharsPerRow, ss.str().c_str(), len);
+    }
+
+    void show() {
+        for (auto col = 0; col < ColumnCount; ++col) {
+            auto& column = rows_[0].columns[col];
+            //string s(column.data(), column.size());
+            auto s{ column.GetText() };
+            LogInfo(L"Col %d: '%S' (%d)", col, s.c_str(), s.length());
+        }
+    }
+
+    void
+    Dump(
+        const wchar_t* header) const
+    {
+        LogInfo(L"------%s------", header);
+        for (auto row : rows_) {
+            LogInfo(L"Name: %S", row.columns[1].GetText().c_str());
+        }
+        LogInfo(L"-----------------------");
+    }
+
+private:
+    std::array<Row_t, RowCount> rows_;
+};
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// TextTable3_t
+//
+/////////////////////////////////////////////////////////////////////////////
+
+template<class Data_t>
+class TextTable3 :
+    public TextTable_i
+{
+public:
+    //using type = TextTable3<Data_t>;
+
+    //explicit
+    TextTable3(
+        std::span<const int> charsPerColumn)
+        :
+        data_(charsPerColumn)
+    { }
+
+    TextTable3() = delete;
+    TextTable3(const TextTable3&) = delete;
+
+    //
+    // TextTable_i virtual:
+    //
+
+    int GetRowCount() const override { return data_.GetRowCount(); }
+    int GetColumnCount() const override { return data_.GetColumnCount(); }
+    void ClearRow(int row) override { data_.GetRow(row).Clear(); }
+    void SetText(int row, int column, std::string& str) override
+    {
+        data_.GetRow(row).columns[column].SetText(str);
+    }
+
+    // Additional public methods:
+
+    const Data_t& GetData() const { return data_; }
+
+private:
+    Data_t data_;
 };
 
 /////////////////////////////////////////////////////////////////////////////

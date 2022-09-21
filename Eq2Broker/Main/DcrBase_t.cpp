@@ -16,6 +16,8 @@
 #include "Macros.h"
 #include "BrokerUi.h"
 
+#include "TextTable_t.h"
+
 namespace Broker
 {
 
@@ -62,19 +64,36 @@ DcrBase_t::
 
 ////////////////////////////////////////////////////////////////////////////
 
+void
+test() {
+    constexpr auto RowCount = 1;
+    constexpr auto CharsPerRow = 100;
+    constexpr auto ColumnCount = 5;
+    constexpr int CharsPerColumn[] = { 5, 55, 10, 5, 25 };
+
+    using td_t = NewTextTableData_t<RowCount, CharsPerRow, ColumnCount>;
+    
+    td_t td{ std::span{ CharsPerColumn } };
+
+    td.fill();
+    td.show();
+}
+
 bool
 DcrBase_t::
 Initialize()
 {
+    test();
+
 #if 0
     if (!InitAllCharsets())
     {
         LogError(L"DcrBase_t::InitAllCharsets() failed.");
         return false;
     }
-#endif
     AddCharset(GetCharset());
-    return true;
+#endif
+    return DcrTable_t::Initialize();
 }
 
 /////////////////////////////////////////////////////////////////////////////

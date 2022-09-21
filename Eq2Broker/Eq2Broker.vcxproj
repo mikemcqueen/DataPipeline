@@ -77,13 +77,14 @@
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ddraw.lib;dxguid.lib;odbc32.lib;comctl32.lib;tesseract52.lib;leptonica-1.82.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ddraw.lib;dxguid.lib;odbc32.lib;comctl32.lib;tesseract52.lib;leptonica-1.82.0.lib;jpeg.lib;tiff.lib;libcurl.lib;libpng16.lib;bz2.lib;lzma.lib;zstd.lib;iconv.lib;libcrypto.lib;libssl.lib;lz4.lib;openjp2.lib;turbojpeg.lib;webp.lib;webpdemux.lib;webpdecoder.lib;zlib.lib;archive.lib;gif.lib%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalLibraryDirectories>..\boost_1_80_0\stage\lib\;g:\vcpkg\installed\x86-windows-static\lib</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>libcmt.lib</IgnoreSpecificDefaultLibraries>
     </Link>
     <PostBuildEvent>
       <Message>copy fake exe</Message>
@@ -103,7 +104,7 @@
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ddraw.lib;dxguid.lib;odbc32.lib;comctl32.lib;tesseract52.lib;leptonica-1.82.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ddraw.lib;dxguid.lib;odbc32.lib;comctl32.lib;tesseract52.lib;leptonica-1.82.0.lib;jpeg.lib;tiff.lib;libcurl.lib;libpng16.lib;bz2.lib;lzma.lib;zstd.lib;iconv.lib;libcrypto.lib;libssl.lib;lz4.lib;openjp2.lib;turbojpeg.lib;webp.lib;webpdemux.lib;webpdecoder.lib;zlib.lib;archive.lib;gif.lib%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -112,6 +113,8 @@
       <DataExecutionPrevention />
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalLibraryDirectories>..\boost_1_80_0\stage\lib\;g:\vcpkg\installed\x86-windows-static\lib</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

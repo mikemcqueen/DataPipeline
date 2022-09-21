@@ -22,14 +22,24 @@ namespace Buy
 namespace Translate
 {
 
+// TODO:
+// columndata offset/width pairs; column widths is sum if specified
+// 0:  2,42
+// 1:  11,560
+// 2:   ....
+// Take a look at ColumnData_t in ScreenTable_t.  It seems we could 
+// combine PixelColumnWidths, along with "gap" columns (widths) and
+// "text" column (rects) perhaps as a union
+
 static RECT
 TextRects[Table::ColumnCount] = {
-    // Quantity text is bottom "QuantityTextHeight" lines of first column
-    { 0, Broker::Table::RowHeight - Broker::Table::QuantityTextHeight,
-      Table::PixelColumnWidths[0], Broker::Table::RowHeight },
+    { 2, 26, // first gap + quantitytexttop 
+      2 + 44, 26 + 13 },  // first gap + first column data width , quantitytexttop + quantitytextheight
+    { 2 + 44 + 7, 0,  // first gap + first column data width + second gap 
+      Table::PixelColumnWidths[1], Broker::Table::RowHeight },
     { 0 },
-    { 0 },
-    { 0 },
+    { 767, 0,
+      767 + 23, Broker::Table::RowHeight },
     { 0 }
 };
 
@@ -38,9 +48,6 @@ constexpr TableParams_t TableParams = {
     Broker::Table::CharHeight,
     Broker::Table::RowGapSize,
     Table::ColumnCount
-    //,
-    //std::vector{ begin(Table::PixelColumnWidths), end(Table::PixelColumnWidths) },
-    //std::vector{ begin(TextRects), end(TextRects) }
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -63,8 +70,7 @@ Handler_t(
         std::span{ Table::PixelColumnWidths },
         std::span{ TextRects }),
     m_TextTable(
-        Table::CharColumnWidths,
-        Table::ColumnCount),
+        std::span{ Table::CharColumnWidths }),
     m_DcrSearchEdit(
         windowManager.GetWindow(),
         Widget::Id::SearchEdit,
@@ -114,8 +120,8 @@ PostData(
     }
     else
     {
-        m_TextTable.Dump(L"DcrBrokerBuy::PostData()");
-        LogInfo(L"SeletecedRow(%d)", m_DcrTable.GetSelectedRow());
+        m_TextTable.GetData().Dump(L"DcrBrokerBuy::PostData()");
+        //LogInfo(L"SeletecedRow(%d)", m_DcrTable.GetSelectedRow());
         Data_t* pData = new (pBuffer)
             Data_t(
                 GetClass().c_str(),

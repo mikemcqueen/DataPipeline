@@ -88,14 +88,6 @@ class Handler_t :
 {
     friend struct Translate::Data_t; 
 
-public:
-
-    //static const Ui::WindowId_t         DcrWindowId      = Broker::Window::Id::BrokerBuy_Main;
-
-    //static const ScreenTable_t          s_ScreenTable;
-
-private:
-
     Window::ManagerBase_t& m_windowManager;
 
     TranslatePolicy_t m_TranslatePolicy;

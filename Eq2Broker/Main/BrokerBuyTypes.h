@@ -36,15 +36,15 @@ namespace Buy
         constexpr auto LevelColumn          = 3;
         constexpr auto SellerNameColumn     = 4;
         constexpr auto ColumnCount          = 5;
-        static const size_t CharColumnWidths[ColumnCount] = { 10, 100, 30, 5, 100 };
+        constexpr int CharColumnWidths[ColumnCount] = { 10, 100, 30, 5, 100 };
 
-        // ScreenTable_t data:
-        static const int PixelColumnWidths[ColumnCount] = { 50, 560, 145, 50, 0 };
+        // ScreenTable_t data: TODO: all zero width last entry
+        constexpr int PixelColumnWidths[ColumnCount] = { 50, 560, 145, 50, 50 };
         // RowHeightPix = 40;
     }
 
     class Text_t;
-    typedef TextTable2<Text_t> TextTable_t;
+    using TextTable_t = TextTable3<Text_t>;
 
     namespace Translate
     {
@@ -61,10 +61,8 @@ namespace Buy
     class Window_t;
     namespace Window
     {
-        typedef Ui::Window::Manager_t<
-                    Window_t,
-                    Translate::Handler_t,
-                    Interpret::Handler_t> ManagerBase_t;
+        using ManagerBase_t = Ui::Window::
+            Manager_t<Window_t, Translate::Handler_t, Interpret::Handler_t> ;
         class Manager_t;
     } // Window
 

@@ -155,8 +155,12 @@ public:
         const Charset_t* pCharSet) const;
 
     bool
-    useTesseract() {
+    UsingTesseract() {
         return useTesseract_;
+    }
+
+    auto Tesseract() const {
+        return tesseract_.get();
     }
 
     static

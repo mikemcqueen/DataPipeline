@@ -201,7 +201,7 @@ Translate(
         {
             LogError(L"TranslateMany_t::Translate() failed on index(%d) of size(%d)",
                      Index, m_DcrVector.size());
-            return false;
+            // TODO? TEMP? return false;
         }
     }
     return true;

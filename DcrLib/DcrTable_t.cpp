@@ -54,8 +54,7 @@ InitColumnRects(
     const ScreenTable_t& screenTable) const
 {
     std::vector<RECT> columnRects(screenTable.GetColumnCount());
-    for (auto x =0, column = 0; column < screenTable.GetColumnCount(); ++column)
-    {
+    for (auto x = 0, column = 0; column < screenTable.GetColumnCount(); ++column) {
         auto width = screenTable.GetColumnWidth(column);
         if (0 == width) {
             throw std::invalid_argument("DcrTable_t::ReadTable() Zero pixel column width not allowed");
@@ -63,7 +62,7 @@ InitColumnRects(
         auto& rc = screenTable.GetTextRect(column);
         if (!::IsRectEmpty(&rc)) {
             columnRects[column] = rc; // copy
-            ::OffsetRect(&columnRects[column], x, 0); // offset copy
+            //::OffsetRect(&columnRects[column], x, 0); // offset copy
         } else {
             ::SetRect(&columnRects[column], x, 0, x + width, screenTable.GetRowHeight());
         }
@@ -107,7 +106,7 @@ ReadTable(
     for (auto& rc : copyColumnRects) {
         ::OffsetRect(&rc, rcTable.left, rcTable.top);
     }
-    if (!useTesseract()) {
+    if (!UsingTesseract()) {
         return DCR::ReadTable(
             pSurface,
             rcTable,
@@ -140,32 +139,41 @@ TesseractReadTable(
     const int rowGapSize,
     const std::vector<RECT>& columnRects,
     const std::vector<std::unique_ptr<CSurface>>& columnSurfaces,
-    TextTable_i* pText) const
+    TextTable_i* pTextTable) const
 {
+    columnSurfaces;
+
+    static auto firstTime = true;
+    auto writeBmps = true;
+
     RECT rcRow{ rcTable }; // copy
     rcRow.bottom = rcRow.top + rowHeight;
 
+    DDSURFACEDESC2 ddsd;
+    HRESULT hr = pSurface->Lock(&ddsd);
+    if (FAILED(hr)) {
+        LogError(L"Can't lock surface");
+        return 0;
+    }
+
+    // TOOD: auto-unlock 
+
     auto row = 0;
-    for (; row < (int)pText->GetRowCount(); ++row)
+    for (auto yOffset = 0; row < pTextTable->GetRowCount(); ++row)
     {
-        if (rcRow.bottom > rcTable.bottom)
-        {
+        if (rcRow.bottom > rcTable.bottom) {
             LogWarning(L"bottom > rcTable.bottom: (rc.top=%d, rc.bottom=%d, pRect->bottom=%d, Row=%d",
                 rcRow.top, rcRow.bottom, rcTable.bottom, row);
             break;
         }
-#if 0
-        // TODO: intersectrect.  or bounds checking.
-        if (g_bWriteBmps) {
-            WCHAR szFile[MAX_PATH];
-            wsprintf(szFile, L"diag\\dcr_row_%d.bmp", row);
-            pSurface->WriteBMP(szFile, rc);
+        if (writeBmps && firstTime) {
+            pSurface->WriteBMP(std::format(L"diag\\dcr_row_{}.bmp", row).c_str(), rcRow);
         }
-#endif
-        wchar_t* pszRow = pText->GetRow(row);
+
+#if 0   
         // TODO: This "verification" function should be virtual, dependent
         //       on the specific source window we took the screenshot of.
-#if 0
+
         bool b = false;
         if (b && !VerifyBlankRows(pSurface, pColumnRects[0], MaxCharHeight, bBottom))
         {
@@ -180,17 +188,47 @@ TesseractReadTable(
             continue;
         }
 #endif
-        pszRow;
-        pSurface;
+        pTextTable->ClearRow(row);
+        stringstream text;
         for (size_t column = 0; column < columnRects.size(); ++column) {
             auto& rc = columnRects[column];
-            columnSurfaces[column]->Blt(0, 0, pSurface, &rc);
-            columnSurfaces[column]->WriteBMP(std::format(L"diag\\table_row_{}_col_{}.bmp",
-                row, column).c_str(), rc);
+
+            if (writeBmps && firstTime) {
+                RECT rcBmp = rc;
+                ::OffsetRect(&rcBmp, 0, yOffset);
+                pSurface->WriteBMP(std::format(L"diag\\table_row_{}_col_{}.bmp",
+                    row, column).c_str(), rcBmp);
+            }
+
+            Tesseract()->SetImage((std::uint8_t*)GetBitsAt(&ddsd, rc.left, rc.top + yOffset),
+                RECTWIDTH(rc), RECTHEIGHT(rc),
+                4, (int)ddsd.lPitch);
+            std::unique_ptr<char> pResult(Tesseract()->GetUTF8Text());
+
+            auto columnText = pResult.get();
+            if (columnText) {
+                auto ch = columnText[0];
+                if (ch) { // length > 0
+                    std::string str{ columnText };
+                    str.erase(str.end() - 1);
+                    pTextTable->SetText(row, column, str);
+
+                    text << str <<  " ";
+                    //text.seekp(-1, std::ios_base::end); // remove newline
+                    //text << " "; // add separator
+                } else text << "[empty] ";
+                //LogInfo(L"result: %S (%d)", pResult, strlen(pResult));
+            }
         }
+        const string str{ text.str() };
+        LogInfo(L"Text row %d: %S (%d)", row, str.c_str(), str.length());
+ 
         ::OffsetRect(&rcRow, 0, rowHeight + rowGapSize);
+        yOffset += rowHeight + rowGapSize;
     }
-    pText->SetEndRow(row);
+ // TODO   pTextTable->SetEndRow(row);
+    pSurface->Unlock(nullptr);
+    firstTime = false;
     return row;
 }
 

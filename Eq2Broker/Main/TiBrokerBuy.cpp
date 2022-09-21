@@ -93,13 +93,14 @@ Handler_t::
 MessageHandler(
     const DP::Message::Data_t* pMessage)
 {
-    if (Message::Id::Buy != pMessage->Id)
-    {
+    if (Message::Id::Buy != pMessage->Id) {
         return S_FALSE;
     }
+
+    auto& message = static_cast<const Translate::Data_t&>(*pMessage);
+    message.tableText.Dump(L"TiBrokerBuy");
+
 #if 0
-    const Translate::Data_t&
-        Message = static_cast<const Translate::Data_t&>(*pMessage);
     DP::Transaction::Data_t* pData = GetTransactionManager().Acquire();
     DP::TransactionManager_t::AutoRelease_t ar(pData);
     if (nullptr != pData)

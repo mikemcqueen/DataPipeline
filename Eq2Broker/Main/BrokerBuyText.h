@@ -21,7 +21,7 @@ namespace Broker
 namespace Buy
 {
 
-typedef TextTableData_t<Table::RowCount, Table::CharsPerRow, Table::ColumnCount> TextBase_t;
+using TextBase_t = NewTextTableData_t<Table::RowCount, Table::CharsPerRow, Table::ColumnCount>;
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -40,12 +40,12 @@ public:
     { }
 
     Text_t(
-        const size_t* pColumnWidths,
-              size_t  ColumnCount)
+        span<const int> charsPerColumn)
         :
-        TextBase_t(pColumnWidths, ColumnCount)
+        TextBase_t(charsPerColumn)
     { }
 
+#if 0
     long
     GetQuantity(
         size_t Row) const
@@ -143,6 +143,7 @@ public:
         }
         return 0;
     }
+#endif
 };
 
 ///////////////////////////////////////////////////////////////////////////////
