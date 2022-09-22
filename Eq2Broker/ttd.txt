@@ -6,12 +6,6 @@ figure out the Class[] hack in DP::Message.
 
 g_pDisplay
 
-SSTask::Acquire::Data_t has a virtual destructor to release pool item. destructor i understand.  why does it need to be virtual?
-   because if it's not virtual it won't be called.  only the top-level derived class will be called.  in the case of SSWindow::Data_t
-   for Eq2Broker this is a real issue.
-   - when do i need a virtual destructor vs. unique_ptr (or release_ptr)
-   - TODO: typeid is not working as I expect.  it's mimicking the declared (base ptr) class name, not allocated class type
-
 static charsets in DcrTrades_t.
 overall, clean up Dcr* of charset cruft
 
@@ -25,15 +19,14 @@ review some of the enable_if/concepts ideas for restricting MakeId to specific t
 BrokerFrame *contains* a tab.  Tab is not a window type.
 TableWindow does not inherit from TabWidnow.  Tab is not a window type.
 
-tesseract.initialize() (DCR.initialize?)
-tesseract.SetImage
-tesseract.getUtf8Text()
+tesseract.end()
+pSurface AutoUnlock_t (DcrTable_t)
+cleanup TextTable_t.h
+
 
 c++20: * == done(ish)
 	range_for (as_const? or just const auto) whereever const_iterator is defined. read up on as_const vs. const auto
 	public + delete instead of private copy/assignment/move
-	* (done-ish) override instead of virtual for all derived virtual functiond decls
-	* nullptr
 	enum class
 	constexpr
 		static const -> constexpr

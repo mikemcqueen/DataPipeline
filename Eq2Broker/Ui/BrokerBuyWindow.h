@@ -34,7 +34,7 @@ public:
     bool
     GetWidgetRect(
         Ui::WidgetId_t widgetId,
-        Rect_t&        rect) const override;
+        Rect_t* pRect) const override;
 
     void
     SetLayout(Frame::Layout_t layout);

@@ -19,6 +19,7 @@
 #include "DpHandler_t.h"
 #include "SsWindow.h"
 #include "UiWindowId.h"
+#include "Log.h"
 //#include "Dcr.h"
 
 class DCR;
@@ -34,11 +35,44 @@ namespace Translate
 
 ////////////////////////////////////////////////////////////////////////////////
 
+class HandlerBase_t :
+    public DP::Handler_t
+{
+public:
+
+    HandlerBase_t() = default;
+
+    // 
+    // HandlerBase_t virtual:
+    //
+
+    virtual
+    bool
+    PreTranslateSurface(
+        CSurface* /*pSurface*/,
+        Ui::WindowId_t /*windowId*/,
+        int /*dcrId*/,
+        Rect_t* /*pRect*/) const
+    {
+        throw runtime_error("DcrWindow::Translate::Handler must override PreTranslateSurface");
+    }
+
+    virtual
+    void
+    PostData(
+        DWORD /*Unused*/) const
+    {
+        throw runtime_error("DcrWindow::Translate::Handler must override PreTranslateSurface");
+    }
+};
+
+////////////////////////////////////////////////////////////////////////////////
+
 template<
     class TranslatePolicy_t,
     class ValidatePolicy_t> //  = Policy::NoValidate_t<int, int>>
 class Handler_t :
-    public DP::Handler_t
+    public HandlerBase_t
 {
 private:
 
@@ -97,15 +131,6 @@ public:
         return S_FALSE;
     }
 
-    // 
-    // DcrWindow virtual:
-    //
-
-    virtual
-    void
-    PostData(
-        DWORD /*Unused*/) = 0;
-
 private:
 
     bool
@@ -134,7 +159,7 @@ private:
 
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace Policy
+namespace Policy // TODO Strategy
 {
 
 class OneTable_t
@@ -155,8 +180,8 @@ public:
 
     explicit
     OneTable_t(
-    Ui::WindowId_t TopWindowId,
-    Ui::WindowId_t DcrWindowId,
+        Ui::WindowId_t TopWindowId,
+        Ui::WindowId_t DcrWindowId,
         DCR&       Dcr);
 //,        RECT*      pRect = nullptr);
 
@@ -165,9 +190,11 @@ public:
     bool
     Initialize();
 
+    /*
     bool
     PreTranslate(
         const AcquireData_t& Data);
+        */
 
     bool
     Translate(
@@ -191,13 +218,14 @@ public:
 private:
 
 //    const Ui::Window::Id_t m_DcrWindowId;
-
+    const Translate::HandlerBase_t& handler_;
     DcrVector_t& m_DcrVector;
 
 public:
 
     explicit
     TranslateMany_t(
+        const Translate::HandlerBase_t& handler,
         DcrVector_t& DcrVector);
 
     ~TranslateMany_t();
@@ -205,9 +233,11 @@ public:
     bool
     Initialize();
 
+    /*
     bool
     PreTranslate(
         const AcquireData_t& Data);
+        */
 
     bool
     Translate(
@@ -221,93 +251,6 @@ private:
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-
-#if PENDING
-template<class GetDcrWindowType_t>
-class OneDynamicTablePolicy_t :
-    public OneTablePolicy_t
-{
-
-    const GetDcrWindowType_t* m_pGetDcrWindowType;
-
-public:
-
-    explicit
-    OneDynamicTablePolicy_t(
-              Lon::Window::Type_e TopWindowType,
-              DcrTrades_t&        DcrTrades,
-        const GetDcrWindowType_t* pGetDcrWindowType,
-              RECT*               pRect = nullptr)
-    :
-        OneTablePolicy_t(
-            TopWindowType,
-            DcrTrades,
-            Lon::Window::Unknown,
-            pRect),
-        m_pGetDcrWindowType(pGetDcrWindowType)
-    { }
-
-protected:
-
-    virtual
-    Lon::Window::Type_e
-    GetDcrWindowType() const
-    {
-        return m_pGetDcrWindowType->GetDcrWindowType();
-    }
-
-private:
-    
-    OneDynamicTablePolicy_t();
-    OneDynamicTablePolicy_t(const OneDynamicTablePolicy_t&);
-    OneDynamicTablePolicy_t& operator=(const OneDynamicTablePolicy_t&);
-};
-
-////////////////////////////////////////////////////////////////////////////////
-
-class TwoTablePolicy_t
-{
-
-private:
-
-    DcrTrades_t& m_DcrFirst;
-    DcrTrades_t& m_DcrSecond;
-
-    const Lon::Window::Type_e m_TopWindowType;
-    const Lon::Window::Type_e m_DcrFirstWindowType;
-    const Lon::Window::Type_e m_DcrSecondWindowType;
-
-public:
-
-    explicit
-    TwoTablePolicy_t(
-        Lon::Window::Type_e TopWindowType,
-        DcrTrades_t&   DcrFirst,
-        Lon::Window::Type_e DcrFirstWindowType,
-        DcrTrades_t&   DcrSecond,
-        Lon::Window::Type_e DcrSecondWindowType);
-
-    bool
-    Initialize()
-    {
-        return m_DcrFirst.Initialize() && m_DcrSecond.Initialize();
-    }
-
-    bool
-    PreTranslate(
-        const SsTrades_t::ScreenShotData_t* pData);
-
-    bool
-    Translate(
-        const SsTrades_t::ScreenShotData_t* pData);
-
-private:
-
-    TwoTablePolicy_t();
-    TwoTablePolicy_t(const TwoTablePolicy_t&);
-    TwoTablePolicy_t& operator=(const TwoTablePolicy_t&);
-};
-#endif
 
 class NoValidate_t
 {
@@ -333,6 +276,7 @@ public:
 };
 
 ////////////////////////////////////////////////////////////////////////////////
+
 #if PENDING
 class ValidateWindowPolicy_t
 {

@@ -182,6 +182,7 @@ namespace Broker
                     SearchEdit, 
                     FindButton,
                     SearchDropdown,
+                    Table,
                     Last
                 };
             }

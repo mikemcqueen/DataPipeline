@@ -17,6 +17,7 @@
 #include "BrokerId.h"
 #include "Log.h"
 #include "OtherWindows.h"
+#include "CommonTypes.h"
 
 namespace Broker
 {

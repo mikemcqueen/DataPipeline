@@ -494,20 +494,17 @@ SendChars(
 {
     LogInfo(L"SsWindow::SendChars(%ls)", Data.Chars);
     HWND hWnd = ValidateWindow(Data.WindowId);
-    if (nullptr == hWnd)
-    {
+    if (nullptr == hWnd) {
         return;
     }
     const Ui::WidgetId_t WidgetId = Data.Destination.WidgetId;
-    if (Ui::Widget::Id::Unknown != WidgetId)
-    {
-        Rect_t Rect;
-        if (!m_Window.GetWindow(Data.WindowId).GetWidgetRect(WidgetId, Rect))
-        {
+    if (Ui::Widget::Id::Unknown != WidgetId) {
+        Rect_t rect;
+        if (!m_Window.GetWindow(Data.WindowId).GetWidgetRect(WidgetId, &rect)) {
             LogError(L"SsWindow::SendChars(): GetWidgetRect(%d) failed", WidgetId);
             return;
         }
-        Ui::Input_t::Click(hWnd, Rect.Center());
+        Ui::Input_t::Click(hWnd, rect.Center());
     }
     Ui::Input_t keys;
     keys.SendChars(Data.Chars);

@@ -17,11 +17,13 @@
 
 DcrTable_t::
 DcrTable_t(
+    int id,
     TextTable_i* pTextTable,
     const TableParams_t& tableParams,
     std::span<const int> columnWidths,
     std::span<const RECT> textRects)
     :
+    DCR(id),
     pTextTable_(pTextTable),
     screenTable_(tableParams, columnWidths, textRects)
 { }	
@@ -38,11 +40,13 @@ Initialize()
         LogError(L"Empty columnRects");
         return false;
     }
+/*
     columnSurfaces_ = InitColumnSurfaces(columnRects_);
     if (columnSurfaces_.size() != columnRects_.size()) {
         LogError(L"Column surface count mismatch");
         return false;
     }
+*/
     return true;
 }
 
@@ -155,7 +159,6 @@ TesseractReadTable(
         LogError(L"Can't lock surface");
         return 0;
     }
-
     // TOOD: auto-unlock 
 
     auto row = 0;
@@ -169,7 +172,6 @@ TesseractReadTable(
         if (writeBmps && firstTime) {
             pSurface->WriteBMP(std::format(L"diag\\dcr_row_{}.bmp", row).c_str(), rcRow);
         }
-
 #if 0   
         // TODO: This "verification" function should be virtual, dependent
         //       on the specific source window we took the screenshot of.
@@ -188,8 +190,8 @@ TesseractReadTable(
             continue;
         }
 #endif
-        pTextTable->ClearRow(row);
         stringstream text;
+        pTextTable->ClearRow(row);
         for (size_t column = 0; column < columnRects.size(); ++column) {
             auto& rc = columnRects[column];
 
@@ -212,12 +214,8 @@ TesseractReadTable(
                     std::string str{ columnText };
                     str.erase(str.end() - 1);
                     pTextTable->SetText(row, column, str);
-
                     text << str <<  " ";
-                    //text.seekp(-1, std::ios_base::end); // remove newline
-                    //text << " "; // add separator
                 } else text << "[empty] ";
-                //LogInfo(L"result: %S (%d)", pResult, strlen(pResult));
             }
         }
         const string str{ text.str() };
@@ -238,7 +236,7 @@ bool
 DcrTable_t::
 TranslateSurface(
     CSurface* pSurface,
-    Rect_t&   rcSurface)
+    const Rect_t& rcSurface)
 {
     LogInfo(L"DcrTable_t::TranslateSurface");
     auto rowCount = ReadTable(pSurface, rcSurface, pTextTable_, nullptr);
@@ -246,10 +244,10 @@ TranslateSurface(
         LogInfo(L"ReadTable(): Table is empty.");
     }
 #if 1
-    static bool bFirst = true;
-    if (bFirst ) {
+    static bool firstTime = true;
+    if (firstTime ) {
         pSurface->WriteBMP(L"Diag\\DcrTable_t.bmp");
-        bFirst = false;
+        firstTime = false;
     }
 #endif
     return true;
@@ -287,4 +285,3 @@ GetRect(
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
-

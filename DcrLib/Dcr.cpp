@@ -17,19 +17,21 @@
 #undef DCR
 
 bool g_bWriteBmps = true;
+bool g_bTableFixColor = true;
 
 /*static*/
 std::unique_ptr<tesseract::TessBaseAPI> DCR::tesseract_;
 
 /////////////////////////////////////////////////////////////////////////////
 
-DCR::DCR() : DCR(true)
+DCR::DCR(int id) : DCR(id, true)
 { }
 
 /////////////////////////////////////////////////////////////////////////////
 
 DCR::
-DCR(bool useTesseract) :
+DCR(int id, bool useTesseract) :
+    id_(id),
     useTesseract_(useTesseract)
 { }
 
@@ -441,8 +443,6 @@ GetLineCount(
 }
 
 /////////////////////////////////////////////////////////////////////////////
-
-bool g_bTableFixColor = true;
 
 HRESULT
 DCR::

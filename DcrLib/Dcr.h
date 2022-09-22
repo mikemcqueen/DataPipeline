@@ -67,14 +67,19 @@ private:
 
     static std::unique_ptr<tesseract::TessBaseAPI> tesseract_;
 
+    int id_;
     bool useTesseract_;
     CharsetVector_t m_Charsets;
 
 public:
 
-    DCR();
-    DCR(bool useTesseract);
+    DCR(int id = 0);
+    DCR(int id, bool useTesseract);
     virtual ~DCR();
+
+    //
+    // DCR virtual:
+    //
 
     virtual
     bool
@@ -83,19 +88,25 @@ public:
         return true;
     }
 
+#if 0
     virtual bool
     PreTranslateSurface(
         CSurface* /*pSurface*/,
-        Rect_t&     /*Rect*/)
+        Rect_t* /*pRect*/)
     {
         // TODO: Rect = pSurface->GetBltRect(); 
         return true;
+    }
+#endif
+
+    int GetId() {
+        return id_;
     }
 
     virtual bool
     TranslateSurface(
         CSurface* /*pSurface*/,
-        Rect_t&     /*Rect*/)
+        const Rect_t& /*Rect*/)
     {
         return true;
     }

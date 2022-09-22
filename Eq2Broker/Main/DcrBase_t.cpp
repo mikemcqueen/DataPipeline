@@ -40,19 +40,21 @@ constexpr unsigned CharsetFlags = kDrawShadowText; // kDrawSimulatedShadowText
 
 DcrBase_t::
 DcrBase_t(
+    int id,
     TextTable_i* pText,
     const TableWindow_t& tableWindow,
     const TableParams_t& tableParams,
     std::span<const int> columnWidths,
     std::span<const RECT> textRects)
     :
-    m_tableWindow(
-        tableWindow),
     DcrTable_t(
+        id,
         pText,
         tableParams,
         columnWidths,
-        textRects)
+        textRects),
+    m_tableWindow(
+        tableWindow)
 { }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -83,8 +85,7 @@ bool
 DcrBase_t::
 Initialize()
 {
-    test();
-
+    //test();
 #if 0
     if (!InitAllCharsets())
     {
@@ -213,11 +214,14 @@ InitLogFont(
 
 ////////////////////////////////////////////////////////////////////////////////
 
+/*
 bool
 DcrBase_t::
 PreTranslateSurface(
     CSurface* pSurface,
-    Rect_t&   rcSurface)
+    Ui::WindowId_t windowId,
+    int dcrId,
+    Rect_t* pRect) const
 {
     extern bool g_bTableFixColor;
 
@@ -234,11 +238,12 @@ PreTranslateSurface(
             pSurface->FixColor(rect, BkLowColor, BkHighColor, Black);
         }
 #endif
-        rcSurface = rect;
+        *pRect = rect;
         return true;
     }
     return false;
 }
+*/
 
 ////////////////////////////////////////////////////////////////////////////////
 

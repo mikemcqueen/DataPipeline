@@ -14,8 +14,10 @@
 bool
 PageNumber_t::
 Parse(
-    const wchar_t* pText)
+    const std::string& str)
 {
+    str;
+#if 0 // TODO
     static const wchar_t szPage[]       = L"Page ";
     static const size_t  PageLength     = _countof(szPage) - 1;
     static const wchar_t szLastPage[]   = L" of ";
@@ -38,6 +40,7 @@ Parse(
 
     m_Data.Page = Page;
     m_Data.LastPage = LastPage;
+#endif
     return true;
 }
 

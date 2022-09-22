@@ -62,27 +62,15 @@ Initialize()
 
 ///////////////////////////////////////////////////////////////////////////////
 
+/*
 bool
 OneTable_t::
 PreTranslate(
     const AcquireData_t& Data)
 {
-#if PENDING
-    if (Message::Id::ScreenShot != pData->Id)
-        return false;
-    if (m_TopWindowType != pData->WindowType)
-        return false;
-#else
-Data;
-#endif
-
-#if 0
-// some reason this isn't used?
-    if (m_TopWindowType != LonWindow_t::GetTopWindow().Type)
-        return false;
-#endif
     return true;
 }
+*/
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -94,38 +82,16 @@ Translate(
     LogInfo(L"OneTablePolicy_t::Translate()");
     CSurface* pSurface = Data.pPoolItem->get();
     Rect_t Rect;
-#if 0
-    if (!LonWindow_t::GetWindowRect(
-        GetDcrWindowType(),
-        Rect,
-        LonWindow_t::GetSsWindowType(m_TopWindowType)))
-    {
-        return false;
-    }
-#else
+    // TODO super suspicious
     pSurface->GetClientRect(&Rect);
-#endif
-    if (!m_Dcr.PreTranslateSurface(pSurface, Rect) ||
+    if (/*!handler_.PreTranslateSurface(pSurface, 0, m_Dcr.GetId(), &Rect) ||*/
         !m_Dcr.TranslateSurface(pSurface, Rect))
     {
         LogError(L"OneTablePolicy_t::Translate() failed.");
         return false;
     }
-//    if (nullptr != m_pRect)
-//        *m_pRect = Rect;
     return true;
 }
-
-/////////////////////////////////////////////////////////////////////////////
-
-#if 0
-WindowId_t
-OneTable_t::
-GetDcrWindowType() const
-{
-    return m_DcrWindowId;
-}
-#endif
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -138,18 +104,19 @@ TranslateMany_t(
 // TODO: put these back in 
 //    WindowId_t TopWindowId,
 //    WindowId_t DcrWindowId,
+    const Translate::HandlerBase_t& handler,
     DcrVector_t& DcrVector)
 //,    RECT*        pRect)
 :
 //    m_TopWindowId(TopWindowId),
 //    m_DcrWindowId(DcrWindowId),
+    handler_(handler),
     m_DcrVector(DcrVector)
 //,    m_pRect(pRect)
 {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-
 
 TranslateMany_t::
 ~TranslateMany_t()
@@ -173,6 +140,7 @@ Initialize()
 
 ///////////////////////////////////////////////////////////////////////////////
 
+#if 0
 bool
 TranslateMany_t::
 PreTranslate(
@@ -180,6 +148,7 @@ PreTranslate(
 {
     return true;
 }
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -194,9 +163,8 @@ Translate(
     for (size_t Index = 0; m_DcrVector.end() != it; ++it, ++Index)
     {
         DCR& Dcr = **it;
-        // NOTE: pointless copy.  this rect is empty.
         Rect_t Rect;
-        if (!Dcr.PreTranslateSurface(pSurface, Rect) ||
+        if (!handler_.PreTranslateSurface(pSurface, Data.WindowId, Dcr.GetId(), &Rect) ||
             !Dcr.TranslateSurface(pSurface, Rect))
         {
             LogError(L"TranslateMany_t::Translate() failed on index(%d) of size(%d)",

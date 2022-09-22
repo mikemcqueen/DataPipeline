@@ -128,9 +128,9 @@ bool
 TableWindow_t::
 GetWidgetRect(
     Ui::WidgetId_t WidgetId,
-    Rect_t&        WidgetRect) const
+    Rect_t* pWidgetRect) const
 {
-    return Ui::Window_t::GetWidgetRect(WidgetId, GetTableRect(), WidgetRect);
+    return Ui::Window_t::GetWidgetRect(WidgetId, GetTableRect(), pWidgetRect);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -149,14 +149,14 @@ UpdateScrollPosition(
         if (GetFlags().Test(Ui::Window::Flag::VerticalScroll))
         {
             //TODO: maybe: all this rect discovery could live in GetVScrollPosition()
-            Rect_t ScrollUpRect; // = m_VScrollUpRect.GetRelativeRect(TableRect);
-            Rect_t ScrollDownRect; // = m_VScrollDownRect.GetRelativeRect(TableRect);
-            if (Base_t::GetWidgetRect(Ui::Widget::Id::VScrollUp, TableRect, ScrollUpRect) &&
-                Base_t::GetWidgetRect(Ui::Widget::Id::VScrollDown, TableRect, ScrollDownRect))
+            Rect_t scrollUpRect; // = m_VScrollUpRect.GetRelativeRect(TableRect);
+            Rect_t scrollDownRect; // = m_VScrollDownRect.GetRelativeRect(TableRect);
+            if (Base_t::GetWidgetRect(Ui::Widget::Id::VScrollUp, TableRect, &scrollUpRect) &&
+                Base_t::GetWidgetRect(Ui::Widget::Id::VScrollDown, TableRect, &scrollDownRect))
             {
-                ::InflateRect(&ScrollUpRect, -2, -2);
-                ::InflateRect(&ScrollDownRect, -2, -2);
-                Scroll::Position_t ScrollPos = /*Ui::Window_t::*/GetVertScrollPos(Surface, ScrollUpRect, ScrollDownRect);
+                ::InflateRect(&scrollUpRect, -2, -2);
+                ::InflateRect(&scrollDownRect, -2, -2);
+                Scroll::Position_t ScrollPos = /*Ui::Window_t::*/GetVertScrollPos(Surface, scrollUpRect, scrollDownRect);
                 //LogAlways(L"TableWindow_t::UpdateScrollPosition(): VScrollPos (%d)", ScrollPos);
                 SetScrollPosition(ScrollBar, ScrollPos);
                 return true;

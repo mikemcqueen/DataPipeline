@@ -107,7 +107,7 @@ bool
 Window_t::
 GetWidgetRect(
     Ui::WidgetId_t widgetId,
-    Rect_t&        rect) const
+    Rect_t* pRect) const
 {
     const MainWindow_t& mainWindow = GetMainWindow();//static_cast<const MainWindow_t&>(GetParent());
     if ((Frame::Widget::Id::SellTab == widgetId) ||
@@ -116,18 +116,16 @@ GetWidgetRect(
         switch (mainWindow.GetBrokerWindow().GetLayout())
         {
         case Frame::Layout::Broker:
-            return Ui::Window_t::GetWidgetRect(widgetId, GetTableRect(), rect,
+            return Ui::Window_t::GetWidgetRect(widgetId, GetTableRect(), pRect,
                        s_brokerWidgets, _countof(s_brokerWidgets));
         case Frame::Layout::Market:
-            return Ui::Window_t::GetWidgetRect(widgetId, GetTableRect(), rect,
+            return Ui::Window_t::GetWidgetRect(widgetId, GetTableRect(), pRect,
                        s_marketWidgets, _countof(s_marketWidgets));
         default:
             throw logic_error("BrokerBuyWindow::GetWidgetRect() Invalid layout");
         }
-    }
-    else
-    {
-        return TableWindow_t::GetWidgetRect(widgetId, rect);
+    } else {
+        return TableWindow_t::GetWidgetRect(widgetId, pRect);
     }
 }
 

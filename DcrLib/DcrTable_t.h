@@ -35,6 +35,7 @@ class DcrTable_t :
 public:
 
     DcrTable_t(
+        int id,
         TextTable_i* pText,
         const TableParams_t& tableParams,
         std::span<const int> columnWidths,
@@ -51,13 +52,13 @@ public:
     //
 
     bool
-    TranslateSurface(
-        CSurface* pSurface,
-        Rect_t&   rcSurface) override;
+    Initialize() override;
 
     bool
-    Initialize() override;
-    
+    TranslateSurface(
+        CSurface* pSurface,
+        const Rect_t&   rect) override;
+
     //
 
     void

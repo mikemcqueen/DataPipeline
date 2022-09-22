@@ -37,7 +37,7 @@ public:
     // Constructor:
     Manager_t(
         const Window_t& Window)
-    :
+        :
         m_Window(Window),
         m_Translator(*this),
         m_Interpreter(*this)

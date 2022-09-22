@@ -36,6 +36,7 @@ private:
 public:
 
     DcrBase_t(
+        int id,
         TextTable_i* pText,
         const TableWindow_t& tableWindow,
         const TableParams_t& tableParams,
@@ -55,10 +56,14 @@ public:
     bool
     Initialize() override;
 
-    bool
+/*
+bool
     PreTranslateSurface(
         CSurface* pSurface,
-        Rect_t&   rcSurface) override;
+        Ui::WindowId_t windowId,
+        int dcrId,
+        Rect_t* pRect) const override;
+*/
 
 public:
 

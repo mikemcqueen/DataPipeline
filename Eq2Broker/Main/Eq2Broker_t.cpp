@@ -274,7 +274,7 @@ Eq2Broker_t::
 CmdControl(
     const wchar_t* pszCmd)
 {
-    extern bool       g_bWriteBmps;
+    extern bool g_bWriteBmps;
 
     size_t Pos = 0;
     switch (pszCmd[Pos++])

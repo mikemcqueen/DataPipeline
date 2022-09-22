@@ -89,6 +89,7 @@
     <ClCompile Include="Charset_t.cpp" />
     <ClCompile Include="Dcr.cpp" />
     <ClCompile Include="DcrTable_t.cpp" />
+    <ClCompile Include="DcrRect_t.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

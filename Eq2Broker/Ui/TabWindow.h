@@ -108,7 +108,7 @@ public:
     bool
     GetWidgetRect(
         Ui::WidgetId_t  WidgetId,
-        Rect_t& WidgetRect) const override;
+        Rect_t* pWidgetRect) const override;
 
     bool
     UpdateScrollPosition(

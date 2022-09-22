@@ -41,18 +41,18 @@ struct Data_t :
     Buy::Text_t  tableText;
     size_t       selectedRow;
     PageNumber_t pageNumber;
-    wchar_t      searchText[kSearchTextMax];
+    char      searchText[kSearchTextMax];
     bool         searchBoxHasCaret;
-    wchar_t      savedSearch[kSavedSearchMax];
+    char      savedSearch[kSavedSearchMax];
 
     Data_t(
         const wchar_t*       pClass,
         const TextTable_t&   textTable,
         size_t               initSelectedRow,
         const PageNumber_t&  initPageNumber,
-        const wstring&       initSearchText,
+        const string&       initSearchText,
         bool                 initSearchBoxHasCaret,
-        const wstring&       initSavedSearch)
+        const string&       initSavedSearch)
     :
         DP::Message::Data_t(
             DP::Stage::Translate,
@@ -64,8 +64,8 @@ struct Data_t :
         pageNumber(initPageNumber),
         searchBoxHasCaret(initSearchBoxHasCaret)
     {
-        wcscpy_s(searchText, initSearchText.c_str());
-        wcscpy_s(savedSearch, initSavedSearch.c_str());
+        strcpy_s(searchText, initSearchText.c_str());
+        strcpy_s(savedSearch, initSavedSearch.c_str());
     }
 
 private:
@@ -79,12 +79,11 @@ typedef SsWindow::Acquire::Data_t             AcquireData_t;
 typedef DcrWindow::Policy::TranslateMany_t    TranslatePolicy_t;
 typedef DcrWindow::Policy::NoValidate_t       ValidatePolicy_t;
 
-typedef DcrWindow::Translate::Handler_t<
-            TranslatePolicy_t,
-            ValidatePolicy_t>                 HandlerBase_t;
+using BaseHandler_t = DcrWindow::Translate::
+    Handler_t<TranslatePolicy_t, ValidatePolicy_t>;
 
 class Handler_t :
-    public HandlerBase_t
+    public BaseHandler_t
 {
     friend struct Translate::Data_t; 
 
@@ -92,7 +91,7 @@ class Handler_t :
 
     TranslatePolicy_t m_TranslatePolicy;
     ValidatePolicy_t  m_ValidatePolicy;
-    DcrVector_t       m_DcrVector;
+    DcrVector_t       m_DcrVector; // TODO get rid of this, pass by value
     DcrBase_t         m_DcrTable;
     TextTable_t       m_TextTable;
     DcrRect_t         m_DcrSearchEdit;
@@ -105,12 +104,19 @@ public:
         Window::ManagerBase_t& windowManager);
 
     //
-    // DcrWindow virtual:
+    // DcrWindow::HandlerBase_t virtual:
     //
         
+    bool
+    PreTranslateSurface(
+        CSurface* pSurface,
+        Ui::WindowId_t windowId,
+        int dcrId,
+        Rect_t* pRect) const override;
+
     void
     PostData(
-        DWORD /*Unused*/) override;
+        DWORD /*Unused*/) const override;
 
 public:
 

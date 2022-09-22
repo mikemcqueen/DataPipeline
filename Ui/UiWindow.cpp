@@ -142,7 +142,7 @@ bool
 Base_t::
 GetWidgetRect(
     Ui::WidgetId_t /*WidgetId*/,
-          Rect_t&  /*WidgetRect*/) const
+    Rect_t* /*WidgetRect*/) const
 {
     // NOTE: we could support this, by using "windowrect" as default
     // but i don't need that functionality, and i want to be warned
@@ -157,25 +157,23 @@ GetWidgetRect(
 bool
 Base_t::
 GetWidgetRect(
-          Ui::WidgetId_t  WidgetId,
-    const Rect_t&         RelativeRect,
-          Rect_t&         WidgetRect,
+    Ui::WidgetId_t WidgetId,
+    const Rect_t& RelativeRect,
+    Rect_t* pWidgetRect,
     const Widget::Data_t* pWidgets /*= nullptr*/,
-          size_t          widgetCount /*= 0*/) const
+    size_t widgetCount /*= 0*/) const
 {
-    if (nullptr == pWidgets)
-    {
+    if (nullptr == pWidgets) {
         pWidgets = m_pWidgets;
         widgetCount = m_WidgetCount;
     }
-    if (nullptr != pWidgets)
-    {
+    if (nullptr != pWidgets) {
         for (size_t Widget = 0; Widget < widgetCount; ++Widget)
         {
             if (pWidgets[Widget].WidgetId == WidgetId)
             {
                 RelativeRect_t Rect(pWidgets[Widget].RectData);
-                WidgetRect = Rect.GetRelativeRect(RelativeRect);
+                *pWidgetRect = Rect.GetRelativeRect(RelativeRect);
                 return true;
             }
         }
@@ -279,27 +277,22 @@ OriginSearch(
 bool
 Base_t::
 ClickWidget(
-    WidgetId_t    WidgetId,
-          bool    bDirect /*= false*/,
+    WidgetId_t WidgetId,
+    bool bDirect /*= false*/,
     const Rect_t* pRect /*= nullptr*/) const
 {
-    if (bDirect)
-    {
-        Rect_t Rect;
-        if (nullptr == pRect)
-        {
-            if (!GetWidgetRect(WidgetId, Rect))
-            {
+    if (bDirect) {
+        Rect_t rect;
+        if (nullptr == pRect) {
+            if (!GetWidgetRect(WidgetId, &rect)) {
                 LogError(L"%ls::ClickWidget(direct): GetWidgetRect(%d) failed",
                          GetWindowName(), WidgetId);
                 return false;
             }
-            pRect = &Rect;
+            pRect = &rect;
         }
         Ui::Input_t::Click(GetHwnd(), pRect->Center());
-    }
-    else
-    {
+    } else {
         Ui::Event::Click::Data_t Click(GetWindowId(), WidgetId);
         GetPipelineManager().SendEvent(Click);
     }
@@ -312,21 +305,19 @@ bool
 Base_t::
 ClearWidgetText(
     WidgetId_t widgetId,
-    size_t     count) const
+    size_t count) const
 {
-    Rect_t Rect;
-    if (!GetWidgetRect(widgetId, Rect))
-    {
+    Rect_t rect;
+    if (!GetWidgetRect(widgetId, &rect)) {
         LogError(L"%ls::ClearWidgetText(): GetWidgetRect(%d) failed",
                  GetWindowName(), widgetId);
         return false;
     }
     // click right side of rectangle
-    Rect_t clickRect(Rect);
+    Rect_t clickRect(rect);
     clickRect.left = clickRect.right - 1;
     Input_t::Click(GetHwnd(), clickRect.Center());
-    while (0 < count--)
-    {
+    while (0 < count--) {
         Input_t::SendChar(VK_BACK);
     }
     return true;
@@ -337,24 +328,21 @@ ClearWidgetText(
 bool
 Base_t::
 SetWidgetText(
-    WidgetId_t     widgetId,
+    WidgetId_t widgetId,
     const wstring& text,
-          bool     bDirect) const
+          bool bDirect) const
 {
-    if (bDirect)
-    {
-        Rect_t Rect;
-        if (!GetWidgetRect(widgetId, Rect))
-        {
+    if (bDirect) {
+        // TODO: why this?
+        Rect_t rect;
+        if (!GetWidgetRect(widgetId, &rect)) {
             LogError(L"%ls::SetWidgetText(direct): GetWidgetRect(%d) failed",
                      GetWindowName(), widgetId);
             return false;
         }
-        Ui::Input_t Chars;
+        Ui::Input_t Chars; // huh?
         Chars.SendChars(text.c_str());
-    }
-    else
-    {
+    } else {
         Ui::Event::SendChars::Data_t sendChars(text.c_str(), GetWindowId(), widgetId);
         GetPipelineManager().SendEvent(sendChars);
     }
@@ -530,8 +518,7 @@ GetVertScrollPos(
     static const size_t ScrollIntensity = 0xb0;
     static const size_t ActiveCount     = 20;
 
-    if (g_bWriteBmps)
-    {
+    if (g_bWriteBmps) {
         Surface.WriteBMP(L"Diag\\VScrollUpRect.bmp", VScrollUpRect);
         Surface.WriteBMP(L"Diag\\VScrollDownRect.bmp", VScrollDownRect);
     }

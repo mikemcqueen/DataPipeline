@@ -115,12 +115,9 @@ public:
     RelativeRect_t(
         const Data_t* pData)
     {
-        if (nullptr == pData)
-        {
+        if (nullptr == pData) {
             SecureZeroMemory(&m_Data, sizeof(Data_t));
-        }
-        else
-        {
+        } else {
             m_Data = *pData;
         }
     }

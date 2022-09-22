@@ -138,8 +138,8 @@ namespace Window
         virtual
         bool
         GetWidgetRect(
-            Ui::WidgetId_t  WidgetId,
-                  Rect_t&   WidgetRect) const;
+            Ui::WidgetId_t WidgetId,
+            Rect_t* pWidgetRect) const;
 
         virtual
         bool
@@ -273,11 +273,11 @@ namespace Window
 
         bool
         GetWidgetRect(
-                  Ui::WidgetId_t  WidgetId,
-            const Rect_t&         RelativeRect,
-                  Rect_t&         WidgetRect,
+            Ui::WidgetId_t  WidgetId,
+            const Rect_t& RelativeRect,
+            Rect_t* pWidgetRect,
             const Widget::Data_t* pWidgets = nullptr,
-                  size_t          mwidgetCount = 0) const;
+            size_t          mwidgetCount = 0) const;
 
         void
         DumpWidgets(

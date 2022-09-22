@@ -56,14 +56,16 @@ Handler_t::
 Handler_t(
     Window::ManagerBase_t& windowManager)
     :
-    HandlerBase_t(
+    BaseHandler_t(
         TopWindowId,
         m_TranslatePolicy,
         m_ValidatePolicy,
         L"BrokerBuy"),
     m_TranslatePolicy(
-        m_DcrVector),
+        *this,
+        m_DcrVector), //variadic args?
     m_DcrTable(
+        Broker::Buy::Widget::Id::Table,
         &m_TextTable,
         windowManager.GetWindow(),
         TableParams,
@@ -72,18 +74,21 @@ Handler_t(
     m_TextTable(
         std::span{ Table::CharColumnWidths }),
     m_DcrSearchEdit(
-        windowManager.GetWindow(),
-        Widget::Id::SearchEdit,
-        DcrBase_t::GetCharset(),
+        Broker::Buy::Widget::Id::SearchEdit,
+        //windowManager.GetWindow(),
+        //Widget::Id::SearchEdit,
+        //DcrBase_t::GetCharset(),
+        nullptr,
         true),
     m_DcrSearchDropdown(
-        windowManager.GetWindow(),
-        Widget::Id::SearchDropdown,
-        DcrBase_t::GetCharset()),
+        Broker::Buy::Widget::Id::SearchDropdown),
+        //windowManager.GetWindow(),
+        //Widget::Id::SearchDropdown,
+        //DcrBase_t::GetCharset()),
     m_DcrPageNumber(
-        windowManager.GetWindow(),
-        Widget::Id::PageNumber,
-        DcrBase_t::GetCharset()),
+        Broker::Buy::Widget::Id::PageNumber),
+        //windowManager.GetWindow(),
+        //Widget::Id::PageNumber),
     m_windowManager(windowManager)
 {
     m_DcrVector.push_back(&m_DcrTable);
@@ -94,10 +99,49 @@ Handler_t(
 
 ////////////////////////////////////////////////////////////////////////////////
 
+bool
+Handler_t::
+PreTranslateSurface(
+    CSurface* pSurface,
+    Ui::WindowId_t windowId,
+    int dcrId,
+    Rect_t* pRect) const
+{
+    extern bool g_bTableFixColor;
+    windowId;
+    pSurface;
+    switch (dcrId) {
+    case Broker::Buy::Widget::Id::Table:
+    {
+        //rcSurface;
+        Rect_t rect = m_windowManager.GetWindow().GetClientRect();
+        if (!IsRectEmpty(&rect))
+        {
+            rect.top += Broker::Table::TopRowOffset;
+            //m_selectedRow = GetSelectedRow(*pSurface, rect);
+#if 0
+            if (g_bTableFixColor)
+            {
+                // TODO: pSurface->ReplaceColorRange
+                pSurface->FixColor(rect, BkLowColor, BkHighColor, Black);
+            }
+#endif
+            *pRect = rect;
+            return true;
+        }
+    }
+    default:
+        break;
+    }
+    return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 void
 Handler_t::
 PostData(
-    DWORD /*Unused*/)
+    DWORD /*Unused*/) const
 {
     extern bool g_noDcrPost;
     if (g_noDcrPost)
@@ -105,9 +149,10 @@ PostData(
         return;
     }
     //bool ExtraLog = 0;
+    // 
     PageNumber_t PageNumber;
     if (!m_DcrPageNumber.GetText().empty() &&
-        !PageNumber.Parse(m_DcrPageNumber.GetText().c_str()))
+        !PageNumber.Parse(m_DcrPageNumber.GetText()))
     {
         LogError(L"DcrBrokerBuy::PostData(): PageNumber.Parse(%ls) failed",
                  m_DcrPageNumber.GetText().c_str());

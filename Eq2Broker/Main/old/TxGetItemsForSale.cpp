@@ -99,8 +99,8 @@ HRESULT
 Handler_t::
 Message(
     const Buy::Translate::Data_t& Message,
-          Data_t&                 TxData,
-    const Ui::Window_t&           Window)
+    Data_t& TxData,
+    const Ui::Window_t& Window)
 {
     const PageNumber_t& CurPage  = Message.pageNumber;
     PageNumber_t&       PrevPage = TxData.PageNumber;
@@ -115,17 +115,13 @@ Message(
                   CurPage.GetPage(),  CurPage.GetLastPage(),
                   PrevPage.GetPage(), PrevPage.GetLastPage());
     }
-    if (ValidateMessage(CurPage, PrevPage))
-    {
+    if (ValidateMessage(CurPage, PrevPage)) {
         GetThread().QueueData(Message.tableText);
         PrevPage = CurPage;
-        if (CurPage.GetPage() == CurPage.GetLastPage())
-        {
+        if (CurPage.GetPage() == CurPage.GetLastPage() {
             LogAlways(L"TxGetItemsForSale_t completing...");
             GetTransactionManager().CompleteTransaction(TxData.Id);
-        }
-        else
-        {
+        } else {
             Window.ClickWidget(Buy::Widget::Id::NextButton);
         }
         return S_OK;
@@ -141,12 +137,10 @@ ValidateMessage(
     const PageNumber_t& CurPage,
     const PageNumber_t& PrevPage)
 {
-    if (!CurPage.IsValid())
-    {
+    if (!CurPage.IsValid()) {
         return false;
     }
-    if (!PrevPage.IsValid())
-    {
+    if (!PrevPage.IsValid()) {
         LogAlways(L"First Page");
     }
 /*
@@ -166,17 +160,13 @@ ValidateMessage(
     else
 */
     {
-        if (PrevPage.GetPage() == CurPage.GetPage())
-        {
-            // TODO:  click failure, same page timeout, reclick
+        if (PrevPage.GetPage() == CurPage.GetPage()) {
+            // TODO:  click failure, same page timeout, re - click
             LogAlways(L"Same page - Ignoring...");
             return false;
-        }
-        else if (PrevPage.GetPage() + 1 != CurPage.GetPage())
-        {
+        } else if (PrevPage.GetPage() + 1 != CurPage.GetPage()) {
             //  allow change to page 1
-            if (1 != CurPage.GetPage())
-            {
+            if (1 != CurPage.GetPage()) {
                 // TODO: ?
                 LogError(L"Skipped a page (%d -> %d) - Ignoring...",
                     PrevPage.GetPage(), CurPage.GetPage());
@@ -221,17 +211,14 @@ Handler_t::
 ThreadMessage(
     const Message_t& Text)
 {
-    for (size_t Row = 0; Row < Text.GetEndRow(); ++Row)
-    {
+    for (size_t Row = 0; Row < Text.GetEndRow(); ++Row) {
         size_t Quantity = Text.GetQuantity(Row);
         const wchar_t* pItemName = Text.GetItemName(Row);
-        if (L'\0' == pItemName[0])
-        {
+        if (L'\0' == pItemName[0]) {
             continue;
         }
         size_t Price = Text.GetPrice(Row);
-        if (0 == Price)
-        {
+        if (0 == Price) {
             continue;
         }
         wstring strSellerName;
