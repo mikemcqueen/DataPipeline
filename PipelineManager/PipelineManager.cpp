@@ -566,12 +566,17 @@ TrySendTransactionMessage(
 
 ////////////////////////////////////////////////////////////////////////////////
 
+int release = 0;
+int releaseFn = 0;
+
 void
 PipelineManager_t::
 Release(
     DP::Message::Data_t* pData)
 {
+    release++;
     if (nullptr != pData->ReleaseFn) {
+        releaseFn++;
         pData->ReleaseFn(*pData);
     }
 

@@ -14,6 +14,7 @@
 #include "DdUtil.h"
 #include "BrokerId.h"
 #include "BrokerUi.h"
+#include "BrokerBuyWidgets.h" // SaveWidgets
 
 namespace Broker
 {
@@ -75,26 +76,39 @@ Handler_t(
         std::span{ Table::CharColumnWidths }),
     m_DcrSearchEdit(
         Broker::Buy::Widget::Id::SearchEdit,
-        //windowManager.GetWindow(),
-        //Widget::Id::SearchEdit,
-        //DcrBase_t::GetCharset(),
         nullptr,
         true),
     m_DcrSearchDropdown(
         Broker::Buy::Widget::Id::SearchDropdown),
-        //windowManager.GetWindow(),
-        //Widget::Id::SearchDropdown,
-        //DcrBase_t::GetCharset()),
     m_DcrPageNumber(
         Broker::Buy::Widget::Id::PageNumber),
-        //windowManager.GetWindow(),
-        //Widget::Id::PageNumber),
     m_windowManager(windowManager)
 {
     m_DcrVector.push_back(&m_DcrTable);
     m_DcrVector.push_back(&m_DcrSearchEdit);
     m_DcrVector.push_back(&m_DcrSearchDropdown);
     m_DcrVector.push_back(&m_DcrPageNumber);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+void
+Handler_t::
+SaveWidgets(
+    const CSurface* pSurface,
+    std::span<const Ui::Widget::Data_t> widgets) const
+{
+    static bool first = true;
+    if (first) {
+        auto& tableRect = m_windowManager.GetWindow().GetTableRect();
+        auto id = 0;
+        for (auto& widget : widgets) {
+            RelativeRect_t relRect(widget.RectData);
+            Rect_t rect = relRect.GetRelativeRect(tableRect); // TODO GetRectRelativeTo
+            pSurface->WriteBMP(std::format(L"diag\\widget_{}.bmp", id++).c_str(), rect);
+        }
+    }
+    first = false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -107,6 +121,10 @@ PreTranslateSurface(
     int dcrId,
     Rect_t* pRect) const
 {
+#if 1
+    SaveWidgets(pSurface, std::span{ Broker::Buy::Widgets });
+#endif
+
     extern bool g_bTableFixColor;
     windowId;
     pSurface;
@@ -184,6 +202,11 @@ PostData(
             LogError(L"DcrBrokerBuy::PostData(): PM.Callback() failed.");
         }
     }
+#if 1
+    if (pageNumber.GetPage() < pageNumber.GetLastPage()) {
+        m_windowManager.GetWindow().ClickWidget(Widget::Id::NextButton);
+    }
+#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////

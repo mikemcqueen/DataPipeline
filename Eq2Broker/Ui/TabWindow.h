@@ -36,8 +36,7 @@ public:
         const Ui::Window_t&       parent,
         const wchar_t*            pWindowName,
         Flag_t                    Flags,
-        const Ui::Widget::Data_t* pWidget,
-        size_t                    WidgetCount,
+        std::span<const Ui::Widget::Data_t> widgets,
         POINT                     TabOffset);
 
     bool
@@ -90,8 +89,7 @@ public:
         const Ui::Window_t& parent,
         const wchar_t*      pWindowName,
         Flag_t              Flags,
-        const Ui::Widget::Data_t* pWidgets,
-        size_t              WidgetCount,
+        std::span<const Ui::Widget::Data_t> widgets,
         POINT               TableOffset,
         const RECT&         InnerTableRect,
         POINT               TabOffset);

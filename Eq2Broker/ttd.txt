@@ -23,6 +23,8 @@ tesseract.end()
 pSurface AutoUnlock_t (DcrTable_t)
 cleanup TextTable_t.h
 
+I think the word transaction is wrong. State would also be wrong. This is a container for a set of states really.
+or a container for a state machine?
 
 c++20: * == done(ish)
 	range_for (as_const? or just const auto) whereever const_iterator is defined. read up on as_const vs. const auto

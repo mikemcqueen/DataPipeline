@@ -105,6 +105,7 @@
     <ClInclude Include="BrokerBuyWindow.h" />
     <ClInclude Include="BrokerUi.h" />
     <ClInclude Include="BrokerWindow.h" />
+    <ClInclude Include="BrokerBuyWidgets.h" />
     <ClInclude Include="MainWindow_t.h" />
     <ClInclude Include="OtherWindows.h" />
     <ClInclude Include="stdafx.h" />

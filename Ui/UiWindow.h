@@ -49,7 +49,7 @@ namespace Window
         Handle_t(
             HWND       InitHwnd       = nullptr,
             WindowId_t InitWindowId   = Id::Unknown)
-        :
+            :
             hWnd(InitHwnd),
             WindowId(InitWindowId)
         { }
@@ -75,27 +75,22 @@ namespace Window
         Scroll::Position_t m_VertScrollPos;
         Scroll::Position_t m_HorzScrollPos;
         POINT              m_ptLastOrigin;
-
-        const Widget::Data_t* m_pWidgets;
-        size_t                m_WidgetCount;
+        std::vector<Widget::Data_t> widgets_;
 
     public:
 
-        explicit
         Base_t(
             WindowId_t     WindowId,
             const wchar_t* pClassName,
             const wchar_t* pWindowName = nullptr,
             Flag_t         Flags = 0);
 
-        explicit
         Base_t(
-            WindowId_t            WindowId,
-            const Base_t&         ParentWindow,
-            const wchar_t*        pWindowName,
-            Flag_t                Flags = 0,
-            const Widget::Data_t* pWidgetData = nullptr,
-            size_t                WidgetCount = 0);
+            WindowId_t WindowId,
+            const Base_t& ParentWindow,
+            const wchar_t* pWindowName,
+            Flag_t Flags = 0,
+            std::span<const Widget::Data_t> widgets = std::span<const Widget::Data_t>());
 
         virtual 
         ~Base_t();
@@ -195,6 +190,13 @@ namespace Window
         GetWidgetData(
             WidgetId_t widgetId) const;
 
+        bool
+        GetWidgetRect(
+            Ui::WidgetId_t  WidgetId,
+            const Rect_t& RelativeRect,
+            Rect_t* pWidgetRect,
+            span<const Widget::Data_t> widgets = span<const Widget::Data_t>()) const;
+
         WindowId_t
         GetWindowId() const
         {
@@ -268,16 +270,8 @@ namespace Window
         size_t
         GetWidgetCount() const
         {
-            return m_WidgetCount;
+            return widgets_.size();
         }
-
-        bool
-        GetWidgetRect(
-            Ui::WidgetId_t  WidgetId,
-            const Rect_t& RelativeRect,
-            Rect_t* pWidgetRect,
-            const Widget::Data_t* pWidgets = nullptr,
-            size_t          mwidgetCount = 0) const;
 
         void
         DumpWidgets(

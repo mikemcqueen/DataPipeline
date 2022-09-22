@@ -81,138 +81,18 @@ test() {
     td.show();
 }
 
+////////////////////////////////////////////////////////////////////////////
+
 bool
 DcrBase_t::
 Initialize()
 {
     //test();
-#if 0
-    if (!InitAllCharsets())
-    {
-        LogError(L"DcrBase_t::InitAllCharsets() failed.");
-        return false;
-    }
-    AddCharset(GetCharset());
-#endif
     return DcrTable_t::Initialize();
 }
 
 /////////////////////////////////////////////////////////////////////////////
 
-/* static */
-const Charset_t*
-DcrBase_t::
-GetCharset()
-{
-    static shared_ptr<const Charset_t> spCharset;
-    if (!spCharset)
-    {
-        LOGFONT lf;
-        InitLogFont(lf, CharsetPointSize, CharsetFacename);
-        spCharset.reset(InitCharset(lf, CharsetFlags));
-        if (!spCharset)
-        {
-        }
-        spCharset->WriteBmp(L"DcrBase");
-    }
-    return spCharset.get();
-}
-
-/////////////////////////////////////////////////////////////////////////////
-
-bool
-DcrBase_t::
-InitAllCharsets()
-{
-#if 1
-    GetCharset();
-#else
-    if (nullptr == s_pCharset)
-    {
-        LOGFONT lf;
-        InitLogFont(lf, CharsetPointSize, CharsetFacename);
-        s_pCharset = InitCharset(lf);
-        if (nullptr == s_pCharset)
-            return false;
-        s_pCharset->WriteBmp(L"DcrBase");
-    }
-#endif
-#if 0
-    if (nullptr == s_pBoldCharset)
-    {
-        LOGFONT lf;
-        InitLogFont(lf, 8, L"Lucida Sans Unicode"););
-        wcscpy_s(lf.lfFaceName, _countof(lf.lfFaceName), 
-        lf.lfWeight = FW_BOLD;
-
-        s_pBoldCharset = InitCharset(lf);
-        if (nullptr == s_pBoldCharset)
-            return false;
-        s_pBoldCharset->WriteBmp(L"DcrBase_Bold");
-    }
-    AddCharset(s_pBoldCharset);
-#endif
-    return true;
-}
-
-/////////////////////////////////////////////////////////////////////////////
-
-/* static */
-const Charset_t*
-DcrBase_t::
-InitCharset(
-    const LOGFONT& LogFont,
-    unsigned flags)
-{
-    Charset_t* pCharset = new Charset_t(LogFont, CharsetChars, flags);
-    if (!pCharset->IsValid())
-    {
-        LogError(L"DcrBase_t: Charset invalid.");
-        delete pCharset;
-        return nullptr;
-    }
-    pCharset->SetCharFlags(L"abcdfhikmnpqtuwxzACGKOQTUVWX27':\",./[\\", DCR_NO_RIGHT_SPACING);
-    ABC abc_s = { 0, 4, 0 };
-    ABC abc_S = { 1, 6, 0 };
-    pCharset->SetCharWidths(L's', abc_s);
-    pCharset->SetCharWidths(L'S', abc_S);
-    return pCharset;
-}
-
-/////////////////////////////////////////////////////////////////////////////
-
-void
-DcrBase_t::
-InitLogFont(
-          LOGFONT& lf,
-          int      PointSize,
-    const wchar_t* pszFaceName)
-{
-    static int logPixY = 0;
-    if (0 == logPixY)
-    {
-        HDC hDC = GetDC(nullptr);
-        logPixY = GetDeviceCaps(hDC, LOGPIXELSY);
-        ReleaseDC(nullptr, hDC);
-    }
-
-    lf.lfHeight          = -MulDiv(int(PointSize), logPixY, 72);
-	lf.lfWidth			 = 0; 
-	lf.lfEscapement		 = 0;
-	lf.lfOrientation	 = 0;
-    lf.lfWeight =          FW_NORMAL;
-	lf.lfItalic			 = FALSE;
-	lf.lfUnderline		 = FALSE;
-	lf.lfStrikeOut		 = FALSE;
-	lf.lfCharSet		 = DEFAULT_CHARSET;
-	lf.lfOutPrecision	 = OUT_TT_PRECIS;
-	lf.lfClipPrecision	 = CLIP_DEFAULT_PRECIS;
-    lf.lfQuality =         DEFAULT_QUALITY;
-	lf.lfPitchAndFamily	 = DEFAULT_PITCH | FF_DONTCARE;
-    wcscpy_s(lf.lfFaceName, pszFaceName);
-}
-
-////////////////////////////////////////////////////////////////////////////////
 
 /*
 bool
@@ -223,25 +103,6 @@ PreTranslateSurface(
     int dcrId,
     Rect_t* pRect) const
 {
-    extern bool g_bTableFixColor;
-
-    //rcSurface;
-    Rect_t rect = m_tableWindow.GetClientRect();
-    if (!IsRectEmpty(&rect))
-    {
-        rect.top += Broker::Table::TopRowOffset; // TODO HACK
-        m_selectedRow = GetSelectedRow(*pSurface, rect);
-#if 0
-        if (g_bTableFixColor)
-        {
-            // TODO: pSurface->ReplaceColorRange
-            pSurface->FixColor(rect, BkLowColor, BkHighColor, Black);
-        }
-#endif
-        *pRect = rect;
-        return true;
-    }
-    return false;
 }
 */
 

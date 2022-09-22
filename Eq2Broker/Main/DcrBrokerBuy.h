@@ -126,6 +126,10 @@ public:
     DcrBase_t&        GetDcr()         { return m_DcrTable; }
 
 private:
+    void
+    SaveWidgets(
+        const CSurface* pSurface,
+        std::span<const Ui::Widget::Data_t> widgets) const;
 
     Handler_t();
     Handler_t(const Handler_t&);

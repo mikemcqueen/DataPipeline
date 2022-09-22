@@ -192,6 +192,13 @@ public:
         return tesseract_->Init(dataPath, languageCode);
     }
 
+    static
+    void
+    EndTesseract()
+    {
+        tesseract_->End();
+    }
+
 private:
     
     HRESULT

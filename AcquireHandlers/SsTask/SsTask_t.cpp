@@ -24,7 +24,10 @@ DP::MessageId_t SsTask_t::s_MessageId = DP::Message::Id::Unknown;
 
 /////////////////////////////////////////////////////////////////////////////
 
-/* static */
+int release_count = 0;
+int ready_count = 0;
+
+/*static*/
 void
 SsTask::Acquire::Data_t::
 ReleaseFn(DP::Message::Data_t& data)
@@ -33,6 +36,7 @@ ReleaseFn(DP::Message::Data_t& data)
     if (nullptr == ssData.pPoolItem) {
         throw invalid_argument("SsData::pPoolItem is null");
     }
+    release_count++;
     ssData.pPoolItem->release();
 }
 
@@ -490,6 +494,11 @@ ThreadFunc(
 
 /////////////////////////////////////////////////////////////////////////////
 
+namespace DP {
+extern int release;
+extern int releaseFn;
+}
+
 // TODO: bool
 void
 SsTask_t::
@@ -497,7 +506,10 @@ Shutter()
 {
 	pool<CSurface>::item_t* pPoolItem = GetAvailableSurface();
     if (nullptr == pPoolItem) {
-        LogWarning(L"SSTask_t::Shutter(): No surface available");
+
+
+        LogWarning(L"SSTask_t::Shutter(): No surface available, ready(%d) released(%d), dp_release(%d), dp_realeaseFn(%d)",
+            ready_count, release_count, DP::release, DP::releaseFn);
         return;
     }
         
@@ -515,6 +527,7 @@ Shutter()
         if (TakeSnapShot(hWnd, rc, pSurface))
         {
             pPoolItem->set_state(PF_READY);
+            ready_count++;
             PostData(hWnd, pPoolItem);
         }
     } else {

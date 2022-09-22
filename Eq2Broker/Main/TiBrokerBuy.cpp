@@ -100,6 +100,10 @@ MessageHandler(
     auto& message = static_cast<const Translate::Data_t&>(*pMessage);
     message.tableText.Dump(L"TiBrokerBuy");
 
+    // if page number has changed, queue items to GetItemsForSale thread
+    // may be some other restrictions, such as, exactly what transaction
+    // is active
+
 #if 0
     DP::Transaction::Data_t* pData = GetTransactionManager().Acquire();
     DP::TransactionManager_t::AutoRelease_t ar(pData);

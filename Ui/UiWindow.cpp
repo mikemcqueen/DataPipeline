@@ -36,12 +36,10 @@ Base_t(
     m_strWindowName((nullptr == pWindowName) ? L"" : pWindowName),
     m_Flags(Flags),
     m_VertScrollPos(Scroll::Position::Unknown),
-    m_HorzScrollPos(Scroll::Position::Unknown),
-    m_pWidgets(nullptr),
-    m_WidgetCount(0)
+    m_HorzScrollPos(Scroll::Position::Unknown)
 {
     LogError(L"FIXME: MainWindow hWnd initialization - move out of UiWindow.cpp");
-    /*
+    
     if ((nullptr != pClassName) || (nullptr != pWindowName))
     {
         HWND hWnd = ::FindWindow(pClassName, pWindowName);
@@ -49,11 +47,11 @@ Base_t(
         {
             LogError(L"Window not found: ClassName(%ls) WindowName(%ls)",
                      pClassName, pWindowName);
-            throw invalid_argument("Ui::Window::Base_t()");
+            //throw invalid_argument("Ui::Window::Base_t()");
         }
         m_hMainWindow = hWnd;
     }
-    */
+    
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -67,16 +65,14 @@ Base_t(
     const Base_t&         ParentWindow,
     const wchar_t*        pWindowName,
     Flag_t                Flags       /*= 0*/,
-    const Widget::Data_t* pWidgets    /*= nullptr*/,
-    size_t                WidgetCount /*= 0*/)
-:
+    std::span<const Widget::Data_t> widgets /*= span()*/)
+    :
     m_WindowId(WindowId),
     m_ParentWindow(ParentWindow),
     m_hMainWindow(ParentWindow.GetHwnd()),
     m_strWindowName((nullptr == pWindowName) ? L"Undefined" : pWindowName),
     m_Flags(Flags),
-    m_pWidgets(pWidgets),
-    m_WidgetCount(WidgetCount)
+    widgets_(widgets.begin(), widgets.end())
 {
 }
 
@@ -160,20 +156,16 @@ GetWidgetRect(
     Ui::WidgetId_t WidgetId,
     const Rect_t& RelativeRect,
     Rect_t* pWidgetRect,
-    const Widget::Data_t* pWidgets /*= nullptr*/,
-    size_t widgetCount /*= 0*/) const
+    span<const Widget::Data_t> widgets) const
 {
-    if (nullptr == pWidgets) {
-        pWidgets = m_pWidgets;
-        widgetCount = m_WidgetCount;
+    if (widgets.size() == 0) {
+        widgets = widgets_;
     }
-    if (nullptr != pWidgets) {
-        for (size_t Widget = 0; Widget < widgetCount; ++Widget) {
-            if (pWidgets[Widget].WidgetId == WidgetId) {
-                RelativeRect_t Rect(pWidgets[Widget].RectData);
-                *pWidgetRect = Rect.GetRelativeRect(RelativeRect);
-                return true;
-            }
+    for (auto& widget : widgets) {
+        if (widget.WidgetId == WidgetId) {
+            RelativeRect_t Rect(widget.RectData);
+            *pWidgetRect = Rect.GetRelativeRect(RelativeRect);
+            return true;
         }
     }
     return false;
@@ -493,7 +485,7 @@ DumpWidgets(
 {
     for (size_t Widget = 0; Widget < GetWidgetCount(); ++Widget)
     {
-        RelativeRect_t Rect(m_pWidgets[Widget].RectData);
+        RelativeRect_t Rect(widgets_[Widget].RectData);
         Rect_t WidgetRect = Rect.GetRelativeRect(RelativeRect);
         wchar_t szBuf[255];
         swprintf_s(szBuf, L"Diag\\%ls_widget%d.bmp", GetWindowName(), Widget);

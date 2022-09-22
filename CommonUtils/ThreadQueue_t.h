@@ -415,7 +415,7 @@ private:
                          m_pszName, e.what());
             }
 //            LogError(L"FIXME: free data in threadqueue_t");
-//           m_Process(ThreadQueue::State::Free, Data, m_pParam);
+            m_Process(ThreadQueue::State::Free, Data, m_pParam);
             if (ThreadQueue::High == m_LogLevel)
             {
                 LogInfo(L"--ThreadQueue_t<%s>::ProcessData", m_pszName);

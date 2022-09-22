@@ -179,6 +179,7 @@ ShutdownCleanup()
 {
     GetPipelineManager().Shutdown();
     FreeDirectDraw();
+    DCR::EndTesseract();
     Log_t::Get().Shutdown();
 }
 

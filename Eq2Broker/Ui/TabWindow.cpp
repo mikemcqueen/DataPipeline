@@ -22,21 +22,19 @@ using namespace Broker;
 
 TabWindow_t::
 TabWindow_t(
-    Ui::WindowId_t            WindowId,
-    const Ui::Window_t&       parent,
-    const wchar_t*            pWindowName,
-          Flag_t              Flags,
-    const Ui::Widget::Data_t* pWidgets,
-          size_t              WidgetCount,
-          POINT               tabOffset)
-: 
+    Ui::WindowId_t WindowId,
+    const Ui::Window_t& parent,
+    const wchar_t* pWindowName,
+    Flag_t Flags,
+    std::span<const Ui::Widget::Data_t> widgets,
+    POINT tabOffset)
+    : 
     Ui::Window_t(
         WindowId,
         parent,
         pWindowName,
         Flags,
-        pWidgets,
-        WidgetCount),
+        widgets),
     m_TabOffset(tabOffset)
 {
 }
@@ -75,23 +73,21 @@ FindTab(
 
 TableWindow_t::
 TableWindow_t(
-          Ui::WindowId_t      WindowId,
-    const Ui::Window_t&       parent,
-    const wchar_t*            pWindowName,
-          Flag_t              Flags,
-    const Ui::Widget::Data_t* pWidgets,
-          size_t              widgetCount,
-          POINT               tableOffset,
-    const RECT&               innerTableRect,
-          POINT               tabOffset)
+    Ui::WindowId_t WindowId,
+    const Ui::Window_t& parent,
+    const wchar_t* pWindowName,
+    Flag_t Flags,
+    std::span<const Ui::Widget::Data_t> widgets,
+    POINT tableOffset,
+    const RECT& innerTableRect,
+    POINT tabOffset)
 :
     TabWindow_t(
         WindowId,
         parent,
         pWindowName,
         Flags,
-        pWidgets,
-        widgetCount,
+        widgets,
         tabOffset),
     m_TableOffset(tableOffset),
     m_InnerTableRect(innerTableRect)
