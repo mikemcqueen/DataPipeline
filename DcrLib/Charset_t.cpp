@@ -297,27 +297,27 @@ InitCharData( void )
 	int x;
 	int y;
     
-RECT rc = { 0 };
-rc.bottom  = m_pSurface->GetHeight();
+    RECT rc = { 0 };
+    rc.bottom  = m_pSurface->GetHeight();
 
-	for (size_t iChar = 0; iChar < m_charset.size(); ++iChar)
-	{
-		x = xPrev;
-		y = 0;
+    for (size_t iChar = 0; iChar < m_charset.size(); ++iChar)
+    {
+        x = xPrev;
+        y = 0;
 
         // TODO: some way to specify charset flags early,
         // if flags & left_overlap, x--
 
-		size_t cLeftPixels = FindNextChar(m_pSurface.get(), x, y);
-		if (0 == cLeftPixels)
-			break;
-
-rc.left = x;
-rc.right = min((x+20), int(m_pSurface->GetWidth()));
-wchar_t szFile[10] = { 0 };
-_itow_s(int(iChar), szFile, 10);
-WriteBmp(szFile, &rc);
-
+        size_t cLeftPixels = FindNextChar(m_pSurface.get(), x, y);
+        if (0 == cLeftPixels)
+            break;
+#if 0
+        rc.left = x;
+        rc.right = min((x + 20), int(m_pSurface->GetWidth()));
+        wchar_t szFile[10] = { 0 };
+        _itow_s(int(iChar), szFile, 10);
+        WriteBmp(szFile, &rc);
+#endif
 		CharData_t &cd		= m_vCharData[iChar];
 		cd.ptOffset.x		= x;
 		cd.ptOffset.y		= y;

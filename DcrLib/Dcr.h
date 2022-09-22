@@ -142,6 +142,11 @@ public:
         const Charset_t* pCharSet,
         DWORD            dwFlags = 0) const;
 
+    std::string
+    TesseractGetText(
+        const CSurface* pSurface,
+        const Rect_t& rect) const;
+
     int
     ReadTable(
         const CSurface*  pSurface,

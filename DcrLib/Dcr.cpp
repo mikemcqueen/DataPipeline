@@ -13,6 +13,7 @@
 #include "Log.h"
 #include "TextTable_t.h"
 #include "Macros.h"
+#include "Rect.h"
 
 #undef DCR
 
@@ -183,6 +184,37 @@ GetText(
     // (pCharset->Compare() failed), and bAllowBadChars was false.
     // All other cases are success, specifically including "empty text".
     return hr;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+
+std::string
+DCR::
+TesseractGetText(
+    const CSurface* pSurface,
+    const Rect_t& rect) const
+{
+    std::string str;
+    DDSURFACEDESC2 ddsd;
+    HRESULT hr = pSurface->Lock(&ddsd);
+    if (FAILED(hr)) {
+        LogError(L"Can't lock surface");
+        return str;
+    }
+    Tesseract()->SetImage((std::uint8_t*)GetBitsAt(&ddsd, rect.left, rect.top),
+        rect.Width(), rect.Height(),
+        4, (int)ddsd.lPitch);
+    pSurface->Unlock(nullptr);
+    std::unique_ptr<char> pResult(Tesseract()->GetUTF8Text());
+    auto text = pResult.get();
+    if (text) {
+        auto ch = text[0];
+        if (ch) { // length > 0
+            str.assign(text);
+            str.erase(str.end() - 1);
+        }
+    }
+    return str;
 }
 
 /////////////////////////////////////////////////////////////////////////////

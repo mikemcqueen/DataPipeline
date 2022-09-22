@@ -168,10 +168,8 @@ GetWidgetRect(
         widgetCount = m_WidgetCount;
     }
     if (nullptr != pWidgets) {
-        for (size_t Widget = 0; Widget < widgetCount; ++Widget)
-        {
-            if (pWidgets[Widget].WidgetId == WidgetId)
-            {
+        for (size_t Widget = 0; Widget < widgetCount; ++Widget) {
+            if (pWidgets[Widget].WidgetId == WidgetId) {
                 RelativeRect_t Rect(pWidgets[Widget].RectData);
                 *pWidgetRect = Rect.GetRelativeRect(RelativeRect);
                 return true;

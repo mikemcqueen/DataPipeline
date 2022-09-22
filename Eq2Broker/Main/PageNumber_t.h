@@ -23,8 +23,8 @@ public:
 
     struct Data_t
     {
-        size_t Page;
-        size_t LastPage;
+        int Page;
+        int LastPage;
 
         Data_t() { Clear(); }
         void Clear() { Page = 0; LastPage = 1; }
@@ -35,15 +35,19 @@ public:
 
     bool Parse(const std::string& str);
 
-    size_t GetPage() const { return m_Data.Page; }
+    int GetPage() const { return m_Data.Page; }
 
-    size_t GetLastPage() const { return m_Data.LastPage; }
+    int GetLastPage() const { return m_Data.LastPage; }
 
     const Data_t& GetData() const { return m_Data; }
 
     bool IsValid() const { return 0 != GetPage(); }
 
     void Reset() { m_Data.Clear(); }
+
+    std::string GetText() const {
+        return std::format("Page {} of {}", GetPage(), GetLastPage());
+    }
 
 private:
     Data_t m_Data;

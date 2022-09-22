@@ -46,7 +46,7 @@ static const Ui::Widget::Data_t s_widgets[] =
     { Widget::Id::SearchEdit,            { RelativeRect_t::LeftTop,       53,  -73,  620,   16 } },
     { Widget::Id::FindButton,            { RelativeRect_t::LeftTop,      717,  -70,    9,    9 } },
     { Widget::Id::SearchDropdown,        { RelativeRect_t::LeftTop,      778,  -70,  133,   12 } },
-    { Widget::Id::PageNumber,            { RelativeRect_t::CenterBottom,   0,   13,  200,   20 } },
+    { Widget::Id::PageNumber,            { RelativeRect_t::CenterBottom,   0,   12,  200,   18 } },
     { Widget::Id::NextButton,            { RelativeRect_t::RightBottom, -180,   18,   26,    8 } },
     { Widget::Id::BuyButton,             { RelativeRect_t::RightBottom,  -76,   66,   21,   12 } },
 };

@@ -112,26 +112,29 @@ PreTranslateSurface(
     pSurface;
     switch (dcrId) {
     case Broker::Buy::Widget::Id::Table:
-    {
-        //rcSurface;
-        Rect_t rect = m_windowManager.GetWindow().GetClientRect();
-        if (!IsRectEmpty(&rect))
         {
-            rect.top += Broker::Table::TopRowOffset;
-            //m_selectedRow = GetSelectedRow(*pSurface, rect);
-#if 0
-            if (g_bTableFixColor)
+            //rcSurface;
+            Rect_t rect = m_windowManager.GetWindow().GetClientRect();
+            if (!IsRectEmpty(&rect))
             {
-                // TODO: pSurface->ReplaceColorRange
-                pSurface->FixColor(rect, BkLowColor, BkHighColor, Black);
+                rect.top += Broker::Table::TopRowOffset;
+                //m_selectedRow = GetSelectedRow(*pSurface, rect);
+    #if 0
+                if (g_bTableFixColor)
+                {
+                    // TODO: pSurface->ReplaceColorRange
+                    pSurface->FixColor(rect, BkLowColor, BkHighColor, Black);
+                }
+    #endif
+                *pRect = rect;
+                return true;
             }
-#endif
-            *pRect = rect;
-            return true;
         }
-    }
-    default:
         break;
+
+    default:
+        m_windowManager.GetWindow().GetWidgetRect(dcrId, pRect);
+        return true;
     }
     return false;
 }
@@ -150,9 +153,9 @@ PostData(
     }
     //bool ExtraLog = 0;
     // 
-    PageNumber_t PageNumber;
+    PageNumber_t pageNumber;
     if (!m_DcrPageNumber.GetText().empty() &&
-        !PageNumber.Parse(m_DcrPageNumber.GetText()))
+        !pageNumber.Parse(m_DcrPageNumber.GetText()))
     {
         LogError(L"DcrBrokerBuy::PostData(): PageNumber.Parse(%ls) failed",
                  m_DcrPageNumber.GetText().c_str());
@@ -165,20 +168,19 @@ PostData(
     }
     else
     {
-        m_TextTable.GetData().Dump(L"DcrBrokerBuy::PostData()");
+        LogInfo(L"%S", pageNumber.GetText().c_str());
+        m_TextTable.GetData().Dump(L"DcrBrokerBuy");
         //LogInfo(L"SeletecedRow(%d)", m_DcrTable.GetSelectedRow());
-        Data_t* pData = new (pBuffer)
-            Data_t(
-                GetClass().c_str(),
-                m_TextTable,
-                m_DcrTable.GetSelectedRow(),
-                PageNumber,
-                m_DcrSearchEdit.GetText(),
-                m_DcrSearchEdit.GetHasCaret(),
-                m_DcrSearchDropdown.GetText());
+        Data_t* pData = new (pBuffer) Data_t(
+            GetClass().c_str(),
+            m_TextTable,
+            m_DcrTable.GetSelectedRow(),
+            pageNumber,
+            m_DcrSearchEdit.GetText(),
+            m_DcrSearchEdit.GetHasCaret(),
+            m_DcrSearchDropdown.GetText());
         HRESULT hr = GetPipelineManager().Callback(pData);
-        if (FAILED(hr))
-        {
+        if (FAILED(hr)) {
             LogError(L"DcrBrokerBuy::PostData(): PM.Callback() failed.");
         }
     }
