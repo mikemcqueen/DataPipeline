@@ -26,7 +26,7 @@ public:
     virtual int GetRowCount() const = 0;
     virtual int GetColumnCount() const = 0;
     virtual void ClearRow(int row) = 0;
-    virtual void SetText(int row, const int column, std::string& str) = 0;
+    virtual void SetText(int row, int column, const std::string& str) = 0;
 
     virtual wchar_t* GetRow(size_t) { throw std::runtime_error("not implemented");  };
     virtual size_t           GetRowWidth() const { throw std::runtime_error("not implemented"); };
@@ -363,7 +363,7 @@ public:
     //
 
     void ClearRow(int ) override { throw std::runtime_error("not implemented"); }
-    void SetText(int , int , std::string& )override { throw std::runtime_error("not implemented"); }
+    void SetText(int , int , const std::string& )override { throw std::runtime_error("not implemented"); }
 
     int           GetRowCount() const override { return m_Data.GetRowCount(); }
     wchar_t*         GetRow(size_t Row) override { return m_Data.GetBuffer(Row); }
@@ -550,7 +550,7 @@ public:
     //
 
     void ClearRow(int) override { throw std::runtime_error("not implemented"); }
-    void SetText(int, int, std::string&)override { throw std::runtime_error("not implemented"); }
+    void SetText(int, int, const std::string&)override { throw std::runtime_error("not implemented"); }
 
     int         GetRowCount() const override { return m_Data.GetRowCount(); }
     wchar_t*       GetRow(size_t Row) override { return m_Data.GetBuffer(Row); }
@@ -713,7 +713,10 @@ public:
         std::span<char> view;
 
         //auto len = std::min<int>(text.size(), str.length());
-        void SetText(std::string& str) { memcpy_s(view.data(), view.size(), str.c_str(), str.size()); }
+        void SetText(const std::string& str)
+        {
+            memcpy_s(view.data(), view.size(), str.c_str(), std::min<size_t>(view.size(), str.size()));
+        }
         const std::string GetText() const { return std::string{ view.data(), view.size() }; }
     };
 
@@ -825,7 +828,7 @@ public:
     int GetRowCount() const override { return data_.GetRowCount(); }
     int GetColumnCount() const override { return data_.GetColumnCount(); }
     void ClearRow(int row) override { data_.GetRow(row).Clear(); }
-    void SetText(int row, int column, std::string& str) override
+    void SetText(int row, int column, const std::string& str) override
     {
         data_.GetRow(row).columns[column].SetText(str);
     }
