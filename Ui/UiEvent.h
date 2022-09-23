@@ -49,7 +49,7 @@ namespace Event
         WindowId_t WindowId;
 
         Data_t(
-            DP::Stage_t       stage        = DP::Stage::Any,
+            DP::Stage_t       stage        = DP::Stage_t::Any,
             DP::EventId_t     eventId      = DP::Event::Id::Unknown,
             WindowId_t        _windowId    = Window::Id::Unknown,
             DP::Event::Flag_t flags        = 0,
@@ -96,7 +96,7 @@ namespace Event
                 size_t        size = sizeof(Data_t))
             :
                 Event::Data_t(
-                    DP::Stage::Acquire,
+                    DP::Stage_t::Acquire,
                     eventId,
                     windowId,
                     0,
@@ -115,7 +115,7 @@ namespace Event
                 size_t        size = sizeof(Data_t))
             :
                 Event::Data_t(
-                    DP::Stage::Acquire,
+                    DP::Stage_t::Acquire,
                     eventId,
                     windowId,
                     0,

@@ -73,7 +73,7 @@ namespace Transaction
         Data_t(
             TransactionId_t transactionId,
             size_t          size = sizeof(Data_t),
-            Stage_t         stage = Stage::Any)
+            Stage_t         stage = Stage_t::Any)
             :
             Event::Data_t(
                 stage,

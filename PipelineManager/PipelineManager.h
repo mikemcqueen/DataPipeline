@@ -62,11 +62,17 @@ private:
         std::wstring name;
 
         HandlerData_t() :
-            Stage(Stage::None), pHandler(nullptr)
+            HandlerData_t(Stage_t::None, nullptr)
         { }
 
-        HandlerData_t(Stage_t s, Handler_t* h, const wchar_t* n = 0) :
-            Stage(s), pHandler(h), name((nullptr != n) ? n : L"")
+        HandlerData_t(
+            Stage_t stage,
+            Handler_t* handler,
+            const wchar_t* pName = 0)
+            :
+            Stage(stage),
+            pHandler(handler),
+            name((nullptr != pName) ? pName : L"")
         { }
     };
     typedef vector<HandlerData_t>                HandlerVector_t;

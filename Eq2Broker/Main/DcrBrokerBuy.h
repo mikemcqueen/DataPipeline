@@ -39,24 +39,24 @@ constexpr auto kSavedSearchMax = 30;
 struct Data_t :
     public DP::Message::Data_t
 {
-    Buy::Text_t  tableText;
-    size_t       selectedRow;
+    Buy::Text_t tableText;
+    size_t selectedRow;
     PageNumber_t pageNumber;
-    char      searchText[kSearchTextMax];
-    bool         searchBoxHasCaret;
-    char      savedSearch[kSavedSearchMax];
+    char searchText[kSearchTextMax];
+    bool searchBoxHasCaret;
+    char savedSearch[kSavedSearchMax];
 
     Data_t(
-        const wchar_t*       pClass,
-        const TextTable_t&   textTable,
-        size_t               initSelectedRow,
-        const PageNumber_t&  initPageNumber,
-        const string&       initSearchText,
-        bool                 initSearchBoxHasCaret,
-        const string&       initSavedSearch)
+        const wchar_t* pClass,
+        const TextTable_t& textTable,
+        size_t initSelectedRow,
+        const PageNumber_t& initPageNumber,
+        const string& initSearchText,
+        bool initSearchBoxHasCaret,
+        const string& initSavedSearch)
     :
         DP::Message::Data_t(
-            DP::Stage::Translate,
+            DP::Stage_t::Translate,
             Message::Id::Buy,
             sizeof(Data_t),
             pClass),
@@ -68,10 +68,6 @@ struct Data_t :
         strcpy_s(searchText, initSearchText.c_str());
         strcpy_s(savedSearch, initSavedSearch.c_str());
     }
-
-private:
-
-    Data_t();
 };
 
 ////////////////////////////////////////////////////////////////////////////////

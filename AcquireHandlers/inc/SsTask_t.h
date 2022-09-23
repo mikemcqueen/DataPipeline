@@ -246,7 +246,7 @@ namespace Acquire
             size_t             Size = sizeof(Data_t))
             :
             DP::Message::Data_t(
-                DP::Stage::Acquire,
+                DP::Stage_t::Acquire,
                 SsTask_t::GetMessageId(),
                 Size,
                 pClass,

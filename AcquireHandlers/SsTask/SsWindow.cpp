@@ -80,7 +80,7 @@ AsyncEvent(
 
     if (!SetEventPending(true))
     {
-        DP::Event::Data_t EventData;
+        DP::Event::Data_t EventData(DP::Stage_t::Any);
         GetEventData(0, EventData, sizeof(EventData));
 
 //        const DP::Event::Data_t& EventData = GetEventData(0);

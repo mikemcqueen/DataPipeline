@@ -45,21 +45,17 @@ __inline void            ThrowIfFailed( HRESULT hr )        { if(FAILED(hr)) thr
 namespace util
 {
 
-bool
-IsParent(HWND hParent, HWND hWnd);
+bool IsParent(HWND hParent, HWND hWnd);
 
-void                    SetWaitableTimer( HANDLE hTimer, DWORD dwDelay, bool bPeriodic );
+void  SetWaitableTimer( HANDLE hTimer, DWORD dwDelay, bool bPeriodic );
 
-HANDLE                    CreateThread( LPSECURITY_ATTRIBUTES lpAttr, DWORD dwStack,
+HANDLE CreateThread( LPSECURITY_ATTRIBUTES lpAttr, DWORD dwStack,
                               LPTHREAD_START_ROUTINE lpStart, LPVOID lpParam,
                               DWORD dwFlags, LPDWORD lpdwID );
 
-void                    ExitThread( DWORD dwCode );
+void   ExitThread( DWORD dwCode );
 
-int
-getopt(int argc,
-       wchar_t* argv[],
-       const wchar_t* opts);
+int getopt(int argc, wchar_t* argv[], const wchar_t* opts);
 
 /*
 bool                    FileExists( LPCTSTR pszFile );

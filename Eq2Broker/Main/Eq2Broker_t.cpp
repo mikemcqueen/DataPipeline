@@ -60,25 +60,24 @@ bool
 Eq2Broker_t::
 InitHandlers()
 {
-    // TODO: objects responsible for adding themselves?
+
     DP::PipelineManager_t& pm = GetPipelineManager();
-    using namespace DP::Stage;
-    using namespace Broker::Transaction;
-    pm.AddHandler(Acquire, m_pImpl->m_SsWindow, L"SsWindow");
+
+    pm.AddHandler(DP::Stage_t::Acquire, m_pImpl->m_SsWindow, L"SsWindow");
 
     //
     // Translators
     //
     // NOTE: TrWindowType must be first translator
-    pm.AddHandler(Translate, m_pImpl->m_TrWindowType, L"IdWindowType");
+    pm.AddHandler(DP::Stage_t::Translate, m_pImpl->m_TrWindowType, L"IdWindowType");
     // NOTE: Scroll before window managers.
     //pm.AddHandler(Translate, m_pImpl->m_TrScroll, s_pClass);
-    pm.AddHandler(Translate, m_pImpl->buyWindowManager_.GetTranslator(), L"BrokerBuy");
+    pm.AddHandler(DP::Stage_t::Translate, m_pImpl->buyWindowManager_.GetTranslator(), L"BrokerBuy");
 
     //
     // Interpreters
     //
-    pm.AddHandler(Interpret, m_pImpl->buyWindowManager_.GetInterpreter(), L"BrokerBuy");
+    pm.AddHandler(DP::Stage_t::Interpret, m_pImpl->buyWindowManager_.GetInterpreter(), L"BrokerBuy");
 
     return true;
 }

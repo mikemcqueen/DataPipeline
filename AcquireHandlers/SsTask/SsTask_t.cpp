@@ -15,6 +15,7 @@
 #include "DdUtil.h"
 #include "Log.h"
 #include "Macros.h"
+#include "CommonTypes.h"
 
 using namespace std;
 
@@ -152,7 +153,7 @@ HRESULT
 SsTask_t::
 InitSurfacePool(
     CDisplay&     Display,
-    pool<CSurface> & Pool,
+    pool<CSurface>& Pool,
     size_t        cx,
     size_t        cy,
     size_t        Count)
@@ -162,8 +163,7 @@ InitSurfacePool(
 	{
 		CSurface* pSurface = new CSurface();
         HRESULT hr = Display.CreateSurface(pSurface, int(cx), int(cy));
-        if (FAILED(hr))
-        {
+        if (FAILED(hr)) {
             LogError(L"CreateSurface(%d,%d) failed. (0x%08x)", cx, cy, hr);
             if (nullptr != pSurface)
                 delete pSurface;
@@ -426,8 +426,10 @@ SsTask_t::
 SuspendAndFlush()
 {
     Suspend();
-    GetPipelineManager().Flush(DP::Stage::Acquire | DP::Stage::Translate,
-                               GetClass().c_str());
+    GetPipelineManager().Flush(
+        // hacko. could be fun template. actually, just swap param order and use variadic args
+        DP::Stage_t(intValue(DP::Stage_t::Acquire) | intValue(DP::Stage_t::Translate)),
+        GetClass().c_str());
 }
 
 /////////////////////////////////////////////////////////////////////////////

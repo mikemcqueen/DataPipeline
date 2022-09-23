@@ -18,6 +18,7 @@ namespace DP
 
 ////////////////////////////////////////////////////////////////////////////////
 
+/*
 typedef unsigned Stage_t;
 namespace Stage
 {
@@ -32,6 +33,16 @@ namespace Stage
         Any        = 0x0000001F,
     };
 }
+*/
+enum class Stage_t {
+    None =      0,
+    Acquire =   0x00000001,
+    Translate = 0x00000002,
+    Interpret = 0x00000004,
+    Analyze =   0x00000008,
+    Execute =   0x00000010,
+    Any =       0x0000001F,
+};
 
 enum class MessageId_t : int {};
 
@@ -89,8 +100,9 @@ namespace Message
         Message::Type Type;
         ReleaseFn_t   ReleaseFn;
 
+        explicit
         Data_t(
-            Stage_t        stage       = Stage::Any,
+            Stage_t        stage,
             MessageId_t    messageId   = Message::Id::Unknown,
             size_t         size        = sizeof(Data_t),
             const wchar_t* className   = nullptr,
@@ -108,7 +120,8 @@ namespace Message
                 wcscpy_s(Class, className);
             }
         }
-        //~Data_t() = delete;
+
+        Data_t() final = default;
     };
 
 ////////////////////////////////////////////////////////////////////////////////

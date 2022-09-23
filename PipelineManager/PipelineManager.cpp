@@ -10,6 +10,7 @@
 #include "PipelineManager.h"
 #include "TransactionManager.h"
 #include "Macros.h"
+#include "CommonTypes.h"
 #include "Log.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -96,7 +97,7 @@ operator()(
     const Message::Data_t* pD1,
     const Message::Data_t* pD2) const
 {
-    if (0 == (pD1->Stage & pD2->Stage))
+    if (0 == (intValue(pD1->Stage) & intValue(pD2->Stage)))
         return false;
     if (0 != wcscmp(pD1->Class, pD2->Class))
         return false;
@@ -192,14 +193,13 @@ private:
     void
     Init()
     {
-        using namespace Stage;
-        insert(make_pair(None,      wstring(L"None")));
-        insert(make_pair(Acquire,   wstring(L"Acquire")));
-        insert(make_pair(Translate, wstring(L"Translate")));
-        insert(make_pair(Interpret, wstring(L"Interpret")));
-        insert(make_pair(Analyze,   wstring(L"Analyze")));
-        insert(make_pair(Execute,   wstring(L"Execute")));
-        insert(make_pair(Any,       wstring(L"Any")));
+        insert(make_pair(Stage_t::None,      wstring(L"None")));
+        insert(make_pair(Stage_t::Acquire,   wstring(L"Acquire")));
+        insert(make_pair(Stage_t::Translate, wstring(L"Translate")));
+        insert(make_pair(Stage_t::Interpret, wstring(L"Interpret")));
+        insert(make_pair(Stage_t::Analyze,   wstring(L"Analyze")));
+        insert(make_pair(Stage_t::Execute,   wstring(L"Execute")));
+        insert(make_pair(Stage_t::Any,       wstring(L"Any")));
     }
 };
 
@@ -229,7 +229,7 @@ GetNextHandler(
 {
     while (m_Handlers.end() != it)
     {
-        if ((0 != (it->Stage & Stage))) 
+        if ((0 != (intValue(it->Stage) & intValue(Stage)))) // todo template func
             // TODO: revisit this class nonsense when necessary. maybe
             // consider adding an "application" or "domain" message::Data
             // member in addition to "class".
@@ -432,9 +432,9 @@ Callback(
     }
     switch (pMessage->Stage)
     {
-    case Stage::Acquire:
-    case Stage::Translate:
-    case Stage::Interpret:
+    case Stage_t::Acquire:
+    case Stage_t::Translate:
+    case Stage_t::Interpret:
         LogInfo(L"PM::Callback (%s)", GetStageString(pMessage->Stage));
         break;
 
@@ -474,12 +474,12 @@ PipelineManager_t::
 Dispatch(
     Message::Data_t* pMessage)
 {
-    Stage_t NextStage = Stage::None;
+    Stage_t NextStage = Stage_t::None;
     switch (pMessage->Stage)
     {
-    case Stage::Acquire:     NextStage = Stage::Translate; break;
-    case Stage::Translate:   NextStage = Stage::Interpret; break;
-    case Stage::Interpret:   NextStage = Stage::Analyze;   break;
+    case Stage_t::Acquire:     NextStage = Stage_t::Translate; break;
+    case Stage_t::Translate:   NextStage = Stage_t::Interpret; break;
+    case Stage_t::Interpret:   NextStage = Stage_t::Analyze;   break;
     default:
         ASSERT(false);
         return;
@@ -583,7 +583,7 @@ Release(
 #if 0
     switch (pData->Stage)
     {
-    case DP::Stage::Acquire:
+    case DP::Stage_t::Acquire:
         {
             // Haxoid
             //pData->~Data_t();
@@ -611,8 +611,8 @@ Release(
         }
         break;
 
-    case DP::Stage::Translate:
-    case DP::Stage::Interpret:
+    case DP::Stage_t::Translate:
+    case DP::Stage_t::Interpret:
         break;
 
     default:
