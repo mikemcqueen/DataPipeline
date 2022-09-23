@@ -2,14 +2,15 @@
 //
 // Copyright (C) 2008 Mike McQueen.  All rights reserved.
 //
-// DcrWindow.cpp
+// DcrWindowPolicy.cpp
 //
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
 #include "DcrWindow.h"
+#include "DcrWindowPolicy.h"
 #include "DdUtil.h"
-#include "PipelineManager.h"
+//#include "PipelineManager.h"
 #include "Dcr.h"
 
 extern CDisplay *g_pDisplay;
@@ -17,116 +18,31 @@ bool g_noDcrPost = false;
 
 /////////////////////////////////////////////////////////////////////////////
 
-namespace DcrWindow
-{
-namespace Policy
-{
+namespace DcrWindow::Policy {
+
+namespace Translate {
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// OneTable_t
-//
-/////////////////////////////////////////////////////////////////////////////
-#if !TEMPLATEPOLICY
-
-OneTable_t::
-OneTable_t(
-    Ui::WindowId_t TopWindowId,
-    Ui::WindowId_t DcrWindowId,
-    DCR&       Dcr)
-//,    RECT*      pRect)
-:
-    m_TopWindowId(TopWindowId),
-    m_DcrWindowId(DcrWindowId),
-    m_Dcr(Dcr)
-//,    m_pRect(pRect)
-{
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-
-OneTable_t::
-~OneTable_t()
-{
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-bool
-OneTable_t::
-Initialize()
-{
-    return m_Dcr.Initialize();
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-/*
-bool
-OneTable_t::
-PreTranslate(
-    const AcquireData_t& Data)
-{
-    return true;
-}
-*/
-
-///////////////////////////////////////////////////////////////////////////////
-
-bool
-OneTable_t::
-Translate(
-    const AcquireData_t& Data)
-{
-    LogInfo(L"OneTablePolicy_t::Translate()");
-    CSurface* pSurface = Data.pPoolItem->get();
-    Rect_t Rect;
-    // TODO super suspicious
-    pSurface->GetClientRect(&Rect);
-    if (/*!handler_.PreTranslateSurface(pSurface, 0, m_Dcr.GetId(), &Rect) ||*/
-        !m_Dcr.TranslateSurface(pSurface, Rect))
-    {
-        LogError(L"OneTablePolicy_t::Translate() failed.");
-        return false;
-    }
-    return true;
-}
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// TranslateMany_t
+// Translate::Many_t
 //
 /////////////////////////////////////////////////////////////////////////////
 
-TranslateMany_t::
-TranslateMany_t(
-// TODO: put these back in 
-//    WindowId_t TopWindowId,
-//    WindowId_t DcrWindowId,
-    const Translate::HandlerBase_t& handler,
+Many_t::
+Many_t(
+    const DcrWindow::Translate::AbstractHandler_t& handler,
     DcrVector_t& DcrVector)
-//,    RECT*        pRect)
-:
-//    m_TopWindowId(TopWindowId),
-//    m_DcrWindowId(DcrWindowId),
+    :
     handler_(handler),
     m_DcrVector(DcrVector)
-//,    m_pRect(pRect)
-{
-}
+{ }
 
-///////////////////////////////////////////////////////////////////////////////
-
-TranslateMany_t::
-~TranslateMany_t()
-{
-}
+Many_t::~Many_t() = default;
 
 ///////////////////////////////////////////////////////////////////////////////
 
 bool
-TranslateMany_t::
+Many_t::
 Initialize()
 {
     DcrVector_t::iterator it = m_DcrVector.begin();
@@ -140,126 +56,32 @@ Initialize()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#if 0
 bool
-TranslateMany_t::
-PreTranslate(
-    const AcquireData_t& /*Data*/)
-{
-    return true;
-}
-#endif
-
-///////////////////////////////////////////////////////////////////////////////
-
-bool
-TranslateMany_t::
+Many_t::
 Translate(
-    const AcquireData_t& Data)
+    const AcquireData_t& data)
 {
-    LogInfo(L"TranslateMany_t::Translate()");
-    CSurface* pSurface = Data.pPoolItem->get();
+    LogInfo(L"Translate::Many_t::Translate()");
+    CSurface* pSurface = data.pPoolItem->get();
     DcrVector_t::iterator it = m_DcrVector.begin();
     for (size_t Index = 0; m_DcrVector.end() != it; ++it, ++Index)
     {
-        DCR& Dcr = **it;
-        Rect_t Rect;
-        if (!handler_.PreTranslateSurface(pSurface, Data.WindowId, Dcr.GetId(), &Rect) ||
-            !Dcr.TranslateSurface(pSurface, Rect))
+        DCR& dcr = **it;
+        Rect_t rect;
+        if (!handler_.PreTranslateSurface(pSurface, data.WindowId, dcr.GetId(), &rect) ||
+            !dcr.TranslateSurface(pSurface, rect))
         {
-            LogError(L"TranslateMany_t::Translate() failed on index(%d) of size(%d)",
-                     Index, m_DcrVector.size());
+            LogError(L"Translate::Many_t::Translate() failed on index(%d) of size(%d)",
+                Index, m_DcrVector.size());
             // TODO? TEMP? return false;
         }
     }
     return true;
 }
 
-/////////////////////////////////////////////////////////////////////////////
+} // Translate
 
-#endif // !TEMPLATEPOLICY
-
-#if PENDING
-/////////////////////////////////////////////////////////////////////////////
-//
-// TwoTable_t
-//
-/////////////////////////////////////////////////////////////////////////////
-
-TwoTable_t::
-TwoTable_t(
-    Window::Type_e TopWindowType,
-    DcrTrades_t&        DcrFirst,
-    Window::Type_e DcrFirstWindowType,
-    DcrTrades_t&        DcrSecond,
-    Window::Type_e DcrSecondWindowType)
-:
-    m_TopWindowType(TopWindowType),
-    m_DcrFirst(DcrFirst),
-    m_DcrFirstWindowType(DcrFirstWindowType),
-    m_DcrSecond(DcrSecond),
-    m_DcrSecondWindowType(DcrSecondWindowType)
-{
-}
-
-/////////////////////////////////////////////////////////////////////////////
-
-bool
-TwoTable_t::
-PreTranslate(
-    const SsTrades_t::AcquireData_t* pData)
-{
-    if (Message::Id::ScreenShot != pData->Id)
-        return false;
-    if (m_TopWindowType != pData->WindowType)
-        return false;
-    if (m_TopWindowType != LonWindow_t::GetTopWindow().Type)
-        return false;
-    return true;
-}
-
-/////////////////////////////////////////////////////////////////////////////
-
-bool
-TwoTable_t::
-Translate(
-    const SsTrades_t::AcquireData_t* pData)
-{
-    LogInfo(L"TwoTable_t::Translate(%d)", pData->Id);
-
-    CSurface* pSurface = pData->pPoolItem->get();
-    RECT rcFirst;
-    if (!LonWindow_t::GetWindowRect(
-        m_DcrFirstWindowType,
-        rcFirst,
-        LonWindow_t::GetSsWindowType(m_TopWindowType)))
-    {
-        return false;
-    }
-    if (!m_DcrFirst.PreTranslateSurface(pSurface, rcFirst) ||
-        !m_DcrFirst.TranslateSurface(pSurface, rcFirst))
-    {
-        LogError(L"TwoTable_t::TranslateFirst(%d) failed.", pData->Id);
-        return false;
-    }
-
-    RECT rcSecond;
-    if (!LonWindow_t::GetWindowRect(
-        m_DcrSecondWindowType,
-        rcSecond,
-        LonWindow_t::GetSsWindowType(m_TopWindowType)))
-    {
-        return false;
-    }
-    if (!m_DcrSecond.PreTranslateSurface(pSurface, rcSecond) ||
-        !m_DcrSecond.TranslateSurface(pSurface, rcSecond))
-    {
-        LogError(L"TwoTable_t::TranslateSecond(%d) failed.", pData->Id);
-        return false;
-    }
-    return true;
-}
-
+#ifdef PENDING
 /////////////////////////////////////////////////////////////////////////////
 //
 // ValidateWindow_t
@@ -518,5 +340,4 @@ ValidateCorners(
 /////////////////////////////////////////////////////////////////////////////
 #endif // PENDING
 
-} // Policy
-} // DcrWindow
+} // DcrWindow::Policy

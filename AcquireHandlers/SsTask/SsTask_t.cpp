@@ -152,7 +152,7 @@ HRESULT
 SsTask_t::
 InitSurfacePool(
     CDisplay&     Display,
-    SurfacePool_t& Pool,
+    pool<CSurface> & Pool,
     size_t        cx,
     size_t        cy,
     size_t        Count)

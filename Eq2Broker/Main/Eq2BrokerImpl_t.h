@@ -19,7 +19,7 @@
 #include "TrWindowType.h"
 #include "TrScrollThumb_t.h"
 
-#include "BrokerBuy.h"
+#include "BrokerBuyWindowManager.h"
 #if 0
 #include "BrokerSell.h"
 #include "SetPrice.h"
@@ -59,7 +59,7 @@ public:
     TrScrollThumb_t              m_TrScroll;
 
     // Translate/Interpret handlers
-    Buy::Window::Manager_t       m_BuyWindow;
+    Buy::Window::Manager_t       buyWindowManager_;
 #if 0
     Sell::Window::Manager_t      m_SellWindow;
     SetPrice::Window::Manager_t  m_SetPricePopup;
@@ -87,11 +87,9 @@ public:
 
     ~Eq2BrokerImpl_t();
 
-private:
-
-    Eq2BrokerImpl_t();
-    Eq2BrokerImpl_t(const Eq2BrokerImpl_t&);
-    Eq2BrokerImpl_t& operator=(const Eq2BrokerImpl_t&);
+    Eq2BrokerImpl_t() = delete;
+    Eq2BrokerImpl_t(const Eq2BrokerImpl_t&) = delete;
+    Eq2BrokerImpl_t& operator=(const Eq2BrokerImpl_t&) = delete;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -145,10 +145,8 @@
     <ClInclude Include="Rect.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="StringSet_t.h" />
-    <ClInclude Include="SurfacePoolItem_t.h" />
     <ClInclude Include="TextTable_t.h" />
     <ClInclude Include="ThreadQueue_t.h" />
-    <ClInclude Include="TiBase_t.h" />
     <ClInclude Include="Timer_t.h" />
     <ClInclude Include="XmlFile.h" />
     <ClInclude Include="XmlUtil.h" />

@@ -20,14 +20,13 @@
 #include "BrokerBuyTypes.h"
 #include "AutoCs.h"
 #include "PageNumber_t.h"
-#include "TiBase_t.h"
 
 namespace Broker
 {
 namespace Buy
 {
 
-typedef TiBase_t<Table::RowCount, Table::CharsPerRow, Table::ColumnCount> TiTable_t;
+//typedef TiBase_t<Table::RowCount, Table::CharsPerRow, Table::ColumnCount> TiTable_t;
 
 namespace Interpret
 {
@@ -37,18 +36,15 @@ namespace Interpret
 class Handler_t :
     public DP::Handler_t
 {
-
-private:
-
-    Window::ManagerBase_t&  m_Manager;
-    PageNumber_t            m_PageNumber;
-
-    mutable CAutoCritSec    m_csState;
-
 public:
 
+    explicit
     Handler_t(
-        Window::ManagerBase_t& Manager);
+        Window::ManagerBase_t& windowManager);
+
+    Handler_t() = delete;
+    Handler_t(const Handler_t&) = delete;
+    Handler_t& operator= (const Handler_t&) = delete;
 
     //
     // DP::Handler_t virtual:
@@ -67,19 +63,13 @@ public:
     MessageHandler(
         const DP::Message::Data_t* pData) override;
 
-    HRESULT
-    ExecuteTransaction(
-        DP::Transaction::Data_t& Data) override;
-
 private:
 
-    Window::ManagerBase_t& GetManager() const { return m_Manager; }
+    Window::ManagerBase_t& GetWindowManager() const { return windowManager_; }
 
-private:
-
-    Handler_t();
-    Handler_t(const Handler_t&);
-    Handler_t& operator= (const Handler_t&);
+    Window::ManagerBase_t& windowManager_;
+    PageNumber_t m_PageNumber;
+    mutable CAutoCritSec m_csState;
 };
 
 /////////////////////////////////////////////////////////////////////////////

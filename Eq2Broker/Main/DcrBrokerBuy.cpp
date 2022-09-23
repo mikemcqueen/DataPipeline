@@ -7,8 +7,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "BrokerBuy.h"
-#include "DcrBrokerBuy.h"
+#include "BrokerBuyWindowManager.h"
 #include "PipelineManager.h"
 #include "SsWindow.h"
 #include "DdUtil.h"

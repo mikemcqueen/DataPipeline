@@ -20,13 +20,14 @@
 #include "DpMessage.h"
 #include "AutoHand.h"
 #include "AutoCs.h"
-#include "SurfacePoolItem_t.h"
+#include "Pool.h"
 #include "Macros.h"
 
 /////////////////////////////////////////////////////////////////////////////
 
 class PipelineManager_t;
 class CDisplay;
+class CSurface;
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -72,7 +73,7 @@ private:
     mutable volatile
     LONG              m_lSuspendCount;
 
-    SurfacePool_t     m_Pool;
+    pool<CSurface>     m_Pool;
 
     mutable volatile
     LONG              m_lEventPending;
@@ -184,13 +185,13 @@ private:
     HRESULT
     InitSurfacePool(
         CDisplay&     Display,
-        SurfacePool_t& Pool,
+        pool<CSurface>& Pool,
         size_t        cx,
         size_t        cy,
         size_t        Count);
 
     HRESULT            InitSurfacePool(size_t Size);
-    SurfacePool_t&     GetSurfacePool()              { return m_Pool; }
+    pool<CSurface>&     GetSurfacePool()              { return m_Pool; }
     pool<CSurface>::item_t* GetAvailableSurface();
 
     void

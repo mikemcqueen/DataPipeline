@@ -318,7 +318,7 @@ g_Bad = 0;
             auto Pos = 0;
             for (auto Column = 0; Column < pText->GetColumnCount(); ++Column)
             {
-                size_t Width = pText->GetColumnWidth(Column);
+                size_t Width = pText->GetColumnWidths()[Column];
                 wcscpy_s(&pszRow[Pos], Width, L"BAD");
                 Pos += Width;
 ++g_Bad;

@@ -2,7 +2,7 @@
 //
 // Copyright (C) 2008 Mike McQueen.  All rights reserved.
 //
-// BrokerBuy.h
+// BrokerBuyWindowManager.h
 //
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -10,8 +10,8 @@
 #pragma once
 #endif
 
-#ifndef Include_BROKERBUY_H
-#define Include_BROKERBUY_H
+#ifndef Include_BROKERBUYWINDOWMANAGER_H
+#define Include_BROKERBUYWINDOWMANAGER_H
 
 #include "BrokerBuyWindow.h"
 #include "DcrBrokerBuy.h"
@@ -20,28 +20,19 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 
-//class Ui::Window::Base_t;
-
-namespace Broker
-{
-namespace Buy
-{
-namespace Window
-{
-
+namespace Broker::Buy::Window {
     class Manager_t :
         public ManagerBase_t
     {
     public:
-        Manager_t(Window_t& Window) : ManagerBase_t(Window) {}
+        Manager_t(Window_t& window) :
+            ManagerBase_t(window)
+        { }
     };
-
-} // Window
-} // Buy
-} // Broker
+} // namespace Broker::Buy::Window
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#endif // Include_BROKERBUY_H
+#endif // Include_BROKERBUYWINDOWMANAGER_H
 
 ///////////////////////////////////////////////////////////////////////////////

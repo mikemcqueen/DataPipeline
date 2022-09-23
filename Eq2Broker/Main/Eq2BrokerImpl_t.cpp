@@ -22,7 +22,7 @@ Eq2BrokerImpl_t(
     m_SsWindow(*g_pDisplay, mainWindow),
     m_TrWindowType(mainWindow),
     m_TrScroll(mainWindow),
-    m_BuyWindow(mainWindow.GetBrokerBuyWindow())
+    buyWindowManager_(mainWindow.GetBrokerBuyWindow())
 #if 0
     m_SellWindow(mainWindow.GetBrokerSellWindow()),
     m_SetPricePopup(mainWindow.GetSetPricePopup()),

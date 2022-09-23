@@ -20,30 +20,25 @@
 #include "SsWindow.h"
 #include "UiWindowId.h"
 #include "Log.h"
-//#include "Dcr.h"
 
 class DCR;
 using DcrVector_t = std::vector<DCR*>;
 
-namespace DcrWindow
-{
+namespace DcrWindow {
 
 using AcquireData_t = SsWindow::Acquire::Data_t;
 
-namespace Translate
-{
+namespace Translate {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class HandlerBase_t :
+class AbstractHandler_t :
     public DP::Handler_t
 {
 public:
 
-    HandlerBase_t() = default;
-
     // 
-    // HandlerBase_t virtual:
+    // AbstractHandler_t virtual:
     //
 
     virtual
@@ -52,18 +47,12 @@ public:
         CSurface* /*pSurface*/,
         Ui::WindowId_t /*windowId*/,
         int /*dcrId*/,
-        Rect_t* /*pRect*/) const
-    {
-        throw runtime_error("DcrWindow::Translate::Handler must override PreTranslateSurface");
-    }
+        Rect_t* /*pRect*/) const = 0;
 
     virtual
     void
     PostData(
-        DWORD /*Unused*/) const
-    {
-        throw runtime_error("DcrWindow::Translate::Handler must override PreTranslateSurface");
-    }
+        DWORD /*Unused*/) const = 0;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -72,15 +61,8 @@ template<
     class TranslatePolicy_t,
     class ValidatePolicy_t> //  = Policy::NoValidate_t<int, int>>
 class Handler_t :
-    public HandlerBase_t
+    public AbstractHandler_t
 {
-private:
-
-    Ui::WindowId_t     m_WindowId;
-    TranslatePolicy_t& m_TranslatePolicy;
-    ValidatePolicy_t&  m_ValidatePolicy;
-    wstring            m_name;
-
 public:
 
     Handler_t(
@@ -88,17 +70,14 @@ public:
         TranslatePolicy_t& TranslatePolicy,
         ValidatePolicy_t&  ValidatePolicy,
         const wchar_t*     pName = nullptr)
-    :
+        :
         m_WindowId(WindowId),
         m_TranslatePolicy(TranslatePolicy),
         m_ValidatePolicy(ValidatePolicy),
         m_name((nullptr != pName) ? pName : L"[unnamed]")
     { }
 
-    #if 1
-    ~Handler_t() override
-    { }
-    #endif
+    Handler_t(const Handler_t&) = delete;
 
     // 
     // DP::Handler_t virtual:
@@ -148,170 +127,13 @@ private:
     }
 
 private:
-
-    // Explicitly disabled:
-    Handler_t();
-    Handler_t(const Handler_t&);
-    Handler_t& operator=(const Handler_t&);
+    Ui::WindowId_t m_WindowId;
+    TranslatePolicy_t& m_TranslatePolicy;
+    ValidatePolicy_t& m_ValidatePolicy;
+    wstring m_name;
 };
 
 } // Translate
-
-////////////////////////////////////////////////////////////////////////////////
-
-namespace Policy // TODO Strategy
-{
-
-class OneTable_t
-{
-
-public:
-
-    const Ui::WindowId_t m_TopWindowId;
-
-private:
-
-    const Ui::WindowId_t m_DcrWindowId;
-
-    DCR&   m_Dcr;
-//    RECT*  m_pRect;
-
-public:
-
-    explicit
-    OneTable_t(
-        Ui::WindowId_t TopWindowId,
-        Ui::WindowId_t DcrWindowId,
-        DCR&       Dcr);
-//,        RECT*      pRect = nullptr);
-
-    ~OneTable_t();
-
-    bool
-    Initialize();
-
-    /*
-    bool
-    PreTranslate(
-        const AcquireData_t& Data);
-        */
-
-    bool
-    Translate(
-        const AcquireData_t& Data);
-
-private:
-
-    OneTable_t();
-    OneTable_t(const OneTable_t&);
-    OneTable_t& operator=(const OneTable_t&);
-};
-
-////////////////////////////////////////////////////////////////////////////////
-
-class TranslateMany_t
-{
-public:
-
-//    const Ui::Window::Id_t m_TopWindowId;
-
-private:
-
-//    const Ui::Window::Id_t m_DcrWindowId;
-    const Translate::HandlerBase_t& handler_;
-    DcrVector_t& m_DcrVector;
-
-public:
-
-    explicit
-    TranslateMany_t(
-        const Translate::HandlerBase_t& handler,
-        DcrVector_t& DcrVector);
-
-    ~TranslateMany_t();
-
-    bool
-    Initialize();
-
-    /*
-    bool
-    PreTranslate(
-        const AcquireData_t& Data);
-        */
-
-    bool
-    Translate(
-        const AcquireData_t& Data);
-
-private:
-
-    TranslateMany_t();
-    TranslateMany_t(const TranslateMany_t&);
-    TranslateMany_t& operator=(const TranslateMany_t&);
-};
-
-////////////////////////////////////////////////////////////////////////////////
-
-class NoValidate_t
-{
-
-public:
-
-    NoValidate_t()
-    {
-    }
-
-    bool
-    Initialize()
-    {
-        return true;
-    }
-
-    bool
-    Validate(
-        const AcquireData_t& /*Data*/)
-    {
-        return true;
-    }
-};
-
-////////////////////////////////////////////////////////////////////////////////
-
-#if PENDING
-class ValidateWindowPolicy_t
-{
-
-public:
-
-    ValidateWindowPolicy_t();
-
-    bool
-    Initialize();
-
-    bool
-    Validate(
-        const SsTrades_t::ScreenShotData_t* pData);
-
-private:
-
-    bool
-    InitAllBitmaps();
-
-    bool
-    ValidateSides(
-        const CSurface* pSurface,
-        const RECT&     rcBounds);
-
-    bool
-    ValidateCorners(
-        const CSurface* pSurface,
-        const RECT&     rcBounds);
-};
-#endif
-
-////////////////////////////////////////////////////////////////////////////////
-
-} // Policy
 } // DcrWindow
 
 #endif  // Include_DCRWINDOW_H

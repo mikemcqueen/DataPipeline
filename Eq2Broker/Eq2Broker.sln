@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Unit Tests", "Unit Tests", "{8D92FE8B-5E84-4533-A909-E31F2F1850AF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TranslateHandlers", "TranslateHandlers", "{1CF8F645-10F0-4D61-A78E-00BFBEE7C9C0}"
+	ProjectSection(SolutionItems) = preProject
+		..\TranslateHandlers\inc\DcrWindowPolicy.h = ..\TranslateHandlers\inc\DcrWindowPolicy.h
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CommonUtils", "..\CommonUtils\CommonUtils.vcxproj", "{612EC231-D5A3-4550-AF05-211548D82370}"
 EndProject

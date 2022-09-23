@@ -11,7 +11,7 @@
 #include "PipelineManager.h"
 #include "SsWindow.h"
 #include "DdUtil.h"
-#include "SurfacePoolItem_t.h"
+//#include "SurfacePoolItem_t.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 

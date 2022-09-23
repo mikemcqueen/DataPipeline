@@ -9,7 +9,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "BrokerBuy.h"
+#include "TiBrokerBuy.h"
+#include "DcrBrokerBuy.h"
 //#include "TxGetItemsForSale.h"
 #include "PipelineManager.h"
 #include "BrokerId.h"
@@ -29,9 +30,9 @@ namespace Interpret
 
 Handler_t::
 Handler_t(
-    Window::ManagerBase_t& Manager)
-:
-    m_Manager(Manager)
+    Window::ManagerBase_t& windowManager)
+    :
+    windowManager_(windowManager)
 {
 }
 
@@ -64,28 +65,6 @@ Shutdown()
 }
 #endif
 
-/////////////////////////////////////////////////////////////////////////////
-
-HRESULT
-Handler_t::
-ExecuteTransaction(
-    DP::Transaction::Data_t&) //Data)
-{
-#if 0
-    using namespace Transaction;
-    switch (Data.Id)
-    {
-    case Id::GetItemsForSale:
-        GetItemsForSale::Handler_t::Start(static_cast<GetItemsForSale::Data_t&>(Data));
-        break;
-
-    default:
-        return S_FALSE;
-    }
-#endif
-    return S_OK;
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 
 HRESULT
@@ -96,7 +75,6 @@ MessageHandler(
     if (Message::Id::Buy != pMessage->Id) {
         return S_FALSE;
     }
-
     auto& message = static_cast<const Translate::Data_t&>(*pMessage);
     message.tableText.Dump(L"TiBrokerBuy");
 

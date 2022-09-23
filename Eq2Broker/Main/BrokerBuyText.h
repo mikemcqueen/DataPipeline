@@ -16,10 +16,7 @@
 #include "BrokerBuyTypes.h"
 #include "Price_t.h"
 
-namespace Broker
-{
-namespace Buy
-{
+namespace Broker::Buy {
 
 using TextBase_t = NewTextTableData_t<Table::RowCount, Table::CharsPerRow, Table::ColumnCount>;
 
@@ -148,8 +145,7 @@ public:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-} // Buy
-} // Broker
+} // Broker::Buy
 
 #endif // Include_BROKERBUYTEXT_H
 

@@ -29,14 +29,16 @@ class Handler_t
 {
     friend class PipelineManager_t;
 
-private:
-
-    std::wstring m_strClass;
-
 public:
-
+    Handler_t() = default;
+    
     virtual
     ~Handler_t() {}
+
+    Handler_t(const Handler_t&) = delete;
+    Handler_t& operator=(const Handler_t&) = delete;
+    Handler_t(const Handler_t&&) = delete;
+    Handler_t& operator=(const Handler_t&&) = delete;
 
     virtual
     bool
@@ -133,7 +135,7 @@ public:
         return S_FALSE;
     }
 
-    const std::wstring& GetClass() const                  { return m_strClass; }
+    const std::wstring& GetClass() const { return m_strClass; }
 
 private:
 
@@ -147,6 +149,9 @@ private:
             m_strClass.clear();
         }
     }
+
+private:
+    std::wstring m_strClass;
 };
 
 } // namespace DP

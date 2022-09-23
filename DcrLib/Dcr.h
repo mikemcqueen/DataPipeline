@@ -196,6 +196,9 @@ public:
     void
     EndTesseract()
     {
+        if (!tesseract_.get()) {
+            throw new logic_error("Tesseract not initialized");
+        }
         tesseract_->End();
     }
 

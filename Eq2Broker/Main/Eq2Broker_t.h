@@ -36,18 +36,8 @@ namespace Broker {
 
 class Eq2Broker_t
 {
-
 public:
-
-    static const wchar_t*   s_pClass;
-
-private:
-
-    Broker::MainWindow_t& m_mainWindow;
-    const Broker::Options_t& m_options;
-    std::unique_ptr<Eq2BrokerImpl_t> m_pImpl;
-
-public:
+    static const wchar_t*   s_pClass; // TODO 
 
     // Constructor & destructor:
     Eq2Broker_t(
@@ -55,6 +45,10 @@ public:
         const Broker::Options_t& options);
 
     ~Eq2Broker_t();
+
+    Eq2Broker_t() = delete;
+    Eq2Broker_t(const Eq2Broker_t&) = delete;
+    Eq2Broker_t& operator=(const Eq2Broker_t&) = delete;
 
     bool
     Initialize();
@@ -118,10 +112,9 @@ private:
 
 private:
 
-    // Explicitly disabled:
-    Eq2Broker_t();
-    Eq2Broker_t(const Eq2Broker_t&);
-    Eq2Broker_t& operator=(const Eq2Broker_t&);
+    Broker::MainWindow_t& mainWindow_;
+    const Broker::Options_t& m_options;
+    std::unique_ptr<Eq2BrokerImpl_t> m_pImpl;
 };
 
 const wchar_t*

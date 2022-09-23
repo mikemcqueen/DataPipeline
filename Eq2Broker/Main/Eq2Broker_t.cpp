@@ -18,26 +18,17 @@
 #include "MainWindow_t.h"
 #include "Character_t.h"
 #include "Log_t.h"
-#include "SurfacePoolItem_t.h"
 
 using namespace Broker;
 
 ////////////////////////////////////////////////////////////////////////////////
-// Eq2Broker_t static definitions.
-
-const wchar_t* Eq2Broker_t::s_pClass = nullptr; // L"Eq2Broker";
-
-////////////////////////////////////////////////////////////////////////////////
-//
-// Constructor.
-//
 
 Eq2Broker_t::
 Eq2Broker_t(
     Broker::MainWindow_t& mainWindow,
     const Broker::Options_t& options)
     :
-    m_mainWindow(mainWindow),
+    mainWindow_(mainWindow),
     m_options(options),
     m_pImpl(std::make_unique<Eq2BrokerImpl_t>(*this, mainWindow))
 {
@@ -79,15 +70,15 @@ InitHandlers()
     // Translators
     //
     // NOTE: TrWindowType must be first translator
-    pm.AddHandler(Translate, m_pImpl->m_TrWindowType, s_pClass);
+    pm.AddHandler(Translate, m_pImpl->m_TrWindowType, L"IdWindowType");
     // NOTE: Scroll before window managers.
     //pm.AddHandler(Translate, m_pImpl->m_TrScroll, s_pClass);
-    pm.AddHandler(Translate, m_pImpl->m_BuyWindow.GetTranslator(), s_pClass);
+    pm.AddHandler(Translate, m_pImpl->buyWindowManager_.GetTranslator(), L"BrokerBuy");
 
     //
     // Interpreters
     //
-    pm.AddHandler(Interpret, m_pImpl->m_BuyWindow.GetInterpreter(), s_pClass);
+    pm.AddHandler(Interpret, m_pImpl->buyWindowManager_.GetInterpreter(), L"BrokerBuy");
 
     return true;
 }
@@ -98,7 +89,7 @@ MainWindow_t&
 Eq2Broker_t::
 GetMainWindow()
 {
-    return m_mainWindow;
+    return mainWindow_;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -158,18 +149,13 @@ ReadConsoleLoop()
 {
     const size_t ConsoleBufSize = 256;
     wchar_t buf[ConsoleBufSize];
-    while (ReadConsoleCommand(buf, _countof(buf)))
-//    while (CommandLoop(buf, _countof(buf)))
-    {
-        try
-        {
-            if (!DispatchCommand(buf))
-            {
+    while (ReadConsoleCommand(buf, _countof(buf))) {
+        try {
+            if (!DispatchCommand(buf)) {
                 return;
             }
         }
-        catch (std::exception& e)
-        {
+        catch (std::exception& e) {
             LogError(L"Eq2Broker_t::ReadConsoleLoop() Exception: %hs", e.what());
         }
     }
@@ -183,28 +169,20 @@ CommandLoop(wchar_t* buf, DWORD size)
 {
     HWND hLog = Log_t::Get().GetLogWindow().GetHwnd();
     INPUT_RECORD inp;
-    for (;;)
-    {
+    for (;;) {
         MSG msg;
-        if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
-        {
-            if (msg.message == WM_QUIT)
-            {
+        if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
+            if (msg.message == WM_QUIT) {
                 return false; //??? retur
             }
-            if (!IsWindow(hLog) || !IsDialogMessage(hLog, &msg)) 
-            {
+            if (!IsWindow(hLog) || !IsDialogMessage(hLog, &msg)) {
                 TranslateMessage(&msg) ;
                 DispatchMessage(&msg) ;
             }
-        }
-        else
-        { 
+        } else { 
             DWORD count = 0;
-            if (PeekConsoleInput(GetStdHandle(STD_INPUT_HANDLE), &inp, 1, &count))
-            {
-                if ((0 < count) && ReadConsoleCommand(buf, size))
-                {
+            if (PeekConsoleInput(GetStdHandle(STD_INPUT_HANDLE), &inp, 1, &count)) {
+                if ((0 < count) && ReadConsoleCommand(buf, size)) {
                     return true;
                 }
             }
@@ -221,11 +199,9 @@ ReadConsoleCommand(TCHAR buf[], DWORD dwSize)
     HANDLE h = GetStdHandle(STD_INPUT_HANDLE);
     DWORD dwRead;
     bool bValid = FALSE != ReadConsole(h, buf, dwSize, &dwRead, nullptr);
-    if (bValid)
-    {
+    if (bValid) {
         buf[dwRead] = L'\0';
-        for (--dwRead; iswspace(buf[dwRead]); --dwRead)
-        {
+        for (--dwRead; iswspace(buf[dwRead]); --dwRead) {
             buf[dwRead] = L'\0';
         }
     }
@@ -372,33 +348,10 @@ LoadAndSendTestImage(const wstring& testImagePath)
         throw invalid_argument("CreateSurfaceFromBitmap failed");
     }
     // TODO: pool leaks.
-    SurfacePool_t* pPool = new SurfacePool_t();
+    pool<CSurface>* pPool = new pool<CSurface>();
     pPool->reserve(1);
     pool<CSurface>::item_t item(pPool, pSurface);
     item.addref();
     pPool->add(item);
     m_pImpl->m_SsWindow.PostData(nullptr, pPool->get_unused());
-    /*
-    WaitForSingleObject(GetPipelineManager().GetIdleEvent(), INFINITE);
-    switch (WindowId)
-    {
-    case Window::Id::BrokerBuyTab:
-        BrokerBuy.GetTranslator().GetText().Dump(nullptr, true);
-        if (0 == iterations)
-            Window.DumpWidgets(Surface, BrokerBuy.GetWindow().GetTableRect());
-        break;
-    case Window::Id::BrokerSellTab:
-        BrokerSell.GetTranslator().GetText().Dump(nullptr, true);
-        if (0 == iterations)
-            Window.DumpWidgets(Surface, BrokerSell.GetWindow().GetTableRect());
-        break;
-    case Window::Id::BrokerSetPricePopup:
-        if (0 == iterations)
-            Window.DumpWidgets(Surface, MainWindow.GetPopupRect());
-        break;
-    default:
-        break;
-    }
-    LogAlways(L"VScroll = %ls", GetScrollPosString(Window.GetScrollPosition(Ui::Scroll::Bar::Vertical)));
-    */
-}
+ }

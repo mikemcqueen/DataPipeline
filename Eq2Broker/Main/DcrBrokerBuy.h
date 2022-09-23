@@ -14,6 +14,7 @@
 #define Include_DCRBROKERBUY_H
 
 #include "DcrWindow.h"
+#include "DcrWindowPolicy.h"
 #include "DcrBase_t.h"
 #include "BrokerBuyText.h"
 #include "Macros.h"
@@ -76,7 +77,7 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 
 typedef SsWindow::Acquire::Data_t             AcquireData_t;
-typedef DcrWindow::Policy::TranslateMany_t    TranslatePolicy_t;
+typedef DcrWindow::Policy::Translate::Many_t  TranslatePolicy_t;
 typedef DcrWindow::Policy::NoValidate_t       ValidatePolicy_t;
 
 using BaseHandler_t = DcrWindow::Translate::

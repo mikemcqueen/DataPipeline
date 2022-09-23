@@ -191,9 +191,9 @@
     <ClCompile Include="Main\TrWindowType.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Main\BrokerBuy.h" />
     <ClInclude Include="Main\BrokerBuyText.h" />
     <ClInclude Include="Main\BrokerBuyTypes.h" />
+    <ClInclude Include="Main\BrokerBuyWindowManager.h" />
     <ClInclude Include="Main\BrokerId.h" />
     <ClInclude Include="Main\CmdParser_t.h" />
     <ClInclude Include="Main\DcrBase_t.h" />

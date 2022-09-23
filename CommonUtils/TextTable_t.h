@@ -33,14 +33,14 @@ public:
     virtual const size_t* GetColumnWidths() const { throw std::runtime_error("not implemented"); };
     virtual void             SetEndRow(size_t ) { throw std::runtime_error("not implemented"); };
 
+    /*
     size_t
     GetColumnWidth(
-        size_t Column) const
+        size_t column) const
     {
-        const size_t Count = GetColumnCount();
-        if (Count <= Column)
+       if (column >= GetColumnCount())
             throw std::invalid_argument("TextTable_i::GetColumnWidth()");
-        return GetColumnWidths()[Column];
+        return GetColumnWidths()[column];
     }
 
     size_t
@@ -58,6 +58,7 @@ public:
         }
         return Offset;
     }
+    */
 };
 
 /////////////////////////////////////////////////////////////////////////////

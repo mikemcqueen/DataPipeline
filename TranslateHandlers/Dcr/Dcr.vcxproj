@@ -133,6 +133,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\inc\DcrWindow.h" />
+    <ClInclude Include="..\inc\DcrWindowPolicy.h" />
     <ClInclude Include="..\inc\TrScrollThumb_t.h" />
     <ClInclude Include="..\stdafx.h" />
   </ItemGroup>

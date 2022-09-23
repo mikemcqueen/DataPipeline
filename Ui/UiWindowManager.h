@@ -13,28 +13,16 @@
 #ifndef Include_UIWINDOWMANAGER_H
 #define Include_UIWINDOWMANAGER_H
 
-namespace Ui
-{
-namespace Window
-{
-
 ///////////////////////////////////////////////////////////////////////////////
+
+namespace Ui::Window {
 
 template<
     class Window_t,
     class Translator_t,
     class Interpreter_t>
-class Manager_t
-{
-private:
-
-    const Window_t& m_Window;
-    Translator_t    m_Translator;
-    Interpreter_t   m_Interpreter;
-
+class Manager_t {
 public:
-
-    // Constructor:
     Manager_t(
         const Window_t& Window)
         :
@@ -42,6 +30,10 @@ public:
         m_Translator(*this),
         m_Interpreter(*this)
     { }
+
+    Manager_t() = delete;
+    Manager_t(const Manager_t&) = delete;
+    Manager_t& operator=(const Manager_t&) = delete;
 
     // Accessors:
     const Window_t&        GetWindow() const       { return m_Window; }
@@ -53,16 +45,14 @@ public:
     Interpreter_t&         GetInterpreter()        { return m_Interpreter; }
 
 private:
-    // Explicity disabled:
-    Manager_t();
-    Manager_t(const Manager_t&);
-    Manager_t& operator=(const Manager_t&);
+    const Window_t& m_Window;
+    Translator_t    m_Translator;
+    Interpreter_t   m_Interpreter;
 };
 
-////////////////////////////////////////////////////////////////////////////////
+} // Ui::Window
 
-} // Window
-} // Ui
+////////////////////////////////////////////////////////////////////////////////
 
 #endif // Include_UIWINDOWMANAGER_H
 

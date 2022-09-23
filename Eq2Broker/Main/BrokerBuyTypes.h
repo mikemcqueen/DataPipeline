@@ -19,10 +19,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace Broker
-{
-namespace Buy
-{
+namespace Broker::Buy {
     static const Ui::WindowId_t TopWindowId = Broker::Window::Id::BrokerBuyTab;
 
     namespace Table
@@ -41,7 +38,7 @@ namespace Buy
         // ScreenTable_t data: TODO: all zero width last entry
         constexpr int PixelColumnWidths[ColumnCount] = { 50, 560, 145, 50, 50 };
         // RowHeightPix = 40;
-    }
+    } // Table
 
     class Text_t;
     using TextTable_t = TextTable3<Text_t>;
@@ -65,9 +62,7 @@ namespace Buy
             Manager_t<Window_t, Translate::Handler_t, Interpret::Handler_t> ;
         class Manager_t;
     } // Window
-
-} // Buy
-} // Broker
+} // Broker::Buy
 
 ////////////////////////////////////////////////////////////////////////////////
 
