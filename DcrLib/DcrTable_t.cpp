@@ -190,37 +190,41 @@ TesseractReadTable(
             continue;
         }
 #endif
+#define LOGROWTEXT 1
+#if LOGROWTEXT
         stringstream text;
+#endif
         pTextTable->ClearRow(row);
         for (size_t column = 0; column < columnRects.size(); ++column) {
             auto& rc = columnRects[column];
-
             if (writeBmps && firstTime) {
-                RECT rcBmp = rc;
+                RECT rcBmp{ rc }; // copy
                 ::OffsetRect(&rcBmp, 0, yOffset);
                 pSurface->WriteBMP(std::format(L"diag\\table_row_{}_col_{}.bmp",
                     row, column).c_str(), rcBmp);
             }
-
             Tesseract()->SetImage((std::uint8_t*)GetBitsAt(&ddsd, rc.left, rc.top + yOffset),
                 RECTWIDTH(rc), RECTHEIGHT(rc),
                 4, (int)ddsd.lPitch);
             std::unique_ptr<char> pResult(Tesseract()->GetUTF8Text());
-
-            auto columnText = pResult.get();
-            if (columnText) {
-                auto ch = columnText[0];
-                if (ch) { // length > 0
+            if (auto columnText = pResult.get(); columnText) {
+                if (columnText[0]) { // length > 0
                     std::string str{ columnText };
                     str.erase(str.end() - 1);
                     pTextTable->SetText(row, column, str);
-                    text << str <<  " ";
-                } else text << "[empty] ";
+                }
+#if LOGROWTEXT
+                if (columnText[0]) {
+                    text << columnText;
+                    text.seekp(-1, ios_base::end);
+                } else text << "[empty]";
+                text << " | ";
+#endif
             }
         }
-        const string str{ text.str() };
-        LogInfo(L"Text row %d: %S (%d)", row, str.c_str(), str.length());
- 
+#if LOGROWTEXT
+        LogInfo(L"Text row %d: %S (%d)", row, text.str().c_str(), text.str().length());
+#endif
         ::OffsetRect(&rcRow, 0, rowHeight + rowGapSize);
         yOffset += rowHeight + rowGapSize;
     }
