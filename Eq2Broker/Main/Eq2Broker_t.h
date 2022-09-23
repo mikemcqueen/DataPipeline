@@ -37,9 +37,6 @@ namespace Broker {
 class Eq2Broker_t
 {
 public:
-    static const wchar_t*   s_pClass; // TODO 
-
-    // Constructor & destructor:
     Eq2Broker_t(
         Broker::MainWindow_t& mainWindow,
         const Broker::Options_t& options);
@@ -68,11 +65,6 @@ public:
     Ui::Window_t&
     GetWindow(
         Ui::WindowId_t windowId);
-
-    // Hacky?
-    Ui::WindowId_t
-    GetWindowId(
-        const CSurface& surface);
 
 private:
 
@@ -111,20 +103,9 @@ private:
     LoadAndSendTestImage(const wstring& testImagePath);
 
 private:
-
     Broker::MainWindow_t& mainWindow_;
     const Broker::Options_t& m_options;
     std::unique_ptr<Eq2BrokerImpl_t> m_pImpl;
 };
 
-const wchar_t*
-GetCoinString(
-    size_t   Value,
-    wchar_t* pBuffer = nullptr,
-    size_t   BufferCount = 0);
-
-/////////////////////////////////////////////////////////////////////////////
-
 #endif // Include_EQ2BROKER_T_H
-
-/////////////////////////////////////////////////////////////////////////////

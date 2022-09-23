@@ -15,12 +15,7 @@
 #include "BrokerUi.h"
 #include "BrokerBuyWidgets.h" // SaveWidgets
 
-namespace Broker
-{
-namespace Buy
-{
-namespace Translate
-{
+namespace Broker::Buy::Translate {
 
 // TODO:
 // columndata offset/width pairs; column widths is sum if specified
@@ -208,10 +203,4 @@ PostData(
 #endif
 }
 
-////////////////////////////////////////////////////////////////////////////////
-
-} // Translate
-} // Buy
-} // Broker
-
-////////////////////////////////////////////////////////////////////////////////
+} // Broker::Buy::Translate

@@ -56,26 +56,10 @@ public:
     bool
     Initialize() override;
 
-/*
-bool
-    PreTranslateSurface(
-        CSurface* pSurface,
-        Ui::WindowId_t windowId,
-        int dcrId,
-        Rect_t* pRect) const override;
-*/
-
 public:
 
     size_t GetSelectedRow() const { return  m_selectedRow; }
 
-    static
-    bool
-    InitAllCharsets();
-
-    static
-    const Charset_t*
-    GetCharset();
 
 private:
 

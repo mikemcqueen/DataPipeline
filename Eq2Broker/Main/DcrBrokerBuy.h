@@ -24,14 +24,7 @@
 #include "BrokerUi.h"
 #include "PageNumber_t.h"
 
-namespace Broker
-{
-namespace Buy
-{
-namespace Translate
-{
-
-////////////////////////////////////////////////////////////////////////////////
+namespace Broker::Buy::Translate {
 
 constexpr auto kSearchTextMax = 101;
 constexpr auto kSavedSearchMax = 30;
@@ -133,12 +126,6 @@ private:
     Handler_t& operator=(const Handler_t&);
 };
 
-/////////////////////////////////////////////////////////////////////////////
-
-} // Translate
-} // Buy
-} // Broker
+} // Broker::Buy::Translate
 
 #endif // Include_DCRBROKERBUY_H
-
-/////////////////////////////////////////////////////////////////////////////

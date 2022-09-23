@@ -21,17 +21,7 @@
 #include "AutoCs.h"
 #include "PageNumber_t.h"
 
-namespace Broker
-{
-namespace Buy
-{
-
-//typedef TiBase_t<Table::RowCount, Table::CharsPerRow, Table::ColumnCount> TiTable_t;
-
-namespace Interpret
-{
-
-/////////////////////////////////////////////////////////////////////////////
+namespace Broker::Buy::Interpret {
 
 class Handler_t :
     public DP::Handler_t
@@ -72,12 +62,6 @@ private:
     mutable CAutoCritSec m_csState;
 };
 
-/////////////////////////////////////////////////////////////////////////////
-
-} // Interpret
-} // Buy
-} // Broker
+} // Broker::Buy::Interpret
 
 #endif // Include_TIBROKERBUY
-
-/////////////////////////////////////////////////////////////////////////////
