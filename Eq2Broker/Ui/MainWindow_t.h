@@ -8,6 +8,9 @@
 
 #pragma once
 
+#ifndef INCLUDE_MAINWINDOW_T_H
+#define INCLUDE_MAINWINDOW_T_H
+
 #include "UiWindow.h"
 #include "BrokerUi.h"
 #include "BrokerBuyTypes.h"
@@ -18,8 +21,6 @@
 
 namespace Broker
 {
-
-////////////////////////////////////////////////////////////////////////////////
 
 class MainWindow_t :
     public Ui::Window::Base_t
@@ -87,8 +88,6 @@ private:
     MainWindow_t& operator=(const MainWindow_t&);
 };
 
-////////////////////////////////////////////////////////////////////////////////
-
 } // Broker
 
-////////////////////////////////////////////////////////////////////////////////
+#endif // INCLUDE_MAINWINDOW_T_H

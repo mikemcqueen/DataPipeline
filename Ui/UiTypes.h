@@ -10,12 +10,12 @@
 #pragma once
 #endif
 
+#ifndef Include_UITYPES_H
+#define Include_UITYPES_H
+
 #include "UiWindowId.h"
 #include "Rect.h"
 #include "Flag_t.h"
-
-#ifndef Include_UITYPES_H
-#define Include_UITYPES_H
 
 namespace Ui
 {
@@ -98,8 +98,4 @@ namespace Ui
 
 } // Ui
 
-/////////////////////////////////////////////////////////////////////////////
-
 #endif Include_UITYPES_H
-
-/////////////////////////////////////////////////////////////////////////////

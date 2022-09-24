@@ -8,15 +8,13 @@
 
 #pragma once
 
+#ifndef INCLUDE_BROKERBUYWINDOW_H
+#define INCLUDE_BROKERBUYWINDOW_H
+
 #include "TabWindow.h"
 #include "BrokerUi.h"
 
-namespace Broker
-{
-namespace Buy
-{
-
-////////////////////////////////////////////////////////////////////////////////
+namespace Broker::Buy {
 
 class Window_t :
     public TableWindow_t
@@ -49,9 +47,6 @@ private:
     Window_t& operator=(const Window_t&);
 };
 
-////////////////////////////////////////////////////////////////////////////////
+} // Broker::Buy
 
-} // Buy
-} // Broker
-
-////////////////////////////////////////////////////////////////////////////////
+#endif // INCLUDE_BROKERBUYWINDOW_H

@@ -15,8 +15,6 @@
 #ifndef Include_PAGENUMBER_T_H
 #define Include_PAGENUMBER_T_H
 
-/////////////////////////////////////////////////////////////////////////////
-
 class PageNumber_t final
 {
 public:

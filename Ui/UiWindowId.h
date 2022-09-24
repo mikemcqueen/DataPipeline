@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef INCLUDE_UIWINDOWID_H
+#define INCLUDE_UIWINDOWID_H
+
 namespace Ui
 {
     typedef unsigned WidgetId_t;
@@ -44,3 +47,5 @@ namespace Ui
     } // Widget
 
 } // Ui
+
+#endif // INCLUDE_UIWINDOWID_H

@@ -32,7 +32,7 @@ namespace Window
     namespace Locate
     {
         static const unsigned CompareLastOrigin = 0x01;
-        static const unsigned Search            = 0x02;
+        static const unsigned Search = 0x02;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -47,8 +47,8 @@ namespace Window
         WindowId_t WindowId;
 
         Handle_t(
-            HWND       InitHwnd       = nullptr,
-            WindowId_t InitWindowId   = Id::Unknown)
+            HWND       InitHwnd = nullptr,
+            WindowId_t InitWindowId = Id::Unknown)
             :
             hWnd(InitHwnd),
             WindowId(InitWindowId)
@@ -65,7 +65,7 @@ namespace Window
     {
     private:
 
-        const Base_t&      m_ParentWindow;
+        const Base_t& m_ParentWindow;
 
         WindowId_t         m_WindowId;
         HWND               m_hMainWindow;
@@ -92,7 +92,7 @@ namespace Window
             Flag_t Flags = 0,
             std::span<const Widget::Data_t> widgets = std::span<const Widget::Data_t>());
 
-        virtual 
+        virtual
         ~Base_t();
 
         virtual
@@ -103,7 +103,7 @@ namespace Window
         virtual
         HWND
         GetHwnd(
-            WindowId_t /*Id*/) const
+                WindowId_t /*Id*/) const
         {
             return m_hMainWindow;
         }
@@ -126,7 +126,7 @@ namespace Window
         WindowId_t
         GetWindowId(
             const CSurface& Surface,
-            const POINT*    pptHint) const;
+            const POINT* pptHint) const;
 
         // Determine the rectangle of the supplied widget Id.
         // Return true if the widget was found, false otherwise.
@@ -149,13 +149,13 @@ namespace Window
         bool
         IsLocatedOn(
             const CSurface& Surface,
-                  Flag_t    flags,
-                  POINT*    pptOrigin = nullptr) const;
+            Flag_t    flags,
+            POINT* pptOrigin = nullptr) const;
 
         virtual
         const CSurface*
         GetOriginSurface() const
-        {        
+        {
             return nullptr;
         }
 
@@ -163,7 +163,7 @@ namespace Window
         void
         GetOriginSearchRect(
             const CSurface& surface,
-                  Rect_t&   rect) const;
+            Rect_t& rect) const;
 
         //
         // Helper methods
@@ -172,14 +172,14 @@ namespace Window
         bool
         ClickWidget(
             WidgetId_t WidgetId,
-                  bool    bDirect = false,
+            bool    bDirect = false,
             const Rect_t* pRect = nullptr) const;
 
         bool
         SetWidgetText(
-                  WidgetId_t    WidgetId,
+            WidgetId_t    WidgetId,
             const std::wstring& text,
-                  bool          bDirect = false) const;
+            bool          bDirect = false) const;
 
         bool
         ClearWidgetText(
@@ -210,7 +210,7 @@ namespace Window
         }
 
         const wchar_t*
-        GetWindowName() const 
+        GetWindowName() const
         {
             return m_strWindowName.c_str();
         }
@@ -240,8 +240,7 @@ namespace Window
             if (Vertical == ScrollBar)
             {
                 m_VertScrollPos = ScrollPos;
-            }
-            else
+            } else
             {
                 m_HorzScrollPos = ScrollPos;
             }
@@ -254,16 +253,16 @@ namespace Window
         bool
         ValidateBorders(
             const CSurface& Surface,
-            const Rect_t&   Rect,
-            const SIZE&     BorderSize,
+            const Rect_t& Rect,
+            const SIZE& BorderSize,
             const COLORREF  LowColor,
             const COLORREF  HighColor) const;
 
         bool
         ValidateBorder(
             const CSurface& Surface,
-            const Rect_t&   BorderRect,
-            const wchar_t*  pBorderName,
+            const Rect_t& BorderRect,
+            const wchar_t* pBorderName,
             const COLORREF  LowColor,
             const COLORREF  HighColor) const;
 
@@ -276,7 +275,7 @@ namespace Window
         void
         DumpWidgets(
             const CSurface& Surface,
-            const Rect_t&   RelativeRect) const;
+            const Rect_t& RelativeRect) const;
 
         void
         GetWindowRect(
@@ -285,8 +284,8 @@ namespace Window
         bool
         FindOrigin(
             const CSurface& Surface,
-            const POINT&    ptHint,
-                  POINT&    ptOrigin) const;
+            const POINT& ptHint,
+            POINT& ptOrigin) const;
 
         void
         SetLastOrigin(
@@ -302,27 +301,27 @@ namespace Window
         }
 
         bool
-        CompareLastOrigin(
-            const CSurface& surface,
-            const CSurface& image,
-                  POINT*    pptOrigin) const;
+            CompareLastOrigin(
+                const CSurface& surface,
+                const CSurface& image,
+                POINT* pptOrigin) const;
 
         bool
         OriginSearch(
             const CSurface& surface,
             const CSurface& image,
-                  POINT*    pptOrigin) const;
+            POINT* pptOrigin) const;
 
         const Base_t& GetParent() const { return m_ParentWindow; }
 
     public:
 
         static
-        Ui::Scroll::Position_t 
+        Ui::Scroll::Position_t
         GetVertScrollPos(
             const CSurface& Surface,
-            const Rect_t&   ScrollUpRect,
-            const Rect_t&   ScrollDownRect);
+            const Rect_t& ScrollUpRect,
+            const Rect_t& ScrollDownRect);
 
     private:
 
@@ -331,13 +330,7 @@ namespace Window
         const Base_t& operator=(const Base_t&);
     };
 
-////////////////////////////////////////////////////////////////////////////////
-
 } // Window
 } // Ui
 
-////////////////////////////////////////////////////////////////////////////////
-
 #endif // Include_UIWINDOW_H
-
-////////////////////////////////////////////////////////////////////////////////

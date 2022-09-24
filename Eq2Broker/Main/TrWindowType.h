@@ -8,6 +8,9 @@
 
 #pragma once
 
+#ifndef INCLUDE_IDWINDOWTYPE_H
+#define INCLUDE_IDWINDOWTYPE_H
+
 #include "DpHandler_t.h"
 #include "BrokerUi.h"
 #include "Flag_t.h"
@@ -18,8 +21,6 @@ class Rect_t;
 
 namespace Broker
 {
-
-////////////////////////////////////////////////////////////////////////////////
 
 class TrWindowType_t :
     public DP::Handler_t
@@ -104,3 +105,5 @@ private:
 };
 
 } // Broker
+
+#endif // INCLUDE_IDWINDOWTYPE_H

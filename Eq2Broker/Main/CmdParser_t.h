@@ -6,8 +6,6 @@
 
 #pragma once
 
-////////////////////////////////////////////////////////////////////////////////
-
 namespace boost { namespace program_options {
     typedef vector< shared_ptr<option_description> > option_desc_vector_t;
 } }

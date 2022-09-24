@@ -8,14 +8,15 @@
 
 #pragma once
 
+#ifndef INCLUDE_OTHERWINDOWS_H
+#define INCLUDE_OTHERWINDOWS_H
+
 #include "UiWindow.h"
 #include "Rect.h"
 #include "DdUtil.h"
 
 namespace Broker
 {
-
-////////////////////////////////////////////////////////////////////////////////
 
 class Eq2LoadingWindow_t :
     public Ui::Window_t
@@ -96,6 +97,6 @@ private:
     loadSurfaces();
 };
 
-////////////////////////////////////////////////////////////////////////////////
-
 } // Broker
+
+#endif // INCLUDE_OTHERWINDOWS_H

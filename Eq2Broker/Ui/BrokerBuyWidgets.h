@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef BROKERBUYWIDGETS_H
+#define BROKERBUYWIDGETS_H
+
 #include "UiTypes.h"
 #include "BrokerUi.h"
 
@@ -29,3 +32,5 @@ constexpr Ui::Widget::Data_t Widgets[] =
 };
 
 } // Broker::Buy
+
+#endif // INCLUDE_BROKERBUYWIDGETS_H

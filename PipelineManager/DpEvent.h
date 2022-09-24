@@ -22,7 +22,6 @@ using EventId_t = MessageId_t;
 
 namespace Event
 {
-    ////////////////////////////////////////////////////////////////////////////
 
     //  TODO: enum class
     typedef unsigned Flag_t;
@@ -43,10 +42,10 @@ namespace Event
 
     namespace Id
     {
-        constexpr auto Unknown    = Message::Id::Unknown;
-        constexpr auto Start      = MakeId(0); // 0x00020000
-        constexpr auto Stop       = MakeId(1);
-        constexpr auto Ui_First   = MakeId(0x1000);
+        constexpr auto Unknown = Message::Id::Unknown;
+        constexpr auto Start = MakeId(0); // 0x00020000
+        constexpr auto Stop = MakeId(1);
+        constexpr auto Ui_First = MakeId(0x1000);
         constexpr auto User_First = MakeId(0x2000);
     }
 
@@ -59,16 +58,16 @@ namespace Event
 
         explicit Data_t(
             Stage_t       stage       /*= DP::Stage_t::Any*/,
-            EventId_t     eventId     = Id::Unknown, // TODO: remove default initializer
-            size_t        size        = sizeof(Data_t),
-            Flag_t        flags       = 0,
+            EventId_t     eventId = Id::Unknown, // TODO: remove default initializer
+            size_t        size = sizeof(Data_t),
+            Flag_t        flags = 0,
             Message::Type messageType = Message::Type::Event)
             :
             Message::Data_t(
                 stage,
                 eventId,
                 size,
-                nullptr, 
+                nullptr,
                 messageType),
             Flags(flags)
         { }
@@ -100,13 +99,7 @@ namespace Event
         { }
     };
 
-    ////////////////////////////////////////////////////////////////////////////
-
-} // Event
+}// Event
 } // DP
 
-////////////////////////////////////////////////////////////////////////////////
-
 #endif // Include_DPEVENT_H
-
-////////////////////////////////////////////////////////////////////////////////

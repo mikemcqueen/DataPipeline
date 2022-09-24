@@ -8,6 +8,9 @@
 
 #pragma once
 
+#ifndef INCLUDE_BROKERWINDOW_H
+#define INCLUDE_BROKERWINDOW_H
+
 #include "UiWindow.h"
 #include "BrokerUi.h"
 #include "DdUtil.h"
@@ -17,7 +20,6 @@ class TabWindow_t;
 namespace Broker
 {
 //TODO: namespace Frame {
-////////////////////////////////////////////////////////////////////////////////
 
 class Window_t :
     public Ui::Window_t
@@ -120,8 +122,6 @@ private:
     Window_t& operator=(const Window_t&);
 };
 
-////////////////////////////////////////////////////////////////////////////////
-
 } // Broker
 
-////////////////////////////////////////////////////////////////////////////////
+#endif // INCLUDE_BROKERWINDOW_H

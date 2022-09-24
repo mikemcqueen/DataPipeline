@@ -43,8 +43,6 @@
 using namespace Broker;
 using namespace Broker::Transaction;
 
-///////////////////////////////////////////////////////////////////////////////
-
 class Eq2Broker_t;
 
 class Eq2BrokerImpl_t

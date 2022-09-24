@@ -10,6 +10,9 @@
 #pragma once
 #endif
 
+#ifndef INCLUDE_BROKERUI_H
+#define INCLUDE_BROKERUI_H
+
 #include "UiWindowId.h"
 
 namespace Broker
@@ -263,3 +266,4 @@ namespace Broker
     }
 } // Broker
 
+#endif // INCLUDE_BROKERUI_H

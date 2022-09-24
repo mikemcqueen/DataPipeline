@@ -15,128 +15,124 @@
 
 #include "DpEvent.h"
 
-namespace DP
-{
+namespace DP {
 
 using TransactionId_t = MessageId_t;
-namespace Transaction
+
+namespace Transaction {
+
+constexpr auto MakeId(const unsigned id) -> TransactionId_t {
+    const auto first = static_cast<unsigned>(Message::Id::Transaction_First);
+    return TransactionId_t(first + id);
+}
+
+namespace Id
 {
+static const TransactionId_t Unknown = TransactionId_t(Message::Id::Unknown);
+static const TransactionId_t User_First = TransactionId_t(Message::MakeId(0x1000));
+}
 
-    constexpr auto MakeId(const unsigned id) -> TransactionId_t {
-        const auto first = static_cast<unsigned>(Message::Id::Transaction_First);
-        return TransactionId_t(first + id);
-    }
+typedef unsigned State_t;
+namespace State
+{
+enum E : State_t
+{
+    New,
+    Pending,
+    Complete,
+    // Error, ?
+    User_First = 0x00040000
+};
+}
 
-    namespace Id
-    {
-        static const TransactionId_t Unknown    = TransactionId_t(Message::Id::Unknown);
-        static const TransactionId_t User_First = TransactionId_t(Message::MakeId(0x1000));
-    }
+typedef unsigned Error_t;
+namespace Error
+{
+enum E : Error_t
+{
+    None = 0,
+    Aborted = 0x80000001,
+    Timeout = 0x80000002,
+    User_First = 0x80040000
+};
+}
 
-    typedef unsigned State_t;
-    namespace State
-    {
-        enum E : State_t
-        {
-            New,
-            Pending,
-            Complete,
-            // Error, ?
-            User_First = 0x00040000
-        };
-    }
+struct Data_t :
+    public Event::Data_t
+{
+private:
 
-    typedef unsigned Error_t;
-    namespace Error
-    {
-        enum E : Error_t
-        {
-            None       = 0,
-            Aborted    = 0x80000001,
-            Timeout    = 0x80000002,
-            User_First = 0x80040000
-        };
-    }
-    
-    struct Data_t :
-        public Event::Data_t
-    {
-    private:
+    State_t   State;
+    size_t    stateTimeout;
 
-        State_t   State;
-        size_t    stateTimeout;
+public:
 
-    public:
+    Error_t   Error;
 
-        Error_t   Error;
+    Data_t(
+        TransactionId_t transactionId,
+        size_t          size = sizeof(Data_t),
+        Stage_t         stage = Stage_t::Any)
+        :
+        Event::Data_t(
+            stage,
+            transactionId,
+            size,
+            0,
+            Message::Type::Transaction),
+        State(State::New),
+        stateTimeout(0),
+        Error(Error::None)
+    { }
 
-        Data_t(
-            TransactionId_t transactionId,
-            size_t          size = sizeof(Data_t),
-            Stage_t         stage = Stage_t::Any)
-            :
-            Event::Data_t(
-                stage,
-                transactionId,
-                size,
-                0,
-                Message::Type::Transaction),
-            State(State::New),
-            stateTimeout(0),
-            Error(Error::None)
-        { }
-
-        State_t
+    State_t
         GetState() const
-        {
-            return State;
-        }
+    {
+        return State;
+    }
 
-        size_t
+    size_t
         GetStateTimeout() const
-        {
-            return stateTimeout;
-        }
+    {
+        return stateTimeout;
+    }
 
-        size_t
+    size_t
         IncStateTimeout()
-        {
-            return ++stateTimeout;
-        }
+    {
+        return ++stateTimeout;
+    }
 
-        bool
+    bool
         Execute(
             bool fInterrupt = false);
 
-        void
+    void
         Complete(
             Transaction::Error_t Error = Transaction::Error::None) const;
 
-        void
+    void
         PrevState()
-        {
-            SetState(State - 1);
-        }
+    {
+        SetState(State - 1);
+    }
 
-        void
+    void
         NextState()
-        {
-            SetState(State + 1);
-        }
+    {
+        SetState(State + 1);
+    }
 
-        void
+    void
         SetState(State_t state);
 
-    private:
+private:
 
-        Data_t();
-    };
+    Data_t();
+};
 
 } // Transaction
 } // DP
 
-///////////////////////////////////////////////////////////////////////////////
 
 #endif // Include_DPTRANSACTION_H
-
-///////////////////////////////////////////////////////////////////////////////

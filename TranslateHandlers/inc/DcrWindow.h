@@ -30,112 +30,108 @@ using AcquireData_t = SsWindow::Acquire::Data_t;
 
 namespace Translate {
 
-////////////////////////////////////////////////////////////////////////////////
-
-class AbstractHandler_t :
-    public DP::Handler_t
-{
-public:
-
-    // 
-    // AbstractHandler_t virtual:
-    //
-
-    virtual
-    bool
-    PreTranslateSurface(
-        CSurface* /*pSurface*/,
-        Ui::WindowId_t /*windowId*/,
-        int /*dcrId*/,
-        Rect_t* /*pRect*/) const = 0;
-
-    virtual
-    void
-    PostData(
-        DWORD /*Unused*/) const = 0;
-};
-
-////////////////////////////////////////////////////////////////////////////////
-
-template<
-    class TranslatePolicy_t,
-    class ValidatePolicy_t> //  = Policy::NoValidate_t<int, int>>
-class Handler_t :
-    public AbstractHandler_t
-{
-public:
-
-    Handler_t(
-        Ui::WindowId_t     WindowId,
-        TranslatePolicy_t& TranslatePolicy,
-        ValidatePolicy_t&  ValidatePolicy,
-        const wchar_t*     pName = nullptr)
-        :
-        m_WindowId(WindowId),
-        m_TranslatePolicy(TranslatePolicy),
-        m_ValidatePolicy(ValidatePolicy),
-        m_name((nullptr != pName) ? pName : L"[unnamed]")
-    { }
-
-    Handler_t(const Handler_t&) = delete;
-
-    // 
-    // DP::Handler_t virtual:
-    //
-
-    bool
-    Initialize(
-        const wchar_t* pClass) override
+    class AbstractHandler_t :
+        public DP::Handler_t
     {
-        return DP::Handler_t::Initialize(pClass)
-            && m_TranslatePolicy.Initialize()
-            && m_ValidatePolicy.Initialize();
-    }
+    public:
 
-    HRESULT
-    MessageHandler(
-        const DP::Message::Data_t* pMessage) override
+        // 
+        // AbstractHandler_t virtual:
+        //
+
+        virtual
+            bool
+            PreTranslateSurface(
+                CSurface* /*pSurface*/,
+                Ui::WindowId_t /*windowId*/,
+                int /*dcrId*/,
+                Rect_t* /*pRect*/) const = 0;
+
+        virtual
+            void
+            PostData(
+                DWORD /*Unused*/) const = 0;
+    };
+
+    ////////////////////////////////////////////////////////////////////////////////
+
+    template<
+        class TranslatePolicy_t,
+        class ValidatePolicy_t> //  = Policy::NoValidate_t<int, int>>
+    class Handler_t :
+        public AbstractHandler_t
     {
-        LogInfo(L"Dcr%s::MessageHandler()", m_name.c_str());
-        if (Validate(pMessage, m_WindowId))
+    public:
+
+        Handler_t(
+            Ui::WindowId_t     WindowId,
+            TranslatePolicy_t& TranslatePolicy,
+            ValidatePolicy_t& ValidatePolicy,
+            const wchar_t* pName = nullptr)
+            :
+            m_WindowId(WindowId),
+            m_TranslatePolicy(TranslatePolicy),
+            m_ValidatePolicy(ValidatePolicy),
+            m_name((nullptr != pName) ? pName : L"[unnamed]")
+        { }
+
+        Handler_t(const Handler_t&) = delete;
+
+        // 
+        // DP::Handler_t virtual:
+        //
+
+        bool
+        Initialize(
+            const wchar_t* pClass) override
         {
-            auto& ssData = static_cast<const AcquireData_t&>(*pMessage);
-            if (m_ValidatePolicy.Validate(ssData) &&
-                m_TranslatePolicy.Translate(ssData))
+            return DP::Handler_t::Initialize(pClass)
+                && m_TranslatePolicy.Initialize()
+                && m_ValidatePolicy.Initialize();
+        }
+
+        HRESULT
+        MessageHandler(
+            const DP::Message::Data_t* pMessage) override
+        {
+            LogInfo(L"Dcr%s::MessageHandler()", m_name.c_str());
+            if (Validate(pMessage, m_WindowId))
             {
-                PostData(0);
-                return S_OK;
+                auto& ssData = static_cast<const AcquireData_t&>(*pMessage);
+                if (m_ValidatePolicy.Validate(ssData) &&
+                    m_TranslatePolicy.Translate(ssData))
+                {
+                    PostData(0);
+                    return S_OK;
+                }
             }
+            return S_FALSE;
         }
-        return S_FALSE;
-    }
 
-private:
+    private:
 
-    bool
-    Validate(
-        const DP::Message::Data_t* pMessage,
-              Ui::WindowId_t       WindowId) const
-    {
-        if (0 == wcscmp(pMessage->Class, L"SsWindow")) {
-            auto& ssData = static_cast<const AcquireData_t&>(*pMessage);
-            if (ssData.WindowId == WindowId) {
-                return true;
+        bool
+        Validate(
+            const DP::Message::Data_t* pMessage,
+            Ui::WindowId_t       WindowId) const
+        {
+            if (0 == wcscmp(pMessage->Class, L"SsWindow")) {
+                auto& ssData = static_cast<const AcquireData_t&>(*pMessage);
+                if (ssData.WindowId == WindowId) {
+                    return true;
+                }
             }
+            return false;
         }
-        return false;
-    }
 
-private:
-    Ui::WindowId_t m_WindowId;
-    TranslatePolicy_t& m_TranslatePolicy;
-    ValidatePolicy_t& m_ValidatePolicy;
-    wstring m_name;
-};
+    private:
+        Ui::WindowId_t m_WindowId;
+        TranslatePolicy_t& m_TranslatePolicy;
+        ValidatePolicy_t& m_ValidatePolicy;
+        wstring m_name;
+    };
 
 } // Translate
 } // DcrWindow
 
 #endif  // Include_DCRWINDOW_H
-
-////////////////////////////////////////////////////////////////////////////////

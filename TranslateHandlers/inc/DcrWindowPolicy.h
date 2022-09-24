@@ -15,8 +15,6 @@
 #ifndef Include_DCRWINDOWPOLICY_H
 #define Include_DCRWINDOWPOLICY_H
 
-////////////////////////////////////////////////////////////////////////////////
-
 namespace DcrWindow::Policy { // TODO Strategy?
 
 namespace Translate {
@@ -94,8 +92,6 @@ private:
             const RECT& rcBounds);
 };
 #endif
-
-////////////////////////////////////////////////////////////////////////////////
 
 } // DcrWindow::Policy
 

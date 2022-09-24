@@ -133,7 +133,6 @@
     <ClInclude Include="UiEvent.h" />
     <ClInclude Include="UiInput.h" />
     <ClInclude Include="UiMessage.h" />
-    <ClInclude Include="UiMouse.h" />
     <ClInclude Include="UiTypes.h" />
     <ClInclude Include="UiWindow.h" />
     <ClInclude Include="UiWindowId.h" />
