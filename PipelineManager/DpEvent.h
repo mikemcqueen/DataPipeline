@@ -35,18 +35,18 @@ namespace Event
     }
 #endif
 
-    constexpr auto MakeId(const int id) noexcept {
-        const auto first = static_cast<int>(Message::Id::Event_First);
-        return Message::MakeId(first + id);
+    template<int Id>
+    constexpr auto MakeId() noexcept -> EventId_t {
+        return Message::MakeId<Id, Message::Id::Event_First, Message::Id::Event_Last>();
     }
 
     namespace Id
     {
-        constexpr auto Unknown = Message::Id::Unknown;
-        constexpr auto Start = MakeId(0); // 0x00020000
-        constexpr auto Stop = MakeId(1);
-        constexpr auto Ui_First = MakeId(0x1000);
-        constexpr auto User_First = MakeId(0x2000);
+        constexpr auto Unknown =    Message::Id::Unknown;
+        constexpr auto Start =      MakeId<0>(); // 0x00020000
+        constexpr auto Stop =       MakeId<1>();
+        constexpr auto Ui_First =   MakeId<0x1000>();
+        constexpr auto User_First = MakeId<0x2000>();
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -56,7 +56,8 @@ namespace Event
     {
         Flag_t  Flags;
 
-        explicit Data_t(
+        explicit
+        Data_t(
             Stage_t       stage       /*= DP::Stage_t::Any*/,
             EventId_t     eventId = Id::Unknown, // TODO: remove default initializer
             size_t        size = sizeof(Data_t),

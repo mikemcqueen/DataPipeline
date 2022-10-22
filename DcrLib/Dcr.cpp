@@ -206,13 +206,13 @@ TesseractGetText(
         4, (int)ddsd.lPitch);
     pSurface->Unlock(nullptr);
     std::unique_ptr<char> pResult(Tesseract()->GetUTF8Text());
-    auto text = pResult.get();
-    if (text) {
-        auto ch = text[0];
-        if (ch) { // length > 0
+    //auto text = pResult.get();
+    if (auto text = pResult.get(); text && text[0]) {
+        //auto ch = text[0];
+        //if (text[0]) { // length > 0
             str.assign(text);
             str.erase(str.end() - 1);
-        }
+        //}
     }
     return str;
 }

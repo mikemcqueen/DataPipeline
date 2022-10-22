@@ -21,115 +21,115 @@ using TransactionId_t = MessageId_t;
 
 namespace Transaction {
 
-constexpr auto MakeId(const unsigned id) -> TransactionId_t {
-    const auto first = static_cast<unsigned>(Message::Id::Transaction_First);
-    return TransactionId_t(first + id);
-}
-
-namespace Id
-{
-static const TransactionId_t Unknown = TransactionId_t(Message::Id::Unknown);
-static const TransactionId_t User_First = TransactionId_t(Message::MakeId(0x1000));
-}
-
-typedef unsigned State_t;
-namespace State
-{
-enum E : State_t
-{
-    New,
-    Pending,
-    Complete,
-    // Error, ?
-    User_First = 0x00040000
-};
-}
-
-typedef unsigned Error_t;
-namespace Error
-{
-enum E : Error_t
-{
-    None = 0,
-    Aborted = 0x80000001,
-    Timeout = 0x80000002,
-    User_First = 0x80040000
-};
-}
-
-struct Data_t :
-    public Event::Data_t
-{
-private:
-
-    State_t   State;
-    size_t    stateTimeout;
-
-public:
-
-    Error_t   Error;
-
-    Data_t(
-        TransactionId_t transactionId,
-        size_t          size = sizeof(Data_t),
-        Stage_t         stage = Stage_t::Any)
-        :
-        Event::Data_t(
-            stage,
-            transactionId,
-            size,
-            0,
-            Message::Type::Transaction),
-        State(State::New),
-        stateTimeout(0),
-        Error(Error::None)
-    { }
-
-    State_t
-        GetState() const
-    {
-        return State;
+    template<int Id>
+    constexpr auto MakeId() noexcept {
+        return Message::MakeId<Id, Message::Id::Transaction_First, Message::Id::Transaction_Last>();
     }
 
-    size_t
-        GetStateTimeout() const
+    namespace Id
     {
-        return stateTimeout;
+        static const TransactionId_t Unknown = TransactionId_t(Message::Id::Unknown);
+        static const TransactionId_t User_First = MakeId<0x1000>();
     }
 
-    size_t
-        IncStateTimeout()
+    typedef unsigned State_t;
+    namespace State
     {
-        return ++stateTimeout;
+        enum E : State_t
+        {
+            New,
+            Pending,
+            Complete,
+            // Error, ?
+            User_First = 0x00040000
+        };
     }
 
-    bool
-        Execute(
-            bool fInterrupt = false);
-
-    void
-        Complete(
-            Transaction::Error_t Error = Transaction::Error::None) const;
-
-    void
-        PrevState()
+    typedef unsigned Error_t;
+    namespace Error
     {
-        SetState(State - 1);
+        enum E : Error_t
+        {
+            None = 0,
+            Aborted = 0x80000001,
+            Timeout = 0x80000002,
+            User_First = 0x80040000
+        };
     }
 
-    void
-        NextState()
+    struct Data_t :
+        public Event::Data_t
     {
-        SetState(State + 1);
-    }
+    private:
 
-    void
-        SetState(State_t state);
+        State_t   State;
+        size_t    stateTimeout;
 
-private:
+    public:
 
-    Data_t();
-};
+        Error_t   Error;
+
+        Data_t(
+            TransactionId_t transactionId,
+            size_t          size = sizeof(Data_t),
+            Stage_t         stage = Stage_t::Any)
+            :
+            Event::Data_t(
+                stage,
+                transactionId,
+                size,
+                0,
+                Message::Type::Transaction),
+            State(State::New),
+            stateTimeout(0),
+            Error(Error::None)
+        { }
+
+        State_t
+            GetState() const
+        {
+            return State;
+        }
+
+        size_t
+            GetStateTimeout() const
+        {
+            return stateTimeout;
+        }
+
+        size_t
+            IncStateTimeout()
+        {
+            return ++stateTimeout;
+        }
+
+        bool
+            Execute(
+                bool fInterrupt = false);
+
+        void
+            Complete(
+                Transaction::Error_t Error = Transaction::Error::None) const;
+
+        void
+            PrevState()
+        {
+            SetState(State - 1);
+        }
+
+        void
+            NextState()
+        {
+            SetState(State + 1);
+        }
+
+        void
+            SetState(State_t state);
+
+    private:
+
+        Data_t();
+    };
 
 } // Transaction
 } // DP

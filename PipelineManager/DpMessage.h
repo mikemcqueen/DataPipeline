@@ -13,6 +13,8 @@
 #ifndef Include_DPMESSAGE_H
 #define Include_DPMESSAGE_H
 
+#include "CommonTypes.h"
+
 namespace DP {
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -45,61 +47,57 @@ enum class Stage_t {
 
 enum class MessageId_t : int {};
 
-// dpid.h
-// concept:
-// underlying_type(T) == int
-// T.PmIdType_Marker == PmIdType_MarkerValue;
-
-constexpr bool operator==(const MessageId_t lhs, const MessageId_t rhs) {
-    return static_cast<int>(lhs) == static_cast<int>(rhs);
-}
-
 namespace Message {
 
-enum class Type
-{
-    Unknown = 0,
-    Message,
-    Event,
-    Transaction
-};
+    enum class Type
+    {
+        Unknown = 0,
+        Message,
+        Event,
+        Transaction
+    };
 
-namespace Id {
+    template<int Id>
+    constexpr auto MakeId() noexcept {
+        return static_cast<MessageId_t>(Id);
+    }
 
-constexpr auto Unknown = static_cast<MessageId_t>(0);
-constexpr auto Screenshot = static_cast<MessageId_t>(1);
+    template<int Id, MessageId_t First, MessageId_t Last>
+    constexpr auto MakeId() noexcept {
+        constexpr auto actualId = intValue(First) + Id;
+        static_assert(Id >= 0 && actualId <= intValue(Last));
+        return MakeId<actualId>();
+    }
 
-constexpr auto Message_First = static_cast<MessageId_t>(0x10000);
-constexpr auto Message_Last = static_cast<MessageId_t>(0x1FFFF);
+    namespace Id {
+        constexpr auto Unknown =           MakeId<0>();
+        constexpr auto Screenshot =        MakeId<1>();
 
-constexpr auto Event_First = static_cast<MessageId_t>(0x20000);
+        constexpr auto Message_First =     MakeId<0x10000>();
+        constexpr auto Message_Last =      MakeId<0x1FFFF>();
 
-constexpr auto Transaction_First = static_cast<MessageId_t>(0x30000);
+        constexpr auto Event_First =       MakeId<0x20000>();
+        constexpr auto Event_Last =        MakeId<0x2FFFF>();
 
-}
+        constexpr auto Transaction_First = MakeId<0x30000>();
+        constexpr auto Transaction_Last =  MakeId<0x3FFFF>();
+    }
 
-constexpr auto MakeId(const int id) noexcept {
-    constexpr auto first = static_cast<int>(Message::Id::Message_First);
-    //constexpr auto last = static_cast<int>(Message::Id::Message_Last);
-    //if consteval { static_assert(first + id <= last); }
-    return static_cast<MessageId_t>(first + id);
-}
+    struct Data_t;
+    using ReleaseFn_t = void (*)(Data_t& data);
 
-struct Data_t;
-using ReleaseFn_t = void (*)(Data_t& data);
+    struct Data_t
+    {
+        static constexpr int ClassLength = 32;
 
-struct Data_t
-{
-    static constexpr int ClassLength = 32;
+        Stage_t       Stage;
+        MessageId_t   Id;
+        size_t        Size;
+        wchar_t       Class[ClassLength];
+        Message::Type Type;
+        ReleaseFn_t   ReleaseFn;
 
-    Stage_t       Stage;
-    MessageId_t   Id;
-    size_t        Size;
-    wchar_t       Class[ClassLength];
-    Message::Type Type;
-    ReleaseFn_t   ReleaseFn;
-
-    explicit
+        explicit
         Data_t(
             Stage_t        stage,
             MessageId_t    messageId = Message::Id::Unknown,
@@ -107,23 +105,23 @@ struct Data_t
             const wchar_t* className = nullptr,
             Message::Type  messageType = Type::Message,
             ReleaseFn_t    releaseFn = nullptr)
-        :
-        Stage(stage),
-        Type(messageType),
-        Id(messageId),
-        Size(size),
-        ReleaseFn(releaseFn)
-    {
-        Class[0] = L'\0';
-        if (nullptr != className) {
-            wcscpy_s(Class, className);
+            :
+            Stage(stage),
+            Type(messageType),
+            Id(messageId),
+            Size(size),
+            ReleaseFn(releaseFn)
+        {
+            Class[0] = L'\0';
+            if (nullptr != className) {
+                wcscpy_s(Class, className);
+            }
         }
-    }
 
-    Data_t() final = default;
-};
+        Data_t() final = default;
+    };
 
-} // Message
+}// Message
 } // DP
 
 #endif // Include_DPMESSAGE_H
