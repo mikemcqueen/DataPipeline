@@ -41,8 +41,7 @@ class SsTask_t :
 public:
 
     static DP::MessageId_t
-    GetMessageId()
-    {
+    GetMessageId() {
         ASSERT(DP::Message::Id::Unknown != s_MessageId);
         return s_MessageId;
     }

@@ -90,7 +90,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir);Main;Db;Ui;..\CommonUtils;..\Ui;..\DcrLib;..\PipelineManager;..\Accounts;..\TranslateHandlers\inc;..\AcquireHandlers\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);Main;BrokerBuy;Db;Ui;..\CommonUtils;..\Ui;..\DcrLib;..\PipelineManager;..\Accounts;..\TranslateHandlers\inc;..\AcquireHandlers\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -121,7 +121,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugDLL|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir);Main;Db;Ui;..\CommonUtils;..\Ui;..\DcrLib;..\PipelineManager;..\Accounts;..\TranslateHandlers\inc;..\AcquireHandlers\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);Main;BrokerBuy;Db;Ui;..\CommonUtils;..\Ui;..\DcrLib;..\PipelineManager;..\Accounts;..\TranslateHandlers\inc;..\AcquireHandlers\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -152,7 +152,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir);Main;Db;Ui;..\CommonUtils;..\Ui;..\DcrLib;..\PipelineManager;..\Accounts;..\TranslateHandlers\inc;..\AcquireHandlers\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);Main;BrokerBuy;Db;Ui;..\CommonUtils;..\Ui;..\DcrLib;..\PipelineManager;..\Accounts;..\TranslateHandlers\inc;..\AcquireHandlers\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -178,8 +178,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BrokerBuy\BrokerBuyWindow.cpp" />
+    <ClCompile Include="BrokerBuy\DcrBrokerBuy.cpp" />
+    <ClCompile Include="BrokerBuy\TiBrokerBuy.cpp" />
     <ClCompile Include="Main\DcrBase_t.cpp" />
-    <ClCompile Include="Main\DcrBrokerBuy.cpp" />
     <ClCompile Include="Main\Eq2BrokerImpl_t.cpp" />
     <ClCompile Include="Main\Eq2Broker_t.cpp" />
     <ClCompile Include="Main\Main.cpp" />
@@ -190,23 +192,24 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugDLL|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Main\TiBrokerBuy.cpp" />
     <ClCompile Include="Main\TrWindowType.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Main\BrokerBuyText.h" />
-    <ClInclude Include="Main\BrokerBuyTypes.h" />
-    <ClInclude Include="Main\BrokerBuyWindowManager.h" />
+    <ClInclude Include="BrokerBuy\BrokerBuyText.h" />
+    <ClInclude Include="BrokerBuy\BrokerBuyTypes.h" />
+    <ClInclude Include="BrokerBuy\BrokerBuyWidgets.h" />
+    <ClInclude Include="BrokerBuy\BrokerBuyWindow.h" />
+    <ClInclude Include="BrokerBuy\BrokerBuyWindowManager.h" />
+    <ClInclude Include="BrokerBuy\DcrBrokerBuy.h" />
+    <ClInclude Include="BrokerBuy\TiBrokerBuy.h" />
     <ClInclude Include="Main\BrokerId.h" />
     <ClInclude Include="Main\CmdParser_t.h" />
     <ClInclude Include="Main\DcrBase_t.h" />
-    <ClInclude Include="Main\DcrBrokerBuy.h" />
     <ClInclude Include="Main\Eq2BrokerImpl_t.h" />
     <ClInclude Include="Main\Eq2Broker_t.h" />
     <ClInclude Include="Main\PageNumber_t.h" />
     <ClInclude Include="Main\Price_t.h" />
     <ClInclude Include="Main\stdafx.h" />
-    <ClInclude Include="Main\TiBrokerBuy.h" />
     <ClInclude Include="Main\TrWindowType.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>

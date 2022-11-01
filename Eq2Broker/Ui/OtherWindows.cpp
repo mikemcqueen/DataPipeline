@@ -44,8 +44,7 @@ loadSurfaces()
 #if 0 // TODO
     HRESULT hr = g_pDisplay->CreateSurfaceFromBitmap(&m_cancelButton,
         MAKEINTRESOURCE(IDB_EQ2LOADING_CANCEL));
-    if (FAILED(hr))
-    {
+    if (FAILED(hr)) {
         throw runtime_error("Create Eq2Loading_Cancel surface");
     }
 #endif
@@ -168,8 +167,7 @@ loadSurfaces()
     extern CDisplay* g_pDisplay;
     HRESULT hr = g_pDisplay->CreateSurfaceFromBitmap(&m_mainChatCaption,
         MAKEINTRESOURCE(IDB_MAINCHAT_CAPTION));
-    if (FAILED(hr))
-    {
+    if (FAILED(hr)) {
         throw runtime_error("Create MainChat_Caption surface");
     }
 #endif
@@ -200,7 +198,5 @@ GetOriginSearchRect(
     rect.left = width / 4;
     rect.right = rect.left + width / 2;
 }
-
-////////////////////////////////////////////////////////////////////////////////
 
 } // Broker

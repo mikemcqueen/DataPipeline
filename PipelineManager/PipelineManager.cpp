@@ -170,17 +170,13 @@ public:
     GetStageName(
         Stage_t stage)
     {
-        if (empty())
-        {
+        if (empty()) {
             Init();
         }
         const_iterator it = find(stage);
-        if (end() != it)
-        {
+        if (end() != it) {
             return it->second;
-        }
-        else
-        {
+        } else {
             // TODO: if 1 or 0 bit set return "unknown" else return "multiple"
             // TODO: add "unknown" entry to map
             static const wstring strUnknown(L"Unknown");
@@ -227,8 +223,7 @@ GetNextHandler(
     const wchar_t*                         pszClass,
           HandlerVector_t::const_iterator& it) const
 {
-    while (m_Handlers.end() != it)
-    {
+    while (m_Handlers.end() != it) {
         if ((0 != (intValue(it->Stage) & intValue(Stage)))) // todo template func
             // TODO: revisit this class nonsense when necessary. maybe
             // consider adding an "application" or "domain" message::Data
@@ -253,8 +248,7 @@ AddHandler(
           Handler_t& Handler,
     const wchar_t*   pszClass)
 {
-    if (!Handler.Initialize(pszClass))
-    {
+    if (!Handler.Initialize(pszClass)) {
         LogError(L"PM::AddHandler(%d): Handler.Initialize() failed", Stage);
         throw runtime_error("PM::AddHandler()");
     }
@@ -273,18 +267,15 @@ AddTransactionHandler(
     Handler_t&      handler,
     const wchar_t*  displayName /*= nullptr*/)
 {
-    if (handler.Initialize(nullptr))
-    {
+    if (handler.Initialize(nullptr)) {
         // NOTE: obviously this only allows for one handler per transaction Id,
         // regardless of stage.
         // in the future, maybe we could allow different handlers for different stages?
         CLock lock(m_csHandlers);
         TxIdHandlerMap_t::const_iterator itFind = m_txHandlerMap.find(transactionId);
-        if (m_txHandlerMap.end() == itFind)
-        {
+        if (m_txHandlerMap.end() == itFind) {
             wchar_t stringId[16];
-            if (nullptr == displayName)
-            {
+            if (nullptr == displayName) {
                 swprintf_s(stringId, L"TX-0%x", transactionId);
                 displayName = stringId;
             }
@@ -314,8 +305,7 @@ PipelineManager_t::
 SendEvent(
     Event::Data_t& Data)
 {
-    if (DP::Message::Type::Event != Data.Type) // && (Type::Transaction != Data.Type))
-    {
+    if (DP::Message::Type::Event != Data.Type) { // && (Type::Transaction != Data.Type))
         throw invalid_argument("PM::SendEvent(): Invalid message type");
     }
 
@@ -324,8 +314,7 @@ SendEvent(
     CLock lock(m_csHandlers);
     HandlerVector_t::const_iterator it = m_Handlers.begin();
     const wchar_t* pClass = nullptr;
-    if (L'\0' != Data.Class[0])
-    {
+    if (L'\0' != Data.Class[0]) {
         pClass = Data.Class;
     }
     //using namespace DP::Message;
@@ -335,17 +324,13 @@ SendEvent(
         return 1;
     }
 #endif
-    while (GetNextHandler(Data.Stage, pClass, it))
-    {
+    while (GetNextHandler(Data.Stage, pClass, it)) {
         ++Total;
         HRESULT hr = it->pHandler->EventHandler(Data);
         // S_FALSE means not handled, no error
-        if (S_OK == hr)
-        {
+        if (S_OK == hr) {
             ++Handled;
-        }
-        else if (FAILED(hr))
-        {
+        } else if (FAILED(hr)) {
             LogError(L"SendEvent(%d,%d) failed (%08x)", Data.Stage, Data.Id, hr);
         }
         ++it;
@@ -363,25 +348,21 @@ SendTransactionEvent(
     Transaction::Data_t* pPrevTxData /*= nullptr*/)
 {
     //using namespace DP::Message;
-    if (DP::Message::Type::Transaction != Data.Type)
-    {
+    if (DP::Message::Type::Transaction != Data.Type) {
 //        return E_FAIL;
         throw invalid_argument("PM::SendTransactionEvent(): Invalid message type");
     }
-    if (Data.Size < sizeof(Transaction::Data_t))
-    {
+    if (Data.Size < sizeof(Transaction::Data_t)) {
         throw invalid_argument("PM::SendTransactionEvent(): Invalid data size");
     }
     CLock lock(m_csHandlers);
     TxIdHandlerMap_t::const_iterator it = m_txHandlerMap.find(Data.Id);
-    if (m_txHandlerMap.end() != it)
-    {
+    if (m_txHandlerMap.end() != it) {
         using Transaction::Data_t;
         Handler_t* pHandler = it->second.pHandler;
         Data_t& TxData = static_cast<Data_t&>(Data);
         using namespace Transaction;
-        switch (TxData.GetState())
-        {
+        switch (TxData.GetState()) {
         case State::New:      
             return pHandler->ExecuteTransaction(TxData);
 
@@ -426,12 +407,10 @@ Callback(
 {
     LogInfo(L"PipelineManager_t::Callback pMessage %S", typeid(*pMessage).name());
 
-    if (nullptr == pMessage)
-    {
+    if (nullptr == pMessage) {
         throw std::invalid_argument("PipelineManager_t::Callback(): Invalid message");
     }
-    switch (pMessage->Stage)
-    {
+    switch (pMessage->Stage) {
     case Stage_t::Acquire:
     case Stage_t::Translate:
     case Stage_t::Interpret:
@@ -460,8 +439,7 @@ Flush(
     Data.Stage = Stage;
     wcscpy_s(Data.Class, _countof(Data.Class), pszClass);
     size_t RemovedCount = m_MessageThread.RemoveAll(&Data);
-    if (0 < RemovedCount)
-    {
+    if (0 < RemovedCount) {
         LogInfo(L"PM::Flush(%d, '%ls'): Removed %d item(s)", Stage, pszClass, RemovedCount);
     }
     return RemovedCount;
@@ -475,8 +453,7 @@ Dispatch(
     Message::Data_t* pMessage)
 {
     Stage_t NextStage = Stage_t::None;
-    switch (pMessage->Stage)
-    {
+    switch (pMessage->Stage) {
     case Stage_t::Acquire:     NextStage = Stage_t::Translate; break;
     case Stage_t::Translate:   NextStage = Stage_t::Interpret; break;
     case Stage_t::Interpret:   NextStage = Stage_t::Analyze;   break;
@@ -484,8 +461,7 @@ Dispatch(
         ASSERT(false);
         return;
     }
-    if (SUCCEEDED(TrySendTransactionMessage(pMessage, NextStage)))
-    {
+    if (SUCCEEDED(TrySendTransactionMessage(pMessage, NextStage))) {
         return;
     }
     // create list of output formats desired
@@ -497,8 +473,7 @@ Dispatch(
     {
         CLock lock(m_csHandlers);
         HandlerVector_t::const_iterator it = m_Handlers.begin();
-        while (GetNextHandler(NextStage, pMessage->Class, it))
-        {
+        while (GetNextHandler(NextStage, pMessage->Class, it)) {
             // at this point, how do we know that TiText is the required 
             // output type? a handler can support multiple? we don't just 
             // do them all, we need to know if there are any Analyze/Compare 
@@ -507,12 +482,10 @@ Dispatch(
             // TODO: *pMessage
             ++Total;
             HRESULT hr = it->pHandler->MessageHandler(pMessage);
-            if (SUCCEEDED(hr))
-            {
+            if (SUCCEEDED(hr)) {
                 ++Handled;
             }
-            if (E_ABORT == hr)
-            {
+            if (E_ABORT == hr) {
                 LogInfo(L"PM::Dispatch(%s) Aborted after (%d) handlers",
                         GetStageString(pMessage->Stage), Total);
                 return;
@@ -520,12 +493,9 @@ Dispatch(
             ++it;
         }
     }
-    if (0 == Total)
-    {
+    if (0 == Total) {
         LogError(L"PM::Dispatch(%s) No handlers", GetStageString(pMessage->Stage));
-    }
-    else
-    {
+    } else {
         LogInfo(L"PM::Dispatch(%s) Total (%d) Handled(%d)",
                 GetStageString(pMessage->Stage), Total, Handled);
     }
@@ -542,21 +512,16 @@ TrySendTransactionMessage(
     HRESULT hr = E_FAIL;
     DP::TransactionManager_t::AutoRelease_t TxData(GetTransactionManager().Acquire());
     const DP::Transaction::Data_t* pTxData = TxData.get();
-    if (nullptr != pTxData)
-    {
+    if (nullptr != pTxData) {
         // There is a transaction active: see if we have a handler registered
         // for the active transaction & specified stage
         CLock lock(m_csHandlers);
         TxIdHandlerMap_t::const_iterator it = m_txHandlerMap.find(pTxData->Id);
-        if ((m_txHandlerMap.end() != it) && (it->second.Stage == stage))
-        {
+        if ((m_txHandlerMap.end() != it) && (it->second.Stage == stage)) {
             hr = it->second.pHandler->MessageHandler(pMessage);
-            if (SUCCEEDED(hr))
-            {
+            if (SUCCEEDED(hr)) {
                 LogInfo(L"PM::TrySendTransactionMessage(): Message handled");
-            }
-            else
-            {
+            } else {
                 LogError(L"PM::TrySendTransactionMessage(): Message not handled");
             }
         }
@@ -631,8 +596,7 @@ QueueApc(
     ULONG_PTR Param)
 {
     DWORD dwRet = QueueUserAPC(ApcFunc, m_MessageThread.GetThread(), Param);
-    if (0 == dwRet)
-    {
+    if (0 == dwRet) {
         LogError(L"PM: QueueApc() failed, %d", GetLastError());
     }
 }
@@ -650,8 +614,4 @@ GetTransactionName(
                                         : unknownName;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-
 } // namespace DP
-
-////////////////////////////////////////////////////////////////////////////////

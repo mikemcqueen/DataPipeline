@@ -96,15 +96,13 @@ ExecuteTransaction(
     Transaction::Data_t* pPrevTxData,
     bool                 fInterrupt)
 {
-    if (nullptr == pTxData)
-    {
+    if (nullptr == pTxData) {
         throw invalid_argument("TM::ExecuteTransaction()");
     }
     LogInfo(L"TM::ExecuteTransaction(%s)", GetPipelineManager().GetTransactionName(pTxData->Id));
     bool bRet = false;
     CLock lock(m_cs);
-    if (SetTransactionExecuting(pTxData, fInterrupt))
-    {
+    if (SetTransactionExecuting(pTxData, fInterrupt)) {
         ExecuteNotify(pPrevTxData);
         bRet = true;
     }
@@ -132,13 +130,11 @@ CompleteTransaction(
 {
     CLock lock(m_cs);
     Data_t* pData = GetTransactionExecuting();
-    if (nullptr == pData)
-    {
+    if (nullptr == pData) {
         throw logic_error("TM::CompleteTransaction() No transaction executing");
     }
     Transaction::Data_t* pTxData = pData->pTxData;
-    if (TransactionId != pTxData->Id)
-    {
+    if (TransactionId != pTxData->Id) {
         throw invalid_argument("TM::CompleteTransaction() TransactionId invalid");
     }
     LogAlways(L"TM::CompleteTransaction(%s) Error(%x)", 
@@ -175,8 +171,7 @@ ApcComplete(
 {
     TransactionManager_t& tm = GetTransactionManager();
     Transaction::Data_t* pTxData = reinterpret_cast<Transaction::Data_t*>(Param);
-    if (tm.GetTransactionExecuting()->pTxData != pTxData)
-    {
+    if (tm.GetTransactionExecuting()->pTxData != pTxData) {
         // not sure if this is even a problem necessarily, but seems impossible
         LogError(L"TM: ApcComplete() pTxData != TransactionExecuting");
         //throw logic_error("XM::ApcComplete() pTxData != TransactionExecuting");
@@ -196,8 +191,7 @@ SendEvent(
 {
     CLock lock(m_cs);
     Data_t* pData = GetTransactionExecuting();
-    if (nullptr == pData)
-    {
+    if (nullptr == pData) {
         throw logic_error("TM::CompleteTransaction() No transaction executing");
     }
     Transaction::Data_t* pTxData = pData->pTxData;
@@ -205,8 +199,7 @@ SendEvent(
         GetPipelineManager().GetTransactionName(pTxData->Id),
         eventName, pTxData->GetState());
 	HRESULT hr = GetPipelineManager().SendTransactionEvent(*pTxData, pPrevTxData);
-    if (FAILED(hr))
-    {
+    if (FAILED(hr)) {
         LogError(L"TM::SendEvent(%s:%s) Error(%08x) State(%d)",
             GetPipelineManager().GetTransactionName(pTxData->Id), eventName,
             hr, pTxData->GetState());
@@ -220,12 +213,9 @@ TransactionManager_t::
 GetTransactionExecuting()
 {
     CLock lock(m_cs);
-    if (!m_stack.empty())
-    {
+    if (!m_stack.empty()) {
         return &m_stack.back();
-    }
-    else if (!m_queue.empty())
-    {
+    } else if (!m_queue.empty()) {
         return &m_queue.front();
     }
     return nullptr;
@@ -241,13 +231,10 @@ SetTransactionExecuting(
 {
     CLock lock(m_cs);
     bool emptyBefore = m_queue.empty();
-    if (emptyBefore || !fInterrupt)
-    {
+    if (emptyBefore || !fInterrupt) {
         m_queue.push_back(Data_t(pData));
         return emptyBefore;
-    }
-    else
-    {
+    } else {
         m_stack.push_back(Data_t(pData));
         return true;
     }
@@ -261,7 +248,8 @@ Acquire()
 {
     CLock lock(m_cs);
     Data_t* pData = GetTransactionExecuting();
-    if (nullptr == pData) return nullptr;
+    if (nullptr == pData)
+        return nullptr;
     ++pData->refCount;
 #ifdef EXTRALOG
     LogAlways(L"TM: Acquire(%x) refCount(%d)", pData->pTxData->Id, pData->refCount);
@@ -279,16 +267,14 @@ Release(
 {
     CLock lock(m_cs);
     Data_t* pData = FindTransaction(pTxData);
-    if (nullptr == pData)
-    {
+    if (nullptr == pData) {
         throw std::invalid_argument("XM::Release() FindTransaction failed");
     }
     long refCount = --pData->refCount;
 #ifdef EXTRALOG
     LogAlways(L"XM: Release() Id(%x) RefCount(%d)", pData->pTxData->Id, pData->refCount);
 #endif
-    if ((0 == refCount) && (GetTransactionExecuting() == pData))
-    {
+    if ((0 == refCount) && (GetTransactionExecuting() == pData)) {
         ExecuteNext();
     }
 }
@@ -301,19 +287,15 @@ FindTransaction(
     const Transaction::Data_t* pTxData)
 {
     CLock lock(m_cs);
-    if (!m_stack.empty())
-    {
+    if (!m_stack.empty()) {
         auto it = m_stack.rbegin();
-        for (; m_stack.rend() != it; ++it)
-        {
-            if (pTxData == it->pTxData)
-            {
+        for (; m_stack.rend() != it; ++it) {
+            if (pTxData == it->pTxData) {
                 return &*it;
             }
         }
     }
-    if (!m_queue.empty())
-    {
+    if (!m_queue.empty()) {
         //auto it = m_queue.begin();
         for (auto& data: m_queue) { //; m_queue.end() != it; ++it)
             if (pTxData == data.pTxData) {
@@ -332,12 +314,10 @@ ExecuteNext()
 {
     Transaction::Data_t* pPrevTxData = nullptr;
     CLock lock(m_cs);
-    if (!m_stack.empty())
-    {
+    if (!m_stack.empty()) {
         Data_t data = m_stack.back();
         m_stack.pop_back();
-        if (0 != data.refCount)
-        {
+        if (0 != data.refCount) {
             LogWarning(L"XM::ExecuteNext() Current stack transaction refCount non-zero (%d)",
                        data.refCount);
         }
@@ -346,31 +326,23 @@ ExecuteNext()
         // ResumeTransaction() of the transaction they pre-empted, so don't
         // delete it yet; gets deleted in ApcExecute.
         pPrevTxData = data.pTxData;
-    }
-    else if (!m_queue.empty())
-    {
+    } else if (!m_queue.empty()) {
         Data_t data = m_queue.front();
         m_queue.pop_front();
-        if (0 != data.refCount)
-        {
+        if (0 != data.refCount) {
             LogWarning(L"XM::ExecuteNext() Current queue transaction refCount non-zero (%d)",
                        data.refCount);
         }
         LogAlways(L"XM: PopQueue(%d)", m_queue.size());
         delete data.pTxData;
-    }
-    else
-    {
+    } else {
         throw logic_error("XM::ExecuteNext() Nothing to execute!");
     }
     // if one of the containers is non-empty, we have a newly active transaction
-    if (!m_stack.empty() || !m_queue.empty())
-    {
+    if (!m_stack.empty() || !m_queue.empty()) {
         // notify the transaction it is active
         ExecuteNotify(pPrevTxData);
     }
 }
-
-///////////////////////////////////////////////////////////////////////////////
 
 } // DP

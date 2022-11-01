@@ -50,13 +50,11 @@ FindTab(
     const POINT&    ptOrigin,
           POINT&    ptTabFound) const
 {
-    POINT ptHint =
-    {
+    POINT ptHint = {
         ptOrigin.x + m_TabOffset.x,
         ptOrigin.y + m_TabOffset.y
     };
-    if (surface.FindSurfaceInRect(tabSurface, tabAreaRect, ptTabFound, &ptHint))
-    {
+    if (surface.FindSurfaceInRect(tabSurface, tabAreaRect, ptTabFound, &ptHint)) {
         // NOTE: if ptHint == ptFoundTab then Hint was successful
         m_TabOffset.x = ptTabFound.x - ptOrigin.x;
         m_TabOffset.y = ptTabFound.y - ptOrigin.y;
@@ -107,8 +105,7 @@ GetWindowId(
     }
     Rect_t TableRect;
     SIZE ScrollOffsets = { 0, 0 };
-    if (FindTable(Surface, *pptHint, TableRect, ScrollOffsets))
-    {
+    if (FindTable(Surface, *pptHint, TableRect, ScrollOffsets)) {
         m_TableRect = TableRect;
         POINT ptOrigin = { m_TableRect.left, m_TableRect.top };
         const_cast<TableWindow_t*>(this)->SetLastOrigin(ptOrigin);
@@ -140,10 +137,8 @@ UpdateScrollPosition(
     using namespace Ui;
     // TODO: Rather imperfect solution, using GetTableRect():
     const Rect_t& TableRect = GetTableRect(); 
-    if (Scroll::Bar::Vertical == ScrollBar)
-    {
-        if (GetFlags().Test(Ui::Window::Flag::VerticalScroll))
-        {
+    if (Scroll::Bar::Vertical == ScrollBar) {
+        if (GetFlags().Test(Ui::Window::Flag::VerticalScroll)) {
             //TODO: maybe: all this rect discovery could live in GetVScrollPosition()
             Rect_t scrollUpRect; // = m_VScrollUpRect.GetRelativeRect(TableRect);
             Rect_t scrollDownRect; // = m_VScrollDownRect.GetRelativeRect(TableRect);
@@ -161,9 +156,7 @@ UpdateScrollPosition(
                      GetWindowName());
             throw std::logic_error("TableWindow_t::UpdateScrollPosition(): Missing vertical scroll rects");
         }
-    }
-    else
-    {
+    } else {
         //Flag = Flag::HorizontalScroll;
         //pScrollPos = &m_HorzScrollPos;
         throw std::logic_error("TableWindow_t::UpdateScrollPosition() horizontal scrolling not implemented");
@@ -205,16 +198,14 @@ FindTable(
 {
     using namespace Broker;
     using namespace Broker::Table;
-    POINT ptTable =
-    {
+    POINT ptTable = {
         ptTab.x + m_TableOffset.x,
         ptTab.y + m_TableOffset.y
     };
 
     if ((0 < m_TableSize.cx) && (0 < m_TableSize.cy)) {
         Rect_t LastKnownTableRect(ptTable, m_TableSize);
-        if (ValidateTable(Surface, LastKnownTableRect, ScrollOffsets))
-        {
+        if (ValidateTable(Surface, LastKnownTableRect, ScrollOffsets)) {
             LogInfo(L"%ls::FindTable(): Valid", GetWindowName());
             TableRect = LastKnownTableRect;
             return true;
@@ -230,8 +221,7 @@ FindTable(
     DWORD Flags = 1;// set to 1 to debug
     const int TopBorderWidth = Surface.GetWidthInColorRange(
         ptTable.x, ptTable.y, BorderLowColor, BorderHighColor, Flags);
-    if (MinTableWidth > TopBorderWidth)
-    {
+    if (MinTableWidth > TopBorderWidth) {
         LogInfo(L"%ls::FindTable(): TopBorderWidth(%d) < Min(%d) @ (%d, %d)",
                 GetWindowName(),
                 TopBorderWidth, MinTableWidth, ptTable.x, ptTable.y);
@@ -240,31 +230,26 @@ FindTable(
     // TODO: use CompareColorRange(Rect)
     // ValidateBrokerTableBorder()
     auto y = 1;
-    for (; (y < BorderSize.cy) && (ptTable.y + y < int(Surface.GetHeight())); ++y)
-    {
+    for (; (y < BorderSize.cy) && (ptTable.y + y < int(Surface.GetHeight())); ++y) {
         const int BorderWidth = Surface.GetWidthInColorRange(
             ptTable.x, ptTable.y + y, BorderLowColor, BorderHighColor);
-        if (BorderWidth != TopBorderWidth)
-        {
+        if (BorderWidth != TopBorderWidth) {
             LogInfo(L"%ls::FindTable(): Top BorderWidth(%d) @ (%d, %d) Row(%d) TopBorderWidth(%d)",
                 GetWindowName(),
                 BorderWidth, ptTable.x, ptTable.y + y, y, TopBorderWidth);
             return false;
         }
     }
-    if (y < BorderSize.cy)
-    {
+    if (y < BorderSize.cy) {
         LogInfo(L"%ls::FindTable(): top border out of view?",
                 GetWindowName());
         return false;
     }
     auto tableHeight = 0;
-    for (; ptTable.y + y < int(Surface.GetHeight()); ++tableHeight, ++y)
-    {
+    for (; ptTable.y + y < int(Surface.GetHeight()); ++tableHeight, ++y) {
         const int borderWidth = Surface.GetWidthInColorRange(
             ptTable.x, ptTable.y + y, BorderLowColor, BorderHighColor);
-        if (borderWidth < BorderSize.cx)
-        {
+        if (borderWidth < BorderSize.cx) {
             LogInfo(L"%ls::FindTable(): Left BorderWidth (%d) < %d, tableHeight (%d) @ (%d, %d)",
                     GetWindowName(),
                     borderWidth, BorderSize.cx, tableHeight, ptTable.x, ptTable.y + y);
@@ -280,20 +265,17 @@ FindTable(
     }
     // ValidateBrokerTableBorder()
     auto bottomBorderHeight = 0;
-    for (; (bottomBorderHeight < BorderSize.cy) && (ptTable.y + y < int(Surface.GetHeight())); ++bottomBorderHeight, ++y)
-    {
+    for (; (bottomBorderHeight < BorderSize.cy) && (ptTable.y + y < int(Surface.GetHeight())); ++bottomBorderHeight, ++y) {
         const int borderWidth = Surface.GetWidthInColorRange(
             ptTable.x, ptTable.y + y, BorderLowColor, BorderHighColor, Flags);
-        if (borderWidth != TopBorderWidth)
-        {
+        if (borderWidth != TopBorderWidth) {
             LogInfo(L"%ls::FindTable(): Bottom BorderWidth (%d) @ (%d, %d) Row (%d) TopBorderWidth (%d)",
                     GetWindowName(),
                     borderWidth, ptTable.x, ptTable.y + y, y, TopBorderWidth);
             return false;
         }
     }
-    if (bottomBorderHeight < BorderSize.cy)
-    {
+    if (bottomBorderHeight < BorderSize.cy) {
         LogInfo(L"%ls::FindTable(): bottom border out of view? height (%d) of (%d)",
             GetWindowName(), bottomBorderHeight, BorderSize.cy);
         return false;
@@ -353,13 +335,11 @@ ValidateBorders(
 
     Rect_t BorderRect = TableRect;
     BorderRect.bottom = BorderRect.top + BorderSize.cy;
-    if (!ValidateBorder(Surface, BorderRect, L"Top"))
-    {
+    if (!ValidateBorder(Surface, BorderRect, L"Top")) {
         return false;
     }
     OffsetRect(&BorderRect, 0, TableRect.Height() - BorderSize.cy);
-    if (!ValidateBorder(Surface, BorderRect, L"Bottom"))
-    {
+    if (!ValidateBorder(Surface, BorderRect, L"Bottom")) {
         return false;
     }
 
@@ -367,13 +347,11 @@ ValidateBorders(
     BorderRect.right = BorderRect.left + BorderSize.cx,
     BorderRect.top += BorderSize.cy;
     BorderRect.bottom -= BorderSize.cy;
-    if (!ValidateBorder(Surface, BorderRect, L"Left"))
-    {
+    if (!ValidateBorder(Surface, BorderRect, L"Left")) {
         return false;
     }
     OffsetRect(&BorderRect, TableRect.Width() - BorderSize.cx, 0);
-    if (!ValidateBorder(Surface, BorderRect, L"Rignt"))
-    {
+    if (!ValidateBorder(Surface, BorderRect, L"Rignt")) {
         return false;
     }
     return true;
@@ -388,8 +366,7 @@ ValidateBorder(
     const Rect_t&   BorderRect,
     const wchar_t*  pBorderName) const
 {
-    if (!Surface.CompareColorRange(BorderRect, BorderLowColor, BorderHighColor))
-    {
+    if (!Surface.CompareColorRange(BorderRect, BorderLowColor, BorderHighColor)) {
         LogWarning(L"%ls::ValidateBorder(): %ls border no longer matches",
                    GetWindowName(), pBorderName);
         return false;
@@ -420,11 +397,9 @@ ValidateClient(
     Surface.WriteBMP(L"diag\\table_gridrect.bmp", GridRect);
     const int Bottom = GridRect.bottom;
     GridRect.bottom = GridRect.top + RowGapSize;
-    for (size_t Line = 0; Bottom >= GridRect.bottom; ++Line)
-    {
+    for (size_t Line = 0; Bottom >= GridRect.bottom; ++Line) {
 //        if (!Surface.CompareColorRange(GridRect, BkLowColor, BkHighColor))
-        if (!Surface.CompareColor(GridRect, Black))
-        {
+        if (!Surface.CompareColor(GridRect, Black)) {
             LogWarning(L"%ls::ValidateClient(): Line (%d) @ (%d, %d) doesn't match",
                        GetWindowName(), Line, GridRect.left, GridRect.top);
             return false;

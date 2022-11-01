@@ -46,8 +46,7 @@ Many_t::
 Initialize()
 {
     DcrVector_t::iterator it = m_DcrVector.begin();
-    for (; m_DcrVector.end() != it; ++it)
-    {
+    for (; m_DcrVector.end() != it; ++it) {
         if (!(*it)->Initialize())
             return false;
     }
@@ -64,8 +63,7 @@ Translate(
     LogInfo(L"Translate::Many_t::Translate()");
     CSurface* pSurface = data.pPoolItem->get();
     DcrVector_t::iterator it = m_DcrVector.begin();
-    for (size_t Index = 0; m_DcrVector.end() != it; ++it, ++Index)
-    {
+    for (size_t Index = 0; m_DcrVector.end() != it; ++it, ++Index) {
         DCR& dcr = **it;
         Rect_t rect;
         if (!handler_.PreTranslateSurface(pSurface, data.WindowId, dcr.GetId(), &rect) ||

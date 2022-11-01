@@ -22,13 +22,9 @@
 namespace Broker
 {
 
-////////////////////////////////////////////////////////////////////////////////
-
-static const wchar_t s_szClassName[] = L"EQ2ApplicationClass";
+constexpr wchar_t ClassName[] = L"EQ2ApplicationClass";
 
 Rect_t MainWindow_t::m_PopupRect;
-
-////////////////////////////////////////////////////////////////////////////////
 
 MainWindow_t::
 MainWindow_t(
@@ -36,7 +32,7 @@ MainWindow_t(
     :
     Ui::Window::Base_t(
         Ui::Window::Id::MainWindow,
-        bTest ? nullptr : s_szClassName)
+        bTest ? nullptr : ClassName)
 {
 }
 
@@ -107,8 +103,7 @@ GetWindow(
     static MainChatWindow_t   mainChatWindow;
     static Broker::Window_t   brokerWindow(*this);
 
-    switch (windowId)
-    {
+    switch (windowId) {
 #if 0
     case Window::Id::Eq2Login:            return eq2LoginWindow;
     case Window::Id::Eq2Loading:          return eq2LoadingWindow;
@@ -144,8 +139,7 @@ GetMessageWindowId(
     const DP::MessageId_t& messageId) const
 {
     Ui::WindowId_t windowId = Ui::Window::Id::Unknown;
-    switch (messageId)
-    {
+    switch (messageId) {
     case Message::Id::Eq2Login: windowId = Window::Id::Eq2Login;            break;
     case Message::Id::Buy:      windowId = Window::Id::BrokerBuyTab;        break;
     case Message::Id::Sell:     windowId = Window::Id::BrokerSellTab;       break;

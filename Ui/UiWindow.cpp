@@ -20,8 +20,6 @@ namespace Ui
 namespace Window
 {
 
-////////////////////////////////////////////////////////////////////////////////
-
 Base_t::
 Base_t(
     WindowId_t     WindowId,
@@ -40,11 +38,9 @@ Base_t(
 {
     LogError(L"FIXME: MainWindow hWnd initialization - move out of UiWindow.cpp");
     
-    if ((nullptr != pClassName) || (nullptr != pWindowName))
-    {
+    if ((nullptr != pClassName) || (nullptr != pWindowName)) {
         HWND hWnd = ::FindWindow(pClassName, pWindowName);
-        if (nullptr == hWnd)
-        {
+        if (nullptr == hWnd) {
             LogError(L"Window not found: ClassName(%ls) WindowName(%ls)",
                      pClassName, pWindowName);
             //throw invalid_argument("Ui::Window::Base_t()");
@@ -90,20 +86,15 @@ Base_t::
 GetSsWindowRect(
     RECT& Rect) const
 {
-    if (nullptr != m_hMainWindow)
-    {
-        if (::IsWindow(m_hMainWindow))
-        {
+    if (nullptr != m_hMainWindow) {
+        if (::IsWindow(m_hMainWindow)) {
             // !::IsWindowVisible(m_hMainWindow) seems overkill
-            if (::GetForegroundWindow() != m_hMainWindow)
-            {
+            if (::GetForegroundWindow() != m_hMainWindow) {
                 // don't screenshot if we're not foreground
                 return nullptr;
             }
             ::GetClientRect(m_hMainWindow, &Rect);
-        }
-        else
-        {
+        } else {
             // TODO: make m_hMainWindow mutable?
             const_cast<Base_t*>(this)->m_hMainWindow = nullptr;
         }
@@ -181,8 +172,7 @@ IsLocatedOn(
           POINT*    pptOrigin /*= nullptr*/) const
 {
     const CSurface* pOriginSurface = GetOriginSurface();
-    if (nullptr != pOriginSurface)
-    {
+    if (nullptr != pOriginSurface) {
         using namespace Ui::Window;
         if (flags.Test(Locate::CompareLastOrigin) &&
             CompareLastOrigin(surface, *pOriginSurface, pptOrigin))
@@ -220,12 +210,9 @@ CompareLastOrigin(
           POINT*    pptOrigin) const
 {
     const POINT& pt = GetLastOrigin();
-    if ((0 < pt.x) || (0 < pt.y))
-    {
-        if (surface.Compare(pt.x, pt.y, image))
-        {
-            if (nullptr != pptOrigin)
-            {
+    if ((0 < pt.x) || (0 < pt.y)) {
+        if (surface.Compare(pt.x, pt.y, image)) {
+            if (nullptr != pptOrigin) {
                 *pptOrigin = pt;
             }
             LogInfo(L"%s::CompareLastOrigin() Match", GetWindowName());
@@ -248,12 +235,10 @@ OriginSearch(
     GetOriginSearchRect(surface, searchRect);
     // search for the supplied origin bitmap on the supplied surface
     POINT ptOrigin;
-    if (surface.FindSurfaceInRect(image, searchRect, ptOrigin, nullptr))
-    {
+    if (surface.FindSurfaceInRect(image, searchRect, ptOrigin, nullptr)) {
         LogInfo(L"%s::OriginSearch(): Found @ (%d, %d)", GetWindowName(),
                 ptOrigin.x, ptOrigin.y);
-        if (nullptr != pptOrigin)
-        {
+        if (nullptr != pptOrigin) {
             *pptOrigin = ptOrigin;
         }
         const_cast<Window_t*>(this)->SetLastOrigin(ptOrigin);
@@ -370,8 +355,7 @@ Scroll(
 {
     using namespace Scroll;
     Ui::WidgetId_t WidgetId = Ui::Widget::Id::Unknown;
-    switch (Direction)
-    {
+    switch (Direction) {
     case Direction::Up: 
         {
             const Position_t VertPos = GetScrollPosition(Bar::Vertical);
@@ -398,8 +382,7 @@ Scroll(
     default:
         break;
     }
-    if (Ui::Widget::Id::Unknown == WidgetId)
-    {
+    if (Ui::Widget::Id::Unknown == WidgetId) {
         throw logic_error("UiWindow::Scroll(): Invalid widget id");
     }
     return ClickWidget(WidgetId);
@@ -418,13 +401,11 @@ ValidateBorders(
 {
     Rect_t BorderRect = Rect;
     BorderRect.bottom = BorderRect.top + BorderSize.cy;
-    if (!ValidateBorder(Surface, BorderRect, L"Top", LowColor, HighColor))
-    {
+    if (!ValidateBorder(Surface, BorderRect, L"Top", LowColor, HighColor)) {
         return false;
     }
     OffsetRect(&BorderRect, 0, Rect.Height() - BorderSize.cy);
-    if (!ValidateBorder(Surface, BorderRect, L"Bottom", LowColor, HighColor))
-    {
+    if (!ValidateBorder(Surface, BorderRect, L"Bottom", LowColor, HighColor)) {
         return false;
     }
 
@@ -432,13 +413,11 @@ ValidateBorders(
     BorderRect.right = BorderRect.left + BorderSize.cx,
     BorderRect.top += BorderSize.cy;
     BorderRect.bottom -= BorderSize.cy;
-    if (!ValidateBorder(Surface, BorderRect, L"Left", LowColor, HighColor))
-    {
+    if (!ValidateBorder(Surface, BorderRect, L"Left", LowColor, HighColor)) {
         return false;
     }
     OffsetRect(&BorderRect, Rect.Width() - BorderSize.cx, 0);
-    if (!ValidateBorder(Surface, BorderRect, L"Rignt", LowColor, HighColor))
-    {
+    if (!ValidateBorder(Surface, BorderRect, L"Rignt", LowColor, HighColor)) {
         return false;
     }
     return true;
@@ -455,8 +434,7 @@ ValidateBorder(
     const COLORREF  LowColor,
     const COLORREF  HighColor) const
 {
-    if (!Surface.CompareColorRange(BorderRect, LowColor, HighColor))
-    {
+    if (!Surface.CompareColorRange(BorderRect, LowColor, HighColor)) {
         LogWarning(L"%ls::ValidateBorder(): %ls border doesn't match @ (%d, %d)",
                    GetWindowName(), pBorderName, BorderRect.left, BorderRect.top);
         return false;
@@ -483,8 +461,7 @@ DumpWidgets(
     const CSurface& Surface,
     const Rect_t&   RelativeRect) const
 {
-    for (size_t Widget = 0; Widget < GetWidgetCount(); ++Widget)
-    {
+    for (size_t Widget = 0; Widget < GetWidgetCount(); ++Widget) {
         RelativeRect_t Rect(widgets_[Widget].RectData);
         Rect_t WidgetRect = Rect.GetRelativeRect(RelativeRect);
         wchar_t szBuf[255];
@@ -516,24 +493,15 @@ GetVertScrollPos(
     bool bDownActive = ActiveCount <= Surface.GetIntensityCount(VScrollDownRect, ScrollIntensity);
     using namespace Ui::Scroll;
     Position_t Pos = Position::Unknown;
-    if (!bUpActive && !bDownActive)
-    {
+    if (!bUpActive && !bDownActive) {
         Pos = Position::Unknown;
-    }
-    else if (bUpActive && bDownActive)
-    {
+    } else if (bUpActive && bDownActive) {
         Pos = Position::Middle;
-    }
-    else if (bUpActive)
-    {
+    } else if (bUpActive) {
         Pos = Position::Bottom;
-    }
-    else if (bDownActive)
-    {
+    } else if (bDownActive) {
         Pos = Position::Top;
-    }
-    else
-    {
+    } else {
         throw std::logic_error("MainWindow_t::GetVertScrollPos(): Impossible!");
     }
     //LogAlways(L"MainWindow_t::GertVertScrollPos() ScrollRect = { %d, %d, %d, %d }",
@@ -541,9 +509,5 @@ GetVertScrollPos(
     return Pos;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-
 } // Window
 } // Ui
-
-////////////////////////////////////////////////////////////////////////////////

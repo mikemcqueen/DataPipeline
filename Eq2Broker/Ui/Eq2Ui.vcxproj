@@ -78,7 +78,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir);..\Main;..\..\Ui;..\..\CommonUtils;..\..\PipelineManager;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);..\Main;..\BrokerBuy;..\..\Ui;..\..\CommonUtils;..\..\PipelineManager;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -95,7 +95,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugDLL|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir);..\Main;..\..\Ui;..\..\CommonUtils;..\..\PipelineManager;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);..\Main;..\BrokerBuy;..\BrokerBuy;..\..\Ui;..\..\CommonUtils;..\..\PipelineManager;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -113,7 +113,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(SolutionDir);..\Main;..\..\Ui;..\..\CommonUtils;..\..\PipelineManager;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);..\Main;..\BrokerBuy;..\..\Ui;..\..\CommonUtils;..\..\PipelineManager;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
@@ -127,7 +127,6 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BrokerBuyWindow.cpp" />
     <ClCompile Include="BrokerWindow.cpp" />
     <ClCompile Include="MainWindow_t.cpp" />
     <ClCompile Include="OtherWindows.cpp" />
@@ -139,10 +138,8 @@
     <ClCompile Include="TabWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BrokerBuyWindow.h" />
     <ClInclude Include="BrokerUi.h" />
     <ClInclude Include="BrokerWindow.h" />
-    <ClInclude Include="BrokerBuyWidgets.h" />
     <ClInclude Include="MainWindow_t.h" />
     <ClInclude Include="OtherWindows.h" />
     <ClInclude Include="stdafx.h" />

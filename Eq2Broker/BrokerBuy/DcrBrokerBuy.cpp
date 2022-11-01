@@ -159,8 +159,7 @@ PostData(
     DWORD /*Unused*/) const
 {
     extern bool g_noDcrPost;
-    if (g_noDcrPost)
-    {
+    if (g_noDcrPost) {
         return;
     }
     //bool ExtraLog = 0;
@@ -174,12 +173,9 @@ PostData(
         return;
     }
     void *pBuffer = GetPipelineManager().Alloc(sizeof(Data_t));
-    if (nullptr == pBuffer)
-    {
+    if (nullptr == pBuffer) {
         LogError(L"DcrBrokerBuy::PostData(): Alloc callback data failed.");
-    }
-    else
-    {
+    } else {
         LogInfo(L"%S", pageNumber.GetText().c_str());
         m_TextTable.GetData().Dump(L"DcrBrokerBuy");
         //LogInfo(L"SeletecedRow(%d)", m_DcrTable.GetSelectedRow());

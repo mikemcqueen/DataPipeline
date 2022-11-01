@@ -32,10 +32,10 @@ struct Data_t :
 
     Data_t(
         const wchar_t* pClass,
-        Ui::WindowId_t     InitWindowId,
+        Ui::WindowId_t InitWindowId,
         Rect_t& InitSurfaceRect,
         pool<CSurface>::item_t* pPoolItem,
-        size_t             Size = sizeof(Data_t))
+        size_t Size = sizeof(Data_t))
         :
         SsTask::Acquire::Data_t(
             pClass,
@@ -69,29 +69,27 @@ public:
     //
 
     HRESULT
-        EventHandler(
-            DP::Event::Data_t& Event) override;
+    EventHandler(
+        DP::Event::Data_t& Event) override;
 
     // 
     // SSTask virtual:
     //
 
     HWND
-        GetSsWindowRect(
-            RECT& rcBounds) const override;
+    GetSsWindowRect(
+        RECT& rcBounds) const override;
 
     void
-        ThreadProcessEvent() override;
+    ThreadProcessEvent() override;
 
     void
-        PostData(
-            HWND              hWnd,
-            pool<CSurface>::item_t* pPoolItem) override;
-
-    //
+    PostData(
+        HWND              hWnd,
+        pool<CSurface>::item_t* pPoolItem) override;
 
     bool
-        ToggleClick()
+    ToggleClick()
     {
         return m_bClick = !m_bClick;
     }
@@ -99,30 +97,30 @@ public:
 private:
 
     void
-        AsyncEvent(
+    AsyncEvent(
             const DP::Event::Data_t& Data);
 
     void
-        ClickPoint(
-            const Ui::Event::Click::Data_t& Data,
-            POINT                     Point);
+    ClickPoint(
+        const Ui::Event::Click::Data_t& Data,
+        POINT                     Point);
 
     void
-        ClickWidget(
-            const Ui::Event::Click::Data_t& Data);
+    ClickWidget(
+        const Ui::Event::Click::Data_t& Data);
 
     void
-        SendChars(
-            const Ui::Event::SendChars::Data_t& Data);
+    SendChars(
+        const Ui::Event::SendChars::Data_t& Data);
 
     bool
-        ValidateEventData(
-            const DP::Event::Data_t& Data,
-            size_t             Size);
+    ValidateEventData(
+        const DP::Event::Data_t& Data,
+        size_t             Size);
 
     HWND
-        ValidateWindow(
-            Ui::WindowId_t WindowId);
+    ValidateWindow(
+        Ui::WindowId_t WindowId);
 }; // Handler_t
 
 }// SsWindow::Acquire
