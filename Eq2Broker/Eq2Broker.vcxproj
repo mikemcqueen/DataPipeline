@@ -64,7 +64,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules />
     <CodeAnalysisRuleAssemblies />
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\boost_1_80_0;G:\vcpkg\installed\x86-windows-static\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);build\inc;G:\vcpkg\installed\x86-windows-static\include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugDLL|Win32'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
@@ -73,7 +73,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules />
     <CodeAnalysisRuleAssemblies />
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\boost_1_80_0;G:\vcpkg\installed\x86-windows-static\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);build\inc;G:\vcpkg\installed\x86-windows-static\include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
@@ -82,7 +82,10 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules />
     <CodeAnalysisRuleAssemblies />
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\boost_1_80_0;G:\vcpkg\installed\x86-windows-static\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);build\inc;G:\vcpkg\installed\x86-windows-static\include</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>false</VcpkgEnabled>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -106,7 +109,7 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalLibraryDirectories>..\boost_1_80_0\stage\lib\;G:\Tesseract\git\tesseract\build\Debug;C:\Users\Mike\.sw\storage\pkg\73\b8\9775\obj\bld\348311\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>build\lib\;G:\Tesseract\git\tesseract\build\Debug;C:\Users\Mike\.sw\storage\pkg\73\b8\9775\obj\bld\348311\lib</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
     </Link>
@@ -138,7 +141,7 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalLibraryDirectories>..\boost_1_80_0\stage\lib\;G:\Tesseract\git\tesseract\build\Debug;G:\Tesseract\git\tesseract\build\debug\deps</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>build\lib;G:\Tesseract\git\tesseract\build\Debug;G:\Tesseract\git\tesseract\build\debug\deps</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
     </Link>

@@ -1,0 +1,9 @@
+include(vs17)
+include(x86)
+include(release)
+include(shared)
+
+[settings]
+[options]
+[tool_requires]
+[env]

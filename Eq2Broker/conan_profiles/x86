@@ -1,0 +1,7 @@
+PR_ARCH=x86
+
+[settings]
+arch=x86
+[options]
+[tool_requires]
+[env]

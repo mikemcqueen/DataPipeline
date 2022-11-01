@@ -23,13 +23,11 @@ namespace Buy
 
 static const Flag_t WindowFlags;
 
-static const POINT  BrokerDefaultTabOffset   = { -55, 41 }; // Broker Buy
-static const POINT  BrokerDefaultTableOffset = { -11, 103 };
-static const POINT  MarketDefaultTabOffset   = { -54, 41 }; // Market Browse
-static const POINT  MarketDefaultTableOffset = { -11, 98 };
-static const RECT   InnerTableRect           = {   0,  2, 0, 0 }; // wat ees thees magicks?
-
-//const size_t s_widgetCount = _countof(s_widgets);
+constexpr POINT BrokerDefaultTabOffset{ -55, 41 }; // Broker Buy
+constexpr POINT BrokerDefaultTableOffset{ -11, 103 };
+constexpr POINT MarketDefaultTabOffset{ -54, 41 }; // Market Browse
+constexpr POINT MarketDefaultTableOffset{ -11, 98 };
+constexpr RECT InnerTableRect{   0,  2, 0, 0 }; // wat ees thees magicks?
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -90,8 +88,7 @@ GetWidgetRect(
     if ((Frame::Widget::Id::SellTab == widgetId) ||
         (Frame::Widget::Id::SalesLogTab == widgetId))
     {
-        switch (mainWindow.GetBrokerWindow().GetLayout())
-        {
+        switch (mainWindow.GetBrokerWindow().GetLayout()) {
         case Frame::Layout::Broker:
             return Ui::Window_t::GetWidgetRect(widgetId, GetTableRect(), pRect,
                 std::span{ BrokerTabs });
@@ -113,8 +110,7 @@ Window_t::
 SetLayout(
     Frame::Layout_t layout)
 {
-    switch (layout)
-    {
+    switch (layout) {
     case Frame::Layout::Broker:
         SetOffsets(BrokerDefaultTabOffset, BrokerDefaultTableOffset);
         break;

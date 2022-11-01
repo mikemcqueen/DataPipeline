@@ -7,6 +7,8 @@
 //#include <boost/algorithm/string.hpp>
 #pragma warning(pop)
 //#include <boost/algorithm/string/predicate.hpp>
+
+#define BOOST_ALL_NO_LIB // disable boost "auto-link" feature
 #include <boost/program_options.hpp>
 
 namespace po = boost::program_options;

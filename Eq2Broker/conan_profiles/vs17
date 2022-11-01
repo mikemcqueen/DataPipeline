@@ -1,0 +1,8 @@
+[settings]
+os=Windows
+compiler=Visual Studio
+compiler.version=17
+compiler.cppstd=20
+[options]
+[tool_requires]
+[env]
