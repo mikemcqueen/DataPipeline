@@ -1,5 +1,6 @@
 [requires]
 boost/1.80.0
+ms-gsl/4.0.0
 
 [generators]
 CMakeDeps
@@ -38,6 +39,6 @@ boost:without_type_erasure=True
 boost:without_wave=True
 
 [imports]
-lib, *.lib -> ./lib/$PR_ARCH/$PR_DEBUG/$PR_SHARED
-include, *.hpp -> ./inc
-
+lib, *.lib -> ./lib
+include/boost, *.hpp -> ./inc/boost
+include/gsl, * -> ./inc/gsl

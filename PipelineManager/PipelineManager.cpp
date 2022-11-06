@@ -162,53 +162,56 @@ StopAcquiring(
 ////////////////////////////////////////////////////////////////////////////////
 
 class StageNameMap_t final :
-    public map<Stage_t, const wstring>
+    public std::unordered_map<Stage_t, std::wstring_view>
 {
+    using value_type = std::wstring_view;
+    using base_type = std::unordered_map<Stage_t, value_type>;
+
 public:
 
-    const wstring&
+    value_type
     GetStageName(
         Stage_t stage)
     {
-        if (empty()) {
-            Init();
-        }
         const_iterator it = find(stage);
         if (end() != it) {
             return it->second;
         } else {
             // TODO: if 1 or 0 bit set return "unknown" else return "multiple"
             // TODO: add "unknown" entry to map
-            static const wstring strUnknown(L"Unknown");
-            return strUnknown;
+            return L"Unknown";
         }
     }
 
 private:
+    friend class PipelineManager_t; // PM calls make_new()
 
-    void
-    Init()
+    static
+    StageNameMap_t
+    make_new()
     {
-        insert(make_pair(Stage_t::None,      wstring(L"None")));
-        insert(make_pair(Stage_t::Acquire,   wstring(L"Acquire")));
-        insert(make_pair(Stage_t::Translate, wstring(L"Translate")));
-        insert(make_pair(Stage_t::Interpret, wstring(L"Interpret")));
-        insert(make_pair(Stage_t::Analyze,   wstring(L"Analyze")));
-        insert(make_pair(Stage_t::Execute,   wstring(L"Execute")));
-        insert(make_pair(Stage_t::Any,       wstring(L"Any")));
+        StageNameMap_t m;
+        m.insert(make_pair(Stage_t::None,      L"None"));
+        m.insert(make_pair(Stage_t::Acquire,   L"Acquire"));
+        m.insert(make_pair(Stage_t::Translate, L"Translate"));
+        m.insert(make_pair(Stage_t::Interpret, L"Interpret"));
+        m.insert(make_pair(Stage_t::Analyze,   L"Analyze"));
+        m.insert(make_pair(Stage_t::Execute,   L"Execute"));
+        m.insert(make_pair(Stage_t::Any,       L"Any"));
+        return m;
     }
 };
 
 ////////////////////////////////////////////////////////////////////////////////
 
 /* static */
-const wchar_t*
+wstring_view
 PipelineManager_t::
 GetStageString(
     Stage_t stage)
 {
-    static StageNameMap_t stageNameMap;
-    return stageNameMap.GetStageName(stage).c_str();
+    static StageNameMap_t stageNameMap = StageNameMap_t::make_new();
+    return stageNameMap.GetStageName(stage);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -223,6 +226,7 @@ GetNextHandler(
     const wchar_t*                         pszClass,
           HandlerVector_t::const_iterator& it) const
 {
+    // TODO: revisit the entirety of this opaque logic
     while (m_Handlers.end() != it) {
         if ((0 != (intValue(it->Stage) & intValue(Stage)))) // todo template func
             // TODO: revisit this class nonsense when necessary. maybe
@@ -312,7 +316,6 @@ SendEvent(
     size_t Total = 0;
     size_t Handled = 0;
     CLock lock(m_csHandlers);
-    HandlerVector_t::const_iterator it = m_Handlers.begin();
     const wchar_t* pClass = nullptr;
     if (L'\0' != Data.Class[0]) {
         pClass = Data.Class;
@@ -324,6 +327,7 @@ SendEvent(
         return 1;
     }
 #endif
+    HandlerVector_t::const_iterator it = m_Handlers.begin();
     while (GetNextHandler(Data.Stage, pClass, it)) {
         ++Total;
         HRESULT hr = it->pHandler->EventHandler(Data);

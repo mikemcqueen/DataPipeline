@@ -60,7 +60,7 @@ Handler_t(
         *this,
         m_DcrVector), //variadic args?
     m_DcrTable(
-        Broker::Buy::Widget::Id::Table,
+        Widget::Id::Table,
         &m_TextTable,
         windowManager.GetWindow(),
         TableParams,
@@ -123,11 +123,11 @@ PreTranslateSurface(
     windowId;
     pSurface;
     switch (dcrId) {
-    case Broker::Buy::Widget::Id::Table:
+    case Widget::Id::Table:
         {
             //rcSurface;
             Rect_t rect = m_windowManager.GetWindow().GetClientRect();
-            if (!IsRectEmpty(&rect))
+            if (!rect.IsEmpty())
             {
                 rect.top += Broker::Table::TopRowOffset;
                 //m_selectedRow = GetSelectedRow(*pSurface, rect);
@@ -178,7 +178,7 @@ PostData(
     } else {
         LogInfo(L"%S", pageNumber.GetText().c_str());
         m_TextTable.GetData().Dump(L"DcrBrokerBuy");
-        //LogInfo(L"SeletecedRow(%d)", m_DcrTable.GetSelectedRow());
+        LogInfo(L"SeletecedRow(%d)", m_DcrTable.GetSelectedRow());
         Data_t* pData = new (pBuffer) Data_t(
             GetClass().c_str(),
             m_TextTable,
@@ -199,4 +199,4 @@ PostData(
 #endif
 }
 
-} // Broker::Buy::Translate
+} // namespace Broker::Buy::Translate

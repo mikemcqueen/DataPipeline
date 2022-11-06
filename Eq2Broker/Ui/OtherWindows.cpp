@@ -23,9 +23,8 @@ namespace Broker
 ////////////////////////////////////////////////////////////////////////////////
 
 Eq2LoadingWindow_t::
-Eq2LoadingWindow_t(
-)//    const Ui::Window_t& parent)
-:
+Eq2LoadingWindow_t()//    const Ui::Window_t& parent)
+    :
     Ui::Window_t(
         Broker::Window::Id::Eq2Loading,
         *this,
@@ -85,9 +84,8 @@ GetOriginSearchRect(
 ////////////////////////////////////////////////////////////////////////////////
 
 TransitionWindow_t::
-TransitionWindow_t(
-)//    const Ui::Window_t& parent)
-:
+TransitionWindow_t()//    const Ui::Window_t& parent)
+    :
     Ui::Window_t(
         Broker::Window::Id::Zoning,
         *this,

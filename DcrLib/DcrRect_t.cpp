@@ -102,7 +102,7 @@ TranslateRect(
     }
     LogInfo(L"DcrRect_t::TranslateSurface(): Text(%s)", buffer);
 
-    // WCHAR/char changes. old an unused. alert usage via exception.
+    // WCHAR/char changes. old and unused. alert usage via exception.
     //text_.assign(buffer);
     //return true;
     throw std::runtime_error("old code path");

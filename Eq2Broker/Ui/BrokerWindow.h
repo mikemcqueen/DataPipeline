@@ -90,12 +90,12 @@ public:
     Tab_t
     FindActiveTab(
         const CSurface& Surface,
-        const POINT&    ptOrigin,
-                POINT&    ptTab) const;
+        const POINT    ptOrigin,
+              POINT&    ptTab) const;
 
     const Rect_t&
     GetTabAreaRect(
-        const POINT& ptOrigin) const;
+        const POINT ptOrigin) const;
 
     TabWindow_t&
     GetTabWindow(

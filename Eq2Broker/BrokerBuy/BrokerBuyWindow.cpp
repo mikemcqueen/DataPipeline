@@ -14,12 +14,7 @@
 #include "BrokerWindow.h"
 #include "BrokerBuyWidgets.h"
 
-namespace Broker
-{
-namespace Buy
-{
-
-////////////////////////////////////////////////////////////////////////////////
+namespace Broker::Buy {
 
 static const Flag_t WindowFlags;
 
@@ -27,9 +22,7 @@ constexpr POINT BrokerDefaultTabOffset{ -55, 41 }; // Broker Buy
 constexpr POINT BrokerDefaultTableOffset{ -11, 103 };
 constexpr POINT MarketDefaultTabOffset{ -54, 41 }; // Market Browse
 constexpr POINT MarketDefaultTableOffset{ -11, 98 };
-constexpr RECT InnerTableRect{   0,  2, 0, 0 }; // wat ees thees magicks?
-
-////////////////////////////////////////////////////////////////////////////////
+constexpr RECT InnerTableRect{ 0,  2, 0, 0 }; // wat ees thees magicks?
 
 #if 0
 /* static */
@@ -56,9 +49,9 @@ Window_t(
     const Ui::Window_t& parent)
 :
     TableWindow_t(
-        Broker::Window::Id::BrokerBuyTab,
+        Broker::Window::Id::BrokerBuy,
         parent,
-        L"BrokerBuyTab",
+        L"BrokerBuy",
         WindowFlags,
         std::span{ Widgets },
         BrokerDefaultTableOffset,
@@ -73,11 +66,16 @@ MainWindow_t&
 Window_t::
 GetMainWindow() const
 {
+    // TODO: almost certainly not good
     return const_cast<MainWindow_t&>(dynamic_cast<const MainWindow_t&>(GetParent()));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
+//
+// This function is Wrong and shouldn't be here. The "BuyWindow" should be
+// modeled as "not having tabs". Tabs (and this implementation) should be
+// owned by BrokerFrameWindow.
+//
 bool
 Window_t::
 GetWidgetRect(
@@ -122,9 +120,4 @@ SetLayout(
     }
 }
 
-////////////////////////////////////////////////////////////////////////////////
-
-} // Buy
-} // Broker
-
-////////////////////////////////////////////////////////////////////////////////
+} // namespace Broker::Buy

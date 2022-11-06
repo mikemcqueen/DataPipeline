@@ -29,11 +29,10 @@ IsTabWindow(
     Ui::WindowId_t windowId)
 {
     using namespace Window;
-    switch (windowId)
-    {
-    case Id::BrokerBuyTab:
-    case Id::BrokerSellTab:
-    case Id::BrokerSalesLogTab:
+    switch (windowId) {
+    case Id::BrokerBuy:
+    case Id::BrokerSell:
+    case Id::BrokerSalesLog:
         return true;
     default:
         return false;
@@ -49,11 +48,10 @@ GetTabWidgetId(
     Ui::WindowId_t windowId)
 {
     using namespace Window;
-    switch (windowId)
-    {
-    case Id::BrokerBuyTab:      return Frame::Widget::Id::BuyTab;
-    case Id::BrokerSellTab:     return Frame::Widget::Id::SellTab;
-    case Id::BrokerSalesLogTab: return Frame::Widget::Id::SalesLogTab;
+    switch (windowId) {
+    case Id::BrokerBuy:      return Frame::Widget::Id::BuyTab;
+    case Id::BrokerSell:     return Frame::Widget::Id::SellTab;
+    case Id::BrokerSalesLog: return Frame::Widget::Id::SalesLogTab;
     default:
         throw invalid_argument("BrokerWindow::GetTabWidgetId()");
     }
@@ -68,7 +66,7 @@ Window_t(
     Ui::Window_t(
         Broker::Window::Id::BrokerFrame,
         parent,
-        L"BrokerFrame",
+        L"", // L"BrokerFrame", // why?
         WindowFlags),
     m_layout(Frame::Layout::Unknown)
 {
@@ -143,14 +141,13 @@ Window_t::
 GetWindow(
     Ui::WindowId_t windowId) const
 {
-    static Buy::Window_t      buyTab(GetParent());
+    static Buy::Window_t      buyWindow(GetParent());
 //    static Sell::Window_t     sellTab(GetParent());
 //    static SalesLog::Window_t salesLogTab(GetParent());
 
     using namespace Broker::Window;
-    switch (windowId)
-    {
-    case Id::BrokerBuyTab:      return buyTab;
+    switch (windowId) {
+    case Id::BrokerBuy:      return buyWindow;
 //    case Id::BrokerSellTab:     return sellTab;
 //    case Id::BrokerSalesLogTab: return salesLogTab;
     default:
@@ -166,11 +163,10 @@ GetTabWindow(
     Tab_t Tab) const
 {
     using namespace Broker::Window;
-    switch (Tab)
-    {
-    case Tab::Id::Buy:      return static_cast<TabWindow_t&>(GetWindow(Id::BrokerBuyTab));
-    case Tab::Id::Sell:     return static_cast<TabWindow_t&>(GetWindow(Id::BrokerSellTab));
-    case Tab::Id::SalesLog: return static_cast<TabWindow_t&>(GetWindow(Id::BrokerSalesLogTab));
+    switch (Tab) {
+    case Tab::Id::Buy:      return static_cast<TabWindow_t&>(GetWindow(Id::BrokerBuy));
+    case Tab::Id::Sell:     return static_cast<TabWindow_t&>(GetWindow(Id::BrokerSell));
+    case Tab::Id::SalesLog: return static_cast<TabWindow_t&>(GetWindow(Id::BrokerSalesLog));
     default:
         throw std::invalid_argument("BrokerWindow::GetTabWindow()");
     }
@@ -190,7 +186,7 @@ GetWindowId(
     const POINT*    /*pptHint*/) const
 {
     ///using namespace Ui::Window;
-    Ui::WindowId_t windowId = Ui::Window::Id::Unknown;
+    auto windowId = Ui::Window::Id::Unknown;
     POINT ptCaption;
     if (IsLocatedOn(surface, Ui::Window::Locate::CompareLastOrigin | 
         Ui::Window::Locate::Search, &ptCaption))
@@ -198,7 +194,7 @@ GetWindowId(
         POINT ptTab;
         Tab_t Tab = FindActiveTab(surface, ptCaption, ptTab);
         if (Tab::Id::None != Tab) {
-            Ui::Window_t& tabWindow = GetTabWindow(Tab);
+            const Ui::Window_t& tabWindow = GetTabWindow(Tab);
             LogInfo(L"BrokerWindow::GetWindowId() Found %ls Tab @ (%d, %d)",
                     tabWindow.GetWindowName(), ptTab.x, ptTab.y);
             // Now that we have verified the tab is active, validate
@@ -301,7 +297,7 @@ Tab_t
 Window_t::
 FindActiveTab(
     const CSurface& surface,
-    const POINT&    ptOrigin,
+    const POINT     ptOrigin,
           POINT&    ptFoundTab) const
 {
     struct TabSurface_t {
@@ -360,12 +356,12 @@ FindActiveTab(
 const Rect_t&
 Window_t::
 GetTabAreaRect(
-    const POINT& ptOrigin) const
+    const POINT ptOrigin) const
 {
     // TODO: get rid of literals
     // TODO: lock?
     // TODO: based on layout, calc area using m_brokerCaption?
-    static const SIZE tabArea = { 230, 60 };
+    constexpr SIZE tabArea = { 230, 60 };
     static Rect_t     tabAreaRect;
 
     int x = max(0, ptOrigin.x - (tabArea.cx - m_marketCaption.GetWidth()) / 2);

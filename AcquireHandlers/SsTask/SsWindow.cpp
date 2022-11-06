@@ -76,8 +76,7 @@ AsyncEvent(
 {
     LogInfo(L"SsWindow::AsyncEvent(%d, %d)", Data.Id, Data.Size);
 
-    if (!SetEventPending(true))
-    {
+    if (!SetEventPending(true)) {
         DP::Event::Data_t EventData(DP::Stage_t::Any);
         GetEventData(0, EventData, sizeof(EventData));
 
@@ -193,11 +192,9 @@ ThreadProcessEvent()
         return;
     }
     using namespace Ui::Event;
-    for (size_t Event = 0; Event < GetEventCount(); ++Event)
-    {
+    for (size_t Event = 0; Event < GetEventCount(); ++Event) {
         const DP::Event::Data_t& eventData = PeekEvent(Event);
-        switch (eventData.Id)
-        {
+        switch (eventData.Id) {
 /*
         case Id::Scroll:
             {
@@ -384,17 +381,13 @@ ClickPoint(
     throw std::logic_error("ClickPoint() not implemented");
 #else
     LogInfo(L"SsWindow::ClickPoint() (%d,%d)", Point.x, Point.y);
-    if (m_bClick && ValidateEventData(Data, sizeof(Data)))
-    {
+    if (m_bClick && ValidateEventData(Data, sizeof(Data))) {
         HWND hWnd = ValidateWindow(Data.WindowId);
-        if (nullptr != hWnd)
-        {
+        if (nullptr != hWnd) {
             size_t Count = Data.Count;
             using namespace Ui::Event;
-            while (0 < Count--)
-            {
-                switch (Data.Method)
-                {
+            while (0 < Count--) {
+                switch (Data.Method) {
 #if 0
                 case Input::Method::SendMessage:
                     Ui::Window::ClickSendMessage(hWnd, MAKELONG(Point.x, Point.y),
@@ -423,11 +416,9 @@ ClickWidget(
 {
     const Ui::WidgetId_t WidgetId = Data.Destination.WidgetId;
     LogInfo(L"SsWindow::ClickWidget(%d)", WidgetId);
-    if (m_bClick && ValidateEventData(Data, sizeof(Data)))
-    {    
+    if (m_bClick && ValidateEventData(Data, sizeof(Data))) {    
         HWND hWnd = ValidateWindow(Data.WindowId);
-        if (nullptr != hWnd)
-        {
+        if (nullptr != hWnd) {
             m_Window.GetWindow(Data.WindowId).ClickWidget(WidgetId, true);
         }
     }
@@ -443,14 +434,12 @@ ValidateEventData(
 {
     // this function is probably unnecessary as i do exact size 
     // validation in SsTask_t::GetEventData()
-    if (Data.Size < Size)
-    {
+    if (Data.Size < Size) {
         LogError(L"SsWindow::ValidateEventData(%d) Invalid data size (%d) should be (%d)",
                  Data.Id, Size, Size);
         throw std::logic_error("SsWindow::ValidateEventData() Invalid data size");
     }
-    else if (Data.Size > Size)
-    {
+    else if (Data.Size > Size) {
        LogError(L"SsWindow::ValidateEventData(%d) Data.size (%d) > Size (%d)",
                  Data.Id, Size, Size);
     }
@@ -467,15 +456,13 @@ ValidateWindow(
     // TODO: Shouldn't we use GetMainWindow() for the GetForegroundWindow() check?
 
     HWND hWnd = m_Window.GetHwnd(WindowId);
-    if ((nullptr == hWnd) || !IsWindowVisible(hWnd) || (hWnd != ::GetForegroundWindow()))
-    {
+    if ((nullptr == hWnd) || !IsWindowVisible(hWnd) || (hWnd != ::GetForegroundWindow())) {
         LogError(L"SsWindow::ValidateWindow() failed for hWnd (%08x)", hWnd);
         return nullptr;
     }
     const Ui::Window::Handle_t Top = m_Window.GetTopWindow();
     // TODO : Window::IsParent
-    if ((Top.hWnd != hWnd) && !util::IsParent(Top.hWnd, hWnd))
-    {
+    if ((Top.hWnd != hWnd) && !util::IsParent(Top.hWnd, hWnd)) {
         LogError(L"SsWindow::ValidateWindow(): WindowId (%d) is not top window"
                  L" or a child of top window (%d)", WindowId, Top.WindowId);
         return nullptr;
@@ -521,8 +508,7 @@ PostData(
     Handle_t Top = m_Window.GetTopWindow();
     Rect_t SurfaceRect;
     // TODO: if (!m_Window.HasChildHwnds())
-    if (Id::MainWindow == Top.WindowId)
-    {
+    if (Id::MainWindow == Top.WindowId) {
         // The top window is the main app window. This means we're actually
         // a single-window app with no child windows, and need to infer the
         // actual window id by looking at surface bits.
@@ -532,9 +518,7 @@ PostData(
         // TrWindowType translate handler will look for messages with unknown
         // window type and determine actual window type.
         Top.WindowId = Id::Unknown;
-    }
-    else
-    {
+    } else {
         // Handle the legacy (and LoN) case (windowed app).
         //
         // We have the hWnd, and from that we can infer what the window type
@@ -543,23 +527,18 @@ PostData(
         // and if the supplied hWnd is a child we consider it good enough.
         // TODO: This could be better.
         // TODO: Ui::Window::IsParent()
-        if ((Top.hWnd != hWnd) && !util::IsParent(Top.hWnd, hWnd))
-        {
+        if ((Top.hWnd != hWnd) && !util::IsParent(Top.hWnd, hWnd)) {
             return;
         }
-        if (Id::Unknown == Top.WindowId)
-        {
+        if (Id::Unknown == Top.WindowId) {
             LogWarning(L"SsWindow::PostData() TopWindowId is unknown.");
             return;
         }
     }
     void *pBuffer = GetPipelineManager().Alloc(sizeof(Data_t));
-    if (nullptr == pBuffer)
-    {
+    if (nullptr == pBuffer) {
         LogError(L"SsWindow::PostData(): Alloc callback data failed.");
-    }
-    else
-    {
+    } else {
         pPoolItem->addref(); // Haxington Heights
         Data_t* pData = new (pBuffer)
             Data_t(
@@ -571,8 +550,7 @@ PostData(
         LogInfo(L"SsWindow_t::PostData: data %S", typeid(*pData).name());
 
         HRESULT hr = GetPipelineManager().Callback(pData);
-        if (FAILED(hr))
-        {
+        if (FAILED(hr)) {
             LogError(L"SsWindow::PostData(): PM.Callback() failed (%08x)", hr);
         }
     }

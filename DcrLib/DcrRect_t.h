@@ -84,8 +84,6 @@ private:
 
 private:
     const Charset_t* m_pCharset;
-    //const Ui::Window_t& m_window;
-    //Ui::WidgetId_t   m_widgetId;
     RelativeRect_t   m_Rect;
     std::string      text_;
     bool             m_checkCaret;

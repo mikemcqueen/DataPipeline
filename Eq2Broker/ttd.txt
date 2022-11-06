@@ -19,11 +19,14 @@ review some of the enable_if/concepts ideas for restricting MakeId to specific t
 BrokerFrame *contains* a tab.  Tab is not a window type.
 TableWindow does not inherit from TabWidnow.  Tab is not a window type.
 
-pSurface AutoUnlock_t (DcrTable_t)
+pSurface AutoUnlock_t (DcrTable_t) or finally_t
 cleanup TextTable_t.h
 
 I think the word transaction is wrong. State would also be wrong. This is a container for a set of states really.
 or a container for a state machine?
+
+Move ScreenTable_t.h to DcrLib. DcrTableTypes?
+Rethink DCR legacy vs. Tesseract.
 
 c++20: * == done(ish)
 	range_for (as_const? or just const auto) whereever const_iterator is defined. read up on as_const vs. const auto
@@ -31,4 +34,6 @@ c++20: * == done(ish)
 	enum class
 	constexpr
 		static const -> constexpr
-
+	typedef -> using
+	char* param -> string_view
+	bool get(Struct* pResult) -> optional<Struct> get()

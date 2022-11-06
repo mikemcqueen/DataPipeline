@@ -13,12 +13,9 @@
 #ifndef Include_DCRTABLE_T_H_
 #define Include_DCRTABLE_T_H_
 
-/////////////////////////////////////////////////////////////////////////////
-
 #include "Dcr.h"
 #include "ScreenTable_t.h"
-
-/////////////////////////////////////////////////////////////////////////////
+#include "ColorRange_t.h"
 
 class Rect_t;
 class Charset_t;
@@ -60,6 +57,12 @@ public:
         const Rect_t&   rect) override;
 
     //
+
+    size_t
+    GetSelectedRow(
+        CSurface& surface,
+        const Rect_t& tableRect,
+        const ColorRange_t& colors) const;
 
     void
     SetTextTable(
@@ -108,9 +111,4 @@ private:
         TextTable_i* pText) const;
 };
 
-/////////////////////////////////////////////////////////////////////////////
-
 #endif // Include_DCRTABLE_T_H
-
-/////////////////////////////////////////////////////////////////////////////
-

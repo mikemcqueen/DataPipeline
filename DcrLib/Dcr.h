@@ -88,27 +88,18 @@ public:
         return true;
     }
 
-#if 0
-    virtual bool
-    PreTranslateSurface(
-        CSurface* /*pSurface*/,
-        Rect_t* /*pRect*/)
-    {
-        // TODO: Rect = pSurface->GetBltRect(); 
-        return true;
-    }
-#endif
-
-    int GetId() {
-        return id_;
-    }
-
     virtual bool
     TranslateSurface(
         CSurface* /*pSurface*/,
         const Rect_t& /*Rect*/)
     {
         return true;
+    }
+
+    //
+
+    int GetId() {
+        return id_;
     }
 
     void

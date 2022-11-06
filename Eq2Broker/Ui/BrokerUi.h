@@ -14,30 +14,31 @@
 #define INCLUDE_BROKERUI_H
 
 #include "UiWindowId.h"
+#include "ColorRange_t.h"
 
-namespace Broker
-{
-    static const COLORREF Black                  = RGB(0,0,0);
-    static const COLORREF DarkGrey10             = RGB(10,10,10);
+namespace Broker {
+    static const COLORREF Black                  = RGB(0, 0, 0);
+    static const COLORREF DarkGrey10             = RGB(10, 10, 10);
 
     static const COLORREF BkLowColor             = Black;
-    static const COLORREF BkHighColor            = RGB(50,50,50);
+    static const COLORREF BkHighColor            = RGB(50, 50, 50);
 
     static const COLORREF BorderLowColor         = RGB(0, 0, 0);
-    static const COLORREF BorderHighColor        = RGB(6,6,6);
+    static const COLORREF BorderHighColor        = RGB(6, 6, 6);
 
     namespace Table
     {
-        static const COLORREF SelectedLowColor  = RGB(30,30,30);// RGB=0x252025
-        static const COLORREF SelectedHighColor = RGB(39,39,39);
+        constexpr COLORREF SelectedLowColor  = RGB(30, 30, 30); // Example: RGB=0x252025
+        constexpr COLORREF SelectedHighColor = RGB(39, 39, 39);
+        constexpr ColorRange_t SelectedRowColors = { SelectedLowColor, SelectedHighColor };
 
         constexpr int TopRowOffset = 0;
         constexpr int RowHeight            = 42;
         constexpr int QuantityTextHeight   = 16;
         constexpr int RowGapSize           = 2;
         constexpr int CharHeight           = 12;
-        static const SIZE BorderSize       = { 3, 3 };
-        static const SIZE DoubleBorderSize = { BorderSize.cx * 2, BorderSize.cy * 2 };
+        constexpr SIZE BorderSize       = { 3, 3 };
+        constexpr SIZE DoubleBorderSize = { BorderSize.cx * 2, BorderSize.cy * 2 };
     } // Table
 
     class Window_t;
@@ -56,10 +57,10 @@ namespace Broker
             constexpr auto Zoning = MakeId(2);
             constexpr auto MainChat = MakeId(3);
             constexpr auto BrokerFrame = MakeId(4);
-            constexpr auto BrokerBuyTab = MakeId(5);
-            constexpr auto BrokerSellTab = MakeId(6);
-            constexpr auto BrokerSalesLogTab = MakeId(7);
-            constexpr auto BrokerSetPricePopup = MakeId(8);
+            constexpr auto BrokerBuy = MakeId(5);
+            constexpr auto BrokerSell = MakeId(6);
+            constexpr auto BrokerSalesLog = MakeId(7);
+            constexpr auto BrokerSetPrice = MakeId(8);
         } // Id
     } // Window
 

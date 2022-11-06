@@ -21,7 +21,7 @@
 
 namespace Broker::Buy {
 
-constexpr Ui::WindowId_t TopWindowId = Broker::Window::Id::BrokerBuyTab;
+constexpr auto TopWindowId = Broker::Window::Id::BrokerBuy;
 
 namespace Table
 {

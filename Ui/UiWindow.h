@@ -69,8 +69,8 @@ namespace Window
 
         WindowId_t         m_WindowId;
         HWND               m_hMainWindow;
-        std::wstring       m_strClassName;
-        std::wstring       m_strWindowName;
+        std::wstring       m_className;
+        std::wstring       m_windowName;
         Flag_t             m_Flags;
         Scroll::Position_t m_VertScrollPos;
         Scroll::Position_t m_HorzScrollPos;
@@ -80,20 +80,27 @@ namespace Window
     public:
 
         Base_t(
-            WindowId_t     WindowId,
-            const wchar_t* pClassName,
-            const wchar_t* pWindowName = nullptr,
-            Flag_t         Flags = 0);
+            WindowId_t  WindowId,
+            wstring_view className,
+            wstring_view windowName = wstring_view{},
+            Flag_t      Flags = 0);
 
         Base_t(
             WindowId_t WindowId,
             const Base_t& ParentWindow,
-            const wchar_t* pWindowName,
+            wstring_view windowName,
             Flag_t Flags = 0,
-            std::span<const Widget::Data_t> widgets = std::span<const Widget::Data_t>());
+            std::span<const Widget::Data_t>
+            /*auto*/ widgets = std::span<const Widget::Data_t>{});
 
         virtual
         ~Base_t();
+
+        Base_t() = delete;
+        Base_t(const Base_t&) = delete;
+        const Base_t& operator=(const Base_t&) = delete;
+
+        // Ui::Window::Base_t virtual:
 
         virtual
         HWND
@@ -165,10 +172,6 @@ namespace Window
             const CSurface& surface,
             Rect_t& rect) const;
 
-        //
-        // Helper methods
-        //
-
         bool
         ClickWidget(
             WidgetId_t WidgetId,
@@ -195,7 +198,13 @@ namespace Window
             Ui::WidgetId_t  WidgetId,
             const Rect_t& RelativeRect,
             Rect_t* pWidgetRect,
-            span<const Widget::Data_t> widgets = span<const Widget::Data_t>()) const;
+            span<const Widget::Data_t> widgets) const;
+
+        bool
+        GetWidgetRect(
+            Ui::WidgetId_t  WidgetId,
+            const Rect_t& RelativeRect,
+            Rect_t* pWidgetRect) const;
 
         WindowId_t
         GetWindowId() const
@@ -212,7 +221,7 @@ namespace Window
         const wchar_t*
         GetWindowName() const
         {
-            return m_strWindowName.c_str();
+            return m_windowName.c_str();
         }
 
         Flag_t
@@ -237,11 +246,9 @@ namespace Window
         {
             // TODO: Lock
             using namespace Scroll::Bar;
-            if (Vertical == ScrollBar)
-            {
+            if (Vertical == ScrollBar) {
                 m_VertScrollPos = ScrollPos;
-            } else
-            {
+            } else {
                 m_HorzScrollPos = ScrollPos;
             }
         }
@@ -301,10 +308,10 @@ namespace Window
         }
 
         bool
-            CompareLastOrigin(
-                const CSurface& surface,
-                const CSurface& image,
-                POINT* pptOrigin) const;
+        CompareLastOrigin(
+            const CSurface& surface,
+            const CSurface& image,
+            POINT* pptOrigin) const;
 
         bool
         OriginSearch(
@@ -322,12 +329,6 @@ namespace Window
             const CSurface& Surface,
             const Rect_t& ScrollUpRect,
             const Rect_t& ScrollDownRect);
-
-    private:
-
-        Base_t();
-        Base_t(const Base_t&);
-        const Base_t& operator=(const Base_t&);
     };
 
 } // Window

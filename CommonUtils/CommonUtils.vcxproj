@@ -137,6 +137,7 @@
     <ClInclude Include="CommonTypes.h" />
     <ClInclude Include="DDUtil.h" />
     <ClInclude Include="Flag_t.h" />
+    <ClInclude Include="ColorRange_t.h" />
     <ClInclude Include="Log.h" />
     <ClInclude Include="Log_t.h" />
     <ClInclude Include="Macros.h" />

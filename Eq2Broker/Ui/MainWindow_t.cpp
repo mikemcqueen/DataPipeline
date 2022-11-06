@@ -22,8 +22,6 @@
 namespace Broker
 {
 
-constexpr wchar_t ClassName[] = L"EQ2ApplicationClass";
-
 Rect_t MainWindow_t::m_PopupRect;
 
 MainWindow_t::
@@ -32,7 +30,7 @@ MainWindow_t(
     :
     Ui::Window::Base_t(
         Ui::Window::Id::MainWindow,
-        bTest ? nullptr : ClassName)
+        bTest ? L"" : L"EQ2ApplicationClass")
 {
 }
 
@@ -53,7 +51,7 @@ MainWindow_t::
 GetBrokerBuyWindow() const
 {
     using namespace Broker::Window;
-    return static_cast<Buy::Window_t&>(GetWindow(Id::BrokerBuyTab));
+    return static_cast<Buy::Window_t&>(GetWindow(Id::BrokerBuy));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -101,7 +99,7 @@ GetWindow(
     static SetPrice::Window_t setPricePopup(*this);
 #endif
     static MainChatWindow_t   mainChatWindow;
-    static Broker::Window_t   brokerWindow(*this);
+    static Broker::Window_t   brokerFrameWindow(*this);
 
     switch (windowId) {
 #if 0
@@ -112,8 +110,8 @@ GetWindow(
     case Window::Id::BrokerSellTab:       [[fallthrough]];
     case Window::Id::BrokerSalesLogTab:   [[fallthrough]];
 #endif
-    case Window::Id::BrokerBuyTab:        return brokerWindow.GetWindow(windowId); 
-    case Window::Id::BrokerFrame:         return brokerWindow;
+    case Window::Id::BrokerBuy:           return brokerFrameWindow.GetWindow(windowId); 
+    case Window::Id::BrokerFrame:         return brokerFrameWindow;
     case Window::Id::MainChat:            return mainChatWindow;
     default:
         throw std::invalid_argument(std::format("MainWindow_t::GetWindow() unknown window({})", intValue(windowId)));
@@ -138,21 +136,15 @@ MainWindow_t::
 GetMessageWindowId(
     const DP::MessageId_t& messageId) const
 {
-    Ui::WindowId_t windowId = Ui::Window::Id::Unknown;
     switch (messageId) {
-    case Message::Id::Eq2Login: windowId = Window::Id::Eq2Login;            break;
-    case Message::Id::Buy:      windowId = Window::Id::BrokerBuyTab;        break;
-    case Message::Id::Sell:     windowId = Window::Id::BrokerSellTab;       break;
-    case Message::Id::SalesLog: windowId = Window::Id::BrokerSalesLogTab;   break;
-    case Message::Id::SetPrice: windowId = Window::Id::BrokerSetPricePopup; break;
+    case Message::Id::Eq2Login: return Window::Id::Eq2Login;
+    case Message::Id::Buy:      return Window::Id::BrokerBuy;
+    case Message::Id::Sell:     return Window::Id::BrokerSell;
+    case Message::Id::SalesLog: return Window::Id::BrokerSalesLog;
+    case Message::Id::SetPrice: return Window::Id::BrokerSetPrice;
     default:
-        break;
+        return Ui::Window::Id::Unknown;
     }
-    return windowId;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-
 } // Broker
-
-////////////////////////////////////////////////////////////////////////////////

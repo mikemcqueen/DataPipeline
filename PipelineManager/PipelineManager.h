@@ -101,7 +101,7 @@ public:
     Get();
 
     static
-    const wchar_t*
+    wstring_view
     GetStageString(
         Stage_t stage);
 

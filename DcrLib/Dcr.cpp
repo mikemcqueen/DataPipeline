@@ -2,7 +2,7 @@
 //
 // Copyright (C) 2008 Mike McQueen.  All rights reserved.
 //
-// DCR.CPP
+// Dcr.cpp
 //
 /////////////////////////////////////////////////////////////////////////////
 
@@ -15,18 +15,13 @@
 #include "Macros.h"
 #include "Rect.h"
 
-#undef DCR
+#undef DCR // ??
 
 bool g_bWriteBmps = true;
 bool g_bTableFixColor = true;
 
 /*static*/
 std::unique_ptr<tesseract::TessBaseAPI> DCR::tesseract_;
-
-/////////////////////////////////////////////////////////////////////////////
-
-DCR::DCR(int id) : DCR(id, true)
-{ }
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -38,9 +33,12 @@ DCR(int id, bool useTesseract) :
 
 /////////////////////////////////////////////////////////////////////////////
 
-DCR::
-~DCR()
+DCR::DCR(int id) : DCR(id, true)
 { }
+
+/////////////////////////////////////////////////////////////////////////////
+
+DCR::~DCR() { }
 	
 /////////////////////////////////////////////////////////////////////////////
 
@@ -60,13 +58,11 @@ GetText(
     ASSERT(nullptr != pszText);
 	ASSERT(2 <= iMaxLen);
 
-    if (nullptr != pCharset)
-    {
+    if (nullptr != pCharset) {
         return GetText(pSurface, pRect, pszText, iMaxLen, pCharset, flags & DCR_GETTEXT_ALLOW_BAD);
     }
     auto it = Charsets.begin();
-    for (; Charsets.end() != it; ++it)
-    {
+    for (; Charsets.end() != it; ++it) {
         HRESULT hr = GetText(pSurface, pRect, pszText, iMaxLen, *it, flags);
         if (SUCCEEDED(hr))
             return hr;
@@ -105,16 +101,13 @@ GetText(
 	iMaxLen--;
 
     HRESULT hr = S_OK;
-	while(0 < (cLeftPixels = Charset_t::FindNextChar(pSurface, x, y, pRect, getTextFlags)))
-	{
+	while(0 < (cLeftPixels = Charset_t::FindNextChar(pSurface, x, y, pRect, getTextFlags))) {
         dwFlags |= getTextFlags;
 		xEndGap = x;
 		unsigned iChar;
         hr = pCharset->Compare(cLeftPixels, pSurface, x, y, pRect, iChar, dwFlags);
-		if (0 != (dwFlags & DCR_ADJACENT_RIGHT_OVERLAP))
-		{
-			if (FAILED(hr))
-			{
+		if (0 != (dwFlags & DCR_ADJACENT_RIGHT_OVERLAP)) {
+			if (FAILED(hr)) {
 				++x;
 				y = pRect->top;
 				continue;
@@ -122,16 +115,13 @@ GetText(
 		}
         dwFlags = 0;
 		wchar_t ch;
-		if (SUCCEEDED(hr))
-		{
+		if (SUCCEEDED(hr)) {
 			ch = pCharset->GetChar(iChar);
 			if (DCR_S_ADJACENT_RIGHT_OVERLAP == hr)
 				dwFlags = DCR_ADJACENT_RIGHT_OVERLAP;
             else if (DCR_S_ADJACENT_LEFT_OVERLAP == hr)
 				dwFlags = DCR_LEFT_OVERLAP;
-		}
-		else 
-		{
+		} else {
             bBadChar = true;
             if (0 == (getTextFlags & DCR_GETTEXT_ALLOW_BAD))
             {
@@ -145,8 +135,7 @@ GetText(
             ch = '?';
             Charset_t::SkipChar(pSurface, x, y, pRect);
         }
-		if (0 < xStartGap)
-		{
+		if (0 < xStartGap) {
             // Calculate the width of the gap between the end of the last char,
             // and the start of this char.
 			int iGap = xEndGap - xStartGap;
@@ -232,12 +221,10 @@ VerifyBlankRows(
     RECT rcBlank = rcRow;
     rcBlank.bottom = rcBlank.top + 1;
     bBlank = pSurface->CompareColor(rcBlank, 0, COMPARE_F_SAMECOLOR);
-    if (!bBlank)
-    {
+    if (!bBlank) {
         return false;
     }
-    if (!bAtBottom)
-    {
+    if (!bAtBottom) {
         OffsetRect(&rcBlank, 0, int(MaxCharHeight) - 1);
         bBlank = pSurface->CompareColor(rcBlank, 0, COMPARE_F_SAMECOLOR);
         if (!bBlank)
@@ -268,10 +255,8 @@ ReadTable(
     ASSERT(0 < RowHeight);
 
     int MaxCharHeight = 0;
-    for (auto col = 0; col < pText->GetColumnCount(); ++col)
-    {
-        if (pColumnRects[col].bottom > MaxCharHeight)
-        {
+    for (auto col = 0; col < pText->GetColumnCount(); ++col) {
+        if (pColumnRects[col].bottom > MaxCharHeight) {
             MaxCharHeight = pColumnRects[col].bottom;
         }
     }
@@ -285,12 +270,10 @@ g_Bad = 0;
 
     auto RowCount = pText->GetRowCount();
     auto iRow = 0;
-    for (; iRow < RowCount; ++iRow)
-    {
+    for (; iRow < RowCount; ++iRow) {
         // TODO: Hack. not needed? verifyblankRows doesn't compare bottom Row?  huh?
         bool bBottom = false;
-        if (rc.bottom > rcTable.bottom)
-        {
+        if (rc.bottom > rcTable.bottom) {
             bBottom = true;
             LogInfo(L"rc.bottom > rcTable.bottom: (rc.top=%d, rc.bottom=%d, pRect->bottom=%d, Row=%d",
                     rc.top, rc.bottom, rcTable.bottom, iRow);
@@ -312,12 +295,10 @@ g_Bad = 0;
         // TODO: This "verification" function should be virtual, dependent
         //       on the specific source window we took the screenshot of.
         bool b = false;
-        if (b && !VerifyBlankRows(pSurface, pColumnRects[0], MaxCharHeight, bBottom))
-        {
+        if (b && !VerifyBlankRows(pSurface, pColumnRects[0], MaxCharHeight, bBottom)) {
             // TODO: text.SetInvalidRow(iRow);
             auto Pos = 0;
-            for (auto Column = 0; Column < pText->GetColumnCount(); ++Column)
-            {
+            for (auto Column = 0; Column < pText->GetColumnCount(); ++Column) {
                 size_t Width = pText->GetColumnWidths()[Column];
                 wcscpy_s(&pszRow[Pos], Width, L"BAD");
                 Pos += Width;
@@ -348,11 +329,9 @@ g_iRow = iRow;
 
 #if 1
     static size_t LastBad = 0;
-    if (0 < g_Bad || 0 < LastBad)
-    {
+    if (0 < g_Bad || 0 < LastBad) {
         static size_t badnum = 0;
-        if (50 > ++badnum)
-        {
+        if (50 > ++badnum) {
             wchar_t buf[256];
             wsprintf(buf, L"diag\\bad_table_%d.bmp", badnum);
             pSurface->WriteBMP(buf, rcTable);
@@ -388,15 +367,13 @@ ReadTableRow(
     bool bFail = false;
     bool bAnyText = false;
     size_t totalTextLen = 0;
-    for (size_t iColumn = 0; iColumn < cColumns; ++iColumn)
-    {
+    for (size_t iColumn = 0; iColumn < cColumns; ++iColumn) {
         RECT rc;
         CopyRect(&rc, &prcColumns[iColumn]);
         OffsetRect(&rc, pRect->left, pRect->top);
 
         // TODO: intersectrect.  or bounds checking.
-        if (g_bWriteBmps)
-        {
+        if (g_bWriteBmps) {
             WCHAR szFile[MAX_PATH];
             wsprintf(szFile, L"Diag\\dcr_row_%d_column_%d.bmp", g_iRow, iColumn);
             pSurface->WriteBMP(szFile, rc);
@@ -409,33 +386,28 @@ ReadTableRow(
         // 4 = vertical gapsize specific to Eq2Broker
         // TODO: factor out to ColumnData_t
         HRESULT hr = ReadColumnLines(pSurface, rc, pszText, TextLen, CharHeight, 4, pCharset);
-        if (FAILED(hr))
-        {
+        if (FAILED(hr)) {
 //            bFail = true;
 //            LogInfo(L"GetText(%d, %d, %d) failed.", g_iRow, iColumn, TextLen);
 #if 1
             ++g_Bad;
             static size_t num = 0;
-            if (50 > ++num)
-            {
+            if (50 > ++num) {
                 wchar_t buf[256];
                 wsprintf(buf, L"diag\\gettext_fail_%d.bmp", num);
                 pSurface->WriteBMP(buf, rc);
             }
 #endif
         }
-        else if (L'\0' != pszText[0])
-        {
+        else if (L'\0' != pszText[0]) {
             bAnyText = true;
         }
-        if (g_bWriteBmps && (nullptr != wcschr(pszText, L'?')))
-        {
+        if (g_bWriteBmps && (nullptr != wcschr(pszText, L'?'))) {
             WriteBadBmp(pSurface, rc, pszText);
         }
         pszText += TextLen;
         totalTextLen += TextLen;
-        if (totalTextLen > iMaxLen)
-        {
+        if (totalTextLen > iMaxLen) {
             bFail = true;
             LogError(L"Column (%d) Total (%d) Max (%d)", iColumn, totalTextLen, iMaxLen);
             break;
@@ -493,34 +465,29 @@ ReadColumnLines(
     // if linecount is zero (no lines identified), it is an error if text for
     // this column is not 'optional'; otherwise, it's not an error
     // TODO: support 'optional', until then, it's not an error
-    if (0 == LineCount)
-    {
+    if (0 == LineCount) {
         return S_OK;
     }
     // 2 line max specific to Eq2Broker
     // TODO: REFACTOR: probably part of "columndata"
-    if (2 < LineCount)
-    {
+    if (2 < LineCount) {
         return CO_E_PATHTOOLONG;
     }
     // HACK: not dealing with remainder lines correctly
     RECT TextRect = Rect;
     size_t LineHeight = RECTHEIGHT(TextRect) / LineCount;
-    if (1 < LineCount)
-    {
+    if (1 < LineCount) {
         TextRect.bottom = TextRect.top + LineHeight;
     }
     size_t RemainingLength = TextLength;
     wchar_t* pLine = pText;
     HRESULT hr = S_OK;
-    for (size_t Line = 0; Line < LineCount;)
-    {
+    for (size_t Line = 0; Line < LineCount;) {
         DWORD flags = g_bTableFixColor ? 0 : DCR_GETTEXT_MAX_TRANS_COLOR;
         hr = GetText(pSurface, &TextRect, pLine, int(RemainingLength), pCharset, m_Charsets, flags);
         if (FAILED(hr))
             break;
-        if (++Line < LineCount)
-        {
+        if (++Line < LineCount) {
             ASSERT(pLine[0] != L'\0');
             size_t LineLength = wcslen(pLine) + 1;
             if (LineLength >= RemainingLength)
@@ -548,8 +515,7 @@ InitLineData(
     const COLORREF Black = RGB(0,0,0);
     size_t LineCount = RECTHEIGHT(Rect);
     LineData.resize(LineCount);
-    for (size_t Line = 0; Line < LineCount; ++Line)
-    {
+    for (size_t Line = 0; Line < LineCount; ++Line) {
         RECT LineRect = Rect;
         LineRect.bottom = LineRect.top + 1;
         OffsetRect(&LineRect, 0, Line);
@@ -566,19 +532,15 @@ void
 DCR::
 WriteBadBmp(
     const CSurface* pSurface,
-    const RECT&     rc,
-    const wchar_t*  pszText) const
+    const RECT& rc,
+    const wchar_t* pszText) const
 {
     WCHAR szFile2[MAX_PATH];
     wsprintf(szFile2, L"Diag\\dcr_bad_%s.bmp", pszText);
-    for (WCHAR* p = szFile2; L'\0' != *p; ++p)
-    {
-        if (nullptr != wcschr(L",'?", *p))
-        {
+    for (WCHAR* p = szFile2; L'\0' != *p; ++p) {
+        if (nullptr != wcschr(L",'?", *p)) {
             *p = L'_';
         }
     }
     pSurface->WriteBMP(szFile2, rc);
 }
-
-/////////////////////////////////////////////////////////////////////////////

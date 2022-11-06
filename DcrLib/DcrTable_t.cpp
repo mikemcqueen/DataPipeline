@@ -34,7 +34,7 @@ bool
 DcrTable_t::
 Initialize()
 {
-    // TODO: excpetions probably more consistent here
+    // TODO: exceptions probably more consistent here
     columnRects_ = InitColumnRects(screenTable_);
     if (columnRects_.empty()) {
         LogError(L"Empty columnRects");
@@ -48,6 +48,64 @@ Initialize()
     }
 */
     return true;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+
+bool
+DcrTable_t::
+TranslateSurface(
+    CSurface* pSurface,
+    const Rect_t& rcSurface)
+{
+    LogInfo(L"DcrTable_t::TranslateSurface");
+    auto rowCount = ReadTable(pSurface, rcSurface, pTextTable_, nullptr);
+    if (0 == rowCount) {
+        LogInfo(L"ReadTable(): Table is empty.");
+    }
+#if 1
+    static bool firstTime = true;
+    if (firstTime) {
+        pSurface->WriteBMP(L"Diag\\DcrTable_t.bmp");
+        firstTime = false;
+    }
+#endif
+    return true;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+
+size_t
+DcrTable_t::
+GetSelectedRow(
+    CSurface& surface,
+    const Rect_t& tableRect,
+    const ColorRange_t& colors) const
+{
+    auto rowHeight = GetScreenTable().GetRowHeight();
+    const size_t width = 4;
+    const size_t height = 1;
+    Rect_t selectRect;
+    selectRect.left = tableRect.left + tableRect.Width() / 2 - width / 2;
+    selectRect.right = selectRect.left + width;
+    selectRect.top = tableRect.top;
+    selectRect.bottom = selectRect.top + height;
+    size_t selectedRow = 0;
+    for (size_t row = 1; selectRect.top + rowHeight <= tableRect.bottom; ++row)
+    {
+        if (surface.CompareColorRange(selectRect, colors.low, colors.high))
+        {
+            if (0 < selectedRow)
+            {
+                LogError(L"DcrTable_t::GetSelectedRow() Two rows selected (%d,%d)",
+                    selectedRow, row);
+                return 0;
+            }
+            selectedRow = row;
+        }
+        ::OffsetRect(&selectRect, 0, rowHeight);
+    }
+    return selectedRow;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -131,7 +189,6 @@ ReadTable(
         pText);
 }
 
-
 /////////////////////////////////////////////////////////////////////////////
 
 int
@@ -159,7 +216,7 @@ TesseractReadTable(
         LogError(L"Can't lock surface");
         return 0;
     }
-    // TOOD: auto-unlock 
+    auto unlock = gsl::finally([pSurface] { pSurface->Unlock(nullptr); });
 
     auto row = 0;
     for (auto yOffset = 0; row < pTextTable->GetRowCount(); ++row)
@@ -229,32 +286,9 @@ TesseractReadTable(
         yOffset += rowHeight + rowGapSize;
     }
  // TODO   pTextTable->SetEndRow(row);
-    pSurface->Unlock(nullptr);
+    //pSurface->Unlock(nullptr);
     firstTime = false;
     return row;
-}
-
-/////////////////////////////////////////////////////////////////////////////
-
-bool
-DcrTable_t::
-TranslateSurface(
-    CSurface* pSurface,
-    const Rect_t& rcSurface)
-{
-    LogInfo(L"DcrTable_t::TranslateSurface");
-    auto rowCount = ReadTable(pSurface, rcSurface, pTextTable_, nullptr);
-    if (0 == rowCount) {
-        LogInfo(L"ReadTable(): Table is empty.");
-    }
-#if 1
-    static bool firstTime = true;
-    if (firstTime ) {
-        pSurface->WriteBMP(L"Diag\\DcrTable_t.bmp");
-        firstTime = false;
-    }
-#endif
-    return true;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -288,4 +322,3 @@ GetRect(
 }
 #endif
 
-/////////////////////////////////////////////////////////////////////////////

@@ -21,8 +21,6 @@
 namespace Broker
 {
 
-/////////////////////////////////////////////////////////////////////////////
-
 DcrBase_t::
 DcrBase_t(
     int id,
@@ -75,12 +73,13 @@ Initialize()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
+/*
 size_t
 DcrBase_t::
 GetSelectedRow(
     CSurface& surface,
-    const Rect_t&   tableRect) const
+    const Rect_t& tableRect,
+    const ColorRange_t& colors) const
 {
     auto rowHeight = GetScreenTable().GetRowHeight();
     const size_t width = 4;
@@ -93,12 +92,11 @@ GetSelectedRow(
     size_t selectedRow = 0;
     for (size_t row = 1; selectRect.top + rowHeight <= tableRect.bottom; ++row)
     {
-        using namespace Broker::Table; // HACK
-        if (surface.CompareColorRange(selectRect, SelectedLowColor, SelectedHighColor))
+        if (surface.CompareColorRange(selectRect, colors))
         {
             if (0 < selectedRow)
             {
-                LogError(L"DcrBase_t::GetSelectedRow() Two rows selected (%d,%d)",
+                LogError(L"DcrTable_t::GetSelectedRow() Two rows selected (%d,%d)",
                          selectedRow, row);
                 return 0;
             }
@@ -108,7 +106,6 @@ GetSelectedRow(
     }
     return selectedRow;
 }
-
+*/
 } // Broker
 
-  ////////////////////////////////////////////////////////////////////////////////

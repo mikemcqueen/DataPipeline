@@ -15,34 +15,31 @@
 #include "Log.h"
 #include "Macros.h"
 
-namespace Ui
-{
-namespace Window
-{
+namespace Ui::Window {
 
 Base_t::
 Base_t(
-    WindowId_t     WindowId,
-    const wchar_t* pClassName,
-    const wchar_t* pWindowName /* = nullptr */,
-    Flag_t         Flags /* = 0 */)
+    WindowId_t        WindowId,
+    std::wstring_view className,
+    std::wstring_view windowName /* = nullptr */,
+    Flag_t            Flags /* = 0 */)
     :
     m_WindowId(WindowId),
     m_ParentWindow(*this),         // a bit weird; parent of mainwindow is self
     m_hMainWindow(nullptr),
-    m_strClassName((nullptr == pClassName) ? L"" : pClassName),
-    m_strWindowName((nullptr == pWindowName) ? L"" : pWindowName),
+    m_className(className),
+    m_windowName(windowName),
     m_Flags(Flags),
     m_VertScrollPos(Scroll::Position::Unknown),
     m_HorzScrollPos(Scroll::Position::Unknown)
 {
     LogError(L"FIXME: MainWindow hWnd initialization - move out of UiWindow.cpp");
     
-    if ((nullptr != pClassName) || (nullptr != pWindowName)) {
-        HWND hWnd = ::FindWindow(pClassName, pWindowName);
+    if (!m_className.empty() || !m_windowName.empty()) {
+        HWND hWnd = ::FindWindow(m_className.c_str(), m_windowName.c_str());
         if (nullptr == hWnd) {
             LogError(L"Window not found: ClassName(%ls) WindowName(%ls)",
-                     pClassName, pWindowName);
+                m_className.c_str(), m_windowName.c_str());
             //throw invalid_argument("Ui::Window::Base_t()");
         }
         m_hMainWindow = hWnd;
@@ -52,21 +49,23 @@ Base_t(
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Constructor for fake child 'windows' that have no associated hWnd.
+// Constructor for 'fake' child 'windows' that have no associated hWnd.
 //
 
 Base_t::
 Base_t(
-    WindowId_t            WindowId,
-    const Base_t&         ParentWindow,
-    const wchar_t*        pWindowName,
-    Flag_t                Flags       /*= 0*/,
-    std::span<const Widget::Data_t> widgets /*= span()*/)
+    WindowId_t        WindowId,
+    const Base_t&     ParentWindow,
+    std::wstring_view windowName,
+    Flag_t            Flags /*= 0*/,
+    std::span<const Widget::Data_t>
+    //auto
+    widgets /*= span<const Widget::Data_t>{}*/)
     :
     m_WindowId(WindowId),
     m_ParentWindow(ParentWindow),
     m_hMainWindow(ParentWindow.GetHwnd()),
-    m_strWindowName((nullptr == pWindowName) ? L"Undefined" : pWindowName),
+    m_windowName(windowName.empty() ? L"Undefined" : windowName),
     m_Flags(Flags),
     widgets_(widgets.begin(), widgets.end())
 {
@@ -149,17 +148,26 @@ GetWidgetRect(
     Rect_t* pWidgetRect,
     span<const Widget::Data_t> widgets) const
 {
-    if (widgets.size() == 0) {
-        widgets = widgets_;
-    }
     for (auto& widget : widgets) {
         if (widget.WidgetId == WidgetId) {
-            RelativeRect_t Rect(widget.RectData);
-            *pWidgetRect = Rect.GetRelativeRect(RelativeRect);
+            RelativeRect_t rect(widget.RectData);
+            *pWidgetRect = rect.GetRelativeRect(RelativeRect);
             return true;
         }
     }
     return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+bool
+Base_t::
+GetWidgetRect(
+    Ui::WidgetId_t WidgetId,
+    const Rect_t& RelativeRect,
+    Rect_t* pWidgetRect) const
+{
+    return GetWidgetRect(WidgetId, RelativeRect, pWidgetRect, span{ widgets_ });
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -241,6 +249,7 @@ OriginSearch(
         if (nullptr != pptOrigin) {
             *pptOrigin = ptOrigin;
         }
+        // TODO: Bad
         const_cast<Window_t*>(this)->SetLastOrigin(ptOrigin);
         return true;
     }
@@ -509,5 +518,4 @@ GetVertScrollPos(
     return Pos;
 }
 
-} // Window
-} // Ui
+} // namespace Ui::Window
