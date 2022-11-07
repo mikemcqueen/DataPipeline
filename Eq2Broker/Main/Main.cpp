@@ -13,10 +13,11 @@
 #include "Log_t.h"
 #include "Db.h"
 #include "MainWindow_t.h"
-#include "DcrBase_t.h"
+//#include "DcrBase_t.h"
 #include "AccountManager_t.h"
 #include "Character_t.h"
 #include "AccountsDb.h"
+#include "TesseractDcrImpl_t.h"
 #include "Dcr.h"
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -151,10 +152,15 @@ StartupInitialize(
     if (FAILED(hr)) {
         throw runtime_error("InitDirectDraw() failed");
     }
-    const int tess = DCR::InitTesseract("g:\\tesseract\\5.2\\tessdata", "eng");
+
+    // Tesseract/DCR.
+    auto pTess = make_unique<TesseractDcrImpl_t>();
+    const int tess = pTess->InitTesseract("g:\\tesseract\\5.2\\tessdata", "eng");
     if (tess < 0) {
         throw runtime_error(std::format("InitTesseract() failed, {}", tess));
     }
+    DCR::AddImpl<TesseractDcrImpl_t>(DcrImpl::Tesseract, std::move(pTess));
+
     if (!GetPipelineManager().Initialize()) {
         throw runtime_error("GetPipelineManager().Initialize() failed");
     }
@@ -179,7 +185,7 @@ ShutdownCleanup()
 {
     GetPipelineManager().Shutdown();
     FreeDirectDraw();
-    DCR::EndTesseract();
+    //DCR::Impl(DcrImpl::Tesseract)->EndTesseract();
     Log_t::Get().Shutdown();
 }
 

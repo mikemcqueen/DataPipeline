@@ -17,39 +17,36 @@
 
 #include "Dcr.h"
 #include "Rect.h"
-#include "DdUtil.h"
+//#include "DdUtil.h"
 
 class CSurface;
 
-/////////////////////////////////////////////////////////////////////////////
-
-class DcrRect_t : 
+class DcrRect_t :
     public DCR
 {
+private:
+    RelativeRect_t   m_Rect;
+    std::string      text_;
+    // These options are for LegacyDcr. Interface doesn't support passing them through (yet). TBD.
+    bool             m_checkCaret;
+    bool             m_hasCaret;
+    COLORREF         m_highBkColor;
+
 public:
 
     explicit
     DcrRect_t(
-        //const Ui::Window_t& window,
-        //Ui::WidgetId_t widgetId,
         int id,
-        const Charset_t* pCharset = nullptr,
+        std::optional<DcrImpl> method = {},
         bool checkCaret = false,
         COLORREF highBkColor = RGB(0, 0, 0));
 
-    DcrRect_t() = delete;
     DcrRect_t(const DcrRect_t&) = delete;
     DcrRect_t & operator=(const DcrRect_t&) = delete;
 
     //
     // DCR virtual:
     //
-
-    /*
-    bool
-    PreTranslateSurface(
-        CSurface* pSurface,
-        Rect_t* pRect) override;*/
 
     bool
     TranslateSurface(
@@ -77,23 +74,7 @@ private:
         CSurface* pSurface,
         const Rect_t& surfaceRect);
 
-    bool
-    TesseractTranslateRect(
-        CSurface* pSurface,
-        const Rect_t& surfaceRect);
-
-private:
-    const Charset_t* m_pCharset;
-    RelativeRect_t   m_Rect;
-    std::string      text_;
-    bool             m_checkCaret;
-    bool             m_hasCaret;
-    COLORREF         m_highBkColor; 
 };
 
-////////////////////////////////////////////////////////////////////////////////
-
 #endif // Include_DCRRECT_T_H
-
-////////////////////////////////////////////////////////////////////////////////
 

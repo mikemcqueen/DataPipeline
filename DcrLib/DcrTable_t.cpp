@@ -13,20 +13,24 @@
 #include "TextTable_t.h"
 #include "Rect.h"
 
-/////////////////////////////////////////////////////////////////////////////
-
 DcrTable_t::
 DcrTable_t(
     int id,
+    std::optional<DcrImpl> method,
     TextTable_i* pTextTable,
     const TableParams_t& tableParams,
     std::span<const int> columnWidths,
-    std::span<const RECT> textRects)
+    std::span<const Rect_t> textRects)
     :
-    DCR(id),
+    DCR(id, method),
     pTextTable_(pTextTable),
-    screenTable_(tableParams, columnWidths, textRects)
-{ }	
+    tableInfo_(tableParams, columnWidths, textRects)
+{ }
+
+/////////////////////////////////////////////////////////////////////////////
+
+DcrTable_t::
+~DcrTable_t() = default;
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -35,18 +39,18 @@ DcrTable_t::
 Initialize()
 {
     // TODO: exceptions probably more consistent here
-    columnRects_ = InitColumnRects(screenTable_);
+    columnRects_ = InitColumnRects(tableInfo_);
     if (columnRects_.empty()) {
         LogError(L"Empty columnRects");
         return false;
     }
-/*
+    /*
     columnSurfaces_ = InitColumnSurfaces(columnRects_);
     if (columnSurfaces_.size() != columnRects_.size()) {
         LogError(L"Column surface count mismatch");
         return false;
     }
-*/
+    */
     return true;
 }
 
@@ -58,8 +62,8 @@ TranslateSurface(
     CSurface* pSurface,
     const Rect_t& rcSurface)
 {
-    LogInfo(L"DcrTable_t::TranslateSurface");
-    auto rowCount = ReadTable(pSurface, rcSurface, pTextTable_, nullptr);
+    LogInfo(L"Dcr::Table_t::TranslateSurface");
+    auto rowCount = ReadTable(pSurface, rcSurface, pTextTable_);
     if (0 == rowCount) {
         LogInfo(L"ReadTable(): Table is empty.");
     }
@@ -75,14 +79,14 @@ TranslateSurface(
 
 /////////////////////////////////////////////////////////////////////////////
 
-size_t
+int
 DcrTable_t::
 GetSelectedRow(
     CSurface& surface,
     const Rect_t& tableRect,
     const ColorRange_t& colors) const
 {
-    auto rowHeight = GetScreenTable().GetRowHeight();
+    auto rowHeight = tableInfo_.GetRowHeight();
     const size_t width = 4;
     const size_t height = 1;
     Rect_t selectRect;
@@ -90,14 +94,11 @@ GetSelectedRow(
     selectRect.right = selectRect.left + width;
     selectRect.top = tableRect.top;
     selectRect.bottom = selectRect.top + height;
-    size_t selectedRow = 0;
-    for (size_t row = 1; selectRect.top + rowHeight <= tableRect.bottom; ++row)
-    {
-        if (surface.CompareColorRange(selectRect, colors.low, colors.high))
-        {
-            if (0 < selectedRow)
-            {
-                LogError(L"DcrTable_t::GetSelectedRow() Two rows selected (%d,%d)",
+    int selectedRow = 0;
+    for (int row = 1; selectRect.top + rowHeight <= tableRect.bottom; ++row) {
+        if (surface.CompareColorRange(selectRect, colors.low, colors.high)) {
+            if (0 < selectedRow) {
+                LogError(L"Dcr::Table_t::GetSelectedRow() Two rows selected (%d,%d)",
                     selectedRow, row);
                 return 0;
             }
@@ -110,23 +111,23 @@ GetSelectedRow(
 
 /////////////////////////////////////////////////////////////////////////////
 
-std::vector<RECT>
+std::vector<Rect_t>
 DcrTable_t::
 InitColumnRects(
-    const ScreenTable_t& screenTable) const
+    const TableInfo_t& tableInfo) const
 {
-    std::vector<RECT> columnRects(screenTable.GetColumnCount());
-    for (auto x = 0, column = 0; column < screenTable.GetColumnCount(); ++column) {
-        auto width = screenTable.GetColumnWidth(column);
+    std::vector<Rect_t> columnRects(tableInfo_.GetColumnCount());
+    for (auto x = 0, column = 0; column < tableInfo_.GetColumnCount(); ++column) {
+        auto width = tableInfo.GetColumnWidth(column);
         if (0 == width) {
-            throw std::invalid_argument("DcrTable_t::ReadTable() Zero pixel column width not allowed");
+            throw std::invalid_argument("Dcr::Table_t::ReadTable() Zero pixel column width not allowed");
         }
-        auto& rc = screenTable.GetTextRect(column);
+        auto& rc = tableInfo.GetTextRect(column);
         if (!::IsRectEmpty(&rc)) {
             columnRects[column] = rc; // copy
             //::OffsetRect(&columnRects[column], x, 0); // offset copy
         } else {
-            ::SetRect(&columnRects[column], x, 0, x + width, screenTable.GetRowHeight());
+            ::SetRect(&columnRects[column], x, 0, x + width, tableInfo.GetRowHeight());
         }
         x += width;
     }
@@ -161,164 +162,17 @@ DcrTable_t::
 ReadTable(
     const CSurface* pSurface,
     const Rect_t& rcTable,
-    TextTable_i* pText,
-    const Charset_t* pCharset)
+    TextTable_i* pText)
 {
-    std::vector<RECT> copyColumnRects{ columnRects_ };
+    std::vector<Rect_t> copyColumnRects{ columnRects_ };
     for (auto& rc : copyColumnRects) {
         ::OffsetRect(&rc, rcTable.left, rcTable.top);
     }
-    if (!UsingTesseract()) {
-        return DCR::ReadTable(
-            pSurface,
-            rcTable,
-            screenTable_.GetRowHeight(),
-            screenTable_.GetRowGapSize(),
-            &copyColumnRects[0],
-            pText,
-            screenTable_.GetCharHeight(),
-            pCharset);
-    }
-    return TesseractReadTable(
+    return Impl().GetTableText(
         pSurface,
         rcTable,
-        screenTable_.GetRowHeight(),
-        screenTable_.GetRowGapSize(),
+        tableInfo_,
         copyColumnRects,
         columnSurfaces_,
         pText);
 }
-
-/////////////////////////////////////////////////////////////////////////////
-
-int
-DcrTable_t::
-TesseractReadTable(
-    const CSurface* pSurface,
-    const RECT& rcTable,
-    const int rowHeight,
-    const int rowGapSize,
-    const std::vector<RECT>& columnRects,
-    const std::vector<std::unique_ptr<CSurface>>& columnSurfaces,
-    TextTable_i* pTextTable) const
-{
-    columnSurfaces;
-
-    static auto firstTime = true;
-    auto writeBmps = true;
-
-    RECT rcRow{ rcTable }; // copy
-    rcRow.bottom = rcRow.top + rowHeight;
-
-    DDSURFACEDESC2 ddsd;
-    HRESULT hr = pSurface->Lock(&ddsd);
-    if (FAILED(hr)) {
-        LogError(L"Can't lock surface");
-        return 0;
-    }
-    auto unlock = gsl::finally([pSurface] { pSurface->Unlock(nullptr); });
-
-    auto row = 0;
-    for (auto yOffset = 0; row < pTextTable->GetRowCount(); ++row)
-    {
-        if (rcRow.bottom > rcTable.bottom) {
-            LogWarning(L"bottom > rcTable.bottom: (rc.top=%d, rc.bottom=%d, pRect->bottom=%d, Row=%d",
-                rcRow.top, rcRow.bottom, rcTable.bottom, row);
-            break;
-        }
-        if (writeBmps && firstTime) {
-            pSurface->WriteBMP(std::format(L"diag\\dcr_row_{}.bmp", row).c_str(), rcRow);
-        }
-#if 0   
-        // TODO: This "verification" function should be virtual, dependent
-        //       on the specific source window we took the screenshot of.
-
-        bool b = false;
-        if (b && !VerifyBlankRows(pSurface, pColumnRects[0], MaxCharHeight, bBottom))
-        {
-            // TODO: text.SetInvalidRow(row);
-            size_t Pos = 0;
-            for (size_t Column = 0; Column < pText->GetColumnCount(); ++Column)
-            {
-                size_t Width = pText->GetColumnWidth(Column);
-                wcscpy_s(&pszRow[Pos], Width, L"BAD");
-                Pos += Width;
-            }
-            continue;
-        }
-#endif
-#define LOGROWTEXT 1
-#if LOGROWTEXT
-        stringstream text;
-#endif
-        pTextTable->ClearRow(row);
-        for (size_t column = 0; column < columnRects.size(); ++column) {
-            auto& rc = columnRects[column];
-            if (writeBmps && firstTime) {
-                RECT rcBmp{ rc }; // copy
-                ::OffsetRect(&rcBmp, 0, yOffset);
-                pSurface->WriteBMP(std::format(L"diag\\table_row_{}_col_{}.bmp",
-                    row, column).c_str(), rcBmp);
-            }
-            Tesseract()->SetImage((std::uint8_t*)GetBitsAt(&ddsd, rc.left, rc.top + yOffset),
-                RECTWIDTH(rc), RECTHEIGHT(rc),
-                4, (int)ddsd.lPitch);
-            std::unique_ptr<char> pResult(Tesseract()->GetUTF8Text());
-            if (auto columnText = pResult.get(); columnText) {
-                if (columnText[0]) { // length > 0
-                    std::string str{ columnText };
-                    str.erase(str.end() - 1);
-                    pTextTable->SetText(row, column, str);
-                }
-#if LOGROWTEXT
-                if (columnText[0]) {
-                    text << columnText;
-                    text.seekp(-1, ios_base::end);
-                } else text << "[empty]";
-                text << " | ";
-#endif
-            }
-        }
-#if LOGROWTEXT
-        LogInfo(L"Text row %d: %S (%d)", row, text.str().c_str(), text.str().length());
-#endif
-        ::OffsetRect(&rcRow, 0, rowHeight + rowGapSize);
-        yOffset += rowHeight + rowGapSize;
-    }
- // TODO   pTextTable->SetEndRow(row);
-    //pSurface->Unlock(nullptr);
-    firstTime = false;
-    return row;
-}
-
-/////////////////////////////////////////////////////////////////////////////
-
-#if 0
-void
-DcrTable_t::
-GetRect(
-    const RECT&  rcBounds,
-          size_t StartLine,
-          size_t EndLine,
-          RECT&  rc) const
-{
-    ASSERT(m_pText->GetRowCount() > StartLine);
-    ASSERT(m_pText->GetRowCount() >= EndLine);
-    ASSERT(EndLine > StartLine);
-    rc = rcBounds;
-    rc.top += int(StartLine * GetRowHeight());
-    ASSERT(rc.top < rcBounds.bottom);
-    const size_t LineCount = EndLine - StartLine;
-#if OLD
-    rc.bottom = rc.top + int((LineCount - 1) * GetRowHeight() +
-        GetScreenTable().GetCharHeight());
-    if (rc.bottom > rcBounds.bottom)
-        rc.bottom = rcBounds.bottom;
-#else
-    rc.bottom = rc.top + int((LineCount - 1) * GetRowHeight());
-    if (rc.bottom > rcBounds.bottom)
-        throw std::logic_error("DcrTable_t::GetRect()");
-#endif
-}
-#endif
-

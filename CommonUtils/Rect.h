@@ -104,23 +104,27 @@ private:
 
 public:
 
+    RelativeRect_t()
+    {
+        ::SecureZeroMemory(&m_Data, sizeof(m_Data));
+    }
+
     explicit
     RelativeRect_t(
         const Data_t& Data)
-    :
+        :
         m_Data(Data)
     { }
 
     // haxxor - just to support nullptr/EmptyRect
     RelativeRect_t(
         const Data_t* pData)
-    {
-        if (nullptr == pData) {
-            SecureZeroMemory(&m_Data, sizeof(Data_t));
-        } else {
-            m_Data = *pData;
-        }
-    }
+        :
+        m_Data(*pData)
+    { }
+
+    RelativeRect_t(const RelativeRect_t&) = default;
+    RelativeRect_t& operator=(const RelativeRect_t&) = default;
 
     const Rect_t&
     GetRelativeRect(
@@ -156,16 +160,6 @@ public:
     }
 
     bool IsEmpty()        { return (0 == m_Data.Width) && (0 == m_Data.Height); }
-
-private:
-
-    // Explicitly disabled:
-    RelativeRect_t();
-
-    // No reason to not support these, but until needed, they are disabled:
-    RelativeRect_t(const RelativeRect_t&);
-    const RelativeRect_t& operator=(const RelativeRect_t&);
-
 };
 
 ////////////////////////////////////////////////////////////////////////////////

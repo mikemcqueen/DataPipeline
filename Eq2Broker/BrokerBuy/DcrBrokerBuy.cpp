@@ -22,20 +22,20 @@ namespace Broker::Buy::Translate {
 // 0:  2,42
 // 1:  11,560
 // 2:   ....
-// Take a look at ColumnData_t in ScreenTable_t.  It seems we could 
+// Take a look at ColumnData_t in TableInfo_t.  It seems we could 
 // combine PixelColumnWidths, along with "gap" columns (widths) and
 // "text" column (rects) perhaps as a union
 
-static RECT
-TextRects[Table::ColumnCount] = {
-    { 2, 26, // first gap + quantitytexttop 
-      2 + 44, 26 + 13 },  // first gap + first column data width , quantitytexttop + quantitytextheight
-    { 2 + 44 + 7, 0,  // first gap + first column data width + second gap 
-      Table::PixelColumnWidths[1], Broker::Table::RowHeight },
-    { 0 },
-    { 767, 0,
-      767 + 23, Broker::Table::RowHeight },
-    { 0 }
+static const Rect_t
+    TextRects[Table::ColumnCount] = {
+        { 2, 26, // first gap + quantitytexttop 
+            2 + 44, 26 + 13 },  // first gap + first column data width , quantitytexttop + quantitytextheight
+        { 2 + 44 + 7, 0,  // first gap + first column data width + second gap 
+            Table::PixelColumnWidths[1], Broker::Table::RowHeight },
+        { 0, 0, 0, 0 },
+        { 767, 0,
+            767 + 23, Broker::Table::RowHeight },
+        { 0, 0, 0, 0  }
 };
 
 constexpr TableParams_t TableParams = {
@@ -48,8 +48,8 @@ constexpr TableParams_t TableParams = {
 ////////////////////////////////////////////////////////////////////////////////
 
 Handler_t::
-Handler_t(
-    Window::ManagerBase_t& windowManager)
+    Handler_t(
+        Window::ManagerBase_t& windowManager)
     :
     BaseHandler_t(
         TopWindowId,
@@ -58,24 +58,24 @@ Handler_t(
         L"BrokerBuy"),
     m_TranslatePolicy(
         *this,
-        m_DcrVector), //variadic args?
+        m_DcrVector), // TODO: variadic args?
     m_DcrTable(
         Widget::Id::Table,
+        {},
         &m_TextTable,
-        windowManager.GetWindow(),
         TableParams,
         std::span{ Table::PixelColumnWidths },
         std::span{ TextRects }),
     m_TextTable(
         std::span{ Table::CharColumnWidths }),
     m_DcrSearchEdit(
-        Broker::Buy::Widget::Id::SearchEdit,
-        nullptr,
+        Widget::Id::SearchEdit,
+        {},
         true),
     m_DcrSearchDropdown(
-        Broker::Buy::Widget::Id::SearchDropdown),
+        Widget::Id::SearchDropdown),
     m_DcrPageNumber(
-        Broker::Buy::Widget::Id::PageNumber),
+        Widget::Id::PageNumber),
     m_windowManager(windowManager)
 {
     m_DcrVector.push_back(&m_DcrTable);
@@ -118,22 +118,20 @@ PreTranslateSurface(
 #if 1
     SaveWidgets(pSurface, std::span{ Broker::Buy::Widgets });
 #endif
-
     extern bool g_bTableFixColor;
     windowId;
     pSurface;
+
     switch (dcrId) {
     case Widget::Id::Table:
         {
             //rcSurface;
             Rect_t rect = m_windowManager.GetWindow().GetClientRect();
-            if (!rect.IsEmpty())
-            {
+            if (!rect.IsEmpty()) {
                 rect.top += Broker::Table::TopRowOffset;
                 //m_selectedRow = GetSelectedRow(*pSurface, rect);
     #if 0
-                if (g_bTableFixColor)
-                {
+                if (g_bTableFixColor) {
                     // TODO: pSurface->ReplaceColorRange
                     pSurface->FixColor(rect, BkLowColor, BkHighColor, Black);
                 }
@@ -162,8 +160,6 @@ PostData(
     if (g_noDcrPost) {
         return;
     }
-    //bool ExtraLog = 0;
-    // 
     PageNumber_t pageNumber;
     if (!m_DcrPageNumber.GetText().empty() &&
         !pageNumber.Parse(m_DcrPageNumber.GetText()))
@@ -178,17 +174,18 @@ PostData(
     } else {
         LogInfo(L"%S", pageNumber.GetText().c_str());
         m_TextTable.GetData().Dump(L"DcrBrokerBuy");
-        LogInfo(L"SeletecedRow(%d)", m_DcrTable.GetSelectedRow());
+        //LogInfo(L"SeletecedRow(%d)", m_DcrTable.GetSelectedRow()); TODO
         Data_t* pData = new (pBuffer) Data_t(
             GetClass().c_str(),
             m_TextTable,
-            m_DcrTable.GetSelectedRow(),
+            1, // m_DcrTable.GetSelectedRow(),
             pageNumber,
             m_DcrSearchEdit.GetText(),
             m_DcrSearchEdit.GetHasCaret(),
             m_DcrSearchDropdown.GetText());
         HRESULT hr = GetPipelineManager().Callback(pData);
         if (FAILED(hr)) {
+            // TODO, delete buffer
             LogError(L"DcrBrokerBuy::PostData(): PM.Callback() failed.");
         }
     }

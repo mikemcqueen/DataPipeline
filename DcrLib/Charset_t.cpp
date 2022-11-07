@@ -8,7 +8,7 @@
 
 #include "stdafx.h"
 #include "Charset_t.h"
-#include "Dcr.h"
+#include "LegacyDcrImpl_t.h"
 #include "DdUtil.h"
 #include "Macros.h"
 #include "Log.h"

@@ -25,8 +25,12 @@ cleanup TextTable_t.h
 I think the word transaction is wrong. State would also be wrong. This is a container for a set of states really.
 or a container for a state machine?
 
-Move ScreenTable_t.h to DcrLib. DcrTableTypes?
+Move TableInfo_t.h to DcrLib. DcrTableTypes?
 Rethink DCR legacy vs. Tesseract.
+Get rid of DcrBase_t somehow if possible.  at least make it no longer take a Window parameter.
+DcrTable_t::GetSelectedRow. member/accessor in DcrTable? two parts here: 1) translate 2) retrieve translated value in PostData.= {}
+Tesseract::End(). Tricky. We lose the type info. In theory we could capture the pTess pointer in a lambda callback supplied to
+constructor, to be called at destructor in Impl_t? seems a bit whacky
 
 c++20: * == done(ish)
 	range_for (as_const? or just const auto) whereever const_iterator is defined. read up on as_const vs. const auto

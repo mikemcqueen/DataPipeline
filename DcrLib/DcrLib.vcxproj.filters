@@ -1,50 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
+    <ClCompile Include="Charset_t.cpp" />
+    <ClCompile Include="Dcr.cpp" />
+    <ClCompile Include="DcrRect_t.cpp" />
+    <ClCompile Include="DcrTable_t.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="LegacyDcrImpl_t.cpp" />
+    <ClCompile Include="TesseractDcrImpl_t.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Charset_t.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Dcr.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DcrTable_t.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DcrRect_t.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Charset_t.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Dcr.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DcrRect_t.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DcrTable_t.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ScreenTable_t.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="stdafx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <ClInclude Include="Charset_t.h" />
+    <ClInclude Include="Dcr.h" />
+    <ClInclude Include="DcrRect_t.h" />
+    <ClInclude Include="DcrTable_t.h" />
+    <ClInclude Include="ScreenTable_t.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="LegacyDcrImpl_t.h" />
+    <ClInclude Include="TesseractDcrImpl_t.h" />
   </ItemGroup>
 </Project>

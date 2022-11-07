@@ -18,6 +18,7 @@
 #include "MainWindow_t.h"
 #include "Character_t.h"
 #include "Log_t.h"
+#include "DDUtil.h"
 
 using namespace Broker;
 

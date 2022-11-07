@@ -15,81 +15,51 @@
 #ifndef Include_DCR_H
 #define Include_DCR_H
 
-/////////////////////////////////////////////////////////////////////////////
-
-// only compare pixels if the charset pixel is opaque
-#define DCR_COMP_CHARSET_OPAQUE			0x00000001
-
-// don't check for full-transparent "spacing" column to right of char
-#define DCR_NO_RIGHT_SPACING			0x00000002
-
-// pixel(s) on the rightmost edge of this char may overlap the next adjacent char
-#define DCR_RIGHT_OVERLAP				0x00000004
-
-// this char is adjacent to a previous overlap char
-#define DCR_ADJACENT_RIGHT_OVERLAP		0x00000008
-
-// pixels on the leftmost edge of this char may overlap the previous adjacent char
-#define DCR_LEFT_OVERLAP				0x00000010
-
-/////////////////////////////////////////////////////////////////////////////
-
-#define DCR_GETTEXT_ALLOW_BAD           0x00010000
-
-// determine surface opacity by comparing to a maximum transparency color
-#define DCR_GETTEXT_MAX_TRANS_COLOR     0x00020000
-
-/////////////////////////////////////////////////////////////////////////////
-
-// Successful return value indicating that the next character to be scanned
-// is adjacent to a DCR_RIGHT_OVERLAP character.
-#define DCR_S_ADJACENT_RIGHT_OVERLAP	0x00000001
-
-// Successful return value indicating that the next character to be scanned
-// is believed to be a DCR_LEFT_OVERLAP character.
-#define DCR_S_ADJACENT_LEFT_OVERLAP	    0x00000002
-
-/////////////////////////////////////////////////////////////////////////////
-
 class Rect_t;
-class Charset_t;
 class CSurface;
 class TextTable_i;
+class TableInfo_t;
+
+/////////////////////////////////////////////////////////////////////////////
+
+enum class DcrImpl {
+    Legacy,
+    Tesseract,
+
+    Default = Tesseract
+};
+
+class TableInfo_t;
+
+/////////////////////////////////////////////////////////////////////////////
 
 class DCR
 {
 private:
+    struct ImplInterface_t;
+    template <typename T> class Impl_t;
 
-    typedef std::vector<char>             LineData_t;
-    typedef std::vector<const Charset_t*> CharsetVector_t;
-
-private:
-
-    static std::unique_ptr<tesseract::TessBaseAPI> tesseract_;
-
+    static std::unordered_map<DcrImpl, std::unique_ptr<ImplInterface_t>> impl_map_;
     int id_;
-    bool useTesseract_;
-    CharsetVector_t m_Charsets;
+    DcrImpl method_;
 
 public:
 
-    DCR(int id = 0);
-    DCR(int id, bool useTesseract);
+    DCR(int id, std::optional<DcrImpl> method);
+    DCR(const DCR&) = delete;
+    DCR(const DCR&&) = delete;
     virtual ~DCR();
 
     //
     // DCR virtual:
     //
 
-    virtual
-    bool
-    Initialize()
+    virtual bool Initialize()
     {
         return true;
     }
 
-    virtual bool
-    TranslateSurface(
+    virtual bool TranslateSurface(
         CSurface* /*pSurface*/,
         const Rect_t& /*Rect*/)
     {
@@ -98,133 +68,108 @@ public:
 
     //
 
-    int GetId() {
+    const auto id()
+    {
         return id_;
     }
 
-    void
-    AddCharset(const Charset_t* pCharset) 
+    const ImplInterface_t& Impl()
     {
-        m_Charsets.push_back(pCharset);
+        return DCR::Impl(method_);
+    }
+    /*
+    template<typename T> 
+    static void AddImpl(
+        DcrImpl method,
+        std::unique_ptr<T> pImpl)
+    {
+        if (impl_map_.contains(method))
+            throw std::invalid_argument(std::format("DcrImpl added twice, {}", int(method)));
+        impl_map_.emplace(method, Impl_t<T>{std::move(pImpl)});
     }
 
-    const CharsetVector_t&
-    GetCharsets() const
+    static const ImplInterface_t& Impl(
+        DcrImpl method)
     {
-        return m_Charsets;
+        if (!impl_map_.contains(method))
+            throw std::logic_error(std::format("DcrImpl doesn't exist, {}", int(method)));
+        return *impl_map_.at(method).get();
     }
-
-    HRESULT
-    GetText(
+    */
+    static void WriteBadBmp(
         const CSurface* pSurface,
-        const RECT*     pRect,
-        LPTSTR          pszText,
-        size_t          iMaxLen,
-        const Charset_t* pCharSet,
-        const CharsetVector_t& Charsets,
-        DWORD            dwFlags = 0) const;
-
-    HRESULT
-    GetText(
-        const CSurface* pSurface,
-        const RECT*     pRect,
-        LPTSTR          pszText,
-        size_t          iMaxLen,
-        const Charset_t* pCharSet,
-        DWORD            dwFlags = 0) const;
-
-    std::string
-    TesseractGetText(
-        const CSurface* pSurface,
-        const Rect_t& rect) const;
-
-    int
-    ReadTable(
-        const CSurface*  pSurface,
-        const RECT&      rcTable,
-        const int     RowHeight,
-        const int        RowGapSize,
-        const RECT*      pColumnRects,
-        TextTable_i*     pText,
-        const int     CharHeight,
-        const Charset_t* pCharset) const;
-
-    bool
-    ReadTableRow(
-        const CSurface*  pSurface,
-        const RECT*      pRect,
-        size_t           cColumns,
-        const RECT*      prcColumns,
-        const size_t*    pTextLengths,
-        wchar_t*         pszText,
-        size_t           iMaxLen,
-        size_t           CharHeight, // could be part of Charset_t
-        const Charset_t* pCharSet) const;
-
-    bool
-    UsingTesseract() {
-        return useTesseract_;
-    }
-
-    auto Tesseract() const {
-        return tesseract_.get();
-    }
-
-    static
-    int
-    InitTesseract(
-        const char* dataPath,
-        const char* languageCode)
-    {
-        if (tesseract_.get()) {
-            throw new logic_error("Tesseract already initialized");
-        }
-        tesseract_ = std::make_unique<tesseract::TessBaseAPI>();
-        return tesseract_->Init(dataPath, languageCode);
-    }
-
-    static
-    void
-    EndTesseract()
-    {
-        if (!tesseract_.get()) {
-            throw new logic_error("Tesseract not initialized");
-        }
-        tesseract_->End();
-    }
+        const RECT& rc,
+        const wchar_t* pszText);
 
 private:
-    
-    HRESULT
-    ReadColumnLines(
-        const CSurface*  pSurface,
-        const RECT&      Rect,
-              wchar_t*   pText,
-              size_t     pTextLength,
-              size_t     CharHeight,
-              size_t     LineGapSize,
-        const Charset_t* pCharset) const;
+    struct ImplInterface_t {
+        virtual ~ImplInterface_t() {}
 
-    auto
-    GetLineCount(
-        const CSurface* pSurface,
-        const RECT&     Rect,
-              size_t    CharHeight,
-              size_t    LineGapSize) const;
+        virtual std::string GetText(
+            const CSurface* pSurface,
+            const Rect_t& rect) const = 0;
 
-    void
-    InitLineData(
-        const CSurface*   pSurface,
-        const RECT&       Rect,
-              LineData_t& LineData) const;
+        virtual int GetTableText(
+            const CSurface* pSurface,
+            const Rect_t& rcTable,
+            const TableInfo_t& tableInfo,
+            const std::vector<Rect_t>& columnRects,
+            const std::vector<std::unique_ptr<CSurface>>& columnSurfaces,
+            TextTable_i* pText) const = 0;
+    };
 
-    void WriteBadBmp(const CSurface* pSurface, const RECT& rc, const wchar_t* pszText) const;
-    wchar_t* CreateSpacedText(const wchar_t* pszText ) const;
-//	HRESULT  CalcTextRect(const wchar_t* pszText, HFONT hFont, RECT& rc) const;
+    template <typename T>
+    class Impl_t : public ImplInterface_t {
+    private:
+        std::unique_ptr<T> impl_;
+
+    public:
+        Impl_t(std::unique_ptr<T> impl)
+            : impl_(std::move(impl)) {}
+
+        constexpr Impl_t(Impl_t&&) noexcept = default;
+        constexpr Impl_t& operator=(Impl_t&&) noexcept = default;
+        ~Impl_t() override = default;
+
+        std::string GetText(
+            const CSurface* pSurface,
+            const Rect_t& rect) const override
+        {
+            return impl_->GetText(pSurface, rect);
+        }
+
+        int GetTableText(
+            const CSurface* pSurface,
+            const Rect_t& rcTable,
+            const TableInfo_t& tableInfo,
+            const std::vector<Rect_t>& columnRects,
+            const std::vector<std::unique_ptr<CSurface>>& columnSurfaces,
+            TextTable_i* pText) const override
+        {
+            return impl_->GetTableText(pSurface, rcTable, tableInfo, columnRects, columnSurfaces, pText);
+        }
+    };
+
+public:
+    template<typename T>
+    static void AddImpl(
+        DcrImpl method,
+        std::unique_ptr<T> pImpl)
+    {
+        if (impl_map_.contains(method))
+            throw std::invalid_argument(std::format("DcrImpl added twice, {}", int(method)));
+        impl_map_.emplace(method, make_unique<Impl_t<T>>(std::move(pImpl)));
+       
+    }
+
+    static const ImplInterface_t& Impl(
+        DcrImpl method)
+    {
+        if (!impl_map_.contains(method))
+            throw std::logic_error(std::format("DcrImpl doesn't exist, {}", int(method)));
+        return *impl_map_.at(method).get();
+    }
+
 };
 
-/////////////////////////////////////////////////////////////////////////////
-
 #endif // Include_DCR_H_
-
-/////////////////////////////////////////////////////////////////////////////

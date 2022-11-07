@@ -82,7 +82,7 @@ class Handler_t :
     TranslatePolicy_t m_TranslatePolicy;
     ValidatePolicy_t  m_ValidatePolicy;
     DcrVector_t       m_DcrVector; // TODO get rid of this, pass by value
-    DcrBase_t         m_DcrTable;
+    DcrTable_t         m_DcrTable;
     TextTable_t       m_TextTable;
     DcrRect_t         m_DcrSearchEdit;
     DcrRect_t         m_DcrSearchDropdown;
@@ -112,8 +112,8 @@ public:
 
     const Text_t&     GetText() const  { return m_TextTable.GetData(); }
 
-    const DcrBase_t&  GetDcr() const   { return m_DcrTable; }
-    DcrBase_t&        GetDcr()         { return m_DcrTable; }
+    const DcrTable_t&  GetDcr() const   { return m_DcrTable; }
+    //DcrBase_t&        GetDcr()         { return m_DcrTable; }
 
 private:
     void

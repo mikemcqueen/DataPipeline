@@ -36,7 +36,7 @@ namespace Table
     constexpr auto ColumnCount          = 5;
     constexpr int CharColumnWidths[ColumnCount] = { 10, 100, 30, 5, 100 };
 
-    // ScreenTable_t data: TODO: all zero width last entry
+    // TableInfo_t data: TODO: all zero width last entry
     constexpr int PixelColumnWidths[ColumnCount] = { 50, 560, 145, 50, 50 };
     // RowHeightPix = 40;
 } // Table

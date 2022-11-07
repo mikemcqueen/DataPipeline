@@ -29,9 +29,9 @@ public:
     virtual void SetText(int row, int column, const std::string& str) = 0;
 
     virtual wchar_t* GetRow(size_t) { throw std::runtime_error("not implemented");  };
-    virtual size_t           GetRowWidth() const { throw std::runtime_error("not implemented"); };
+    virtual size_t GetRowWidth() const { throw std::runtime_error("not implemented"); };
     virtual const size_t* GetColumnWidths() const { throw std::runtime_error("not implemented"); };
-    virtual void             SetEndRow(size_t ) { throw std::runtime_error("not implemented"); };
+    virtual void SetEndRow(size_t ) { throw std::runtime_error("not implemented"); };
 
     /*
     size_t

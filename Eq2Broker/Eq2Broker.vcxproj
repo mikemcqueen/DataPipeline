@@ -181,7 +181,6 @@
     <ClCompile Include="BrokerBuy\BrokerBuyWindow.cpp" />
     <ClCompile Include="BrokerBuy\DcrBrokerBuy.cpp" />
     <ClCompile Include="BrokerBuy\TiBrokerBuy.cpp" />
-    <ClCompile Include="Main\DcrBase_t.cpp" />
     <ClCompile Include="Main\Eq2BrokerImpl_t.cpp" />
     <ClCompile Include="Main\Eq2Broker_t.cpp" />
     <ClCompile Include="Main\Main.cpp" />
