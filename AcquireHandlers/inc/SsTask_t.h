@@ -226,28 +226,28 @@ private:
 
 namespace SsTask::Acquire {
 
-    struct Data_t :
-        public DP::Message::Data_t
-    {
-        pool<CSurface>::item_t* pPoolItem;
+struct Data_t :
+    public DP::Message::Data_t
+{
+    pool<CSurface>::item_t* pPoolItem;
 
-        static void ReleaseFn(DP::Message::Data_t&);
+    static void ReleaseFn(DP::Message::Data_t&);
 
-        Data_t(
-            const wchar_t* pClass,
-            pool<CSurface>::item_t* InitPoolItem,
-            size_t             Size = sizeof(Data_t))
-            :
-            DP::Message::Data_t(
-                DP::Stage_t::Acquire,
-                SsTask_t::GetMessageId(),
-                Size,
-                pClass,
-                DP::Message::Type::Message,
-                ReleaseFn),
-            pPoolItem(InitPoolItem)
-        { }
-    };
+    Data_t(
+        const wchar_t* pClass,
+        pool<CSurface>::item_t* InitPoolItem,
+        size_t Size = sizeof(Data_t))
+        :
+        DP::Message::Data_t(
+            DP::Stage_t::Acquire,
+            SsTask_t::GetMessageId(),
+            Size,
+            pClass,
+            DP::Message::Type::Message,
+            ReleaseFn),
+        pPoolItem(InitPoolItem)
+    { }
+};
 
 } // SsTask::Acquire
 

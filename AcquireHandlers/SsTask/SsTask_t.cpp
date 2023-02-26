@@ -47,7 +47,7 @@ SsTask_t(
     size_t      SurfaceWidth,
     size_t      SurfaceHeight,
     size_t      PoolSize,
-    size_t      DelayMs)
+    size_t      DelayMs) // TODO: chrono?
 :
     m_Display(Display),
     m_SurfaceWidth(SurfaceWidth),

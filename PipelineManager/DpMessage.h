@@ -19,22 +19,6 @@ namespace DP {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-/*
-typedef unsigned Stage_t;
-namespace Stage
-{
-    enum : Stage_t
-    {
-        None       = 0,
-        Acquire    = 0x00000001,
-        Translate  = 0x00000002,
-        Interpret  = 0x00000004,
-        Analyze    = 0x00000008,
-        Execute    = 0x00000010,
-        Any        = 0x0000001F,
-    };
-}
-*/
 enum class Stage_t {
     None =      0,
     Acquire =   0x00000001,

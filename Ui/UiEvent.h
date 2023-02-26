@@ -148,7 +148,7 @@ namespace Event
             Data_t(
                 WindowId_t      windowId,
                 POINT           point,
-                Input::Method_t method          = Input::Method::SendInput,
+                Input::Method_t method      = Input::Method::SendInput,
                 Mouse::Button_t button      = Mouse::Button::Left,
                 size_t          count       = 1,
                 bool            doubleClick = false)

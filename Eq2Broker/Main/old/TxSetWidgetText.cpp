@@ -41,7 +41,25 @@ OnTransactionComplete(
 }
 
 /////////////////////////////////////////////////////////////////////////////
-
+//
+// Idea:
+// The "state" is defined by the input (state of the UI/contents of pMessage)
+// and doesn't need to be tracked in the transaction itself.
+// 
+// text field:                 state:          action:
+//   empty                       empty field     enter text
+//   has matching contents       valid text      complete transaction
+//   has non-matching contents   invalid text    clear text
+//
+// So we could have a getState(pMessage) method, and maybe a "state -> action"
+// map. Then the code for this function is one line:
+//
+// stateActionMap[getState(pMessage)](pMessage);
+// 
+// Issues:
+// This class/handler is tightly coupled to BrokerBuy window based on the
+// (Dcr) message type. So it's named generically but doesn't act that way.
+//
 HRESULT
 Handler_t::
 MessageHandler(
@@ -68,33 +86,24 @@ MessageHandler(
     const wstring widgetText(buyMessage.searchText);
     switch (txData.GetState()) {
     case State::ClearText:
-        if (!widgetText.empty())
-        {
+        if (!widgetText.empty()) {
             ClearText(txData, widgetText);
-        }
-        else
-        {
+        } else {
             txData.NextState();
         }
         break;
 
     case State::EnterText:
-        {
-            if (widgetText != txData.text)
-            {
-                Ui::Input_t::SendChars(txData.text.c_str());
-            }
-            txData.NextState();
+        if (widgetText != txData.text) {
+            Ui::Input_t::SendChars(txData.text.c_str());
         }
+        txData.NextState();
         break;
 
     case State::ValidateText:
-        if (widgetText == txData.text)
-        {
+        if (widgetText == txData.text) {
             GetTransactionManager().CompleteTransaction(txData.Id);
-        }
-        else
-        {
+        } else {
             static const size_t kTimeoutThreshold = 30;
             if (txData.GetStateTimeout() > kTimeoutThreshold)
             {

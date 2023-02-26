@@ -3,6 +3,8 @@ add event:: namespace
 	event types inside this
 
 figure out the Class[] hack in DP::Message.
+string_view Class param?
+
 
 g_pDisplay
 
@@ -19,15 +21,13 @@ review some of the enable_if/concepts ideas for restricting MakeId to specific t
 BrokerFrame *contains* a tab.  Tab is not a window type.
 TableWindow does not inherit from TabWidnow.  Tab is not a window type.
 
-pSurface AutoUnlock_t (DcrTable_t) or finally_t
 cleanup TextTable_t.h
 
 I think the word transaction is wrong. State would also be wrong. This is a container for a set of states really.
 or a container for a state machine?
 
 Move TableInfo_t.h to DcrLib. DcrTableTypes?
-Rethink DCR legacy vs. Tesseract.
-Get rid of DcrBase_t somehow if possible.  at least make it no longer take a Window parameter.
+DcrBase_t may still be necessary for Buy/Sell common table support.  Probably should name it differently.
 DcrTable_t::GetSelectedRow. member/accessor in DcrTable? two parts here: 1) translate 2) retrieve translated value in PostData.= {}
 Tesseract::End(). Tricky. We lose the type info. In theory we could capture the pTess pointer in a lambda callback supplied to
 constructor, to be called at destructor in Impl_t? seems a bit whacky
@@ -37,7 +37,7 @@ c++20: * == done(ish)
 	public + delete instead of private copy/assignment/move
 	enum class
 	constexpr
-		static const -> constexpr
+		static const -> constexpr (generally)
 	typedef -> using
 	char* param -> string_view
 	bool get(Struct* pResult) -> optional<Struct> get()

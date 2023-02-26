@@ -40,6 +40,7 @@ private:
     template <typename T> class Impl_t;
 
     static std::unordered_map<DcrImpl, std::unique_ptr<ImplInterface_t>> impl_map_;
+
     int id_;
     DcrImpl method_;
 
@@ -68,34 +69,14 @@ public:
 
     //
 
-    const auto id()
-    {
+    const auto id() {
         return id_;
     }
 
-    const ImplInterface_t& Impl()
-    {
+    const ImplInterface_t& Impl() {
         return DCR::Impl(method_);
     }
-    /*
-    template<typename T> 
-    static void AddImpl(
-        DcrImpl method,
-        std::unique_ptr<T> pImpl)
-    {
-        if (impl_map_.contains(method))
-            throw std::invalid_argument(std::format("DcrImpl added twice, {}", int(method)));
-        impl_map_.emplace(method, Impl_t<T>{std::move(pImpl)});
-    }
 
-    static const ImplInterface_t& Impl(
-        DcrImpl method)
-    {
-        if (!impl_map_.contains(method))
-            throw std::logic_error(std::format("DcrImpl doesn't exist, {}", int(method)));
-        return *impl_map_.at(method).get();
-    }
-    */
     static void WriteBadBmp(
         const CSurface* pSurface,
         const RECT& rc,
@@ -103,7 +84,7 @@ public:
 
 private:
     struct ImplInterface_t {
-        virtual ~ImplInterface_t() {}
+        virtual ~ImplInterface_t() noexcept {}
 
         virtual std::string GetText(
             const CSurface* pSurface,
@@ -129,7 +110,7 @@ private:
 
         constexpr Impl_t(Impl_t&&) noexcept = default;
         constexpr Impl_t& operator=(Impl_t&&) noexcept = default;
-        ~Impl_t() override = default;
+        ~Impl_t() noexcept override = default;
 
         std::string GetText(
             const CSurface* pSurface,
