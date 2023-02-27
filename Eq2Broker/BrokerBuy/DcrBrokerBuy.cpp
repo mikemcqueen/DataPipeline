@@ -89,20 +89,20 @@ Handler_t::
 void
 Handler_t::
 SaveWidgets(
-    const CSurface* pSurface,
-    std::span<const Ui::Widget::Data_t> widgets) const
+  const CSurface* pSurface,
+  std::span<const Ui::Widget::Data_t> widgets) const
 {
-    static bool first = true;
-    if (first) {
-        auto& tableRect = m_windowManager.GetWindow().GetTableRect();
-        auto id = 0;
-        for (auto& widget : widgets) {
-            RelativeRect_t relRect(widget.RectData);
-            Rect_t rect = relRect.GetRelativeRect(tableRect); // TODO GetRectRelativeTo
-            pSurface->WriteBMP(std::format(L"diag\\widget_{}.bmp", id++).c_str(), rect);
-        }
+  static bool first = true;
+  if (first) {
+    auto& tableRect = m_windowManager.GetWindow().GetTableRect();
+    auto id = 0;
+    for (auto& widget : widgets) {
+      RelativeRect_t relRect(widget.RectData);
+      Rect_t rect = relRect.GetRelativeRect(tableRect); // TODO GetRectRelativeTo
+      pSurface->WriteBMP(std::format(L"diag\\widget_{}.bmp", id++).c_str(), rect);
     }
-    first = false;
+  }
+  first = false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -110,43 +110,43 @@ SaveWidgets(
 bool
 Handler_t::
 PreTranslateSurface(
-    CSurface* pSurface,
-    Ui::WindowId_t windowId,
-    int dcrId,
-    Rect_t* pRect) const
+  CSurface* pSurface,
+  Ui::WindowId_t windowId,
+  int dcrId,
+  Rect_t* pRect) const
 {
 #if 1
-    SaveWidgets(pSurface, std::span{ Broker::Buy::Widgets });
+  SaveWidgets(pSurface, std::span{ Broker::Buy::Widgets });
 #endif
-    extern bool g_bTableFixColor;
-    windowId;
-    pSurface;
+  extern bool g_bTableFixColor;
+  windowId;
+  pSurface;
 
-    switch (dcrId) {
-    case Widget::Id::Table:
-        {
-            //rcSurface;
-            Rect_t rect = m_windowManager.GetWindow().GetClientRect();
-            if (!rect.IsEmpty()) {
-                rect.top += Broker::Table::TopRowOffset;
-                //m_selectedRow = GetSelectedRow(*pSurface, rect);
-    #if 0
-                if (g_bTableFixColor) {
-                    // TODO: pSurface->ReplaceColorRange
-                    pSurface->FixColor(rect, BkLowColor, BkHighColor, Black);
-                }
-    #endif
-                *pRect = rect;
-                return true;
-            }
-        }
-        break;
-
-    default:
-        m_windowManager.GetWindow().GetWidgetRect(dcrId, pRect);
-        return true;
+  switch (dcrId) {
+  case Widget::Id::Table:
+  {
+    //rcSurface;
+    Rect_t rect = m_windowManager.GetWindow().GetClientRect();
+    if (!rect.IsEmpty()) {
+      rect.top += Broker::Table::TopRowOffset;
+      //m_selectedRow = GetSelectedRow(*pSurface, rect);
+#if 0
+      if (g_bTableFixColor) {
+        // TODO: pSurface->ReplaceColorRange
+        pSurface->FixColor(rect, BkLowColor, BkHighColor, Black);
+      }
+#endif
+      * pRect = rect;
+      return true;
     }
-    return false;
+  }
+  break;
+
+  default:
+    m_windowManager.GetWindow().GetWidgetRect(dcrId, pRect);
+    return true;
+  }
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -154,45 +154,46 @@ PreTranslateSurface(
 void
 Handler_t::
 PostData(
-    DWORD /*Unused*/) const
+  DWORD /*Unused*/) const
 {
-    extern bool g_noDcrPost;
-    if (g_noDcrPost) {
-        return;
+  extern bool g_noDcrPost;
+  if (g_noDcrPost) {
+    return;
+  }
+  PageNumber_t pageNumber;
+  if (!m_DcrPageNumber.GetText().empty() &&
+    !pageNumber.Parse(m_DcrPageNumber.GetText()))
+  {
+    LogError(L"DcrBrokerBuy::PostData(): PageNumber.Parse(%ls) failed",
+      m_DcrPageNumber.GetText().c_str());
+    return;
+  }
+  void* pBuffer = GetPipelineManager().Alloc(sizeof(Data_t));
+  if (nullptr == pBuffer) {
+    LogError(L"DcrBrokerBuy::PostData(): Alloc callback data failed.");
+  }
+  else {
+    LogInfo(L"%S", pageNumber.GetText().c_str());
+    m_TextTable.GetData().Dump(L"DcrBrokerBuy");
+    //LogInfo(L"SeletecedRow(%d)", m_DcrTable.GetSelectedRow()); TODO
+    Data_t* pData = new (pBuffer) Data_t(
+      GetClass().c_str(),
+      m_TextTable,
+      1, // m_DcrTable.GetSelectedRow(),
+      pageNumber,
+      m_DcrSearchEdit.GetText(),
+      m_DcrSearchEdit.GetHasCaret(),
+      m_DcrSearchDropdown.GetText());
+    HRESULT hr = GetPipelineManager().Callback(pData);
+    if (FAILED(hr)) {
+      // TODO, delete buffer
+      LogError(L"DcrBrokerBuy::PostData(): PM.Callback() failed.");
     }
-    PageNumber_t pageNumber;
-    if (!m_DcrPageNumber.GetText().empty() &&
-        !pageNumber.Parse(m_DcrPageNumber.GetText()))
-    {
-        LogError(L"DcrBrokerBuy::PostData(): PageNumber.Parse(%ls) failed",
-                 m_DcrPageNumber.GetText().c_str());
-        return;
-    }
-    void *pBuffer = GetPipelineManager().Alloc(sizeof(Data_t));
-    if (nullptr == pBuffer) {
-        LogError(L"DcrBrokerBuy::PostData(): Alloc callback data failed.");
-    } else {
-        LogInfo(L"%S", pageNumber.GetText().c_str());
-        m_TextTable.GetData().Dump(L"DcrBrokerBuy");
-        //LogInfo(L"SeletecedRow(%d)", m_DcrTable.GetSelectedRow()); TODO
-        Data_t* pData = new (pBuffer) Data_t(
-            GetClass().c_str(),
-            m_TextTable,
-            1, // m_DcrTable.GetSelectedRow(),
-            pageNumber,
-            m_DcrSearchEdit.GetText(),
-            m_DcrSearchEdit.GetHasCaret(),
-            m_DcrSearchDropdown.GetText());
-        HRESULT hr = GetPipelineManager().Callback(pData);
-        if (FAILED(hr)) {
-            // TODO, delete buffer
-            LogError(L"DcrBrokerBuy::PostData(): PM.Callback() failed.");
-        }
-    }
+  }
 #if 1
-    if (pageNumber.GetPage() < pageNumber.GetLastPage()) {
-        m_windowManager.GetWindow().ClickWidget(Widget::Id::NextButton);
-    }
+  if (pageNumber.GetPage() < pageNumber.GetLastPage()) {
+    m_windowManager.GetWindow().ClickWidget(Widget::Id::NextButton);
+  }
 #endif
 }
 

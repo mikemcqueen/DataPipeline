@@ -17,254 +17,254 @@
 #include "ColorRange_t.h"
 
 namespace Broker {
-    static const COLORREF Black                  = RGB(0, 0, 0);
-    static const COLORREF DarkGrey10             = RGB(10, 10, 10);
+  static const COLORREF Black = RGB(0, 0, 0);
+  static const COLORREF DarkGrey10 = RGB(10, 10, 10);
 
-    static const COLORREF BkLowColor             = Black;
-    static const COLORREF BkHighColor            = RGB(50, 50, 50);
+  static const COLORREF BkLowColor = Black;
+  static const COLORREF BkHighColor = RGB(50, 50, 50);
 
-    static const COLORREF BorderLowColor         = RGB(0, 0, 0);
-    static const COLORREF BorderHighColor        = RGB(6, 6, 6);
+  static const COLORREF BorderLowColor = RGB(0, 0, 0);
+  static const COLORREF BorderHighColor = RGB(6, 6, 6);
 
-    namespace Table
+  namespace Table
+  {
+    constexpr COLORREF SelectedLowColor = RGB(30, 30, 30); // Example: RGB=0x252025
+    constexpr COLORREF SelectedHighColor = RGB(39, 39, 39);
+    constexpr ColorRange_t SelectedRowColors = { SelectedLowColor, SelectedHighColor };
+
+    constexpr int TopRowOffset = 0;
+    constexpr int RowHeight = 42;
+    constexpr int QuantityTextHeight = 16;
+    constexpr int RowGapSize = 2;
+    constexpr int CharHeight = 12;
+    constexpr SIZE BorderSize = { 3, 3 };
+    constexpr SIZE DoubleBorderSize = { BorderSize.cx * 2, BorderSize.cy * 2 };
+  } // Table
+
+  class Window_t;
+  class MainWindow_t;
+
+  namespace Window
+  {
+    constexpr auto MakeId(const int id) noexcept {
+      constexpr auto first = static_cast<int>(Ui::Window::Id::User_First);
+      return static_cast<Ui::WindowId_t>(first + id);
+    }
+
+    namespace Id {
+      constexpr auto Eq2Login = MakeId(0);
+      constexpr auto Eq2Loading = MakeId(1);
+      constexpr auto Zoning = MakeId(2);
+      constexpr auto MainChat = MakeId(3);
+      constexpr auto BrokerFrame = MakeId(4);
+      constexpr auto BrokerBuy = MakeId(5);
+      constexpr auto BrokerSell = MakeId(6);
+      constexpr auto BrokerSalesLog = MakeId(7);
+      constexpr auto BrokerSetPrice = MakeId(8);
+    } // Id
+  } // Window
+
+  namespace Tab {
+    enum class Id {
+      None,
+      Buy,
+      Sell,
+      SalesLog,
+    };
+  } // Tab
+  using Tab_t = Tab::Id;
+
+  namespace Widget
+  {
+    namespace Id
     {
-        constexpr COLORREF SelectedLowColor  = RGB(30, 30, 30); // Example: RGB=0x252025
-        constexpr COLORREF SelectedHighColor = RGB(39, 39, 39);
-        constexpr ColorRange_t SelectedRowColors = { SelectedLowColor, SelectedHighColor };
+      enum : Ui::WidgetId_t
+      {
+        First = Ui::Widget::Id::User_First,
+        Login_First = First,
+        Eq2Login_First = First + 50,
+        CharacterSelect_First = First + 100,
+        BrokerNpc_First = First + 200,
+        BrokerFrame_First = First + 300,
+        BrokerBuy_First = First + 400,
+        BrokerSell_First = First + 500,
+        BrokerSalesLog_First = First + 600,
+        BrokerSetPrice_First = First + 700,
+        Last
+      };
+    }
+  } // Widget
 
-        constexpr int TopRowOffset = 0;
-        constexpr int RowHeight            = 42;
-        constexpr int QuantityTextHeight   = 16;
-        constexpr int RowGapSize           = 2;
-        constexpr int CharHeight           = 12;
-        constexpr SIZE BorderSize       = { 3, 3 };
-        constexpr SIZE DoubleBorderSize = { BorderSize.cx * 2, BorderSize.cy * 2 };
-    } // Table
-
-    class Window_t;
-    class MainWindow_t;
-
-    namespace Window
+  namespace Login
+  {
+    namespace Widget
     {
-        constexpr auto MakeId(const int id) noexcept {
-            constexpr auto first = static_cast<int>(Ui::Window::Id::User_First);
-            return static_cast<Ui::WindowId_t>(first + id);
-        }
-
-        namespace Id {
-            constexpr auto Eq2Login = MakeId(0);
-            constexpr auto Eq2Loading = MakeId(1);
-            constexpr auto Zoning = MakeId(2);
-            constexpr auto MainChat = MakeId(3);
-            constexpr auto BrokerFrame = MakeId(4);
-            constexpr auto BrokerBuy = MakeId(5);
-            constexpr auto BrokerSell = MakeId(6);
-            constexpr auto BrokerSalesLog = MakeId(7);
-            constexpr auto BrokerSetPrice = MakeId(8);
-        } // Id
-    } // Window
-
-    namespace Tab {
-        enum class Id {
-            None,
-            Buy,
-            Sell,
-            SalesLog,
+      namespace Id
+      {
+        enum : Ui::WidgetId_t
+        {
+          First = Broker::Widget::Id::Login_First,
+          UsernameLabel = First,
+          UsernameEdit,
+          PasswordLabel,
+          PasswordEdit,
+          LoginButton,
+          ExitButton,                  // 5
+          Last
         };
-    } // Tab
-    using Tab_t = Tab::Id;
+      }
+    }
+  } // Login
+
+  namespace Eq2Login
+  {
+    static const size_t kCharacterButtonCount = 20;
 
     namespace Widget
     {
-        namespace Id
+      namespace Id
+      {
+        enum : Ui::WidgetId_t
         {
-            enum : Ui::WidgetId_t
-            {
-                First                            = Ui::Widget::Id::User_First,
-                Login_First                      = First,
-                Eq2Login_First                   = First + 50,
-                CharacterSelect_First            = First + 100,
-                BrokerNpc_First                  = First + 200,
-                BrokerFrame_First                = First + 300,
-                BrokerBuy_First                  = First + 400,
-                BrokerSell_First                 = First + 500,
-                BrokerSalesLog_First             = First + 600,
-                BrokerSetPrice_First             = First + 700,
-                Last
-            };
-        }
-    } // Widget
-
-    namespace Login
-    {
-        namespace Widget
-        {
-            namespace Id
-            {
-                enum : Ui::WidgetId_t
-                {
-                    First                        = Broker::Widget::Id::Login_First,
-                    UsernameLabel                = First,
-                    UsernameEdit,
-                    PasswordLabel,
-                    PasswordEdit,
-                    LoginButton,
-                    ExitButton,                  // 5
-                    Last
-                };
-            }
-        }
-    } // Login
-
-    namespace Eq2Login
-    {
-        static const size_t kCharacterButtonCount = 20;
-
-        namespace Widget
-        {
-            namespace Id
-            {
-                enum : Ui::WidgetId_t
-                {
-                    First                        = Broker::Widget::Id::Eq2Login_First,
-                    CharacterEdit                = First,
-                    ServerEdit,
-                    ConnectButton,
-                    FirstCharacterButton,
-                    LastCharacterButton          = FirstCharacterButton + kCharacterButtonCount - 1,
-                    Last
-                };
-            }
-        }
-    } // Login
-
-    namespace Frame
-    {
-        namespace Layout
-        {
-            enum E : unsigned
-            {
-                Unknown,
-                Broker,
-                Market
-            };
-        }
-        typedef Layout::E Layout_t;
-
-        namespace Widget
-        {
-            namespace Id
-            {
-                enum : Ui::WidgetId_t
-                {
-                    First                        = Broker::Widget::Id::BrokerFrame_First,
-                    BuyTab                       = First,
-                    SellTab,
-                    SalesLogTab,
-                    Last
-                };
-            }
-        }
-    } // Frame
-
-    namespace Buy
-    {
-        namespace Widget
-        {
-            namespace Id
-            {
-                enum : Ui::WidgetId_t
-                {
-                    First                        = Broker::Widget::Id::BrokerBuy_First,
-                    FirstButton                  = First,
-                    PreviousButton,
-                    NextButton,
-                    LastButton,
-                    BuyButton,
-                    PageNumber,                  //5
-                    SearchLabel,
-                    SearchEdit, 
-                    FindButton,
-                    SearchDropdown,
-                    Table,
-                    Last
-                };
-            }
-        }
-    } // Buy
-
-    namespace Sell
-    {
-        namespace Widget
-        {
-            namespace Id
-            {
-                enum : Ui::WidgetId_t
-                {
-                    First                        = Broker::Widget::Id::BrokerSell_First,
-                    SetPriceButton               = First,
-                    ListItemButton,
-                    SearchButton,
-                    RemoveItemButton,
-                    DropToAddRect,               //5
-                    Container1,
-                    Container2,
-                    Container3,
-                    Container4,
-                    Container5,                  //10
-                    Container6,
-                    Last
-                };
-            }
-        }
-    } // Sell
-
-    namespace SalesLog
-    {
-        namespace Widget
-        {
-            namespace Id 
-            {
-                enum : Ui::WidgetId_t
-                {
-                    First                        = Broker::Widget::Id::BrokerSalesLog_First,
-                    Last                         = First
-                };
-            }
-        }
-    } // SalesLog
-
-    namespace SetPrice
-    {
-        namespace Widget
-        {
-            namespace Id
-            {
-                enum : Ui::WidgetId_t
-                {
-                    First                        = Broker::Widget::Id::BrokerSetPrice_First,
-                    OneButton                    = First,
-                    TwoButton,
-                    ThreeButton,
-                    FourButton,
-                    FiveButton,
-                    SixButton,                   //5
-                    SevenButton,
-                    EightButton,
-                    NineButton,
-                    ZeroButton,
-                    OkButton,                    //10
-                    ClearButton,
-                    PlatinumButton,
-                    GoldButton,
-                    SilverButton,
-                    CopperButton,                //15
-                    PriceText,
-                    Last
-                };
-            }
-        }
+          First = Broker::Widget::Id::Eq2Login_First,
+          CharacterEdit = First,
+          ServerEdit,
+          ConnectButton,
+          FirstCharacterButton,
+          LastCharacterButton = FirstCharacterButton + kCharacterButtonCount - 1,
+          Last
+        };
+      }
     }
+  } // Login
+
+  namespace Frame
+  {
+    namespace Layout
+    {
+      enum E : unsigned
+      {
+        Unknown,
+        Broker,
+        Market
+      };
+    }
+    typedef Layout::E Layout_t;
+
+    namespace Widget
+    {
+      namespace Id
+      {
+        enum : Ui::WidgetId_t
+        {
+          First = Broker::Widget::Id::BrokerFrame_First,
+          BuyTab = First,
+          SellTab,
+          SalesLogTab,
+          Last
+        };
+      }
+    }
+  } // Frame
+
+  namespace Buy
+  {
+    namespace Widget
+    {
+      namespace Id
+      {
+        enum : Ui::WidgetId_t
+        {
+          First = Broker::Widget::Id::BrokerBuy_First,
+          FirstButton = First,
+          PreviousButton,
+          NextButton,
+          LastButton,
+          BuyButton,
+          PageNumber,                  //5
+          SearchLabel,
+          SearchEdit,
+          FindButton,
+          SearchDropdown,
+          Table,
+          Last
+        };
+      }
+    }
+  } // Buy
+
+  namespace Sell
+  {
+    namespace Widget
+    {
+      namespace Id
+      {
+        enum : Ui::WidgetId_t
+        {
+          First = Broker::Widget::Id::BrokerSell_First,
+          SetPriceButton = First,
+          ListItemButton,
+          SearchButton,
+          RemoveItemButton,
+          DropToAddRect,               //5
+          Container1,
+          Container2,
+          Container3,
+          Container4,
+          Container5,                  //10
+          Container6,
+          Last
+        };
+      }
+    }
+  } // Sell
+
+  namespace SalesLog
+  {
+    namespace Widget
+    {
+      namespace Id
+      {
+        enum : Ui::WidgetId_t
+        {
+          First = Broker::Widget::Id::BrokerSalesLog_First,
+          Last = First
+        };
+      }
+    }
+  } // SalesLog
+
+  namespace SetPrice
+  {
+    namespace Widget
+    {
+      namespace Id
+      {
+        enum : Ui::WidgetId_t
+        {
+          First = Broker::Widget::Id::BrokerSetPrice_First,
+          OneButton = First,
+          TwoButton,
+          ThreeButton,
+          FourButton,
+          FiveButton,
+          SixButton,                   //5
+          SevenButton,
+          EightButton,
+          NineButton,
+          ZeroButton,
+          OkButton,                    //10
+          ClearButton,
+          PlatinumButton,
+          GoldButton,
+          SilverButton,
+          CopperButton,                //15
+          PriceText,
+          Last
+        };
+      }
+    }
+  }
 } // Broker
 
 #endif // INCLUDE_BROKERUI_H

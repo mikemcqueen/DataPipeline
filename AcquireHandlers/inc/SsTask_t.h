@@ -28,226 +28,174 @@ class CDisplay;
 class CSurface;
 
 class SsTask_t :
-    public DP::Handler_t
+  public DP::Handler_t
 {
+  inline static const size_t DefaultDelayMs = 300;
+  inline static const size_t DefaultPoolSize = 3;
 
-    static const size_t DefaultDelayMs   = 300;
-    static const size_t DefaultPoolSize  = 3;
+  inline static const size_t MaxEventDataSize = 1024;
 
-    static const size_t MaxEventDataSize = 1024;
-
-    static DP::MessageId_t s_MessageId;
+  static DP::MessageId_t s_MessageId;
 
 public:
 
-    static DP::MessageId_t
+  static DP::MessageId_t
     GetMessageId() {
-        ASSERT(DP::Message::Id::Unknown != s_MessageId);
-        return s_MessageId;
-    }
+    ASSERT(DP::Message::Id::Unknown != s_MessageId);
+    return s_MessageId;
+  }
 
 private:
 
-    CDisplay&   m_Display;
-    size_t      m_SurfaceWidth;
-    size_t      m_SurfaceHeight;
-    size_t      m_DelayMs;
-    size_t      m_PoolSize;
+  CDisplay& m_Display;
+  size_t      m_SurfaceWidth;
+  size_t      m_SurfaceHeight;
+  size_t      m_DelayMs;
+  size_t      m_PoolSize;
 
-    CAutoHandle m_hThread;
-    CAutoHandle m_hExitEvent;
-    CAutoHandle m_hSuspendEvent;
-    CAutoHandle m_hSuspendNotifyEvent;
-    CAutoHandle m_hEvent;
-    CAutoHandle m_hTimer;
+  CAutoHandle m_hThread;
+  CAutoHandle m_hExitEvent;
+  CAutoHandle m_hSuspendEvent;
+  CAutoHandle m_hSuspendNotifyEvent;
+  CAutoHandle m_hEvent;
+  CAutoHandle m_hTimer;
 
-    DWORD             m_dwThreadId;
+  DWORD             m_dwThreadId;
 
-    mutable volatile
-    LONG              m_lSuspended;
-    mutable volatile
-    LONG              m_lSuspendCount;
+  mutable LONG    m_lSuspended;
+  mutable LONG    m_lSuspendCount;
 
-    pool<CSurface>     m_Pool;
+  pool<CSurface>     m_Pool;
 
-    mutable volatile
+  mutable volatile
     LONG              m_lEventPending;
-    std::vector<char> m_EventData;
-    size_t            m_EventCount;
+  std::vector<char> m_EventData;
+  size_t            m_EventCount;
 
-    wchar_t m_szTestSurface[MAX_PATH];
+  wchar_t m_szTestSurface[MAX_PATH];
 
 public:
 
-    explicit
+  explicit
     SsTask_t(
-        CDisplay& Display,
-        size_t    SurfaceWidth,
-        size_t    SurfaceHeight,
-        size_t    PoolSize = DefaultPoolSize,
-        size_t    DelayMs  = DefaultDelayMs);
+      CDisplay& Display,
+      size_t    SurfaceWidth,
+      size_t    SurfaceHeight,
+      size_t    PoolSize = DefaultPoolSize,
+      size_t    DelayMs = DefaultDelayMs);
 
-    virtual
+  virtual
     ~SsTask_t();
 
-    //
-    // DP::Handler_t virtual
-    //
+  //
+  // DP::Handler_t virtual
+  //
 
-    bool
-    Initialize(
-       const wchar_t* pszClass) override;
+  bool Initialize(const wchar_t* pszClass) override;
 
-    HRESULT
-    EventHandler(
-        DP::Event::Data_t& Data) override;
+  HRESULT EventHandler(DP::Event::Data_t& Data) override;
 
-    //
-    // SsTask_t virtual
-    //
+  //
+  // SsTask_t virtual
+  //
 
-    virtual
-    HWND
-    GetSsWindowRect(
-        RECT& rcBounds) const = 0;
+  virtual HWND GetSsWindowRect(RECT& rcBounds) const = 0;
 
-    virtual
-    void
-    ThreadProcessEvent() = 0;
+  virtual void ThreadProcessEvent() = 0;
 
-    virtual
-    void
-    PostData(
-        HWND               hWnd,
-        pool<CSurface>::item_t* pPoolItem) = 0;
+  virtual void PostData(HWND hWnd, pool<CSurface>::item_t* pPoolItem) = 0;
 
 protected:
 
-    void SuspendAndFlush();
-    void Suspend();
-    void Resume();
+  void SuspendAndFlush();
+  void Suspend();
+  void Resume();
 
-    void
-    AddEventData(
-        const DP::Event::Data_t* pData);
+  void AddEventData(const DP::Event::Data_t* pData);
 
-    bool
-    SetEventPending(
-       bool bPending);
+  bool SetEventPending(bool bPending);
 
-    bool
-    IsEventPending() const;
+  bool IsEventPending() const;
 
-    void
-    ClearEventData();
+  void ClearEventData();
 
-    void
-    SetEventData(
-        const DP::Event::Data_t& Data);
+  void SetEventData(const DP::Event::Data_t& Data);
 
-    size_t
-    GetEventCount() const
-    {
-        return m_EventCount;
-    }
+  size_t GetEventCount() const { return m_EventCount; }
 
-    const DP::Event::Data_t&
-    PeekEvent(
-        size_t Event) const;
+  const DP::Event::Data_t& PeekEvent(size_t Event) const;
 
-    void
-    GetEventData(
-        size_t             Event,
-        DP::Event::Data_t& Data,
-        size_t             Size) const;
+  void GetEventData(
+    size_t Event,
+    DP::Event::Data_t& Data,
+    size_t Size) const;
 
-    void
-    SetAsyncEvent()
-    {
-        SetEvent(m_hEvent.get());
-    }
+  void SetAsyncEvent() { SetEvent(m_hEvent.get()); }
 
 private:
 
-    bool
-    Start();
+  bool Start();
 
-    void
-    Stop();
+  void Stop();
 
-    void SetTestSurface(wchar_t* pszPath);
+  void SetTestSurface(wchar_t* pszPath);
 
-    HRESULT
-    InitSurfacePool(
-        CDisplay&     Display,
-        pool<CSurface>& Pool,
-        size_t        cx,
-        size_t        cy,
-        size_t        Count);
+  HRESULT InitSurfacePool(
+    CDisplay& Display,
+    pool<CSurface>& Pool,
+    size_t        cx,
+    size_t        cy,
+    size_t        Count);
 
-    HRESULT            InitSurfacePool(size_t Size);
-    pool<CSurface>&     GetSurfacePool()              { return m_Pool; }
-    pool<CSurface>::item_t* GetAvailableSurface();
+  HRESULT InitSurfacePool(size_t Size);
+  pool<CSurface>& GetSurfacePool() { return m_Pool; }
+  pool<CSurface>::item_t* GetAvailableSurface();
 
-    void
-    Shutter();
+  void Shutter();
 
-    bool
-    TakeSnapShot(
-        HWND hWnd,
-        const RECT& rc,
-        CSurface *pSurface );
+  static bool TakeSnapShot(HWND hWnd, const RECT& rc, CSurface* pSurface);
 
-    bool
-    SetSuspended(
-        bool bSuspended);
+  bool SetSuspended(bool bSuspended);
 
-    bool
-    IsSuspended() const;
+  bool IsSuspended() const;
 
-    bool
-    SameThread() const
-    {
-        return GetCurrentThreadId() == m_dwThreadId;
-    }
+  bool SameThread() const { return GetCurrentThreadId() == m_dwThreadId; }
 
-    static
-    DWORD WINAPI
-    ThreadFunc(void *pvParam);
+  static DWORD WINAPI ThreadFunc(void* pvParam);
 
 private:
 
-    SsTask_t() = delete;
-    SsTask_t(const SsTask_t&) = delete;
-    SsTask_t& operator=(const SsTask_t&) = delete;
+  SsTask_t() = delete;
+  SsTask_t(const SsTask_t&) = delete;
+  SsTask_t& operator=(const SsTask_t&) = delete;
 };
 
 /////////////////////////////////////////////////////////////////////////////
 
 namespace SsTask::Acquire {
 
-struct Data_t :
+  struct Data_t :
     public DP::Message::Data_t
-{
+  {
     pool<CSurface>::item_t* pPoolItem;
 
     static void ReleaseFn(DP::Message::Data_t&);
 
     Data_t(
-        const wchar_t* pClass,
-        pool<CSurface>::item_t* InitPoolItem,
-        size_t Size = sizeof(Data_t))
-        :
-        DP::Message::Data_t(
-            DP::Stage_t::Acquire,
-            SsTask_t::GetMessageId(),
-            Size,
-            pClass,
-            DP::Message::Type::Message,
-            ReleaseFn),
-        pPoolItem(InitPoolItem)
+      const wchar_t* pClass,
+      pool<CSurface>::item_t* InitPoolItem,
+      size_t Size = sizeof(Data_t))
+      :
+      DP::Message::Data_t(
+        DP::Stage_t::Acquire,
+        SsTask_t::GetMessageId(),
+        Size,
+        pClass,
+        DP::Message::Type::Message,
+        ReleaseFn),
+      pPoolItem(InitPoolItem)
     { }
-};
+  };
 
 } // SsTask::Acquire
 

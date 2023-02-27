@@ -41,51 +41,51 @@ bool
 PipelineManager_t::
 ProcessThreadData_t::
 operator()(
-    ThreadQueue::State_t State,
-    Message::Data_t*     pData,
-    PipelineManager_t*   pPM) const
+  ThreadQueue::State_t State,
+  Message::Data_t* pData,
+  PipelineManager_t* pPM) const
 {
-    using namespace ThreadQueue;
-    switch (State)
-    {
-    case State::Execute:
-        pPM->Dispatch(pData);
-        break;
+  using namespace ThreadQueue;
+  switch (State)
+  {
+  case State::Execute:
+    pPM->Dispatch(pData);
+    break;
 
-    case State::Free:   
-        pPM->Release(pData);
-        pPM->Free(pData);
-        break;
+  case State::Free:
+    pPM->Release(pData);
+    pPM->Free(pData);
+    break;
 
-    case State::Display:
-/*
-//        pPM->Display(pData);
-        LogInfo(L"Display(%d, '%ls')", pData->Id, pData->szClass);
-        if (DP::Acquire == pData->Stage)
-        {
-            DP::AcquireData_t ad = *(DP::AcquireData_t*)pData;
-            if (DP::SurfacePoolItem == ad.Format)
+  case State::Display:
+    /*
+    //        pPM->Display(pData);
+            LogInfo(L"Display(%d, '%ls')", pData->Id, pData->szClass);
+            if (DP::Acquire == pData->Stage)
             {
-                LogInfo(L"    Acquire, SurfacePoolItem");
+                DP::AcquireData_t ad = *(DP::AcquireData_t*)pData;
+                if (DP::SurfacePoolItem == ad.Format)
+                {
+                    LogInfo(L"    Acquire, SurfacePoolItem");
+                }
+                else
+                    LogInfo(L"    Acquire, Unknown(%d)", ad.Format);
             }
             else
-                LogInfo(L"    Acquire, Unknown(%d)", ad.Format);
-        }
-        else
-            LogInfo(L"    Unknown(%d)", pData->Stage);
-*/
-        break;
+                LogInfo(L"    Unknown(%d)", pData->Stage);
+    */
+    break;
 
-    case State::Startup:
-        //[[fallthrough]]
-    case State::Shutdown:
-        break;
+  case State::Startup:
+    //[[fallthrough]]
+  case State::Shutdown:
+    break;
 
-    default:
-        ASSERT(false);
-        break;
-    }
-    return true;
+  default:
+    ASSERT(false);
+    break;
+  }
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -266,40 +266,43 @@ AddHandler(
 void
 PipelineManager_t::
 AddTransactionHandler(
-    Stage_t         stage,
-    TransactionId_t transactionId,
-    Handler_t&      handler,
-    const wchar_t*  displayName /*= nullptr*/)
+  Stage_t         stage,
+  TransactionId_t transactionId,
+  Handler_t& handler,
+  const wchar_t* displayName /*= nullptr*/)
 {
-    if (handler.Initialize(nullptr)) {
-        // NOTE: obviously this only allows for one handler per transaction Id,
-        // regardless of stage.
-        // in the future, maybe we could allow different handlers for different stages?
-        CLock lock(m_csHandlers);
-        TxIdHandlerMap_t::const_iterator itFind = m_txHandlerMap.find(transactionId);
-        if (m_txHandlerMap.end() == itFind) {
-            wchar_t stringId[16];
-            if (nullptr == displayName) {
-                swprintf_s(stringId, L"TX-0%x", transactionId);
-                displayName = stringId;
-            }
-            HandlerData_t handlerData(stage, &handler, displayName);
-            auto [ _, added ] = m_txHandlerMap.insert(
-                make_pair(transactionId, handlerData));
-            if (added) {
-                return; // Success
-            } else {
-                LogError(L"PM::AddTransactionHandler(): HandlerMap.insert() failed");
-            }
-        } else {
-            LogError(L"PM::AddTransactionHandler(): Handler already registered for id (%d)",
-                     transactionId);
-        }
-    } else {
-        LogError(L"PM::AddTransactionHandler(): Handler.Initialize(%d, %d) failed",
-                 stage, transactionId);
+  if (handler.Initialize(nullptr)) {
+    // NOTE: obviously this only allows for one handler per transaction Id,
+    // regardless of stage.
+    // in the future, maybe we could allow different handlers for different stages?
+    CLock lock(m_csHandlers);
+    TxIdHandlerMap_t::const_iterator itFind = m_txHandlerMap.find(transactionId);
+    if (m_txHandlerMap.end() == itFind) {
+      wchar_t stringId[16];
+      if (nullptr == displayName) {
+        swprintf_s(stringId, L"TX-0%x", transactionId);
+        displayName = stringId;
+      }
+      HandlerData_t handlerData(stage, &handler, displayName);
+      auto [_, added] = m_txHandlerMap.insert(
+        make_pair(transactionId, handlerData));
+      if (added) {
+        return; // Success
+      }
+      else {
+        LogError(L"PM::AddTransactionHandler(): HandlerMap.insert() failed");
+      }
     }
-    throw runtime_error("PM::AddTransactionHandler()");
+    else {
+      LogError(L"PM::AddTransactionHandler(): Handler already registered for id (%d)",
+        transactionId);
+    }
+  }
+  else {
+    LogError(L"PM::AddTransactionHandler(): Handler.Initialize(%d, %d) failed",
+      stage, transactionId);
+  }
+  throw runtime_error("PM::AddTransactionHandler()");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -307,40 +310,41 @@ AddTransactionHandler(
 size_t
 PipelineManager_t::
 SendEvent(
-    Event::Data_t& Data)
+  Event::Data_t& Data)
 {
-    if (DP::Message::Type::Event != Data.Type) { // && (Type::Transaction != Data.Type))
-        throw invalid_argument("PM::SendEvent(): Invalid message type");
-    }
+  if (DP::Message::Type::Event != Data.Type) { // && (Type::Transaction != Data.Type))
+    throw invalid_argument("PM::SendEvent(): Invalid message type");
+  }
 
-    size_t Total = 0;
-    size_t Handled = 0;
-    CLock lock(m_csHandlers);
-    const wchar_t* pClass = nullptr;
-    if (L'\0' != Data.Class[0]) {
-        pClass = Data.Class;
-    }
-    //using namespace DP::Message;
+  size_t Total = 0;
+  size_t Handled = 0;
+  CLock lock(m_csHandlers);
+  const wchar_t* pClass = nullptr;
+  if (L'\0' != Data.Class[0]) {
+    pClass = Data.Class;
+  }
+  //using namespace DP::Message;
 #if 0
-    if (SUCCEEDED(TrySendTransactionEvent(Data)))
-    {
-        return 1;
-    }
+  if (SUCCEEDED(TrySendTransactionEvent(Data)))
+  {
+    return 1;
+  }
 #endif
-    HandlerVector_t::const_iterator it = m_Handlers.begin();
-    while (GetNextHandler(Data.Stage, pClass, it)) {
-        ++Total;
-        HRESULT hr = it->pHandler->EventHandler(Data);
-        // S_FALSE means not handled, no error
-        if (S_OK == hr) {
-            ++Handled;
-        } else if (FAILED(hr)) {
-            LogError(L"SendEvent(%d,%d) failed (%08x)", Data.Stage, Data.Id, hr);
-        }
-        ++it;
+  HandlerVector_t::const_iterator it = m_Handlers.begin();
+  while (GetNextHandler(Data.Stage, pClass, it)) {
+    ++Total;
+    HRESULT hr = it->pHandler->EventHandler(Data);
+    // S_FALSE means not handled, no error
+    if (S_OK == hr) {
+      ++Handled;
     }
-    LogInfo(L"SendEvent(): Total (%d) Handled (%d)", Total, Handled);
-    return Handled;
+    else if (FAILED(hr)) {
+      LogError(L"SendEvent(%d,%d) failed (%08x)", Data.Stage, Data.Id, hr);
+    }
+    ++it;
+  }
+  LogInfo(L"SendEvent(): Total (%d) Handled (%d)", Total, Handled);
+  return Handled;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -348,38 +352,38 @@ SendEvent(
 HRESULT
 PipelineManager_t::
 SendTransactionEvent(
-    Transaction::Data_t& Data,
-    Transaction::Data_t* pPrevTxData /*= nullptr*/)
+  Transaction::Data_t& Data,
+  Transaction::Data_t* pPrevTxData /*= nullptr*/)
 {
-    //using namespace DP::Message;
-    if (DP::Message::Type::Transaction != Data.Type) {
-//        return E_FAIL;
-        throw invalid_argument("PM::SendTransactionEvent(): Invalid message type");
-    }
-    if (Data.Size < sizeof(Transaction::Data_t)) {
-        throw invalid_argument("PM::SendTransactionEvent(): Invalid data size");
-    }
-    CLock lock(m_csHandlers);
-    TxIdHandlerMap_t::const_iterator it = m_txHandlerMap.find(Data.Id);
-    if (m_txHandlerMap.end() != it) {
-        using Transaction::Data_t;
-        Handler_t* pHandler = it->second.pHandler;
-        Data_t& TxData = static_cast<Data_t&>(Data);
-        using namespace Transaction;
-        switch (TxData.GetState()) {
-        case State::New:      
-            return pHandler->ExecuteTransaction(TxData);
+  //using namespace DP::Message;
+  if (DP::Message::Type::Transaction != Data.Type) {
+    //        return E_FAIL;
+    throw invalid_argument("PM::SendTransactionEvent(): Invalid message type");
+  }
+  if (Data.Size < sizeof(Transaction::Data_t)) {
+    throw invalid_argument("PM::SendTransactionEvent(): Invalid data size");
+  }
+  CLock lock(m_csHandlers);
+  TxIdHandlerMap_t::const_iterator it = m_txHandlerMap.find(Data.Id);
+  if (m_txHandlerMap.end() != it) {
+    using Transaction::Data_t;
+    Handler_t* pHandler = it->second.pHandler;
+    Data_t& TxData = static_cast<Data_t&>(Data);
+    using namespace Transaction;
+    switch (TxData.GetState()) {
+    case State::New:
+      return pHandler->ExecuteTransaction(TxData);
 
-        case State::Complete:
-            return pHandler->OnTransactionComplete(TxData);
-        
-        default:
-            return pHandler->ResumeTransaction(TxData, pPrevTxData);
-        }
+    case State::Complete:
+      return pHandler->OnTransactionComplete(TxData);
+
+    default:
+      return pHandler->ResumeTransaction(TxData, pPrevTxData);
     }
-    return S_FALSE;
-    // LogError(L"PM::SendEvent(): Transaction event not handled");
-    // throw logic_error("PM::SendEvent(): Transaction event not handled");
+  }
+  return S_FALSE;
+  // LogError(L"PM::SendEvent(): Transaction event not handled");
+  // throw logic_error("PM::SendEvent(): Transaction event not handled");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -407,25 +411,25 @@ Free(
 HRESULT
 PipelineManager_t::
 Callback(
-    Message::Data_t* pMessage)
+  Message::Data_t* pMessage)
 {
-    LogInfo(L"PipelineManager_t::Callback pMessage %S", typeid(*pMessage).name());
+  LogInfo(L"PipelineManager_t::Callback pMessage %S", typeid(*pMessage).name());
 
-    if (nullptr == pMessage) {
-        throw std::invalid_argument("PipelineManager_t::Callback(): Invalid message");
-    }
-    switch (pMessage->Stage) {
-    case Stage_t::Acquire:
-    case Stage_t::Translate:
-    case Stage_t::Interpret:
-        LogInfo(L"PM::Callback (%s)", GetStageString(pMessage->Stage));
-        break;
+  if (nullptr == pMessage) {
+    throw std::invalid_argument("PipelineManager_t::Callback(): Invalid message");
+  }
+  switch (pMessage->Stage) {
+  case Stage_t::Acquire:
+  case Stage_t::Translate:
+  case Stage_t::Interpret:
+    LogInfo(L"PM::Callback (%s)", GetStageString(pMessage->Stage));
+    break;
 
-    default:
-        throw std::invalid_argument("PipelineManager_t::Callback() Invalid stage");
-    }
-    m_MessageThread.QueueData(pMessage);
-    return S_OK;
+  default:
+    throw std::invalid_argument("PipelineManager_t::Callback() Invalid stage");
+  }
+  m_MessageThread.QueueData(pMessage);
+  return S_OK;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -433,20 +437,20 @@ Callback(
 size_t
 PipelineManager_t::
 Flush(
-          Stage_t   Stage,
-    const wchar_t* pszClass)
+  Stage_t   Stage,
+  const wchar_t* pszClass)
 {
-    // TODO:
-    // if (!SameThread()) SignalObjectAndWait(hFlush, hFlushNotify);
-    Message::Data_t Data;
-    memset(&Data, 0, sizeof(Data));
-    Data.Stage = Stage;
-    wcscpy_s(Data.Class, _countof(Data.Class), pszClass);
-    size_t RemovedCount = m_MessageThread.RemoveAll(&Data);
-    if (0 < RemovedCount) {
-        LogInfo(L"PM::Flush(%d, '%ls'): Removed %d item(s)", Stage, pszClass, RemovedCount);
-    }
-    return RemovedCount;
+  // TODO:
+  // if (!SameThread()) SignalObjectAndWait(hFlush, hFlushNotify);
+  Message::Data_t Data;
+  memset(&Data, 0, sizeof(Data));
+  Data.Stage = Stage;
+  wcscpy_s(Data.Class, _countof(Data.Class), pszClass);
+  size_t RemovedCount = m_MessageThread.RemoveAll(&Data);
+  if (0 < RemovedCount) {
+    LogInfo(L"PM::Flush(%d, '%ls'): Removed %d item(s)", Stage, pszClass, RemovedCount);
+  }
+  return RemovedCount;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -454,55 +458,56 @@ Flush(
 void
 PipelineManager_t::
 Dispatch(
-    Message::Data_t* pMessage)
+  Message::Data_t* pMessage)
 {
-    Stage_t NextStage = Stage_t::None;
-    switch (pMessage->Stage) {
-    case Stage_t::Acquire:     NextStage = Stage_t::Translate; break;
-    case Stage_t::Translate:   NextStage = Stage_t::Interpret; break;
-    case Stage_t::Interpret:   NextStage = Stage_t::Analyze;   break;
-    default:
-        ASSERT(false);
+  Stage_t NextStage = Stage_t::None;
+  switch (pMessage->Stage) {
+  case Stage_t::Acquire:     NextStage = Stage_t::Translate; break;
+  case Stage_t::Translate:   NextStage = Stage_t::Interpret; break;
+  case Stage_t::Interpret:   NextStage = Stage_t::Analyze;   break;
+  default:
+    ASSERT(false);
+    return;
+  }
+  if (SUCCEEDED(TrySendTransactionMessage(pMessage, NextStage))) {
+    return;
+  }
+  // create list of output formats desired
+  // walk list of translate handlers.  if a desired format is supported,
+  //   translate and remove it from list
+  // 
+  size_t Total = 0;
+  size_t Handled = 0;
+  {
+    CLock lock(m_csHandlers);
+    HandlerVector_t::const_iterator it = m_Handlers.begin();
+    while (GetNextHandler(NextStage, pMessage->Class, it)) {
+      // at this point, how do we know that TiText is the required 
+      // output type? a handler can support multiple? we don't just 
+      // do them all, we need to know if there are any Analyze/Compare 
+      // handlers that take TiText, presumably, so we can walk back 
+      // the dependency chain.
+      // TODO: *pMessage
+      ++Total;
+      HRESULT hr = it->pHandler->MessageHandler(pMessage);
+      if (SUCCEEDED(hr)) {
+        ++Handled;
+      }
+      if (E_ABORT == hr) {
+        LogInfo(L"PM::Dispatch(%s) Aborted after (%d) handlers",
+          GetStageString(pMessage->Stage), Total);
         return;
+      }
+      ++it;
     }
-    if (SUCCEEDED(TrySendTransactionMessage(pMessage, NextStage))) {
-        return;
-    }
-    // create list of output formats desired
-    // walk list of translate handlers.  if a desired format is supported,
-    //   translate and remove it from list
-    // 
-    size_t Total = 0;
-    size_t Handled = 0;
-    {
-        CLock lock(m_csHandlers);
-        HandlerVector_t::const_iterator it = m_Handlers.begin();
-        while (GetNextHandler(NextStage, pMessage->Class, it)) {
-            // at this point, how do we know that TiText is the required 
-            // output type? a handler can support multiple? we don't just 
-            // do them all, we need to know if there are any Analyze/Compare 
-            // handlers that take TiText, presumably, so we can walk back 
-            // the dependency chain.
-            // TODO: *pMessage
-            ++Total;
-            HRESULT hr = it->pHandler->MessageHandler(pMessage);
-            if (SUCCEEDED(hr)) {
-                ++Handled;
-            }
-            if (E_ABORT == hr) {
-                LogInfo(L"PM::Dispatch(%s) Aborted after (%d) handlers",
-                        GetStageString(pMessage->Stage), Total);
-                return;
-            }
-            ++it;
-        }
-    }
-    if (0 == Total) {
-        LogError(L"PM::Dispatch(%s) No handlers", GetStageString(pMessage->Stage));
-    } else {
-        LogInfo(L"PM::Dispatch(%s) Total (%d) Handled(%d)",
-                GetStageString(pMessage->Stage), Total, Handled);
-    }
+  }
+  if (0 == Total) {
+    LogError(L"PM::Dispatch(%s) No handlers", GetStageString(pMessage->Stage));
+  }
+  else {
+    LogInfo(L"PM::Dispatch(%s) Total (%d) Handled(%d)",
+      GetStageString(pMessage->Stage), Total, Handled);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -510,27 +515,28 @@ Dispatch(
 HRESULT
 PipelineManager_t::
 TrySendTransactionMessage(
-    Message::Data_t* pMessage,
-    Stage_t          stage)
+  Message::Data_t* pMessage,
+  Stage_t          stage)
 {
-    HRESULT hr = E_FAIL;
-    DP::TransactionManager_t::AutoRelease_t TxData(GetTransactionManager().Acquire());
-    const DP::Transaction::Data_t* pTxData = TxData.get();
-    if (nullptr != pTxData) {
-        // There is a transaction active: see if we have a handler registered
-        // for the active transaction & specified stage
-        CLock lock(m_csHandlers);
-        TxIdHandlerMap_t::const_iterator it = m_txHandlerMap.find(pTxData->Id);
-        if ((m_txHandlerMap.end() != it) && (it->second.Stage == stage)) {
-            hr = it->second.pHandler->MessageHandler(pMessage);
-            if (SUCCEEDED(hr)) {
-                LogInfo(L"PM::TrySendTransactionMessage(): Message handled");
-            } else {
-                LogError(L"PM::TrySendTransactionMessage(): Message not handled");
-            }
-        }
+  HRESULT hr = E_FAIL;
+  DP::TransactionManager_t::AutoRelease_t TxData(GetTransactionManager().Acquire());
+  const DP::Transaction::Data_t* pTxData = TxData.get();
+  if (nullptr != pTxData) {
+    // There is a transaction active: see if we have a handler registered
+    // for the active transaction & specified stage
+    CLock lock(m_csHandlers);
+    TxIdHandlerMap_t::const_iterator it = m_txHandlerMap.find(pTxData->Id);
+    if ((m_txHandlerMap.end() != it) && (it->second.Stage == stage)) {
+      hr = it->second.pHandler->MessageHandler(pMessage);
+      if (SUCCEEDED(hr)) {
+        LogInfo(L"PM::TrySendTransactionMessage(): Message handled");
+      }
+      else {
+        LogError(L"PM::TrySendTransactionMessage(): Message not handled");
+      }
     }
-    return hr;
+  }
+  return hr;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -541,23 +547,23 @@ int releaseFn = 0;
 void
 PipelineManager_t::
 Release(
-    DP::Message::Data_t* pData)
+  DP::Message::Data_t* pData)
 {
-    release++;
-    if (nullptr != pData->ReleaseFn) {
-        releaseFn++;
-        pData->ReleaseFn(*pData);
-    }
+  release++;
+  if (nullptr != pData->ReleaseFn) {
+    releaseFn++;
+    pData->ReleaseFn(*pData);
+  }
 
 #if 0
-    switch (pData->Stage)
-    {
-    case DP::Stage_t::Acquire:
-        {
-            // Haxoid
-            //pData->~Data_t();
-            
-            // TOOD: move to outside switch;
+  switch (pData->Stage)
+  {
+  case DP::Stage_t::Acquire:
+  {
+    // Haxoid
+    //pData->~Data_t();
+
+    // TOOD: move to outside switch;
 
 /*
             const DP::AcquireData_t& ad = *(DP::AcquireData_t*)pData;
@@ -577,17 +583,17 @@ Release(
                 break;
             }
 */
-        }
-        break;
+  }
+  break;
 
-    case DP::Stage_t::Translate:
-    case DP::Stage_t::Interpret:
-        break;
+  case DP::Stage_t::Translate:
+  case DP::Stage_t::Interpret:
+    break;
 
-    default:
-        LogError(L"PM::ReleaseData('%ls', %d)", pData->Class, pData->Stage);
-        throw std::invalid_argument("PM::ReleaseData() invalid stage");
-    }
+  default:
+    LogError(L"PM::ReleaseData('%ls', %d)", pData->Class, pData->Stage);
+    throw std::invalid_argument("PM::ReleaseData() invalid stage");
+  }
 #endif
 }
 

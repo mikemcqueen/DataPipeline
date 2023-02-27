@@ -71,24 +71,24 @@ FindTab(
 
 TableWindow_t::
 TableWindow_t(
-    Ui::WindowId_t WindowId,
-    const Ui::Window_t& parent,
-    const wchar_t* pWindowName,
-    Flag_t Flags,
-    std::span<const Ui::Widget::Data_t> widgets,
-    POINT tableOffset,
-    const RECT& innerTableRect,
-    POINT tabOffset)
-:
-    TabWindow_t(
-        WindowId,
-        parent,
-        pWindowName,
-        Flags,
-        widgets,
-        tabOffset),
-    m_TableOffset(tableOffset),
-    m_InnerTableRect(innerTableRect)
+  Ui::WindowId_t WindowId,
+  const Ui::Window_t& parent,
+  const wchar_t* pWindowName,
+  Flag_t Flags,
+  std::span<const Ui::Widget::Data_t> widgets,
+  POINT tableOffset,
+  const RECT& innerTableRect,
+  POINT tabOffset)
+  :
+  TabWindow_t(
+    WindowId,
+    parent,
+    pWindowName,
+    Flags,
+    widgets,
+    tabOffset),
+  m_TableOffset(tableOffset),
+  m_InnerTableRect(innerTableRect)
 {
 }
 
@@ -131,37 +131,38 @@ GetWidgetRect(
 bool
 TableWindow_t::
 UpdateScrollPosition(
-    Ui::Scroll::Bar_t ScrollBar,
-    const CSurface&   Surface)
+  Ui::Scroll::Bar_t ScrollBar,
+  const CSurface& Surface)
 {
-    using namespace Ui;
-    // TODO: Rather imperfect solution, using GetTableRect():
-    const Rect_t& TableRect = GetTableRect(); 
-    if (Scroll::Bar::Vertical == ScrollBar) {
-        if (GetFlags().Test(Ui::Window::Flag::VerticalScroll)) {
-            //TODO: maybe: all this rect discovery could live in GetVScrollPosition()
-            Rect_t scrollUpRect; // = m_VScrollUpRect.GetRelativeRect(TableRect);
-            Rect_t scrollDownRect; // = m_VScrollDownRect.GetRelativeRect(TableRect);
-            if (Base_t::GetWidgetRect(Ui::Widget::Id::VScrollUp, TableRect, &scrollUpRect) &&
-                Base_t::GetWidgetRect(Ui::Widget::Id::VScrollDown, TableRect, &scrollDownRect))
-            {
-                ::InflateRect(&scrollUpRect, -2, -2);
-                ::InflateRect(&scrollDownRect, -2, -2);
-                Scroll::Position_t ScrollPos = /*Ui::Window_t::*/GetVertScrollPos(Surface, scrollUpRect, scrollDownRect);
-                //LogAlways(L"TableWindow_t::UpdateScrollPosition(): VScrollPos (%d)", ScrollPos);
-                SetScrollPosition(ScrollBar, ScrollPos);
-                return true;
-            }
-            LogError(L"%ls::UpdateScrollPosition(): Missing veritcal scroll rects",
-                     GetWindowName());
-            throw std::logic_error("TableWindow_t::UpdateScrollPosition(): Missing vertical scroll rects");
-        }
-    } else {
-        //Flag = Flag::HorizontalScroll;
-        //pScrollPos = &m_HorzScrollPos;
-        throw std::logic_error("TableWindow_t::UpdateScrollPosition() horizontal scrolling not implemented");
+  using namespace Ui;
+  // TODO: Rather imperfect solution, using GetTableRect():
+  const Rect_t& TableRect = GetTableRect();
+  if (Scroll::Bar::Vertical == ScrollBar) {
+    if (GetFlags().Test(Ui::Window::Flag::VerticalScroll)) {
+      //TODO: maybe: all this rect discovery could live in GetVScrollPosition()
+      Rect_t scrollUpRect; // = m_VScrollUpRect.GetRelativeRect(TableRect);
+      Rect_t scrollDownRect; // = m_VScrollDownRect.GetRelativeRect(TableRect);
+      if (Base_t::GetWidgetRect(Ui::Widget::Id::VScrollUp, TableRect, &scrollUpRect) &&
+        Base_t::GetWidgetRect(Ui::Widget::Id::VScrollDown, TableRect, &scrollDownRect))
+      {
+        ::InflateRect(&scrollUpRect, -2, -2);
+        ::InflateRect(&scrollDownRect, -2, -2);
+        Scroll::Position_t ScrollPos = /*Ui::Window_t::*/GetVertScrollPos(Surface, scrollUpRect, scrollDownRect);
+        //LogAlways(L"TableWindow_t::UpdateScrollPosition(): VScrollPos (%d)", ScrollPos);
+        SetScrollPosition(ScrollBar, ScrollPos);
+        return true;
+      }
+      LogError(L"%ls::UpdateScrollPosition(): Missing veritcal scroll rects",
+        GetWindowName());
+      throw std::logic_error("TableWindow_t::UpdateScrollPosition(): Missing vertical scroll rects");
     }
-    return false;
+  }
+  else {
+    //Flag = Flag::HorizontalScroll;
+    //pScrollPos = &m_HorzScrollPos;
+    throw std::logic_error("TableWindow_t::UpdateScrollPosition() horizontal scrolling not implemented");
+  }
+  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

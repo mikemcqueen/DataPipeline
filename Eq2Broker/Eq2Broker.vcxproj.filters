@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Main\Eq2BrokerImpl_t.cpp" />
+    <ClCompile Include="Main\Eq2Broker_t.cpp" />
+    <ClCompile Include="Main\Main.cpp" />
+    <ClCompile Include="Main\PageNumber_t.cpp" />
+    <ClCompile Include="Main\Price_t.cpp" />
+    <ClCompile Include="Main\stdafx.cpp" />
+    <ClCompile Include="Main\TrWindowType.cpp" />
+    <ClCompile Include="BrokerBuy\BrokerBuyWindow.cpp" />
+    <ClCompile Include="BrokerBuy\DcrBrokerBuy.cpp" />
+    <ClCompile Include="BrokerBuy\TiBrokerBuy.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Main\BrokerId.h" />
+    <ClInclude Include="Main\CmdParser_t.h" />
+    <ClInclude Include="Main\DcrBase_t.h" />
+    <ClInclude Include="Main\Eq2BrokerImpl_t.h" />
+    <ClInclude Include="Main\Eq2Broker_t.h" />
+    <ClInclude Include="Main\PageNumber_t.h" />
+    <ClInclude Include="Main\Price_t.h" />
+    <ClInclude Include="Main\stdafx.h" />
+    <ClInclude Include="Main\TrWindowType.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="BrokerBuy\BrokerBuyText.h" />
+    <ClInclude Include="BrokerBuy\BrokerBuyTypes.h" />
+    <ClInclude Include="BrokerBuy\BrokerBuyWidgets.h" />
+    <ClInclude Include="BrokerBuy\BrokerBuyWindow.h" />
+    <ClInclude Include="BrokerBuy\BrokerBuyWindowManager.h" />
+    <ClInclude Include="BrokerBuy\DcrBrokerBuy.h" />
+    <ClInclude Include="BrokerBuy\TiBrokerBuy.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Res\Broker_BuyTab_Active.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Res\Broker_BuyTab_Inactive.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Res\Broker_Caption.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Res\Broker_Cursor_Mask.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Res\Broker_SalesLogTab_Active.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Res\Broker_SalesLogTab_Inactive.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Res\Broker_SellTab_Active.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Res\Broker_SellTab_Inactive.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Res\MainChat_Caption.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Res\Login_Caption.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Res\Eq2Loading_Cancel.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Res\Eq2Login_Connect.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Res\Market_BrowseTab_Active.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Res\Market_BrowseTab_Inactive.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Res\Market_Caption.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Res\Zoning_Caption.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{afdf07e9-7b38-4bab-962b-0454948b87e8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Res\cursor1.cur">
+      <Filter>Resources</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Eq2Broker3.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="Res\Eq2Broker.exe.manifest" />
+  </ItemGroup>
+</Project>

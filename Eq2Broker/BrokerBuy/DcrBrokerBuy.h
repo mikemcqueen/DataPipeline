@@ -30,37 +30,37 @@ constexpr auto kSearchTextMax = 101;
 constexpr auto kSavedSearchMax = 30;
 
 struct Data_t :
-    public DP::Message::Data_t
+  public DP::Message::Data_t
 {
-    Buy::Text_t tableText;
-    size_t selectedRow;
-    PageNumber_t pageNumber;
-    char searchText[kSearchTextMax];
-    bool searchBoxHasCaret;
-    char savedSearch[kSavedSearchMax];
+  Buy::Text_t tableText;
+  size_t selectedRow;
+  PageNumber_t pageNumber;
+  char searchText[kSearchTextMax];
+  bool searchBoxHasCaret;
+  char savedSearch[kSavedSearchMax];
 
-    Data_t(
-        const wchar_t* pClass,
-        const TextTable_t& textTable,
-        size_t initSelectedRow,
-        const PageNumber_t& initPageNumber,
-        const string& initSearchText,
-        bool initSearchBoxHasCaret,
-        const string& initSavedSearch)
+  Data_t(
+    const wchar_t* pClass,
+    const TextTable_t& textTable,
+    size_t initSelectedRow,
+    const PageNumber_t& initPageNumber,
+    const string& initSearchText,
+    bool initSearchBoxHasCaret,
+    const string& initSavedSearch)
     :
-        DP::Message::Data_t(
-            DP::Stage_t::Translate,
-            Message::Id::Buy,
-            sizeof(Data_t),
-            pClass),
-        tableText(textTable.GetData()),
-        selectedRow(initSelectedRow),
-        pageNumber(initPageNumber),
-        searchBoxHasCaret(initSearchBoxHasCaret)
-    {
-        strcpy_s(searchText, initSearchText.c_str());
-        strcpy_s(savedSearch, initSavedSearch.c_str());
-    }
+    DP::Message::Data_t(
+      DP::Stage_t::Translate,
+      Message::Id::Buy,
+      sizeof(Data_t),
+      pClass),
+    tableText(textTable.GetData()),
+    selectedRow(initSelectedRow),
+    pageNumber(initPageNumber),
+    searchBoxHasCaret(initSearchBoxHasCaret)
+  {
+    strcpy_s(searchText, initSearchText.c_str());
+    strcpy_s(savedSearch, initSavedSearch.c_str());
+  }
 };
 
 ////////////////////////////////////////////////////////////////////////////////

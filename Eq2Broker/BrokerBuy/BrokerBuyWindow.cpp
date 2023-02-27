@@ -19,7 +19,7 @@ namespace Broker::Buy {
 static const Flag_t WindowFlags;
 
 constexpr POINT BrokerDefaultTabOffset{ -55, 41 }; // Broker Buy
-constexpr POINT BrokerDefaultTableOffset{ -11, 103 };
+constexpr POINT BrokerDefaultTableOffset{ -12, 102 };
 constexpr POINT MarketDefaultTabOffset{ -54, 41 }; // Market Browse
 constexpr POINT MarketDefaultTableOffset{ -11, 98 };
 constexpr RECT InnerTableRect{ 0,  2, 0, 0 }; // wat ees thees magicks?

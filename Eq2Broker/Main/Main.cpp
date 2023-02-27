@@ -131,50 +131,50 @@ ProcessCommandLine(
 
 void
 StartupInitialize(
-    int argc,
-    wchar_t* argv[],
-    Broker::Options_t* pOptions)
+  int argc,
+  wchar_t* argv[],
+  Broker::Options_t* pOptions)
 {
   //InitCommonControls(); // DrawShadowText
 
-	if (!AfxWinInit(::GetModuleHandle(NULL), NULL, ::GetCommandLine(), 0)) {
-        throw runtime_error("MFC initialization failed");
-	}
-	srand(static_cast<unsigned>(time(nullptr)));
-    Log::SetOutput(Log::Output::Debug);
-    if (!Log_t::Get().Initialize()) {
-        throw runtime_error("Log_t::Initialize() failed");
-    }
-    if (!Log_t::Get().Open(g_szLogPrefix)) {
-        throw runtime_error("Log_t::Open() failed");
-    }
-    HRESULT hr = InitDirectDraw(GetDesktopWindow());
-    if (FAILED(hr)) {
-        throw runtime_error("InitDirectDraw() failed");
-    }
+  if (!AfxWinInit(::GetModuleHandle(NULL), NULL, ::GetCommandLine(), 0)) {
+    throw runtime_error("MFC initialization failed");
+  }
+  srand(static_cast<unsigned>(time(nullptr)));
+  Log::SetOutput(Log::Output::Debug);
+  if (!Log_t::Get().Initialize()) {
+    throw runtime_error("Log_t::Initialize() failed");
+  }
+  if (!Log_t::Get().Open(g_szLogPrefix)) {
+    throw runtime_error("Log_t::Open() failed");
+  }
+  HRESULT hr = InitDirectDraw(GetDesktopWindow());
+  if (FAILED(hr)) {
+    throw runtime_error("InitDirectDraw() failed");
+  }
 
-    // Tesseract/DCR.
-    auto pTess = make_unique<TesseractDcrImpl_t>();
-    const int tess = pTess->InitTesseract(nullptr, "eng");
-    if (tess < 0) {
-        throw runtime_error(std::format("InitTesseract() failed, {}", tess));
-    }
-    DCR::AddImpl<TesseractDcrImpl_t>(DcrImpl::Tesseract, std::move(pTess));
+  // Tesseract/DCR.
+  auto pTess = make_unique<TesseractDcrImpl_t>();
+  const int tess = pTess->InitTesseract(nullptr, "eng");
+  if (tess < 0) {
+    throw runtime_error(std::format("InitTesseract() failed, {}", tess));
+  }
+  DCR::AddImpl<TesseractDcrImpl_t>(DcrImpl::Tesseract, std::move(pTess));
 
-    if (!GetPipelineManager().Initialize()) {
-        throw runtime_error("GetPipelineManager().Initialize() failed");
+  if (!GetPipelineManager().Initialize()) {
+    throw runtime_error("GetPipelineManager().Initialize() failed");
+  }
+  int result = ProcessCommandLine(argc, argv, pOptions);
+  if (result <= 0) {
+    if (result < 0) {
+      throw invalid_argument("ProcessCommandLine() failed.");
     }
-    int result = ProcessCommandLine(argc, argv, pOptions);
-    if (result <= 0) {
-        if (result < 0) {
-            throw invalid_argument("ProcessCommandLine() failed.");
-        }
-        exit(result);
-    }
+    exit(result);
+  }
 #if 0
-    if (!Accounts::Db::Initialize(m_pImpl->m_strServerName.c_str())) {
-        throw runtime_error("Accounts::Db::Initialize() failed");
-    }
+  if (!Accounts::Db::Initialize(m_pImpl->m_strServerName.c_str())) {
+    throw runtime_error("Accounts::Db::Initialize() failed");
+  }
 #endif
 }
 
