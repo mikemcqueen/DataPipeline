@@ -64,7 +64,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules />
     <CodeAnalysisRuleAssemblies />
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\build\inc;G:\vcpkg\installed\x86-windows-static\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\build\inc;$(VCPKG)\installed\x86-windows\include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugDLL|Win32'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
@@ -73,7 +73,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules />
     <CodeAnalysisRuleAssemblies />
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\build\inc;G:\vcpkg\installed\x86-windows-static\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\build\inc;$(VCPKG)\installed\x86-windows\include</IncludePath>
+    <GenerateManifest>false</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
@@ -82,7 +83,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules />
     <CodeAnalysisRuleAssemblies />
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\build\inc;G:\vcpkg\installed\x86-windows-static\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\build\inc;$(VCPKG)\installed\x86-windows\include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">
     <VcpkgEnabled>false</VcpkgEnabled>
@@ -134,14 +135,14 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ddraw.lib;dxguid.lib;odbc32.lib;comctl32.lib;tesseract52d.lib;org.sw.demo.danbloomberg.leptonica-1.82.0.lib;org.sw.demo.tiff-4.4.0.lib;org.sw.demo.glennrp.png-1.6.37.lib;org.sw.demo.libarchive.libarchive-3.6.1.lib;org.sw.demo.jpeg-9.5.0.lib;org.sw.demo.webmproject.webp-1.2.4.lib; org.sw.demo.facebook.zstd.zstd-1.5.2.lib;org.sw.demo.xz_utils.lzma-5.2.5.lib; org.sw.demo.madler.zlib-1.2.12.lib;org.sw.demo.mgk25.jbig.jbig-2.1.0.lib;org.sw.demo.gif-5.2.1.lib;org.sw.demo.uclouvain.openjpeg.openjp2-2.5.0.lib;org.sw.demo.mgk25.jbig.ar-2.1.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ddraw.lib;dxguid.lib;odbc32.lib;comctl32.lib;tesseract53d.lib;leptonica-1.83.1d.lib;tiffd.lib;libpng16d.lib;archive.lib;jpeg.lib;libwebp.lib;zstd.lib;lzma.lib;zlibd.lib;gif.lib;openjp2.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalLibraryDirectories>build\lib;G:\Tesseract\git\tesseract\build\Debug;G:\Tesseract\git\tesseract\build\debug\deps</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>build\lib;$(VCPKG)\installed\x86-windows\debug\lib</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
     </Link>

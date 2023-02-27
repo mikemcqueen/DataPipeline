@@ -185,7 +185,7 @@ FormatConnectString(
     const wchar_t* pDbPath)
 {
     static const wchar_t szConnectFormat[] =
-        L"DSN=Microsoft Access Database;DBQ=%ls;DriverId=25;FIL=MS Access;"
+        L"DSN=Microsoft Access Driver;DBQ=%ls;DriverId=25;FIL=MS Access;"
         L"MaxBufferSize=2048;PageTimeout=5;UID=admin;";
     swprintf(pBuffer, Count, szConnectFormat, pDbPath);
     return pBuffer;

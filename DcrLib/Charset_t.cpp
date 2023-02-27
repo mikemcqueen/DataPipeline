@@ -118,8 +118,9 @@ DrawShadowTextToSurface(
     HFONT hOldFont = (HFONT)::SelectObject(hDC, hFont);
     COLORREF oldBkColor = ::SetBkColor(hDC, DefaultBkColor);
     RECT rc = { 0, 0, LONG(m_pSurface->GetWidth()), LONG(m_pSurface->GetHeight()) };
-    ::DrawShadowText(hDC, &*m_charset.cbegin(), m_charset.size(), &rc, 0,
+ /*   ::DrawShadowText(hDC, &*m_charset.cbegin(), m_charset.size(), &rc, 0,
         DefaultTextColor, DefaultShadowColor, 0, 0);
+*/
     ::SetBkColor(hDC, oldBkColor); 
     ::SelectObject(hDC, hOldFont);
     m_pSurface->ReleaseDC(hDC);

@@ -5,8 +5,6 @@ VisualStudioVersion = 17.3.32811.315
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Unit Tests", "Unit Tests", "{8D92FE8B-5E84-4533-A909-E31F2F1850AF}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TranslateHandlers", "TranslateHandlers", "{1CF8F645-10F0-4D61-A78E-00BFBEE7C9C0}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CommonUtils", "..\CommonUtils\CommonUtils.vcxproj", "{612EC231-D5A3-4550-AF05-211548D82370}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DcrLib", "..\DcrLib\DcrLib.vcxproj", "{E0E9D0D7-58DE-4505-8EF0-8E50FF24B402}"
@@ -28,8 +26,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{A012DE02
 		Tools\stdafx.h = Tools\stdafx.h
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UTBuyTable", "UnitTest\UTBuyTable\UTBuyTable.vcxproj", "{AF5BA48A-A9F7-43D0-85FB-EEF3DDAD08CF}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{32E080E6-9881-4B87-A608-CA46BDFFA823}"
 	ProjectSection(SolutionItems) = preProject
 		deploy.cmd = deploy.cmd
@@ -40,8 +36,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Eq2Ui", "Ui\Eq2Ui.vcxproj", "{44512971-CA39-44D6-B4EF-21E7DB1D47FE}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Accounts", "..\Accounts\Accounts.vcxproj", "{82D084F1-C785-4CF3-ADFD-AB010EFF60E2}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BuyItems", "Tools\BuyItems\BuyItems.vcxproj", "{68F7A241-86B4-4D1A-9E9E-FFC5A9663C14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -98,12 +92,6 @@ Global
 		{D0863D03-6C53-4A65-9FE2-C0B56235C210}.DebugDLL|Win32.Build.0 = DebugDLL|Win32
 		{D0863D03-6C53-4A65-9FE2-C0B56235C210}.Release|Win32.ActiveCfg = Release|Win32
 		{D0863D03-6C53-4A65-9FE2-C0B56235C210}.Release|Win32.Build.0 = Release|Win32
-		{AF5BA48A-A9F7-43D0-85FB-EEF3DDAD08CF}.Debug|Win32.ActiveCfg = Debug|Win32
-		{AF5BA48A-A9F7-43D0-85FB-EEF3DDAD08CF}.Debug|Win32.Build.0 = Debug|Win32
-		{AF5BA48A-A9F7-43D0-85FB-EEF3DDAD08CF}.DebugDLL|Win32.ActiveCfg = DebugDLL|Win32
-		{AF5BA48A-A9F7-43D0-85FB-EEF3DDAD08CF}.DebugDLL|Win32.Build.0 = DebugDLL|Win32
-		{AF5BA48A-A9F7-43D0-85FB-EEF3DDAD08CF}.Release|Win32.ActiveCfg = Release|Win32
-		{AF5BA48A-A9F7-43D0-85FB-EEF3DDAD08CF}.Release|Win32.Build.0 = Release|Win32
 		{44512971-CA39-44D6-B4EF-21E7DB1D47FE}.Debug|Win32.ActiveCfg = Debug|Win32
 		{44512971-CA39-44D6-B4EF-21E7DB1D47FE}.Debug|Win32.Build.0 = Debug|Win32
 		{44512971-CA39-44D6-B4EF-21E7DB1D47FE}.DebugDLL|Win32.ActiveCfg = DebugDLL|Win32
@@ -116,20 +104,9 @@ Global
 		{82D084F1-C785-4CF3-ADFD-AB010EFF60E2}.DebugDLL|Win32.Build.0 = DebugDLL|Win32
 		{82D084F1-C785-4CF3-ADFD-AB010EFF60E2}.Release|Win32.ActiveCfg = Release|Win32
 		{82D084F1-C785-4CF3-ADFD-AB010EFF60E2}.Release|Win32.Build.0 = Release|Win32
-		{68F7A241-86B4-4D1A-9E9E-FFC5A9663C14}.Debug|Win32.ActiveCfg = Debug|Win32
-		{68F7A241-86B4-4D1A-9E9E-FFC5A9663C14}.Debug|Win32.Build.0 = Debug|Win32
-		{68F7A241-86B4-4D1A-9E9E-FFC5A9663C14}.DebugDLL|Win32.ActiveCfg = DebugDLL|Win32
-		{68F7A241-86B4-4D1A-9E9E-FFC5A9663C14}.DebugDLL|Win32.Build.0 = DebugDLL|Win32
-		{68F7A241-86B4-4D1A-9E9E-FFC5A9663C14}.Release|Win32.ActiveCfg = Release|Win32
-		{68F7A241-86B4-4D1A-9E9E-FFC5A9663C14}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{2088CB25-8D22-4586-8CA0-5B02519B05FF} = {1CF8F645-10F0-4D61-A78E-00BFBEE7C9C0}
-		{AF5BA48A-A9F7-43D0-85FB-EEF3DDAD08CF} = {8D92FE8B-5E84-4533-A909-E31F2F1850AF}
-		{68F7A241-86B4-4D1A-9E9E-FFC5A9663C14} = {A012DE02-6657-4536-86C9-3004F9E0A33A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {563619C4-6EE0-435A-A934-19F1DB250AA9}

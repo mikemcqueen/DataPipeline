@@ -75,56 +75,56 @@ extern wchar_t* optarg;
 
 int
 ProcessCommandLine(
-    int      argc,
-    wchar_t* argv[],
-    Broker::Options_t* pOptions)
+  int      argc,
+  wchar_t* argv[],
+  Broker::Options_t* pOptions)
 {
-    bool bDbSupplied = false;
-    int c;
+  bool bDbSupplied = false;
+  int c;
 
-    while ((c = util::getopt(argc, argv, L"c:d:l:p:s:t:")) != -1)
+  while ((c = util::getopt(argc, argv, L"c:d:l:p:s:t:")) != -1)
+  {
+    switch (wchar_t(c))
     {
-        switch (wchar_t(c))
-        {
-        case L'c': // Character name
-            pOptions->characterName.assign(optarg);
-            break;
+    case L'c': // Character name
+      pOptions->characterName.assign(optarg);
+      break;
 
-        case L'd': // Database:
-            wcscpy_s(g_szDbName, optarg);
-            LogWarning(L"Command line DB is ignored for now");
-            bDbSupplied = true;
-            break;
+    case L'd': // Database:
+      wcscpy_s(g_szDbName, optarg);
+      LogWarning(L"Command line DB is ignored for now");
+      bDbSupplied = true;
+      break;
 
-        case L'l': // Log level:
-            InitLogLevel(optarg);
-            break;
+    case L'l': // Log level:
+      InitLogLevel(optarg);
+      break;
 
-        case L'p': // Pause: Sleep @ startup 
-            g_dwSleep = _wtoi(optarg);
-            if (0 < g_dwSleep)
-            {
-                Sleep(g_dwSleep * 1000);
-            }
-            break;
+    case L'p': // Pause: Sleep @ startup 
+      g_dwSleep = _wtoi(optarg);
+      if (0 < g_dwSleep)
+      {
+        Sleep(g_dwSleep * 1000);
+      }
+      break;
 
-        case L's': // Server name
-            pOptions->serverName.assign(optarg);
-            break;
+    case L's': // Server name
+      pOptions->serverName.assign(optarg);
+      break;
 
-        case L't': // Test image path
-            pOptions->testImagePath.assign(optarg);
-            break;
+    case L't': // Test image path
+      pOptions->testImagePath.assign(optarg);
+      break;
 
-        case L'?':
-            return -1;
+    case L'?':
+      return -1;
 
-        default:
-            break;
-        }
+    default:
+      break;
     }
+  }
 
-    return 1;
+  return 1;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -135,7 +135,7 @@ StartupInitialize(
     wchar_t* argv[],
     Broker::Options_t* pOptions)
 {
-    InitCommonControls(); // DrawShadowText
+  //InitCommonControls(); // DrawShadowText
 
 	if (!AfxWinInit(::GetModuleHandle(NULL), NULL, ::GetCommandLine(), 0)) {
         throw runtime_error("MFC initialization failed");
@@ -155,7 +155,7 @@ StartupInitialize(
 
     // Tesseract/DCR.
     auto pTess = make_unique<TesseractDcrImpl_t>();
-    const int tess = pTess->InitTesseract("g:\\tesseract\\5.2\\tessdata", "eng");
+    const int tess = pTess->InitTesseract(nullptr, "eng");
     if (tess < 0) {
         throw runtime_error(std::format("InitTesseract() failed, {}", tess));
     }
@@ -193,28 +193,30 @@ ShutdownCleanup()
 
 void
 BrokerLoop(
-    const Broker::Options_t& options)
+  const Broker::Options_t& options)
 {
-    // TODO: account move to broker class?
-    AccountManager_t am;
-    Account_t& acct = am.GetAccount(Game::Id::Eq2);
-    Character_t& chr = acct.GetCharacter(0, options.characterName.c_str());    // 0 == serverid
-    Character_t::SetCharacter(&chr);
-    LogAlways(L"Server: %s - Char: %s", options.serverName.c_str(), chr.GetName().c_str());
-    // move to broker.init()?
-    if (!Accounts::Db::Initialize(options.serverName.c_str())) {
-        throw runtime_error("AccountsDb::Initialize() failed");
-    }
-    Broker::MainWindow_t window;
-    Eq2Broker_t broker(window, options);
-    if (!broker.Initialize()) {
-        throw runtime_error("broker.Initialize() failed");
-    }
-    if (!broker.Start()) {
-        throw runtime_error("broker.Start() failed");
-    }
-    broker.ReadConsoleLoop();
-    broker.Stop();
+  // TODO: account move to broker class?
+/*
+  AccountManager_t am;
+  Account_t& acct = am.GetAccount(Game::Id::Eq2);
+  Character_t& chr = acct.GetCharacter(0, options.characterName.c_str());    // 0 == serverid
+  Character_t::SetCharacter(&chr);
+  LogAlways(L"Server: %s - Char: %s", options.serverName.c_str(), chr.GetName().c_str());
+  // move to broker.init()?
+  if (!Accounts::Db::Initialize(options.serverName.c_str())) {
+      throw runtime_error("AccountsDb::Initialize() failed");
+  }
+*/
+  Broker::MainWindow_t window;
+  Eq2Broker_t broker(window, options);
+  if (!broker.Initialize()) {
+    throw runtime_error("broker.Initialize() failed");
+  }
+  if (!broker.Start()) {
+    throw runtime_error("broker.Start() failed");
+  }
+  broker.ReadConsoleLoop();
+  broker.Stop();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
