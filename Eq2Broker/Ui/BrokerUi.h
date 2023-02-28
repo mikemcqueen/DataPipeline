@@ -41,7 +41,7 @@ namespace Broker {
   } // Table
 
   class Window_t;
-  class MainWindow_t;
+  //class MainWindow_t;
 
   namespace Window {
     constexpr auto MakeId(const int id) noexcept {

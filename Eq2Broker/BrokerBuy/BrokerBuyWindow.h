@@ -14,12 +14,14 @@
 #include "TabWindow.h"
 #include "BrokerUi.h"
 
+class MainWindow_t;
+
 namespace Broker::Buy {
   class Window_t : public TableWindow_t {
   public:
     explicit Window_t(const Ui::Window_t& parent);
 
-//    static const Ui::Widget::Data_t& GetWidgetData(Ui::WidgetId_t widgetId);
+    //static const Ui::Widget::Data_t& GetWidgetData(Ui::WidgetId_t widgetId);
 
     bool GetWidgetRect(
       Ui::WidgetId_t widgetId,

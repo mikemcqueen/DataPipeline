@@ -158,7 +158,7 @@ Ui::WindowId_t Window_t::GetWindowId(
     Tab_t Tab = FindActiveTab(surface, ptCaption, ptTab);
     if (Tab::Id::None != Tab) {
       const Ui::Window_t& tabWindow = GetTabWindow(Tab);
-      LogInfo(L"BrokerWindow::GetWindowId() Found %ls Tab @ (%d, %d)",
+      LogInfo(L"BrokerWindow::GetWindowId() Found %S Tab @ (%d, %d)",
         tabWindow.GetWindowName(), ptTab.x, ptTab.y);
       // Now that we have verified the tab is active, validate
       // the table, or determine if a popup is active
@@ -210,17 +210,17 @@ bool Window_t::IsLocatedOn(
 }
 
 void Window_t::GetOriginSearchRect(
-    const CSurface& surface,
-          Rect_t&   rect) const
+  const CSurface& surface,
+  Rect_t& rect) const
 {
-    // search the upper left 1/9 of the screen
-    rect = surface.GetBltRect();
-    rect.right /= 3;
-    rect.bottom /= 3;
+  // search the upper left 1/9 of the screen
+  rect = surface.GetBltRect();
+  rect.right /= 3;
+  rect.bottom /= 3;
 }
 
 MainWindow_t& Window_t::GetMainWindow() const {
-    return const_cast<MainWindow_t&>(dynamic_cast<const MainWindow_t&>(GetParent()));
+  return const_cast<MainWindow_t&>(dynamic_cast<const MainWindow_t&>(GetParent()));
 }
 
 #if 1

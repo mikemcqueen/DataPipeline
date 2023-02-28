@@ -21,7 +21,7 @@
 
 namespace Broker::Sell::Interpret {
 
-  constexpr Handler_t::Handler_t(Window::ManagerBase_t& Manager) noexcept :
+  Handler_t::Handler_t(Window::ManagerBase_t& Manager) :
     m_windowManager(Manager)
   {}
 

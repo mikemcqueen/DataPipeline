@@ -11,6 +11,8 @@
 #include "TabWindow.h"
 #include "BrokerUi.h"
 
+class MainWindow_t;
+
 namespace Broker::Sell {
   class Window_t : public TableWindow_t {
   public:

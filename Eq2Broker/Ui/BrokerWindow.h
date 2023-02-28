@@ -15,6 +15,7 @@
 #include "BrokerUi.h"
 #include "DdUtil.h"
 
+class MainWindow_t;
 class TabWindow_t;
 
 namespace Broker {

@@ -18,91 +18,64 @@
 
 class CSurface;
 class Rect_t;
+class MainWindow_t;
 
 namespace Broker
 {
 
-class TrWindowType_t :
-    public DP::Handler_t
-{
-private:
+  class TrWindowType_t : public DP::Handler_t {
+    typedef Ui::WindowId_t(TrWindowType_t::* FnGetWindowId_t)(const CSurface& surface, Flag_t flags) const;
 
-    typedef Ui::WindowId_t (TrWindowType_t::*FnGetWindowId_t)(const CSurface& surface, Flag_t flags) const;
-
-    // Static data:
     static const FnGetWindowId_t s_brokerFunc;
     static const FnGetWindowId_t s_mainChatFunc;
     static const FnGetWindowId_t s_windowIdFuncs[];
 
-    // Member data:
-    MainWindow_t&   m_mainWindow;
+  public:
+    TrWindowType_t(MainWindow_t& mainWindow);
 
-    mutable Ui::WindowId_t  m_lastWindowId;
-    mutable FnGetWindowId_t m_lastWindowIdFunc;
-
-public:
-
-    TrWindowType_t(
-        MainWindow_t& mainWindow);
-
-    //
     // DP::Handler_t virtual:
-    //
+    HRESULT MessageHandler(const DP::Message::Data_t* pMessage) override;
 
-    HRESULT
-    MessageHandler(
-        const DP::Message::Data_t* pMessage) override;
+  private:
+    Ui::WindowId_t GetWindowId(const CSurface& Surface) const;
 
-    // public for UTScreenDcr
-    Ui::WindowId_t
-    GetWindowId(
-        const CSurface& Surface) const;
+    const char* GetWindowName(Ui::WindowId_t windowId) const;
 
-    //  public for UtGetWindowType
-    const wchar_t*
-    GetWindowName(
-        Ui::WindowId_t windowId) const;
+    Ui::WindowId_t GetBrokerWindowId(
+      const CSurface& Surface,
+      Flag_t flags) const;
 
-private:
+    Ui::WindowId_t GetLogonWindowId(
+      const CSurface& Surface,
+      Flag_t flags) const;
 
-    Ui::WindowId_t
-    GetBrokerWindowId(
-        const CSurface& Surface,
-        Flag_t flags) const;
+    Ui::WindowId_t GetOtherWindowId(
+      const CSurface& Surface,
+      Flag_t flags) const;
 
-    Ui::WindowId_t
-    GetLogonWindowId(
-        const CSurface& Surface,
-        Flag_t flags) const;
+    Ui::WindowId_t GetMainChatWindowId(
+      const CSurface& Surface,
+      Flag_t flags) const;
 
-    Ui::WindowId_t
-    GetOtherWindowId(
-        const CSurface& Surface,
-        Flag_t flags) const;
+    Ui::WindowId_t CompareAllLastOrigins(
+      const CSurface& surface) const;
 
-    Ui::WindowId_t
-    GetMainChatWindowId(
-        const CSurface& Surface,
-        Flag_t flags) const;
+    Ui::WindowId_t SearchLoggedInWindows(
+      const CSurface& surface) const;
 
-    Ui::WindowId_t
-    CompareAllLastOrigins(
-        const CSurface& surface) const;
+    Ui::WindowId_t SearchAllWindows(
+      const CSurface& surface) const;
 
-    Ui::WindowId_t
-    SearchLoggedInWindows(
-        const CSurface& surface) const;
-
-    Ui::WindowId_t
-    SearchAllWindows(
-        const CSurface& surface) const;
-
-private:
-
+  private:
     TrWindowType_t();
     TrWindowType_t(const TrWindowType_t&);
     TrWindowType_t& operator=(const TrWindowType_t&);
-};
+
+    // Member data:
+    MainWindow_t& m_mainWindow;
+    mutable Ui::WindowId_t  m_lastWindowId;
+    mutable FnGetWindowId_t m_lastWindowIdFunc;
+  };
 
 } // Broker
 

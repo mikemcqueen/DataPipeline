@@ -37,7 +37,7 @@ namespace Ui::Window {
     if (!m_className.empty() || !m_windowName.empty()) {
       HWND hWnd = ::FindWindowA(m_className.c_str(), m_windowName.c_str());
       if (nullptr == hWnd) {
-        LogError(L"Window not found: ClassName(%s) WindowName(%s)",
+        LogError(L"Window not found: ClassName(%S) WindowName(%S)",
           m_className.c_str(), m_windowName.c_str());
         //throw invalid_argument("Ui::Window::Base_t()");
       }
@@ -175,7 +175,7 @@ namespace Ui::Window {
     const CSurface& surface,
     Rect_t& rect) const
   {
-    LogWarning(L"%s::GetOriginSearchRect() Using entire BltRect", GetWindowName());
+    LogWarning(L"%S::GetOriginSearchRect() Using entire BltRect", GetWindowName());
     rect = surface.GetBltRect();
   }
 
@@ -192,7 +192,7 @@ namespace Ui::Window {
         if (nullptr != pptOrigin) {
           *pptOrigin = pt;
         }
-        LogInfo(L"%s::CompareLastOrigin() Match", GetWindowName());
+        LogInfo(L"%S::CompareLastOrigin() Match", GetWindowName());
         return true;
       }
     }
@@ -211,7 +211,7 @@ namespace Ui::Window {
     // search for the supplied origin bitmap on the supplied surface
     POINT ptOrigin;
     if (surface.FindSurfaceInRect(image, searchRect, ptOrigin, nullptr)) {
-      LogInfo(L"%s::OriginSearch(): Found @ (%d, %d)", GetWindowName(),
+      LogInfo(L"%S::OriginSearch(): Found @ (%d, %d)", GetWindowName(),
         ptOrigin.x, ptOrigin.y);
       if (nullptr != pptOrigin) {
         *pptOrigin = ptOrigin;

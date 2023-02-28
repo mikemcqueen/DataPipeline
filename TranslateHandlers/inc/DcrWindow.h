@@ -75,15 +75,13 @@ namespace Translate {
     // DP::Handler_t virtual:
     //
 
-    bool Initialize(const wchar_t* pClass) override
-    {
+    bool Initialize(const wchar_t* pClass) override {
       return DP::Handler_t::Initialize(pClass)
         && m_TranslatePolicy.Initialize()
         && m_ValidatePolicy.Initialize();
     }
 
-    HRESULT MessageHandler(const DP::Message::Data_t* pMessage) override
-    {
+    HRESULT MessageHandler(const DP::Message::Data_t* pMessage) override {
       LogInfo(L"Dcr%s::MessageHandler()", m_name.c_str());
       if (Validate(pMessage, m_WindowId)) {
         auto& ssData = static_cast<const AcquireData_t&>(*pMessage);

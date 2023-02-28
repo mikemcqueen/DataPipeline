@@ -27,7 +27,7 @@ class PageNumber_t;
 namespace Broker::Sell::Interpret {
   class Handler_t : public DP::Handler_t {
   public:
-    constexpr explicit Handler_t(Window::ManagerBase_t& Manager) noexcept;
+    explicit Handler_t(Window::ManagerBase_t& Manager);
 
     Handler_t() = delete;
     Handler_t(const Handler_t&) = delete;

@@ -77,15 +77,13 @@ int
 ProcessCommandLine(
   int      argc,
   wchar_t* argv[],
-  Broker::Options_t* pOptions)
+  Game::Options_t* pOptions)
 {
   bool bDbSupplied = false;
   int c;
 
-  while ((c = util::getopt(argc, argv, L"c:d:l:p:s:t:")) != -1)
-  {
-    switch (wchar_t(c))
-    {
+  while ((c = util::getopt(argc, argv, L"c:d:l:p:s:t:")) != -1) {
+    switch (wchar_t(c)) {
     case L'c': // Character name
       pOptions->characterName.assign(optarg);
       break;
@@ -129,11 +127,10 @@ ProcessCommandLine(
 
 /////////////////////////////////////////////////////////////////////////////
 
-void
-StartupInitialize(
+void StartupInitialize(
   int argc,
   wchar_t* argv[],
-  Broker::Options_t* pOptions)
+  Game::Options_t* pOptions)
 {
   //InitCommonControls(); // DrawShadowText
 
@@ -180,9 +177,7 @@ StartupInitialize(
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void
-ShutdownCleanup()
-{
+void ShutdownCleanup() {
     GetPipelineManager().Shutdown();
     FreeDirectDraw();
     //DCR::Impl(DcrImpl::Tesseract)->EndTesseract();
@@ -191,10 +186,7 @@ ShutdownCleanup()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void
-BrokerLoop(
-  const Broker::Options_t& options)
-{
+void BrokerLoop(const Game::Options_t& options) {
   // TODO: account move to broker class?
 /*
   AccountManager_t am;
@@ -207,8 +199,8 @@ BrokerLoop(
       throw runtime_error("AccountsDb::Initialize() failed");
   }
 */
-  Broker::MainWindow_t window;
-  Eq2Broker_t broker(window, options);
+  MainWindow_t mainWindow;
+  Eq2Broker_t broker(mainWindow, options);
   if (!broker.Initialize()) {
     throw runtime_error("broker.Initialize() failed");
   }
@@ -221,8 +213,7 @@ BrokerLoop(
 
 ////////////////////////////////////////////////////////////////////////////////
 
-int
-wmain(
+int wmain(
     int      argc,
     wchar_t* argv[],
     wchar_t* /*envp[]*/)
@@ -234,7 +225,7 @@ wmain(
     extern bool g_bTableFixColor;
     g_bTableFixColor = false;
 
-    Broker::Options_t options;
+    Game::Options_t options;
     try {
         StartupInitialize(argc, argv, &options);
         BrokerLoop(options);
@@ -248,5 +239,3 @@ wmain(
     }
     return 0;
 }
-
-////////////////////////////////////////////////////////////////////////////////

@@ -22,110 +22,77 @@
 
 using namespace Broker;
 
-Eq2Broker_t::
-Eq2Broker_t(
-    Broker::MainWindow_t& mainWindow,
-    const Broker::Options_t& options)
-    :
-    mainWindow_(mainWindow),
-    m_options(options),
-    m_pImpl(std::make_unique<Eq2BrokerImpl_t>(*this, mainWindow))
+Eq2Broker_t::Eq2Broker_t(
+  MainWindow_t& mainWindow,
+  const Game::Options_t& options)
+  :
+  mainWindow_(mainWindow),
+  m_options(options),
+  m_pImpl(std::make_unique<Eq2BrokerImpl_t>(mainWindow))
 {
 }
 
-////////////////////////////////////////////////////////////////////////////////
-
-Eq2Broker_t::
-~Eq2Broker_t()
+Eq2Broker_t::~Eq2Broker_t()
 {
 }
-
-////////////////////////////////////////////////////////////////////////////////
 
 bool
 Eq2Broker_t::
-Initialize()
-{
-    if (!InitHandlers()) {
-        LogError(L"InitHandlers() failed");
-        return false;
-    }
-    return true;
+Initialize() {
+  if (!InitHandlers()) {
+    LogError(L"InitHandlers() failed");
+    return false;
+  }
+  return true;
 }
-
-////////////////////////////////////////////////////////////////////////////////
 
 bool
 Eq2Broker_t::
-InitHandlers()
-{
-    DP::PipelineManager_t& pm = GetPipelineManager();
+InitHandlers() {
+  DP::PipelineManager_t& pm = GetPipelineManager();
 
-    // Acquire
-    
-    pm.AddHandler(DP::Stage_t::Acquire, m_pImpl->m_SsWindow, L"SsWindow");
+  // Acquire
 
-    // Identify
+  pm.AddHandler(DP::Stage_t::Acquire, m_pImpl->m_SsWindow, L"SsWindow");
 
-    pm.AddHandler(DP::Stage_t::Translate, m_pImpl->m_TrWindowType, L"IdWindowType");
+  // Identify
 
-    // Translate
+  pm.AddHandler(DP::Stage_t::Translate, m_pImpl->m_TrWindowType, L"IdWindowType");
 
-    //pm.AddHandler(Translate, m_pImpl->m_TrScroll, s_pClass);
-    pm.AddHandler(DP::Stage_t::Translate, m_pImpl->buyWindowManager_.GetTranslator(), L"BrokerBuy");
+  // Translate
 
-    // Interpret
+  //pm.AddHandler(Translate, m_pImpl->m_TrScroll, s_pClass);
+  pm.AddHandler(DP::Stage_t::Translate, m_pImpl->buyWindowManager_.GetTranslator(), L"BrokerBuy");
 
-    pm.AddHandler(DP::Stage_t::Interpret, m_pImpl->buyWindowManager_.GetInterpreter(), L"BrokerBuy");
+  // Interpret
 
-    return true;
+  pm.AddHandler(DP::Stage_t::Interpret, m_pImpl->buyWindowManager_.GetInterpreter(), L"BrokerBuy");
+
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-MainWindow_t&
-Eq2Broker_t::
-GetMainWindow()
-{
-    return mainWindow_;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-Ui::Window_t&
-Eq2Broker_t::
-GetWindow(
-    Ui::WindowId_t windowId)
-{
-    return GetMainWindow().GetWindow(windowId);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-bool
-Eq2Broker_t::
-Start()
-{
-    LogInfo(L"Eq2Broker_t::Start()");
-    extern DWORD g_dwSleep;
-    if (0 < g_dwSleep)
-    {
-        LogAlways(L"Sleeping %d ms...", g_dwSleep);
-        Sleep(g_dwSleep);
+bool Eq2Broker_t::Start() {
+  LogInfo(L"Eq2Broker_t::Start()");
+  extern DWORD g_dwSleep;
+  if (0 < g_dwSleep) {
+    LogAlways(L"Sleeping %d ms...", g_dwSleep);
+    Sleep(g_dwSleep);
+  }
+  if (!m_options.testImagePath.empty()) {
+    LoadAndSendTestImage(m_options.testImagePath);
+  }
+  else {
+    constexpr size_t requiredTaskCount = 1; // 1 == SsTask
+    auto startedTaskCount = GetPipelineManager().StartAcquiring();
+    if (requiredTaskCount != startedTaskCount) {
+      LogError(L"Only (%d) of (%d) acquire handler(s) started",
+        startedTaskCount, requiredTaskCount);
+      return false;
     }
-    if (!m_options.testImagePath.empty()) {
-        LoadAndSendTestImage(m_options.testImagePath);
-    } else {
-        constexpr size_t requiredTaskCount = 1; // 1 == SsTask
-        auto startedTaskCount = GetPipelineManager().StartAcquiring();
-        if (requiredTaskCount != startedTaskCount)
-        {
-            LogError(L"Only (%d) of (%d) acquire handler(s) started",
-                startedTaskCount, requiredTaskCount);
-            return false;
-        }
-    }
-    return true;
+  }
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -294,3 +261,8 @@ LoadAndSendTestImage(const wstring& testImagePath)
     pPool->add(item);
     m_pImpl->m_SsWindow.PostData(nullptr, pPool->get_unused());
  }
+
+Ui::Window_t& Eq2Broker_t::GetWindow(Ui::WindowId_t windowId) {
+  return mainWindow_.GetWindow(windowId);
+}
+
