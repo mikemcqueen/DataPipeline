@@ -90,9 +90,7 @@ public:
 
   Handler_t(Window::ManagerBase_t& windowManager);
 
-  //
   // DcrWindow::HandlerBase_t virtual:
-  //
 
   bool PreTranslateSurface(
     CSurface* pSurface,
@@ -102,10 +100,7 @@ public:
 
   void PostData(DWORD /*Unused*/) const override;
 
-public:
-
   const Text_t& GetText() const { return m_TextTable.GetData(); }
-
   const DcrTable_t& GetDcr() const { return m_DcrTable; }
   //DcrBase_t&        GetDcr()         { return m_DcrTable; }
 

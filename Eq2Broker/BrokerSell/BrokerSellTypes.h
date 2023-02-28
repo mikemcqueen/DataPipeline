@@ -24,9 +24,9 @@ namespace Broker::Sell {
   constexpr auto kWindowName = "BrokerSell"sv;
 
   namespace Table {
-    constexpr auto RowCount = 7;
+    constexpr auto RowCount = 10;
     constexpr auto CharsPerRow = 150;
-    constexpr auto QuantityColumn = 0;
+    constexpr auto QuantityColumn = 0; // TODO: enum
     constexpr auto ItemNameColumn = 1;
     constexpr auto ListedColumn = 2;
     constexpr auto PriceColumn = 3;
@@ -34,7 +34,7 @@ namespace Broker::Sell {
     constexpr int CharColumnWidths[ColumnCount] = { 10, 100,  10, 30 };
 
     // TableInfo_t data: TODO: all zero width last entry
-    constexpr int PixelColumnWidths[ColumnCount] = { 44, 0, 48, 100 };
+    constexpr int PixelColumnWidths[ColumnCount] = { 42, 782, 42, 105 };
   }
 
   class Text_t;

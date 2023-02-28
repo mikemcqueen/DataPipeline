@@ -16,26 +16,26 @@
 #include "BrokerWindow.h"
 
 namespace Broker::Sell {
-  static const Flag_t WindowFlags = Ui::Window::Flag::VerticalScroll;
+  const Flag_t WindowFlags = Ui::Window::Flag::VerticalScroll;
 
-  static const POINT  BrokerDefaultTabOffset = { -3,  41 }; // Broker Buy
-  static const POINT  BrokerDefaultTableOffset = { -65, 174 }; // Broker Buy
-  static const POINT  MarketDefaultTabOffset = { 17,  41 }; // Market Browse
-  static const POINT  MarketDefaultTableOffset = { -84, 174 }; // Market Browse
-  static const RECT   InnerTableRect = { 0, 5, 25, 0 };
-  static const SIZE   ButtonSize = { 106, 15 };
+  constexpr POINT  BrokerDefaultTabOffset = { -3,  41 };
+  constexpr POINT  BrokerTabToTableOffset = { -66, 178 };
+  constexpr POINT  MarketDefaultTabOffset = { 17,  41 };
+  constexpr POINT  MarketDefaultTableOffset = { -84, 174 };
+  constexpr RECT   InnerTableRect = { 0, 2, 0, 0 };
+  constexpr SIZE   ButtonSize = { 106, 15 };
 
-  static const Ui::Widget::Data_t brokerWidgets[] = {
+  constexpr Ui::Widget::Data_t brokerWidgets[] = {
     { Frame::Widget::Id::BuyTab,      { RelativeRect_t::LeftTop,     9,   -174,  9,  9 } }, // Broker Buy
     //{ Frame::Widget::Id::SalesLogTab, { RelativeRect_t::LeftTop,     123, -174,  9,  9 } }, // NOTE: BROKEN
   };
 
-  static const Ui::Widget::Data_t marketWidgets[] = {
+  constexpr Ui::Widget::Data_t marketWidgets[] = {
     { Frame::Widget::Id::BuyTab,      { RelativeRect_t::LeftTop,     10, -174,  9,  9 } }, // Market Browse
     //{ Frame::Widget::Id::SalesLogTab, { RelativeRect_t::LeftTop,     145, -174,  9,  9 } }, // NOTE: BROKEN
   };
 
-  static const Ui::Widget::Data_t Widgets[] = {
+  constexpr Ui::Widget::Data_t Widgets[] = {
     { Ui::Widget::Id::VScrollUp,    { RelativeRect_t::RightTop,     -22,   12, 15, 17 } },
     { Ui::Widget::Id::VScrollDown,  { RelativeRect_t::RightBottom,  -22,  -25, 15, 17 } },
     { Widget::Id::SetPriceButton,   { RelativeRect_t::LeftBottom,    16,   35, ButtonSize.cx, ButtonSize.cy } },
@@ -51,7 +51,7 @@ namespace Broker::Sell {
       kWindowName,
       WindowFlags,
       std::span{ Widgets },
-      BrokerDefaultTableOffset,
+      BrokerTabToTableOffset,
       InnerTableRect,
       BrokerDefaultTabOffset)
   {
@@ -109,8 +109,8 @@ namespace Broker::Sell {
     ListedRect.right = ListedRect.left + PixelColumnWidths[ListedColumn];
     ListedRect.bottom = ListedRect.top + 1;
     //LogAlways(L"ListedRect = { %d, %d, %d, %d }", ListedRect.left, ListedRect.top, ListedRect.right, ListedRect.bottom);
-    static const int DefaultOffsetLine = 19;
-    static const int MaxCheckLines = Broker::Table::RowHeight * 2;
+    constexpr auto DefaultOffsetLine = 19;
+    constexpr auto MaxCheckLines = Broker::Table::RowHeight * 2;
     for (int Line = 0; Line < MaxCheckLines;) {
       int skipLines = 1;
       if (!Surface.CompareColorRange(ListedRect, BkLowColor, BkHighColor)) {
@@ -162,7 +162,7 @@ namespace Broker::Sell {
   void Window_t::SetLayout(Frame::Layout_t layout) {
     switch (layout) {
     case Frame::Layout::Broker:
-      SetOffsets(BrokerDefaultTabOffset, BrokerDefaultTableOffset);
+      SetOffsets(BrokerDefaultTabOffset, BrokerTabToTableOffset);
       break;
     case Frame::Layout::Market:
       SetOffsets(MarketDefaultTabOffset, MarketDefaultTableOffset);

@@ -20,14 +20,20 @@
 
 namespace Broker::Sell::Translate {
   static const Rect_t TextRects[Table::ColumnCount] = {
-    { 2, 26, // first gap + quantitytexttop 
-      2 + 44, 26 + 13 },  // first gap + first column data width , quantitytexttop + quantitytextheight
-    { 2 + 44 + 7, 0,  // first gap + first column data width + second gap 
-      Table::PixelColumnWidths[1], Broker::Table::RowHeight },
-    { 0, 0, 0, 0 },
-    { 767, 0,
-      767 + 23, Broker::Table::RowHeight },
-//    { 0, 0, 0, 0  }
+    { 2, 28, // first gap + quantitytexttop 
+      2 + Table::PixelColumnWidths[0] + 2, 28 + 12}, // first gap + width + fudge, quantitytexttop + quantitytextheight
+
+    { 2 + Table::PixelColumnWidths[0], 0,  // first gap + first column pixel width
+      2 + Table::PixelColumnWidths[0] + Table::PixelColumnWidths[1],
+      Broker::Table::RowHeight },
+
+    { 2 + Table::PixelColumnWidths[0] + Table::PixelColumnWidths[1], 0, // first gap + two column pixel widths
+      2 + Table::PixelColumnWidths[0] + Table::PixelColumnWidths[1] + Table::PixelColumnWidths[2],
+      Broker::Table::RowHeight },
+
+    { 2 + Table::PixelColumnWidths[0] + Table::PixelColumnWidths[1] + Table::PixelColumnWidths[2], 0,
+      2 + Table::PixelColumnWidths[0] + Table::PixelColumnWidths[1] + Table::PixelColumnWidths[2] + Table::PixelColumnWidths[3],
+      Broker::Table::RowHeight },
   };
 
   constexpr TableParams_t TableParams = {
@@ -74,7 +80,7 @@ Handler_t::s_ScreenTable =
     m_DcrTable(
       Widget::Id::Table,
       {},
-      & m_TextTable,
+      &m_TextTable,
       TableParams,
       std::span{ Table::PixelColumnWidths },
       std::span{ TextRects }),

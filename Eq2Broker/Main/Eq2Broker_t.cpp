@@ -63,10 +63,12 @@ InitHandlers() {
 
   //pm.AddHandler(Translate, m_pImpl->m_TrScroll, s_pClass);
   pm.AddHandler(DP::Stage_t::Translate, m_pImpl->buyWindowManager_.GetTranslator(), L"BrokerBuy");
+  pm.AddHandler(DP::Stage_t::Translate, m_pImpl->sellWindowManager_.GetTranslator(), L"BrokerSell");
 
   // Interpret
 
   pm.AddHandler(DP::Stage_t::Interpret, m_pImpl->buyWindowManager_.GetInterpreter(), L"BrokerBuy");
+  pm.AddHandler(DP::Stage_t::Interpret, m_pImpl->sellWindowManager_.GetInterpreter(), L"BrokerSell");
 
   return true;
 }

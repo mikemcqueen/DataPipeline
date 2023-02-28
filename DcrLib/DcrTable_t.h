@@ -53,84 +53,63 @@ public:
 
 /////////////////////////////////////////////////////////////////////////////
 
-class DcrTable_t:
-    public DCR
-{
-private:
-    const TableInfo_t tableInfo_;
-    TextTable_i* pTextTable_;
-    std::vector<Rect_t> columnRects_;
-    std::vector<std::unique_ptr<CSurface>> columnSurfaces_;
-
+class DcrTable_t : public DCR {
 public:
-    DcrTable_t(
-        int id,
-        std::optional<DcrImpl> method,
-        TextTable_i* pText,
-        const TableParams_t& tableParams,
-        std::span<const int> columnWidths,
-        std::span<const Rect_t> textRects);
+  DcrTable_t(
+    int id,
+    std::optional<DcrImpl> method,
+    TextTable_i* pText,
+    const TableParams_t& tableParams,
+    std::span<const int> columnWidths,
+    std::span<const Rect_t> textRects);
 
-    DcrTable_t() = delete;
-    DcrTable_t(const DcrTable_t&) = delete;
-    DcrTable_t& operator=(const DcrTable_t&) = delete;
-    ~DcrTable_t() override;
+  DcrTable_t() = delete;
+  DcrTable_t(const DcrTable_t&) = delete;
+  DcrTable_t& operator=(const DcrTable_t&) = delete;
+  ~DcrTable_t() override;
 
-    //
-    // DCR virtual:
-    //
+  // DCR virtual:
+  bool Initialize() override;
+  bool TranslateSurface(CSurface* pSurface, const Rect_t& rect) override;
 
-    bool
-    Initialize() override;
+  //
 
-    bool
-    TranslateSurface(
-        CSurface* pSurface,
-        const Rect_t&   rect) override;
+  int GetSelectedRow(
+    CSurface& surface,
+    const Rect_t& tableRect,
+    const ColorRange_t& colors) const;
 
-    //
+  void SetTextTable(TextTable_i* pTextTable) { pTextTable_ = pTextTable; }
 
-    int
-    GetSelectedRow(
-        CSurface& surface,
-        const Rect_t& tableRect,
-        const ColorRange_t& colors) const;
+  const TextTable_i* GetTextTable() const { return pTextTable_; }
+  const TableInfo_t& GetTableInfo() const { return tableInfo_; }
 
-    void
-    SetTextTable(
-        TextTable_i* pTextTable)
-    {
-        pTextTable_ = pTextTable;
-    }
+private:
 
-    const TextTable_i* GetTextTable() const { return pTextTable_; }
-    const TableInfo_t& GetTableInfo() const { return tableInfo_; }
+  std::vector<Rect_t> InitColumnRects(const TableInfo_t& tableInfo) const;
 
- private:
+  std::vector<unique_ptr<CSurface>> InitColumnSurfaces(
+    const std::vector<RECT>& columnRects) const;
 
-    std::vector<Rect_t>
-    InitColumnRects(
-        const TableInfo_t& tableInfo) const;
+  int ReadTable(
+    const CSurface* pSurface,
+    const Rect_t& rcTable,
+    TextTable_i* pText);
 
-    std::vector<unique_ptr<CSurface>>
-    InitColumnSurfaces(
-        const std::vector<RECT>& columnRects) const;
-        
-    int
-    ReadTable(
-        const CSurface* pSurface,
-        const Rect_t& rcTable,
-        TextTable_i* pText);
+  int TesseractReadTable(
+    const CSurface* pSurface,
+    const RECT& rcTable,
+    const int RowHeight,
+    const int RowGapSize,
+    const std::vector<RECT>& columnRects,
+    const std::vector<std::unique_ptr<CSurface>>& columnSurfaces,
+    TextTable_i* pText) const;
 
-    int
-    TesseractReadTable(
-        const CSurface* pSurface,
-        const RECT& rcTable,
-        const int RowHeight,
-        const int RowGapSize,
-        const std::vector<RECT>& columnRects,
-        const std::vector<std::unique_ptr<CSurface>>& columnSurfaces,
-        TextTable_i* pText) const;
+private:
+  const TableInfo_t tableInfo_;
+  TextTable_i* pTextTable_;
+  std::vector<Rect_t> columnRects_;
+  std::vector<std::unique_ptr<CSurface>> columnSurfaces_;
 };
 
 #endif // Include_DCRTABLE_T_H

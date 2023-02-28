@@ -133,7 +133,7 @@ bool TableWindow_t::UpdateScrollPosition(
         SetScrollPosition(ScrollBar, ScrollPos);
         return true;
       }
-      LogError(L"%ls::UpdateScrollPosition(): Missing veritcal scroll rects",
+      LogError(L"%S::UpdateScrollPosition(): Missing veritcal scroll rects",
         GetWindowName());
       throw std::logic_error("TableWindow_t::UpdateScrollPosition(): Missing vertical scroll rects");
     }
@@ -179,7 +179,7 @@ bool TableWindow_t::FindTable(
   if ((0 < m_TableSize.cx) && (0 < m_TableSize.cy)) {
     Rect_t LastKnownTableRect(ptTable, m_TableSize);
     if (ValidateTable(Surface, LastKnownTableRect, ScrollOffsets)) {
-      LogInfo(L"%ls::FindTable(): Valid", GetWindowName());
+      LogInfo(L"%S::FindTable(): Valid", GetWindowName());
       TableRect = LastKnownTableRect;
       return true;
     }
@@ -195,9 +195,8 @@ bool TableWindow_t::FindTable(
   const int TopBorderWidth = Surface.GetWidthInColorRange(
     ptTable.x, ptTable.y, BorderLowColor, BorderHighColor, Flags);
   if (MinTableWidth > TopBorderWidth) {
-    LogInfo(L"%ls::FindTable(): TopBorderWidth(%d) < Min(%d) @ (%d, %d)",
-      GetWindowName(),
-      TopBorderWidth, MinTableWidth, ptTable.x, ptTable.y);
+    LogInfo(L"%S::FindTable(): TopBorderWidth(%d) < Min(%d) @ (%d, %d)",
+      GetWindowName(), TopBorderWidth, MinTableWidth, ptTable.x, ptTable.y);
     return false;
   }
   // TODO: use CompareColorRange(Rect)
@@ -207,15 +206,13 @@ bool TableWindow_t::FindTable(
     const int BorderWidth = Surface.GetWidthInColorRange(
       ptTable.x, ptTable.y + y, BorderLowColor, BorderHighColor);
     if (BorderWidth != TopBorderWidth) {
-      LogInfo(L"%ls::FindTable(): Top BorderWidth(%d) @ (%d, %d) Row(%d) TopBorderWidth(%d)",
-        GetWindowName(),
-        BorderWidth, ptTable.x, ptTable.y + y, y, TopBorderWidth);
+      LogInfo(L"%S::FindTable(): Top BorderWidth(%d) @ (%d, %d) Row(%d) TopBorderWidth(%d)",
+        GetWindowName(), BorderWidth, ptTable.x, ptTable.y + y, y, TopBorderWidth);
       return false;
     }
   }
   if (y < BorderSize.cy) {
-    LogInfo(L"%ls::FindTable(): top border out of view?",
-      GetWindowName());
+    LogInfo(L"%S::FindTable(): top border out of view?", GetWindowName());
     return false;
   }
   auto tableHeight = 0;
@@ -223,17 +220,16 @@ bool TableWindow_t::FindTable(
     const int borderWidth = Surface.GetWidthInColorRange(
       ptTable.x, ptTable.y + y, BorderLowColor, BorderHighColor);
     if (borderWidth < BorderSize.cx) {
-      LogInfo(L"%ls::FindTable(): Left BorderWidth (%d) < %d, tableHeight (%d) @ (%d, %d)",
-        GetWindowName(),
-        borderWidth, BorderSize.cx, tableHeight, ptTable.x, ptTable.y + y);
+      LogInfo(L"%S::FindTable(): Left BorderWidth (%d) < %d, tableHeight (%d) @ (%d, %d)",
+        GetWindowName(), borderWidth, BorderSize.cx, tableHeight, ptTable.x, ptTable.y + y);
       return false;
     }
     if (borderWidth == TopBorderWidth)
       break;
   }
   if (tableHeight < 10) {
-    LogInfo(L"%ls::FindTable(): small tableHeight (%d)",
-      GetWindowName(), tableHeight);
+    LogInfo(L"%S::FindTable(): small tableHeight (%d)", GetWindowName(),
+      tableHeight);
     return false;
   }
   // ValidateBrokerTableBorder()
@@ -242,14 +238,13 @@ bool TableWindow_t::FindTable(
     const int borderWidth = Surface.GetWidthInColorRange(
       ptTable.x, ptTable.y + y, BorderLowColor, BorderHighColor, Flags);
     if (borderWidth != TopBorderWidth) {
-      LogInfo(L"%ls::FindTable(): Bottom BorderWidth (%d) @ (%d, %d) Row (%d) TopBorderWidth (%d)",
-        GetWindowName(),
-        borderWidth, ptTable.x, ptTable.y + y, y, TopBorderWidth);
+      LogInfo(L"%S::FindTable(): Bottom BorderWidth (%d) @ (%d, %d) Row (%d) TopBorderWidth (%d)",
+        GetWindowName(), borderWidth, ptTable.x, ptTable.y + y, y, TopBorderWidth);
       return false;
     }
   }
   if (bottomBorderHeight < BorderSize.cy) {
-    LogInfo(L"%ls::FindTable(): bottom border out of view? height (%d) of (%d)",
+    LogInfo(L"%S::FindTable(): bottom border out of view? height (%d) of (%d)",
       GetWindowName(), bottomBorderHeight, BorderSize.cy);
     return false;
   }
@@ -324,7 +319,7 @@ bool TableWindow_t::ValidateBorder(
   const wchar_t* pBorderName) const
 {
   if (!Surface.CompareColorRange(BorderRect, BorderLowColor, BorderHighColor)) {
-    LogWarning(L"%ls::ValidateBorder(): %ls border no longer matches",
+    LogWarning(L"%S::ValidateBorder(): %ls border no longer matches",
       GetWindowName(), pBorderName);
     return false;
   }
@@ -353,7 +348,7 @@ bool TableWindow_t::ValidateClient(
   for (size_t Line = 0; Bottom >= GridRect.bottom; ++Line) {
     //        if (!Surface.CompareColorRange(GridRect, BkLowColor, BkHighColor))
     if (!Surface.CompareColor(GridRect, Black)) {
-      LogWarning(L"%ls::ValidateClient(): Line (%d) @ (%d, %d) doesn't match",
+      LogWarning(L"%S::ValidateClient(): Line (%d) @ (%d, %d) doesn't match",
         GetWindowName(), Line, GridRect.left, GridRect.top);
       return false;
     }
