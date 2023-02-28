@@ -151,18 +151,12 @@ void StartupInitialize(
   }
 
   // Tesseract/DCR.
-  auto pTess = make_unique<TesseractDcrImpl_t>();
-  const int tess = pTess->InitTesseract(nullptr, "eng");
-  if (tess < 0) {
-    throw runtime_error(std::format("InitTesseract() failed, {}", tess));
-  }
-  DCR::AddImpl<TesseractDcrImpl_t>(DcrImpl::Tesseract, std::move(pTess));
+  TesseractDcrImpl_t::Init();
 
   if (!GetPipelineManager().Initialize()) {
     throw runtime_error("GetPipelineManager().Initialize() failed");
   }
-  int result = ProcessCommandLine(argc, argv, pOptions);
-  if (result <= 0) {
+  if (int result = ProcessCommandLine(argc, argv, pOptions); result <= 0) {
     if (result < 0) {
       throw invalid_argument("ProcessCommandLine() failed.");
     }
@@ -180,7 +174,7 @@ void StartupInitialize(
 void ShutdownCleanup() {
     GetPipelineManager().Shutdown();
     FreeDirectDraw();
-    //DCR::Impl(DcrImpl::Tesseract)->EndTesseract();
+    TesseractDcrImpl_t::Cleanup();
     Log_t::Get().Shutdown();
 }
 

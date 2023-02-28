@@ -59,106 +59,86 @@ struct Ui::Widget::Data_t s_Widgets[] =
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Window_t::
-Window_t(
-    const Ui::Window_t& parent)
-:
-    Ui::Window_t(
-        Broker::Window::Id::BrokerSetPricePopup,
-        parent,
-        L"SetPricePopup",
-        WindowFlags,
-        s_Widgets,
-        _countof(s_Widgets))
+Window_t::Window_t(const Ui::Window_t& parent) :
+  Ui::Window_t(
+    Broker::Window::Id::BrokerSetPricePopup,
+    parent,
+    L"SetPricePopup",
+    WindowFlags,
+    s_Widgets,
+    _countof(s_Widgets))
 {
 }
 
-////////////////////////////////////////////////////////////////////////////////
-
-bool
-Window_t::
-GetWidgetRect(
-    Ui::WidgetId_t  WidgetId,
-          Rect_t&   WidgetRect) const
-{
-    return Ui::Window_t::GetWidgetRect(WidgetId, MainWindow_t::GetPopupRect(), WidgetRect);
+bool Window_t::GetWidgetRect(Ui::WidgetId_t  WidgetId, Rect_t&   WidgetRect) const {
+  return Ui::Window_t::GetWidgetRect(WidgetId, MainWindow_t::GetPopupRect(), WidgetRect);
 }
-
-////////////////////////////////////////////////////////////////////////////////
 
 bool
 Window_t::
 FindBorder(
-    const CSurface& Surface,
-    const POINT&    ptTab,
-          Rect_t&   SurfaceRect) const
+  const CSurface& Surface,
+  const POINT& ptTab,
+  Rect_t& SurfaceRect) const
 {
-    // TODO: could use MainWindow_t::GetPopupRect() here
-    static POINT SetPriceOffset = { 0, 0 };
-    if ((0 < SetPriceOffset.x) && (0 < SetPriceOffset.y))
+  // TODO: could use MainWindow_t::GetPopupRect() here
+  static POINT SetPriceOffset = { 0, 0 };
+  if ((0 < SetPriceOffset.x) && (0 < SetPriceOffset.y))
+  {
+    POINT ptPopup =
     {
-        POINT ptPopup =
-        {
-            ptTab.x + SetPriceOffset.x,
-            ptTab.y + SetPriceOffset.y
-        };
+        ptTab.x + SetPriceOffset.x,
+        ptTab.y + SetPriceOffset.y
+    };
+    Rect_t PopupRect(ptPopup, WindowSize);
+    if (Ui::Window_t::ValidateBorders(Surface, PopupRect, BorderSize,
+      BorderLowColor, BorderHighColor))
+    {
+      // TODO: additional validation
+      LogInfo(L"%ls::FindSetPricePopup(): Valid", GetWindowName());
+      SurfaceRect = PopupRect;
+      return true;
+    }
+  }
+  // Search for top border
+  Rect_t SearchRect;
+  SearchRect = Surface.GetBltRect();
+  SearchRect.right /= 2;
+  SearchRect.bottom /= 2;
+  OffsetRect(&SearchRect, 0, SearchRect.bottom);
+  SearchRect.right -= WindowSize.cx;
+  SearchRect.bottom -= WindowSize.cy;
+#if 0
+  static int num = 0;
+  if (!num++) {
+    Surface.WriteBMP(L"diag\\SetPriceWindow_search.bmp", SearchRect);
+  }
+#endif
+  for (int Line = SearchRect.top; Line < SearchRect.bottom; ++Line) {
+    for (int Pixel = SearchRect.left; Pixel < SearchRect.right; ++Pixel) {
+      Rect_t BorderRect(Pixel, Line,
+        Pixel + WindowSize.cx,
+        Line + BorderSize.cy);
+      if (Surface.CompareColorRange(BorderRect, BorderLowColor, BorderHighColor)) {
+        POINT ptPopup = { Pixel, Line };
         Rect_t PopupRect(ptPopup, WindowSize);
         if (Ui::Window_t::ValidateBorders(Surface, PopupRect, BorderSize,
-            BorderLowColor, BorderHighColor))
+          BorderLowColor, BorderHighColor))
         {
-            // TODO: additional validation
-            LogInfo(L"%ls::FindSetPricePopup(): Valid", GetWindowName());
-            SurfaceRect = PopupRect;
-            return true;
+          // TODO: additional validation
+          LogInfo(L"%ls::FindSetPricePopup(): Found @ (%d, %d)",
+            GetWindowName(), ptPopup.x, ptPopup.y);
+          SetPriceOffset.x = ptPopup.x - ptTab.x;
+          SetPriceOffset.y = ptPopup.y - ptTab.y;
+          SurfaceRect = PopupRect;
+          return true;
         }
+        break;
+      }
     }
-    // Search for top border
-    Rect_t SearchRect;
-    SearchRect = Surface.GetBltRect();
-    SearchRect.right /= 2;
-    SearchRect.bottom /= 2;
-    OffsetRect(&SearchRect, 0, SearchRect.bottom);
-    SearchRect.right -= WindowSize.cx;
-    SearchRect.bottom -= WindowSize.cy;
-#if 0
-    static int num = 0;
-    if (!num++)
-    {
-        Surface.WriteBMP(L"diag\\SetPriceWindow_search.bmp", SearchRect);
-    }
-#endif
-    for (int Line = SearchRect.top; Line < SearchRect.bottom; ++Line)
-    {
-        for (int Pixel = SearchRect.left; Pixel < SearchRect.right; ++Pixel)
-        {
-            Rect_t BorderRect(Pixel, Line,
-                       Pixel + WindowSize.cx,
-                       Line + BorderSize.cy);
-            if (Surface.CompareColorRange(BorderRect, BorderLowColor, BorderHighColor))
-            {
-                POINT ptPopup = { Pixel, Line };
-                Rect_t PopupRect(ptPopup, WindowSize);
-                if (Ui::Window_t::ValidateBorders(Surface, PopupRect, BorderSize,
-                    BorderLowColor, BorderHighColor))
-                {
-                    // TODO: additional validation
-                    LogInfo(L"%ls::FindSetPricePopup(): Found @ (%d, %d)",
-                            GetWindowName(), ptPopup.x, ptPopup.y);
-                    SetPriceOffset.x = ptPopup.x - ptTab.x;
-                    SetPriceOffset.y = ptPopup.y - ptTab.y;
-                    SurfaceRect = PopupRect;
-                    return true;
-                }
-                break;
-            }
-        }
-    }
-    return false;
+  }
+  return false;
 }
-
-////////////////////////////////////////////////////////////////////////////////
 
 } // SetPrice
 } // Broker
-
-////////////////////////////////////////////////////////////////////////////////

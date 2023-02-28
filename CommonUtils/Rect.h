@@ -10,53 +10,39 @@
 #pragma once
 #endif
 
-////////////////////////////////////////////////////////////////////////////////
-
-class Rect_t :
-    public RECT
-{
-
+class Rect_t : public RECT {
 public:
+  constexpr Rect_t() noexcept :
+    Rect_t(0, 0, 0, 0)
+  { }
 
-    Rect_t()
-    {
-        SetEmpty();
-    }
+  Rect_t(const RECT& rc) {
+    CopyRect(this, &rc);
+  }
 
-    Rect_t(
-        const RECT& rc)
-    {
-        CopyRect(this, &rc);
-    }
+  explicit Rect_t(POINT Point, const SIZE& Size) {
+    SetRect(Point, Size);
+  }
 
-    explicit
-    Rect_t(
-        POINT Point,
-        const SIZE& Size)
-    {
-        SetRect(Point, Size);
-    }
+  constexpr Rect_t(int l, int t, int r, int b) noexcept {
+    left = l;
+    top = t;
+    right = r;
+    bottom = b;
+  }
 
-    Rect_t(int left, int top, int right, int bottom)
-    {
-        ::SetRect(this, left, top, right, bottom);
-    }
+  int Width() const { return right - left; }
+  int Height() const { return bottom - top; }
 
-    int Width() const     { return right - left; }
-    int Height() const    { return bottom - top; }
+  void SetEmpty() { ::SetRectEmpty(this); }
+  bool IsEmpty() { return FALSE != ::IsRectEmpty(this); }
 
-    void SetEmpty()       { ::SetRectEmpty(this); }
-    bool IsEmpty()        { return FALSE != ::IsRectEmpty(this); }
+  POINT Center() const { POINT pt = { left + Width() / 2, top + Height() / 2 }; return pt; }
 
-    POINT Center() const  { POINT pt = { left + Width() / 2, top + Height() / 2 }; return pt; }
-
-    void
-    SetRect(
-        POINT Point,
-        const SIZE& Size)
-    {
-        ::SetRect(this, Point.x, Point.y, Point.x + Size.cx, Point.y + Size.cy);
-    }
+  void SetRect(POINT Point, const SIZE& Size)
+  {
+    ::SetRect(this, Point.x, Point.y, Point.x + Size.cx, Point.y + Size.cy);
+  }
 };
 
 ////////////////////////////////////////////////////////////////////////////////

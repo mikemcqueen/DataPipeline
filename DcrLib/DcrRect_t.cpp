@@ -43,7 +43,7 @@ TranslateSurface(
         firstTime[id()] = true;
     }
 #endif
-    text_ = Impl().GetText(pSurface, rect);
+    text_ = impl().GetText(pSurface, rect);
     LogInfo(L"DcrRect_t(%d): %S", id(), text_.c_str());
     return true;
 }

@@ -17,6 +17,32 @@
 #include "TextTable_t.h"
 #include "Macros.h"
 
+TesseractDcrImpl_t* impl_ = nullptr;
+
+//static
+void TesseractDcrImpl_t::Init() {
+  if (impl_) {
+    throw std::runtime_error("Tesseract already initialized");
+  }
+  auto tess{ make_unique<TesseractDcrImpl_t>() };
+  if (auto result = tess->InitTesseract(nullptr, "eng"); result < 0) {
+    throw runtime_error(std::format("InitTesseract() failed, {}", result));
+  }
+  auto temp = tess.get();
+  DCR::add_impl<TesseractDcrImpl_t>(DcrImpl::Tesseract, std::move(tess));
+  impl_ = temp;
+}
+
+//static
+void TesseractDcrImpl_t::Cleanup() {
+  auto temp = impl_;
+  if (temp) {
+    impl_ = nullptr;
+    auto hold = std::move(DCR::remove_impl(DcrImpl::Tesseract));
+    temp->EndTesseract();
+  }
+}
+
 std::string TesseractDcrImpl_t::GetText(
   const CSurface* pSurface,
   const Rect_t& rect) const
@@ -108,7 +134,9 @@ int TesseractDcrImpl_t::GetTableText(
           row, column).c_str(), rcBmp);
         WCHAR szFile[MAX_PATH];
         wsprintf(szFile, L"Diag\\dcr_row_%d_column_%d.bmp", row, column);
+#if 0 // draw rectangles
         const_cast<CSurface*>(pSurface)->SlowRectangle(&rcBmp, RGB(0, 0, 0));
+#endif
       }
       Tesseract()->SetImage((std::uint8_t*)GetBitsAt(&ddsd, rc.left, rc.top + yOffset),
         RECTWIDTH(rc), RECTHEIGHT(rc),
@@ -147,7 +175,7 @@ int TesseractDcrImpl_t::InitTesseract(
   const char* dataPath,
   const char* languageCode)
 {
-  if (tesseract_.get()) {
+  if (tesseract_) {
     throw new logic_error("Tesseract already initialized");
   }
   tesseract_ = std::make_unique<tesseract::TessBaseAPI>();
@@ -156,8 +184,7 @@ int TesseractDcrImpl_t::InitTesseract(
 
 void 
 TesseractDcrImpl_t::EndTesseract() {
-  if (!tesseract_.get()) {
-    throw new logic_error("Tesseract not initialized");
+  if (tesseract_) {
+    tesseract_->End();
   }
-  tesseract_->End();
 }

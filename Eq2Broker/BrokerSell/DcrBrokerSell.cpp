@@ -14,12 +14,8 @@
 #include "BrokerId.h"
 #include "BrokerUi.h"
 
-#ifdef _DEBUG
-//#define new DP_DEBUG_PLACEMENT_NEW
-#endif
-
 namespace Broker::Sell::Translate {
-  static const Rect_t TextRects[Table::ColumnCount] = {
+  constexpr Rect_t TextRects[Table::ColumnCount] = {
     { 2, 28, // first gap + quantitytexttop 
       2 + Table::PixelColumnWidths[0] + 2, 28 + 12}, // first gap + width + fudge, quantitytexttop + quantitytextheight
 
@@ -42,31 +38,6 @@ namespace Broker::Sell::Translate {
       Broker::Table::RowGapSize,
       Table::ColumnCount
   };
-  //DP::Message::Id_t Data_t::s_MessageId      = Broker::Message::Id::Sell; // DP::Message::Id::Unknown;
-
-  /*
-static RECT
-TextRects[Table::ColumnCount] =
-{
-    // Quantity text is bottom "QuantityTextHeight" lines of first column
-    { 0, Broker::Table::RowHeight - Broker::Table::QuantityTextHeight,
-      Table::PixelColumnWidths[0], Broker::Table::RowHeight },
-    { 0 },
-    { 0 },
-    { 0 },
-};
-
-const ScreenTable_t
-Handler_t::s_ScreenTable = 
-{
-    Broker::Table::RowHeight + Broker::Table::GapSizeY,
-    Broker::Table::CharHeight,
-    Broker::Table::GapSizeY,
-    Table::ColumnCount,
-    Table::PixelColumnWidths,
-    TextRects
-};
-*/
 
   Handler_t::Handler_t(Window::ManagerBase_t& Manager) :
     BaseHandler_t(
@@ -142,7 +113,6 @@ Handler_t::s_ScreenTable =
     if (g_noDcrPost) {
       return;
     }
-
     void* pBuffer = GetPipelineManager().Alloc(sizeof(Data_t));
     if (nullptr != pBuffer) {
       m_TextTable.GetData().Dump(L"DcrBrokerSell");
@@ -157,5 +127,4 @@ Handler_t::s_ScreenTable =
       LogError(L"DcrBrokerSell::PostData(): Alloc callback data failed.");
     }
   }
-
 } // namespace Broker::Sell::Translate

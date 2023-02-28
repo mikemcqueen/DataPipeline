@@ -91,6 +91,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BrokerUI", "BrokerUI", "{2B
 		Ui\TabWindow.h = Ui\TabWindow.h
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SetPricePopup", "SetPricePopup", "{E0A0DDC2-C9F6-41E4-86AB-CF127FB9159B}"
+	ProjectSection(SolutionItems) = preProject
+		SetPricePopup\DcrSetPrice.cpp = SetPricePopup\DcrSetPrice.cpp
+		SetPricePopup\DcrSetPrice.h = SetPricePopup\DcrSetPrice.h
+		SetPricePopup\SetPrice.h = SetPricePopup\SetPrice.h
+		SetPricePopup\SetPriceTypes.h = SetPricePopup\SetPriceTypes.h
+		SetPricePopup\SetPriceWindow.cpp = SetPricePopup\SetPriceWindow.cpp
+		SetPricePopup\SetPriceWindow.h = SetPricePopup\SetPriceWindow.h
+		SetPricePopup\TiSetPrice.cpp = SetPricePopup\TiSetPrice.cpp
+		SetPricePopup\TiSetPrice.h = SetPricePopup\TiSetPrice.h
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -172,6 +184,7 @@ Global
 		{E1CC13E8-0BF7-4BE2-9EE9-79EA7189CE22} = {38E3D177-0862-4AEC-92CA-2E61529528B7}
 		{2FEE4393-6C0A-48DA-9BC7-BFF302925B33} = {38E3D177-0862-4AEC-92CA-2E61529528B7}
 		{2BDB782A-3096-458B-9B4B-30FD2D3D66CD} = {38E3D177-0862-4AEC-92CA-2E61529528B7}
+		{E0A0DDC2-C9F6-41E4-86AB-CF127FB9159B} = {38E3D177-0862-4AEC-92CA-2E61529528B7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {563619C4-6EE0-435A-A934-19F1DB250AA9}

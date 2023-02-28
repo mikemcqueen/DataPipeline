@@ -13,10 +13,7 @@
 #ifndef Include_DCRSETPRICE_H
 #define Include_DCRSETPRICE_H
 
-/////////////////////////////////////////////////////////////////////////////
-
 #include "DcrWindow.h"
-
 #include "SetPriceTypes.h"
 #include "Macros.h"
 #include "Rect.h"
@@ -24,94 +21,52 @@
 #include "BrokerUi.h"
 #include "DcrRect_t.h"
 
-namespace Broker
-{
-namespace SetPrice
-{
-namespace Translate
-{
+namespace Broker::SetPrice::Translate {
+  struct Data_t : DP::Message::Data_t {
+    size_t Price;
 
-////////////////////////////////////////////////////////////////////////////////
+    Data_t(const wchar_t* pClass, const size_t InitPrice) :
+      DP::Message::Data_t(
+        DP::Stage::Translate,
+        Message::Id::SetPrice,
+        sizeof(Data_t),
+        pClass),
+      Price(InitPrice)
+    { }
 
-    struct Data_t :
-        public DP::Message::Data_t
-    {
-        size_t Price;
+  private:
+    Data_t();
+  };
 
-        Data_t(
-            const wchar_t* pClass,
-            const size_t   InitPrice)
-        :
-            DP::Message::Data_t(
-                DP::Stage::Translate,
-                Message::Id::SetPrice,
-                sizeof(Data_t),
-                pClass),
-            Price(InitPrice)
-        { }
+  typedef SsWindow::Acquire::Data_t             AcquireData_t;
+  typedef DcrWindow::Policy::TranslateMany_t    TranslatePolicy_t;
+  typedef DcrWindow::Policy::NoValidate_t       ValidatePolicy_t;
 
-    private:
+  typedef DcrWindow::Translate::Handler_t<
+    TranslatePolicy_t,
+    ValidatePolicy_t>  HandlerBase_t;
 
-        Data_t();
-    };
+  class Handler_t : public HandlerBase_t
+  {
+    friend struct Translate::Data_t;
 
-////////////////////////////////////////////////////////////////////////////////
+  public:
+    Handler_t(Window::ManagerBase_t& Manager);
 
-    typedef SsWindow::Acquire::Data_t             AcquireData_t;
-    typedef DcrWindow::Policy::TranslateMany_t    TranslatePolicy_t;
-    typedef DcrWindow::Policy::NoValidate_t       ValidatePolicy_t;
+    // DcrWindow virtual:
+    virtual void PostData(DWORD) override;
 
-    typedef DcrWindow::Translate::Handler_t<
-                TranslatePolicy_t,
-                ValidatePolicy_t>                 HandlerBase_t;
+  private:
+    Handler_t();
+    Handler_t(const Handler_t&);
+    const Handler_t& operator=(const Handler_t&);
 
-    class Handler_t :
-        public HandlerBase_t
-    {
-        friend struct Translate::Data_t; 
-
-    public:
-
-        //static const Ui::WindowId_t         DcrWindowId      = Broker::Window::Id::SetPrice_Main;
-
-    private:
-
-        Window::ManagerBase_t&  m_Manager;
-
-        TranslatePolicy_t m_TranslatePolicy;
-        ValidatePolicy_t  m_ValidatePolicy;
-
-        DcrVector_t       m_DcrVector;
-        DcrRect_t         m_DcrPrice;
-
-    public:
-
-        Handler_t(
-            Window::ManagerBase_t& Manager);
-
-        //
-        // DcrWindow virtual:
-        //
-
-        virtual 
-        void
-        PostData(
-            DWORD /*Unused*/) override;
-
-    private:
-
-        Handler_t();
-        Handler_t(const Handler_t&);
-        const Handler_t& operator=(const Handler_t&);
-    };
-
-
-/////////////////////////////////////////////////////////////////////////////
-
-} // Translate
-} // SetPrice
-} // Broker
+    Window::ManagerBase_t& m_Manager;
+    TranslatePolicy_t m_TranslatePolicy;
+    ValidatePolicy_t  m_ValidatePolicy;
+    DcrVector_t       m_DcrVector;
+    DcrRect_t         m_DcrPrice;
+  };
+} // namespace Broker::SetPrice::Translate
 
 #endif // Include_DCRSETPRICE_H
-
-/////////////////////////////////////////////////////////////////////////////

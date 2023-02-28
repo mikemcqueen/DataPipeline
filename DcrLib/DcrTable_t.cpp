@@ -149,7 +149,7 @@ int DcrTable_t::ReadTable(
   for (auto& rc : copyColumnRects) {
     ::OffsetRect(&rc, rcTable.left, rcTable.top);
   }
-  return Impl().GetTableText(
+  return impl().GetTableText(
     pSurface,
     rcTable,
     tableInfo_,
