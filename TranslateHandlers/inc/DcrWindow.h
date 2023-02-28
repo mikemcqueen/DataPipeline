@@ -31,22 +31,20 @@ using AcquireData_t = SsWindow::Acquire::Data_t;
 
 namespace Translate {
 
-  class AbstractHandler_t :
-    public DP::Handler_t
-  {
+  class AbstractHandler_t : public DP::Handler_t {
   public:
 
     // 
     // AbstractHandler_t virtual:
     //
 
-    virtual            bool            PreTranslateSurface(
-      CSurface* /*pSurface*/,
-      Ui::WindowId_t /*windowId*/,
-      int /*dcrId*/,
-      Rect_t* /*pRect*/) const = 0;
+    virtual bool PreTranslateSurface(
+      CSurface* pSurface,
+      Ui::WindowId_t windowId,
+      int dcrId,
+      Rect_t* pRect) const = 0;
 
-    virtual            void            PostData(DWORD /*Unused*/) const = 0;
+    virtual void PostData(DWORD /*Unused*/) const = 0;
   };
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -63,12 +61,12 @@ namespace Translate {
       Ui::WindowId_t     WindowId,
       TranslatePolicy_t& TranslatePolicy,
       ValidatePolicy_t& ValidatePolicy,
-      const wchar_t* pName = nullptr)
+      std::wstring_view name)
       :
       m_WindowId(WindowId),
       m_TranslatePolicy(TranslatePolicy),
       m_ValidatePolicy(ValidatePolicy),
-      m_name((nullptr != pName) ? pName : L"[unnamed]")
+      m_name(name)
     { }
 
     Handler_t(const Handler_t&) = delete;

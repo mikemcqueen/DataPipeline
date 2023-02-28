@@ -17,15 +17,11 @@
 
 class TabWindow_t;
 
-namespace Broker
-{
-//TODO: namespace Frame {
+namespace Broker {
+  //TODO: namespace Frame {
 
-class Window_t :
-    public Ui::Window_t
-{
-private:
-
+  class Window_t : public Ui::Window_t {
+  private:
     // Broker window
     CSurface  m_brokerCaption;
     CSurface  m_buyTabActive;
@@ -44,83 +40,63 @@ private:
 
     mutable Frame::Layout_t m_layout;
 
-public:
+  public:
 
-    static
-    bool
-    IsTabWindow(
-        Ui::WindowId_t windowId);
+    static bool IsTabWindow(Ui::WindowId_t windowId);
 
-    static
-    Ui::WidgetId_t
-    GetTabWidgetId(
-        Ui::WindowId_t windowId);
+    static Ui::WidgetId_t GetTabWidgetId(Ui::WindowId_t windowId);
 
     // Constructor
-    explicit
-    Window_t(
-        const Ui::Window_t& parent);
+    explicit Window_t(const Ui::Window_t& parent);
 
     //
     // Ui::Window_t virtual:
     //
 
-    Ui::Window::Base_t&
-    GetWindow(
-        Ui::WindowId_t windowId) const override;
+    Ui::Window::Base_t& GetWindow(Ui::WindowId_t windowId) const override;
 
-    Ui::WindowId_t
-    GetWindowId(
-        const CSurface& Surface,
-        const POINT*    pptHint = nullptr) const override;
+    Ui::WindowId_t GetWindowId(
+      const CSurface& Surface,
+      const POINT* pptHint = nullptr) const override;
 
-    bool
-    IsLocatedOn(
-        const CSurface& Surface,
-                Flag_t    flags,
-                POINT*    pptOrigin = nullptr) const override;
+    bool IsLocatedOn(
+      const CSurface& Surface,
+      Flag_t    flags,
+      POINT* pptOrigin = nullptr) const override;
 
-    void
-    GetOriginSearchRect(
-        const CSurface& surface,
-                Rect_t&   rect) const override;
+    void GetOriginSearchRect(
+      const CSurface& surface,
+      Rect_t& rect) const override;
 
     // 
 
-    Tab_t
-    FindActiveTab(
-        const CSurface& Surface,
-        const POINT    ptOrigin,
-              POINT&    ptTab) const;
+    Tab_t FindActiveTab(
+      const CSurface& Surface,
+      const POINT    ptOrigin,
+      POINT& ptTab) const;
 
-    const Rect_t&
-    GetTabAreaRect(
-        const POINT ptOrigin) const;
+    const Rect_t& GetTabAreaRect(
+      const POINT ptOrigin) const;
 
-    TabWindow_t&
-    GetTabWindow(
-        Tab_t Tab) const;
+    TabWindow_t& GetTabWindow(
+      Tab_t Tab) const;
 
     Frame::Layout_t GetLayout() const { return m_layout; }
 
-private:
+  private:
 
-    void
-    loadSurfaces();
+    void loadSurfaces();
 
-    MainWindow_t&
-    GetMainWindow() const;
+    MainWindow_t& GetMainWindow() const;
 
-    void
-    SetLayout(
-        Frame::Layout_t layout) const;
+    void SetLayout(Frame::Layout_t layout) const;
 
-private:
+  private:
 
     Window_t();
     Window_t(const Window_t&);
     Window_t& operator=(const Window_t&);
-};
+  };
 
 } // Broker
 

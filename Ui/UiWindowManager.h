@@ -15,18 +15,16 @@
 
 namespace Ui::Window {
 
-template<
+  template<
     class Window_t,
     class Translator_t,
     class Interpreter_t>
-class Manager_t {
-public:
-    Manager_t(
-        const Window_t& Window)
-        :
-        m_Window(Window),
-        m_Translator(*this),
-        m_Interpreter(*this)
+  class Manager_t {
+  public:
+    Manager_t(const Window_t& Window) :
+      m_Window(Window),
+      m_Translator(*this),
+      m_Interpreter(*this)
     { }
 
     Manager_t() = delete;
@@ -34,19 +32,19 @@ public:
     Manager_t& operator=(const Manager_t&) = delete;
 
     // Accessors:
-    const Window_t&        GetWindow() const       { return m_Window; }
+    const Window_t& GetWindow() const { return m_Window; }
 
-    const Translator_t&    GetTranslator() const   { return m_Translator; }
-    Translator_t&          GetTranslator()         { return m_Translator; }
+    const Translator_t& GetTranslator() const { return m_Translator; }
+    Translator_t& GetTranslator() { return m_Translator; }
 
-    const Interpreter_t&   GetInterpreter() const  { return m_Interpreter; }
-    Interpreter_t&         GetInterpreter()        { return m_Interpreter; }
+    const Interpreter_t& GetInterpreter() const { return m_Interpreter; }
+    Interpreter_t& GetInterpreter() { return m_Interpreter; }
 
-private:
+  private:
     const Window_t& m_Window;
     Translator_t    m_Translator;
     Interpreter_t   m_Interpreter;
-};
+  };
 
 } // Ui::Window
 

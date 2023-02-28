@@ -28,9 +28,7 @@ namespace Sell
 {
 namespace Window
 {
-    class Manager_t :
-        public Window::ManagerBase_t
-    {
+    class Manager_t : public Window::ManagerBase_t {
     public:
         Manager_t(const Window_t& Window) : ManagerBase_t(Window) {}
     };

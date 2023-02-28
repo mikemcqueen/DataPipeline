@@ -19,14 +19,10 @@
 #include "BrokerBuyTypes.h"
 
 namespace Broker::Buy::Window {
-    class Manager_t :
-        public ManagerBase_t
-    {
-    public:
-        Manager_t(Window_t& window) :
-            ManagerBase_t(window)
-        { }
-    };
+  class Manager_t : ManagerBase_t {
+  public:
+    Manager_t(Window_t& window) : ManagerBase_t(window) {}
+  };
 } // namespace Broker::Buy::Window
 
 #endif // Include_BROKERBUYWINDOWMANAGER_H

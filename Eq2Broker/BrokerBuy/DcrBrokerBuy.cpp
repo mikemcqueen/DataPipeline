@@ -26,16 +26,15 @@ namespace Broker::Buy::Translate {
 // combine PixelColumnWidths, along with "gap" columns (widths) and
 // "text" column (rects) perhaps as a union
 
-static const Rect_t
-    TextRects[Table::ColumnCount] = {
-        { 2, 26, // first gap + quantitytexttop 
-            2 + 44, 26 + 13 },  // first gap + first column data width , quantitytexttop + quantitytextheight
-        { 2 + 44 + 7, 0,  // first gap + first column data width + second gap 
-            Table::PixelColumnWidths[1], Broker::Table::RowHeight },
-        { 0, 0, 0, 0 },
-        { 767, 0,
-            767 + 23, Broker::Table::RowHeight },
-        { 0, 0, 0, 0  }
+static const Rect_t TextRects[Table::ColumnCount] = {
+  { 2, 26, // first gap + quantitytexttop 
+    2 + 44, 26 + 13 },  // first gap + first column data width , quantitytexttop + quantitytextheight
+  { 2 + 44 + 7, 0,  // first gap + first column data width + second gap 
+    Table::PixelColumnWidths[1], Broker::Table::RowHeight },
+  { 0, 0, 0, 0 },
+  { 767, 0,
+    767 + 23, Broker::Table::RowHeight },
+  { 0, 0, 0, 0  }
 };
 
 constexpr TableParams_t TableParams = {
@@ -47,48 +46,43 @@ constexpr TableParams_t TableParams = {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Handler_t::
-    Handler_t(
-        Window::ManagerBase_t& windowManager)
-    :
-    BaseHandler_t(
-        TopWindowId,
-        m_TranslatePolicy,
-        m_ValidatePolicy,
-        L"BrokerBuy"),
-    m_TranslatePolicy(
-        *this,
-        m_DcrVector), // TODO: variadic args?
-    m_DcrTable(
-        Widget::Id::Table,
-        {},
-        &m_TextTable,
-        TableParams,
-        std::span{ Table::PixelColumnWidths },
-        std::span{ TextRects }),
-    m_TextTable(
-        std::span{ Table::CharColumnWidths }),
-    m_DcrSearchEdit(
-        Widget::Id::SearchEdit,
-        {},
-        true),
-    m_DcrSearchDropdown(
-        Widget::Id::SearchDropdown),
-    m_DcrPageNumber(
-        Widget::Id::PageNumber),
-    m_windowManager(windowManager)
+Handler_t::Handler_t(Window::ManagerBase_t& windowManager) :
+  BaseHandler_t(
+    kWindowId,
+    m_TranslatePolicy,
+    m_ValidatePolicy,
+    L"BrokerBuy"),
+  m_TranslatePolicy(
+    *this,
+    m_DcrVector), // TODO: variadic args?
+  m_DcrTable(
+    Widget::Id::Table,
+    {},
+    & m_TextTable,
+    TableParams,
+    std::span{ Table::PixelColumnWidths },
+    std::span{ TextRects }),
+  m_TextTable(
+    std::span{ Table::CharColumnWidths }),
+  m_DcrSearchEdit(
+    Widget::Id::SearchEdit,
+    {},
+    true),
+  m_DcrSearchDropdown(
+    Widget::Id::SearchDropdown),
+  m_DcrPageNumber(
+    Widget::Id::PageNumber),
+  m_windowManager(windowManager)
 {
-    m_DcrVector.push_back(&m_DcrTable);
-    m_DcrVector.push_back(&m_DcrSearchEdit);
-    m_DcrVector.push_back(&m_DcrSearchDropdown);
-    m_DcrVector.push_back(&m_DcrPageNumber);
+  m_DcrVector.push_back(&m_DcrTable);
+  m_DcrVector.push_back(&m_DcrSearchEdit);
+  m_DcrVector.push_back(&m_DcrSearchDropdown);
+  m_DcrVector.push_back(&m_DcrPageNumber);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void
-Handler_t::
-SaveWidgets(
+void Handler_t::SaveWidgets(
   const CSurface* pSurface,
   std::span<const Ui::Widget::Data_t> widgets) const
 {
@@ -107,9 +101,7 @@ SaveWidgets(
 
 ////////////////////////////////////////////////////////////////////////////////
 
-bool
-Handler_t::
-PreTranslateSurface(
+bool Handler_t::PreTranslateSurface(
   CSurface* pSurface,
   Ui::WindowId_t windowId,
   int dcrId,
@@ -151,11 +143,7 @@ PreTranslateSurface(
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void
-Handler_t::
-PostData(
-  DWORD /*Unused*/) const
-{
+void Handler_t::PostData(DWORD /*Unused*/) const {
   extern bool g_noDcrPost;
   if (g_noDcrPost) {
     return;

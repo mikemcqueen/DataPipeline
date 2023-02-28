@@ -9,7 +9,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "BrokerSell.h"
+#include "TiBrokerSell.h"
+#include "DcrBrokerSell.h"
 #include "PipelineManager.h"
 #include "BrokerId.h"
 #include "TransactionManager.h"
@@ -18,24 +19,11 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace Broker
-{
-namespace Sell
-{
-namespace Interpret
-{
+namespace Broker::Sell::Interpret {
 
-////////////////////////////////////////////////////////////////////////////////
-
-Handler_t::
-Handler_t(
-    Window::ManagerBase_t& Manager)
-:
-    m_Manager(Manager)
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
+  constexpr Handler_t::Handler_t(Window::ManagerBase_t& Manager) noexcept :
+    m_windowManager(Manager)
+  {}
 
 /*
 bool
@@ -60,13 +48,7 @@ Shutdown()
 }
 */
 
-/////////////////////////////////////////////////////////////////////////////
-
-HRESULT
-Handler_t::
-ExecuteTransaction(
-    DP::Transaction::Data_t& /*Data*/)
-{
+HRESULT Handler_t::ExecuteTransaction(DP::Transaction::Data_t& /*Data*/) {
 /*
     using namespace Transaction;
     switch (Data.Id)
@@ -81,13 +63,7 @@ ExecuteTransaction(
     return S_FALSE;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-
-HRESULT
-Handler_t::
-MessageHandler(
-    const DP::Message::Data_t* pMessage)
-{
+HRESULT Handler_t::MessageHandler(const DP::Message::Data_t* pMessage) {
     if (Message::Id::Sell != pMessage->Id)
     {
         return S_FALSE;
@@ -125,33 +101,19 @@ Message;
 ////////////////////////////////////////////////////////////////////////////////
 // Returns true if we're currently scrolled to top (or can't scroll)
 /* static */
-bool
-Handler_t::
-IsScrolledToTop(
-    const Sell::Translate::Data_t& Message) 
-{
-    using namespace Ui::Scroll;
-    return ((Position::Top == Message.VScrollPos) ||
-           (Position::Unknown == Message.VScrollPos));
+bool Handler_t::IsScrolledToTop(const Translate::Data_t& Message) {
+  using namespace Ui::Scroll;
+  return ((Position::Top == Message.VScrollPos) ||
+    (Position::Unknown == Message.VScrollPos));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Returns true if we're currently scrolled to bottom (or can't scroll)
 /* static */
-bool
-Handler_t::
-IsScrolledToBottom(
-    const Sell::Translate::Data_t& Message)
-{
-    using namespace Ui::Scroll;
-    return (Position::Bottom == Message.VScrollPos) ||
-           (Position::Unknown == Message.VScrollPos);
+bool Handler_t::IsScrolledToBottom(const Translate::Data_t& Message) {
+  using namespace Ui::Scroll;
+  return (Position::Bottom == Message.VScrollPos) ||
+    (Position::Unknown == Message.VScrollPos);
 }
 
-////////////////////////////////////////////////////////////////////////////////
-
-} // Interpret
-} // Sell
-} // Broker
-
-////////////////////////////////////////////////////////////////////////////////
+} // namespace Broker::Sell::Interpret

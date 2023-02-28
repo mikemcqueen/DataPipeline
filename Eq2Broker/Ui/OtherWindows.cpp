@@ -28,7 +28,7 @@ Eq2LoadingWindow_t()//    const Ui::Window_t& parent)
     Ui::Window_t(
         Broker::Window::Id::Eq2Loading,
         *this,
-        L"Eq2Loading")
+        "Eq2Loading")
 {
     loadSurfaces();
 }
@@ -83,15 +83,13 @@ GetOriginSearchRect(
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-TransitionWindow_t::
-TransitionWindow_t()//    const Ui::Window_t& parent)
-    :
-    Ui::Window_t(
-        Broker::Window::Id::Zoning,
-        *this,
-        L"Transition")
+TransitionWindow_t::TransitionWindow_t() :
+  Ui::Window_t(
+    Broker::Window::Id::Zoning,
+    *this,
+    "Transition")
 {
-    loadSurfaces();
+  loadSurfaces();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -143,16 +141,13 @@ GetOriginSearchRect(
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-MainChatWindow_t::
-MainChatWindow_t(
-)//    const Ui::Window_t& parent)
-:
-    Ui::Window_t(
-        Broker::Window::Id::MainChat,
-        *this,
-        L"MainChat")
+MainChatWindow_t::MainChatWindow_t() :
+  Ui::Window_t(
+    Broker::Window::Id::MainChat,
+    *this,
+    "MainChat")
 {
-    loadSurfaces();
+  loadSurfaces();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

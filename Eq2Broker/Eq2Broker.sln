@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32811.315
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Unit Tests", "Unit Tests", "{8D92FE8B-5E84-4533-A909-E31F2F1850AF}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CommonUtils", "..\CommonUtils\CommonUtils.vcxproj", "{612EC231-D5A3-4550-AF05-211548D82370}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DcrLib", "..\DcrLib\DcrLib.vcxproj", "{E0E9D0D7-58DE-4505-8EF0-8E50FF24B402}"
@@ -21,11 +19,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Eq2Broker", "Eq2Broker.vcxp
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Eq2Db", "Db\Eq2Db.vcxproj", "{D0863D03-6C53-4A65-9FE2-C0B56235C210}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{A012DE02-6657-4536-86C9-3004F9E0A33A}"
-	ProjectSection(SolutionItems) = preProject
-		Tools\stdafx.h = Tools\stdafx.h
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{32E080E6-9881-4B87-A608-CA46BDFFA823}"
 	ProjectSection(SolutionItems) = preProject
 		deploy.cmd = deploy.cmd
@@ -36,6 +29,67 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Eq2Ui", "Ui\Eq2Ui.vcxproj", "{44512971-CA39-44D6-B4EF-21E7DB1D47FE}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Accounts", "..\Accounts\Accounts.vcxproj", "{82D084F1-C785-4CF3-ADFD-AB010EFF60E2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Eq2Broker", "Eq2Broker", "{38E3D177-0862-4AEC-92CA-2E61529528B7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projects", "Projects", "{4B359BEE-0356-455F-8494-43D46AEBB355}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BrokerBuy", "BrokerBuy", "{D6B30A99-E03F-4E4D-A3A3-A97E1A15D88F}"
+	ProjectSection(SolutionItems) = preProject
+		BrokerBuy\BrokerBuyText.h = BrokerBuy\BrokerBuyText.h
+		BrokerBuy\BrokerBuyTypes.h = BrokerBuy\BrokerBuyTypes.h
+		BrokerBuy\BrokerBuyWidgets.h = BrokerBuy\BrokerBuyWidgets.h
+		BrokerBuy\BrokerBuyWindow.cpp = BrokerBuy\BrokerBuyWindow.cpp
+		BrokerBuy\BrokerBuyWindow.h = BrokerBuy\BrokerBuyWindow.h
+		BrokerBuy\BrokerBuyWindowManager.h = BrokerBuy\BrokerBuyWindowManager.h
+		BrokerBuy\DcrBrokerBuy.cpp = BrokerBuy\DcrBrokerBuy.cpp
+		BrokerBuy\DcrBrokerBuy.h = BrokerBuy\DcrBrokerBuy.h
+		BrokerBuy\TiBrokerBuy.cpp = BrokerBuy\TiBrokerBuy.cpp
+		BrokerBuy\TiBrokerBuy.h = BrokerBuy\TiBrokerBuy.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BrokerSell", "BrokerSell", "{E1CC13E8-0BF7-4BE2-9EE9-79EA7189CE22}"
+	ProjectSection(SolutionItems) = preProject
+		BrokerSell\BrokerSell.h = BrokerSell\BrokerSell.h
+		BrokerSell\BrokerSellTypes.h = BrokerSell\BrokerSellTypes.h
+		BrokerSell\BrokerSellWindow.cpp = BrokerSell\BrokerSellWindow.cpp
+		BrokerSell\BrokerSellWindow.h = BrokerSell\BrokerSellWindow.h
+		BrokerSellWindowManager.h = BrokerSellWindowManager.h
+		BrokerSell\DcrBrokerSell.cpp = BrokerSell\DcrBrokerSell.cpp
+		BrokerSell\DcrBrokerSell.h = BrokerSell\DcrBrokerSell.h
+		BrokerSell\TiBrokerSell.cpp = BrokerSell\TiBrokerSell.cpp
+		BrokerSell\TiBrokerSell.h = BrokerSell\TiBrokerSell.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Main", "Main", "{2FEE4393-6C0A-48DA-9BC7-BFF302925B33}"
+	ProjectSection(SolutionItems) = preProject
+		Main\BrokerId.h = Main\BrokerId.h
+		Main\DcrBase_t.h = Main\DcrBase_t.h
+		Main\Eq2BrokerImpl_t.cpp = Main\Eq2BrokerImpl_t.cpp
+		Main\Eq2BrokerImpl_t.h = Main\Eq2BrokerImpl_t.h
+		Main\Eq2Broker_t.cpp = Main\Eq2Broker_t.cpp
+		Main\Eq2Broker_t.h = Main\Eq2Broker_t.h
+		Main\Main.cpp = Main\Main.cpp
+		Main\PageNumber_t.cpp = Main\PageNumber_t.cpp
+		Main\PageNumber_t.h = Main\PageNumber_t.h
+		Main\Price_t.cpp = Main\Price_t.cpp
+		Main\Price_t.h = Main\Price_t.h
+		Main\TrWindowType.cpp = Main\TrWindowType.cpp
+		Main\TrWindowType.h = Main\TrWindowType.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BrokerUI", "BrokerUI", "{2BDB782A-3096-458B-9B4B-30FD2D3D66CD}"
+	ProjectSection(SolutionItems) = preProject
+		Ui\BrokerUi.h = Ui\BrokerUi.h
+		Ui\BrokerWindow.cpp = Ui\BrokerWindow.cpp
+		Ui\BrokerWindow.h = Ui\BrokerWindow.h
+		Ui\MainWindow_t.cpp = Ui\MainWindow_t.cpp
+		Ui\MainWindow_t.h = Ui\MainWindow_t.h
+		Ui\OtherWindows.cpp = Ui\OtherWindows.cpp
+		Ui\OtherWindows.h = Ui\OtherWindows.h
+		Ui\TabWindow.cpp = Ui\TabWindow.cpp
+		Ui\TabWindow.h = Ui\TabWindow.h
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -107,6 +161,17 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EDC76DA7-36D5-419B-9468-3362F176E0FF} = {4B359BEE-0356-455F-8494-43D46AEBB355}
+		{B6FDD539-623A-4B09-AC64-BB936E359F07} = {4B359BEE-0356-455F-8494-43D46AEBB355}
+		{D0863D03-6C53-4A65-9FE2-C0B56235C210} = {4B359BEE-0356-455F-8494-43D46AEBB355}
+		{44512971-CA39-44D6-B4EF-21E7DB1D47FE} = {4B359BEE-0356-455F-8494-43D46AEBB355}
+		{4B359BEE-0356-455F-8494-43D46AEBB355} = {38E3D177-0862-4AEC-92CA-2E61529528B7}
+		{D6B30A99-E03F-4E4D-A3A3-A97E1A15D88F} = {38E3D177-0862-4AEC-92CA-2E61529528B7}
+		{E1CC13E8-0BF7-4BE2-9EE9-79EA7189CE22} = {38E3D177-0862-4AEC-92CA-2E61529528B7}
+		{2FEE4393-6C0A-48DA-9BC7-BFF302925B33} = {38E3D177-0862-4AEC-92CA-2E61529528B7}
+		{2BDB782A-3096-458B-9B4B-30FD2D3D66CD} = {38E3D177-0862-4AEC-92CA-2E61529528B7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {563619C4-6EE0-435A-A934-19F1DB250AA9}

@@ -11,6 +11,9 @@
     <ClCompile Include="BrokerBuy\BrokerBuyWindow.cpp" />
     <ClCompile Include="BrokerBuy\DcrBrokerBuy.cpp" />
     <ClCompile Include="BrokerBuy\TiBrokerBuy.cpp" />
+    <ClCompile Include="BrokerSell\DcrBrokerSell.cpp" />
+    <ClCompile Include="BrokerSell\TiBrokerSell.cpp" />
+    <ClCompile Include="BrokerSell\BrokerSellWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main\BrokerId.h" />
@@ -30,6 +33,11 @@
     <ClInclude Include="BrokerBuy\BrokerBuyWindowManager.h" />
     <ClInclude Include="BrokerBuy\DcrBrokerBuy.h" />
     <ClInclude Include="BrokerBuy\TiBrokerBuy.h" />
+    <ClInclude Include="BrokerSell\BrokerSellTypes.h" />
+    <ClInclude Include="BrokerSell\DcrBrokerSell.h" />
+    <ClInclude Include="BrokerSell\TiBrokerSell.h" />
+    <ClInclude Include="BrokerSell\BrokerSellWindow.h" />
+    <ClInclude Include="BrokerSell\BrokerSellText.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Res\Broker_BuyTab_Active.bmp">

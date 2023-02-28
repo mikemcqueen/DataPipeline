@@ -16,3 +16,5 @@ namespace po = boost::program_options;
 #include <tesseract/baseapi.h>
 #include <gsl/pointers>
 #include <gsl/util>
+
+using namespace std::literals;
