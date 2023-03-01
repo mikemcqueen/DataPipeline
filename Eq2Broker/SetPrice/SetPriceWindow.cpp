@@ -22,11 +22,18 @@ namespace SetPrice
 
 static const Flag_t WindowFlags   = 0;
 
-static const SIZE   WindowSize    = { 254, 213 };
-static const SIZE   BorderSize    = { 2, 2 };
+static const SIZE   WindowSize    = { 254, 213 }; // 273,203
+static const SIZE   BorderSize    = { 1, 1 };
 
-static const SIZE   PriceTextSize = { 140, 21 };
+static const SIZE   PriceTextSize = { 140, 16 };
 static const SIZE   ButtonSize    = { 10, 10 };
+
+-188, 6 - pricetext offset from OK
+-72, 139 - clear button offset fom OK
+
+// ok (text) size 23x10
+// clear (text) size 8x8
+// 10 x 10 probably ok in both cases
 
 static const int Row[5]        = { 33, 76, 108, 140, 172 };
 static const int Col[4]        = { 39, 89, 139, 200 };
@@ -95,17 +102,21 @@ FindBorder(
       BorderLowColor, BorderHighColor))
     {
       // TODO: additional validation
-      LogInfo(L"%ls::FindSetPricePopup(): Valid", GetWindowName());
+      LogInfo(L"%S::FindSetPricePopup(): Valid", GetWindowName());
       SurfaceRect = PopupRect;
       return true;
     }
   }
   // Search for top border
+  // Explain this math to me like i'm 5.
+  // 1. Rect = upper left quadrant.
   Rect_t SearchRect;
   SearchRect = Surface.GetBltRect();
   SearchRect.right /= 2;
   SearchRect.bottom /= 2;
+  // 2. Rect = lower left quadrant (??)
   OffsetRect(&SearchRect, 0, SearchRect.bottom);
+  // 3. W.T.F. Rect is some tiny sliver at the top left of the lower left quadrantt. (????)
   SearchRect.right -= WindowSize.cx;
   SearchRect.bottom -= WindowSize.cy;
 #if 0
@@ -126,7 +137,7 @@ FindBorder(
           BorderLowColor, BorderHighColor))
         {
           // TODO: additional validation
-          LogInfo(L"%ls::FindSetPricePopup(): Found @ (%d, %d)",
+          LogInfo(L"%S::FindSetPricePopup(): Found @ (%d, %d)",
             GetWindowName(), ptPopup.x, ptPopup.y);
           SetPriceOffset.x = ptPopup.x - ptTab.x;
           SetPriceOffset.y = ptPopup.y - ptTab.y;

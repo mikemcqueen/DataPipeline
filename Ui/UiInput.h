@@ -15,7 +15,7 @@
 
 #include "UiTypes.h"
 
-class Rect_t;
+struct Rect_t;
 
 namespace Ui
 {

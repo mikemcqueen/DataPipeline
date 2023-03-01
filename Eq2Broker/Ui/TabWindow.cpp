@@ -128,9 +128,12 @@ bool TableWindow_t::UpdateScrollPosition(
       {
         ::InflateRect(&scrollUpRect, -2, -2);
         ::InflateRect(&scrollDownRect, -2, -2);
+Surface;
+#if 0 // TODO: commented out recently
         Scroll::Position_t ScrollPos = /*Ui::Window_t::*/GetVertScrollPos(Surface, scrollUpRect, scrollDownRect);
         //LogAlways(L"TableWindow_t::UpdateScrollPosition(): VScrollPos (%d)", ScrollPos);
         SetScrollPosition(ScrollBar, ScrollPos);
+#endif
         return true;
       }
       LogError(L"%S::UpdateScrollPosition(): Missing veritcal scroll rects",
@@ -158,8 +161,8 @@ bool TableWindow_t::ClickRow(size_t Row) const
     RowRect.bottom = bottom;
   }
   // LogAlways(L"Row (%d) Rect = { %d, %d, %d, %d}", Row, RowRect.left, RowRect.top, RowRect.right, RowRect.bottom);
-  Ui::Input_t Input;
-  Input.Click(GetHwnd(), RowRect.Center());
+// TODO: need MainWindow() here
+//  Ui::Input_t::Click(GetMainWindow().Hwnd(), RowRect.Center());
   return true;
 }
 

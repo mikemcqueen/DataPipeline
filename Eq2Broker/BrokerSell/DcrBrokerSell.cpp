@@ -121,7 +121,8 @@ namespace Broker::Sell::Translate {
         GetClass().c_str(),
         m_TextTable,
         1, // m_DcrTable.GetSelectedRow(), // TODO
-        GetManager().GetWindow().GetScrollPosition(Ui::Scroll::Bar::Vertical));
+        Ui::Scroll::Position::Unknown); // TODO:
+        // GetManager().GetWindow().GetScrollPosition(Ui::Scroll::Bar::Vertical));
       GetPipelineManager().Callback(pData);
     } else {
       LogError(L"DcrBrokerSell::PostData(): Alloc callback data failed.");

@@ -38,6 +38,7 @@
     <ClInclude Include="BrokerSell\TiBrokerSell.h" />
     <ClInclude Include="BrokerSell\BrokerSellWindow.h" />
     <ClInclude Include="BrokerSell\BrokerSellText.h" />
+    <ClInclude Include="BrokerSell\BrokerSellWindowManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Res\Broker_BuyTab_Active.bmp">

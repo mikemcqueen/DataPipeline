@@ -13,8 +13,8 @@
 #ifndef Include_EQ2BROKER_T_H
 #define Include_EQ2BROKER_T_H
 
-#include "BrokerUi.h"
-#include "UiTypes.h"
+//#include "BrokerUi.h"
+//#include "UiTypes.h"
 //#include "MainWindow_t.h"
 
 class Eq2BrokerImpl_t;
@@ -29,8 +29,7 @@ namespace Game {
   };
 }
 
-class Eq2Broker_t
-{
+class Eq2Broker_t {
 public:
   Eq2Broker_t(
     MainWindow_t& mainWindow,
@@ -48,7 +47,7 @@ public:
   void ReadConsoleLoop();
 
   MainWindow_t& GetMainWindow() { return mainWindow_; }
-  Ui::Window_t& GetWindow(Ui::WindowId_t windowId);
+//  Ui::Window_t& GetWindow(Ui::WindowId_t windowId);
 
 private:
 

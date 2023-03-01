@@ -17,84 +17,50 @@
 
 namespace Ui::Window {
 
-  Base_t::Base_t(
-    WindowId_t        WindowId,
-    std::string_view className,
-    std::string_view windowName,
-    Flag_t            Flags /* = 0 */)
-    :
-    m_WindowId(WindowId),
-    m_ParentWindow(*this),         // a bit weird; parent of mainwindow is self
-    m_hMainWindow(nullptr),
-    m_className(className),
-    m_windowName(windowName),
-    m_Flags(Flags),
-    m_VertScrollPos(Scroll::Position::Unknown),
-    m_HorzScrollPos(Scroll::Position::Unknown)
-  {
-    LogError(L"FIXME: MainWindow hWnd initialization - move out of UiWindow.cpp");
-
-    if (!m_className.empty() || !m_windowName.empty()) {
-      HWND hWnd = ::FindWindowA(m_className.c_str(), m_windowName.c_str());
-      if (nullptr == hWnd) {
-        LogError(L"Window not found: ClassName(%S) WindowName(%S)",
-          m_className.c_str(), m_windowName.c_str());
-        //throw invalid_argument("Ui::Window::Base_t()");
-      }
-      m_hMainWindow = hWnd;
-    }
-  }
-
   ////////////////////////////////////////////////////////////////////////////////
   //
   // Constructor for 'fake' child 'windows' that have no associated hWnd.
   //
 
   Base_t::Base_t(
-    WindowId_t        WindowId,
+    WindowId_t WindowId,
     const Base_t& ParentWindow,
     std::string_view windowName,
-    Flag_t            Flags /*= 0*/,
+    Flag_t Flags /*= 0*/,
     std::span<const Widget::Data_t> widgets) :
     m_WindowId(WindowId),
     m_ParentWindow(ParentWindow),
-    m_hMainWindow(ParentWindow.GetHwnd()),
     m_windowName(windowName.empty() ? "Undefined" : windowName),
     m_Flags(Flags),
     widgets_(widgets.begin(), widgets.end())
   {
   }
 
-  Base_t::~Base_t()
-  {
-  }
+  Base_t::~Base_t() = default;
 
-  HWND
-    Base_t::GetSsWindowRect(RECT& Rect) const {
-    if (nullptr != m_hMainWindow) {
-      if (::IsWindow(m_hMainWindow)) {
-        // !::IsWindowVisible(m_hMainWindow) seems overkill
-        if (::GetForegroundWindow() != m_hMainWindow) {
-          // don't screenshot if we're not foreground
-          return nullptr;
+  /*
+    HWND Base_t::GetSsWindowRect(RECT& Rect) const {
+      if (nullptr != m_hMainWindow) {
+        if (::IsWindow(m_hMainWindow)) {
+          // !::IsWindowVisible(m_hMainWindow) seems overkill
+          if (::GetForegroundWindow() != m_hMainWindow) {
+            // don't screenshot if we're not foreground
+            return nullptr;
+          }
+          ::GetClientRect(m_hMainWindow, &Rect);
         }
-        ::GetClientRect(m_hMainWindow, &Rect);
+        else {
+          // TODO: make m_hMainWindow mutable?
+          const_cast<Base_t*>(this)->m_hMainWindow = nullptr;
+        }
       }
-      else {
-        // TODO: make m_hMainWindow mutable?
-        const_cast<Base_t*>(this)->m_hMainWindow = nullptr;
-      }
+      return m_hMainWindow;
     }
-    return m_hMainWindow;
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////
+  */
 
   Base_t& Base_t::GetWindow(WindowId_t /*WindowId*/) const {
     throw logic_error("Ui::Window_t::GetWindow() not implemented");
   }
-
-  ////////////////////////////////////////////////////////////////////////////////
 
   WindowId_t Base_t::GetWindowId(
     const CSurface& /*Surface*/,
@@ -225,139 +191,6 @@ namespace Ui::Window {
 
   ////////////////////////////////////////////////////////////////////////////////
 
-  bool Base_t::ClickWidget(
-    WidgetId_t WidgetId,
-    bool bDirect /*= false*/,
-    const Rect_t* pRect /*= nullptr*/) const
-  {
-    if (bDirect) {
-      Rect_t rect;
-      if (nullptr == pRect) {
-        if (!GetWidgetRect(WidgetId, &rect)) {
-          LogError(L"%ls::ClickWidget(direct): GetWidgetRect(%d) failed",
-            GetWindowName(), WidgetId);
-          return false;
-        }
-        pRect = &rect;
-      }
-      Ui::Input_t::Click(GetHwnd(), pRect->Center());
-    }
-    else {
-      Ui::Event::Click::Data_t Click(GetWindowId(), WidgetId);
-      GetPipelineManager().SendEvent(Click);
-    }
-    return true;
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////
-
-  bool Base_t::ClearWidgetText(
-    WidgetId_t widgetId,
-    size_t count) const
-  {
-    Rect_t rect;
-    if (!GetWidgetRect(widgetId, &rect)) {
-      LogError(L"%ls::ClearWidgetText(): GetWidgetRect(%d) failed",
-        GetWindowName(), widgetId);
-      return false;
-    }
-    // click right side of rectangle
-    Rect_t clickRect(rect);
-    clickRect.left = clickRect.right - 1;
-    Input_t::Click(GetHwnd(), clickRect.Center());
-    while (0 < count--) {
-      Input_t::SendChar(VK_BACK);
-    }
-    return true;
-  }
-
-  bool Base_t::SetWidgetText(
-    WidgetId_t widgetId,
-    const wstring& text,
-    bool bDirect) const
-  {
-    if (bDirect) {
-      // TODO: why this?
-      Rect_t rect;
-      if (!GetWidgetRect(widgetId, &rect)) {
-        LogError(L"%ls::SetWidgetText(direct): GetWidgetRect(%d) failed",
-          GetWindowName(), widgetId);
-        return false;
-      }
-      Ui::Input_t Chars; // huh?
-      Chars.SendChars(text.c_str());
-    }
-    else {
-      Ui::Event::SendChars::Data_t sendChars(text.c_str(), GetWindowId(), widgetId);
-      GetPipelineManager().SendEvent(sendChars);
-    }
-    return true;
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////
-
-#if 0
-  const Widget::Data_t&
-    Base_t::
-    GetWidgetData(
-      WidgetId_t widgetId) const
-  {
-    if (nullptr != m_pWidgets)
-    {
-      for (size_t Widget = 0; Widget < m_WidgetCount; ++Widget)
-      {
-        if (m_pWidgets[Widget].WidgetId == widgetId)
-        {
-          return m_pWidgets[Widget];
-        }
-      }
-    }
-    throw invalid_argument("Ui::Window_t::GetWidgetData()");
-  }
-#endif
-
-  ////////////////////////////////////////////////////////////////////////////////
-
-  bool Base_t::Scroll(
-    Scroll::Direction_t Direction) const
-  {
-    using namespace Scroll;
-    Ui::WidgetId_t WidgetId = Ui::Widget::Id::Unknown;
-    switch (Direction) {
-    case Direction::Up:
-    {
-      const Position_t VertPos = GetScrollPosition(Bar::Vertical);
-      if ((Position::Top == VertPos) || (Position::Unknown == VertPos))
-      {
-        return false;
-      }
-      WidgetId = Ui::Widget::Id::VScrollUp;
-    }
-    break;
-    case Direction::Down:
-    {
-      const Position_t VertPos = GetScrollPosition(Bar::Vertical);
-      if ((Position::Bottom == VertPos) || (Position::Unknown == VertPos))
-      {
-        return false;
-      }
-      WidgetId = Ui::Widget::Id::VScrollDown;
-    }
-    break;
-    case Direction::Left:
-    case Direction::Right:
-      return false;
-    default:
-      break;
-    }
-    if (Ui::Widget::Id::Unknown == WidgetId) {
-      throw logic_error("UiWindow::Scroll(): Invalid widget id");
-    }
-    return ClickWidget(WidgetId);
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////
-
   bool Window_t::ValidateBorders(
     const CSurface& Surface,
     const Rect_t& Rect,
@@ -399,23 +232,23 @@ namespace Ui::Window {
     const COLORREF  HighColor) const
   {
     if (!Surface.CompareColorRange(BorderRect, LowColor, HighColor)) {
-      LogWarning(L"%ls::ValidateBorder(): %ls border doesn't match @ (%d, %d)",
+      LogWarning(L"%S::ValidateBorder(): %ls border doesn't match @ (%d, %d)",
         GetWindowName(), pBorderName, BorderRect.left, BorderRect.top);
       return false;
     }
     return true;
   }
 
-  ////////////////////////////////////////////////////////////////////////////////
+  /*
+    ////////////////////////////////////////////////////////////////////////////////
 
-  void Window_t::GetWindowRect(
-    Rect_t& Rect) const
-  {
-    ::GetWindowRect(m_hMainWindow, &Rect);
-    ::OffsetRect(&Rect, -Rect.left, -Rect.top);
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////
+    void Window_t::GetWindowRect(
+      Rect_t& Rect) const
+    {
+      ::GetWindowRect(m_hMainWindow, &Rect);
+      ::OffsetRect(&Rect, -Rect.left, -Rect.top);
+    }
+  */
 
   void Window_t::DumpWidgets(
     const CSurface& Surface,
@@ -430,9 +263,8 @@ namespace Ui::Window {
     }
   }
 
-  ////////////////////////////////////////////////////////////////////////////////
 
-  /* static */
+  /* static
   Ui::Scroll::Position_t Window_t::GetVertScrollPos(
     const CSurface& Surface,
     const Rect_t& VScrollUpRect,
@@ -464,10 +296,191 @@ namespace Ui::Window {
       Pos = Position::Top;
     }
     else {
-      throw std::logic_error("MainWindow_t::GetVertScrollPos(): Impossible!");
+      throw std::logic_error("UI::Window_t::GetVertScrollPos(): Impossible!");
     }
     //LogAlways(L"MainWindow_t::GertVertScrollPos() ScrollRect = { %d, %d, %d, %d }",
     //          ScrollRect.left, ScrollRect.top, ScrollRect.right, ScrollRect.bottom);
     return Pos;
   }
+  */
+  ////////////////////////////////////////////////////////////////////////////////
+  //
+  //
+  ////////////////////////////////////////////////////////////////////////////////
+
+  WithHandle_t::WithHandle_t(
+    WindowId_t WindowId,
+    std::string_view class_name,
+    std::string_view window_name,
+    Flag_t flags /* = 0 */) :
+    Base_t(WindowId, *this, window_name, flags),
+    class_name_(class_name),
+    hwnd_(FindWindow(class_name))
+  {
+    if (!hwnd_) {
+      LogError(L"Ui::Window::WithHandle_t(%S): Window not found, class_name(%S)",
+        window_name.data(), class_name.data());
+    }
+  }
+
+  HWND WithHandle_t::FindWindow(std::string_view class_name) const {
+    HWND hwnd{};
+    if (!class_name.empty()) {
+      hwnd = ::FindWindowA(class_name.data(), nullptr);
+    }
+    return hwnd;
+  }
+
+  bool WithHandle_t::IsVisibleTopWindow() const {
+    if (!hwnd_ || !::IsWindowVisible(hwnd_) || (hwnd_ != ::GetForegroundWindow())) {
+      // noisy, extra log level maybe
+      //LogError(L"IsVisibleTopWindow(%S) failed, hWnd (%08x)", GetWindowName(), hwnd_);
+      return false;
+    }
+    return true;
+  }
+
+  HWND WithHandle_t::SyncHwnd() const {
+    if (!hwnd_ || !::IsWindow(hwnd_)) {
+      if (hwnd_) {
+        LogInfo(L"SyncHwnd(): Window handle is invalid");
+      }
+      hwnd_ = FindWindow();
+      if (hwnd_) {
+        LogInfo(L"SyncHwnd(): Window handle has been re-establishd");
+      }
+    }
+    return hwnd_;
+  }
+
+  HWND WithHandle_t::SyncHwndGetClientRect(Rect_t& rect) const {
+    HWND hwnd = SyncHwnd();
+    if (hwnd) {
+      GetClientRect(rect);
+    }
+    return hwnd;
+  }
+
+  bool WithHandle_t::ClickWidget(
+    Base_t& Window,
+    WidgetId_t WidgetId,
+    bool bDirect /*= false*/,
+    const Rect_t* pRect /*= nullptr*/) const
+  {
+    assert(bDirect);
+    Rect_t rect;
+    if (!pRect) {
+      if (!Window.GetWidgetRect(WidgetId, &rect)) {
+        LogError(L"ClickWidget(%S): GetWidgetRect(%d) failed",
+          Window.GetWindowName(), WidgetId);
+        return false;
+      }
+      pRect = &rect;
+    }
+    Ui::Input_t::Click(hwnd_, pRect->Center());
+#if 0
+    else {
+      Ui::Event::Click::Data_t Click(GetWindowId(), WidgetId);
+      GetPipelineManager().SendEvent(Click);
+    }
+#endif
+    return true;
+  }
+
+#if 0
+  bool WithHandle_t::ClearWidgetText(
+    WidgetId_t widgetId,
+    size_t count) const
+  {
+    Rect_t rect;
+    if (!GetWidgetRect(widgetId, &rect)) {
+      LogError(L"%S::ClearWidgetText(): GetWidgetRect(%d) failed",
+        GetWindowName(), widgetId);
+      return false;
+    }
+    // click right side of rectangle
+    Rect_t clickRect(rect);
+    clickRect.left = clickRect.right - 1;
+    Input_t::Click(hwnd_, clickRect.Center());
+    while (0 < count--) {
+      Input_t::SendChar(VK_BACK);
+    }
+    return true;
+  }
+
+  bool WithHandle_t::SetWidgetText(
+    WidgetId_t widgetId,
+    const wstring& text,
+    bool bDirect) const
+  {
+    if (bDirect) {
+      // TODO: why this?
+      Rect_t rect;
+      if (!GetWidgetRect(widgetId, &rect)) {
+        LogError(L"%S::SetWidgetText(direct): GetWidgetRect(%d) failed",
+          GetWindowName(), widgetId);
+        return false;
+      }
+      Ui::Input_t Chars; // huh?
+      Chars.SendChars(text.c_str());
+    }
+    else {
+      Ui::Event::SendChars::Data_t sendChars(text.c_str(), GetWindowId(), widgetId);
+      GetPipelineManager().SendEvent(sendChars);
+    }
+    return true;
+  }
+
+  const Widget::Data_t& Base_t::GetWidgetData(WidgetId_t widgetId) const {
+    if (nullptr != m_pWidgets)
+    {
+      for (size_t Widget = 0; Widget < m_WidgetCount; ++Widget)
+      {
+        if (m_pWidgets[Widget].WidgetId == widgetId)
+        {
+          return m_pWidgets[Widget];
+        }
+      }
+    }
+    throw invalid_argument("Ui::Window_t::GetWidgetData()");
+  }
+
+  bool Base_t::Scroll(
+    Scroll::Direction_t Direction) const
+  {
+    using namespace Scroll;
+    Ui::WidgetId_t WidgetId = Ui::Widget::Id::Unknown;
+    switch (Direction) {
+    case Direction::Up:
+    {
+      const Position_t VertPos = GetScrollPosition(Bar::Vertical);
+      if ((Position::Top == VertPos) || (Position::Unknown == VertPos))
+      {
+        return false;
+      }
+      WidgetId = Ui::Widget::Id::VScrollUp;
+    }
+    break;
+    case Direction::Down:
+    {
+      const Position_t VertPos = GetScrollPosition(Bar::Vertical);
+      if ((Position::Bottom == VertPos) || (Position::Unknown == VertPos))
+      {
+        return false;
+      }
+      WidgetId = Ui::Widget::Id::VScrollDown;
+    }
+    break;
+    case Direction::Left:
+    case Direction::Right:
+      return false;
+    default:
+      break;
+    }
+    if (Ui::Widget::Id::Unknown == WidgetId) {
+      throw logic_error("UiWindow::Scroll(): Invalid widget id");
+    }
+    return ClickWidget(WidgetId);
+  }
+#endif
 } // namespace Ui::Window

@@ -17,7 +17,7 @@
 //#include "UiWindowId.h"
 
 class CSurface;
-class Rect_t;
+struct Rect_t;
 class MainWindow_t;
 
 namespace Broker

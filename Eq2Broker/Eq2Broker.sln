@@ -54,7 +54,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BrokerSell", "BrokerSell", 
 		BrokerSell\BrokerSellTypes.h = BrokerSell\BrokerSellTypes.h
 		BrokerSell\BrokerSellWindow.cpp = BrokerSell\BrokerSellWindow.cpp
 		BrokerSell\BrokerSellWindow.h = BrokerSell\BrokerSellWindow.h
-		BrokerSellWindowManager.h = BrokerSellWindowManager.h
 		BrokerSell\DcrBrokerSell.cpp = BrokerSell\DcrBrokerSell.cpp
 		BrokerSell\DcrBrokerSell.h = BrokerSell\DcrBrokerSell.h
 		BrokerSell\TiBrokerSell.cpp = BrokerSell\TiBrokerSell.cpp
@@ -93,14 +92,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BrokerUI", "BrokerUI", "{2B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SetPricePopup", "SetPricePopup", "{E0A0DDC2-C9F6-41E4-86AB-CF127FB9159B}"
 	ProjectSection(SolutionItems) = preProject
-		SetPricePopup\DcrSetPrice.cpp = SetPricePopup\DcrSetPrice.cpp
-		SetPricePopup\DcrSetPrice.h = SetPricePopup\DcrSetPrice.h
-		SetPricePopup\SetPrice.h = SetPricePopup\SetPrice.h
-		SetPricePopup\SetPriceTypes.h = SetPricePopup\SetPriceTypes.h
-		SetPricePopup\SetPriceWindow.cpp = SetPricePopup\SetPriceWindow.cpp
-		SetPricePopup\SetPriceWindow.h = SetPricePopup\SetPriceWindow.h
-		SetPricePopup\TiSetPrice.cpp = SetPricePopup\TiSetPrice.cpp
-		SetPricePopup\TiSetPrice.h = SetPricePopup\TiSetPrice.h
+		SetPrice\DcrSetPrice.cpp = SetPrice\DcrSetPrice.cpp
+		SetPrice\DcrSetPrice.h = SetPrice\DcrSetPrice.h
+		SetPrice\SetPrice.h = SetPrice\SetPrice.h
+		SetPrice\SetPriceTypes.h = SetPrice\SetPriceTypes.h
+		SetPrice\SetPriceWindow.cpp = SetPrice\SetPriceWindow.cpp
+		SetPrice\SetPriceWindow.h = SetPrice\SetPriceWindow.h
+		SetPrice\TiSetPrice.cpp = SetPrice\TiSetPrice.cpp
+		SetPrice\TiSetPrice.h = SetPrice\TiSetPrice.h
 	EndProjectSection
 EndProject
 Global
@@ -175,7 +174,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{EDC76DA7-36D5-419B-9468-3362F176E0FF} = {4B359BEE-0356-455F-8494-43D46AEBB355}
+		{EDC76DA7-36D5-419B-9468-3362F176E0FF} = {38E3D177-0862-4AEC-92CA-2E61529528B7}
 		{B6FDD539-623A-4B09-AC64-BB936E359F07} = {4B359BEE-0356-455F-8494-43D46AEBB355}
 		{D0863D03-6C53-4A65-9FE2-C0B56235C210} = {4B359BEE-0356-455F-8494-43D46AEBB355}
 		{44512971-CA39-44D6-B4EF-21E7DB1D47FE} = {4B359BEE-0356-455F-8494-43D46AEBB355}

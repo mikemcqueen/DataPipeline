@@ -20,109 +20,62 @@
 #include "UiWindow.h"
 #include "UiEvent.h"
 #include "UiWindowId.h"
-#include "AutoCs.h"
 
 namespace SsWindow::Acquire {
-
-struct Data_t :
-    public SsTask::Acquire::Data_t
-{
+  struct Data_t : SsTask::Acquire::Data_t {
     Ui::WindowId_t WindowId;
-    //        Rect_t         SurfaceRect;
 
     Data_t(
-        const wchar_t* pClass,
-        Ui::WindowId_t InitWindowId,
-        Rect_t& InitSurfaceRect,
-        pool<CSurface>::item_t* pPoolItem,
-        size_t Size = sizeof(Data_t))
-        :
-        SsTask::Acquire::Data_t(
-            pClass,
-            pPoolItem,
-            Size)
-        , WindowId(InitWindowId)
-        //            ,SurfaceRect(InitSurfaceRect)
-    {
-        InitSurfaceRect;
-    }
-};
+      const wchar_t* pClass,
+      Ui::WindowId_t InitWindowId,
+      pool<CSurface>::item_t* pPoolItem,
+      size_t Size = sizeof(Data_t)) :
+      SsTask::Acquire::Data_t(pClass, pPoolItem, Size),
+      WindowId(InitWindowId)
+    {}
+  };
 
-////////////////////////////////////////////////////////////////////////////////
+  class Handler_t :public SsTask_t {
+  public:
+    Handler_t(CDisplay& Display, Ui::Window::WithHandle_t& Window);
 
-class Handler_t :
-    public SsTask_t
-{
-private:
-
-    Ui::Window::Base_t& m_Window;
-    bool                m_bClick;
-
-public:
-
-    Handler_t(
-        CDisplay& Display,
-        Ui::Window::Base_t& Window);
-
-    // 
     // DP::Handler_t virtual:
-    //
+    HRESULT EventHandler(DP::Event::Data_t& Event) override;
 
-    HRESULT
-    EventHandler(
-        DP::Event::Data_t& Event) override;
-
-    // 
     // SSTask virtual:
-    //
+    //HWND GetSsWindowRect(RECT& rcBounds) const override;
 
-    HWND
-    GetSsWindowRect(
-        RECT& rcBounds) const override;
+    void ThreadProcessEvent() override;
 
-    void
-    ThreadProcessEvent() override;
+    void PostData(
+      HWND hWnd,
+      pool<CSurface>::item_t* pPoolItem) override;
 
-    void
-    PostData(
-        HWND              hWnd,
-        pool<CSurface>::item_t* pPoolItem) override;
+    bool ToggleClick() { return m_bClick = !m_bClick; }
 
-    bool
-    ToggleClick()
-    {
-        return m_bClick = !m_bClick;
-    }
+  private:
+    void AsyncEvent(const DP::Event::Data_t& Data);
 
-private:
+    void ClickPoint(
+      const Ui::Event::Click::Data_t& Data,
+      POINT Point);
 
-    void
-    AsyncEvent(
-            const DP::Event::Data_t& Data);
+    void ClickWidget(const Ui::Event::Click::Data_t& Data);
 
-    void
-    ClickPoint(
-        const Ui::Event::Click::Data_t& Data,
-        POINT                     Point);
+    void SendChars(const Ui::Event::SendChars::Data_t& Data);
 
-    void
-    ClickWidget(
-        const Ui::Event::Click::Data_t& Data);
+/*
+    bool ValidateEventData(
+      const DP::Event::Data_t& Data,
+      size_t Size);
+*/
 
-    void
-    SendChars(
-        const Ui::Event::SendChars::Data_t& Data);
+//    HWND ValidateWindow(Ui::WindowId_t WindowId);
 
-    bool
-    ValidateEventData(
-        const DP::Event::Data_t& Data,
-        size_t             Size);
-
-    HWND
-    ValidateWindow(
-        Ui::WindowId_t WindowId);
-}; // Handler_t
-
+  private:
+    Ui::Window::WithHandle_t& m_Window;
+    bool m_bClick;
+  }; // Handler_t
 }// SsWindow::Acquire
 
 #endif // Include_SSWINDOW_H

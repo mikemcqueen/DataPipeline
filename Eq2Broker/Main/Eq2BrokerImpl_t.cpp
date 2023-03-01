@@ -13,12 +13,10 @@
 
 extern CDisplay* g_pDisplay;
 
-////////////////////////////////////////////////////////////////////////////////
-
 Eq2BrokerImpl_t::Eq2BrokerImpl_t(MainWindow_t& mainWindow) :
-    m_SsWindow(*g_pDisplay, mainWindow),
-    m_TrWindowType(mainWindow),
-    m_TrScroll(mainWindow),
+  m_SsWindow(*g_pDisplay, mainWindow),
+  m_TrWindowType(mainWindow),
+  m_TrScroll(mainWindow),
   buyWindowManager_(mainWindow.GetBrokerBuyWindow()),
   sellWindowManager_(mainWindow.GetBrokerSellWindow())
 #if 0
@@ -38,9 +36,5 @@ Eq2BrokerImpl_t::Eq2BrokerImpl_t(MainWindow_t& mainWindow) :
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
-
 Eq2BrokerImpl_t::
 ~Eq2BrokerImpl_t() = default;
-
-///////////////////////////////////////////////////////////////////////////////

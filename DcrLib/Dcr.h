@@ -15,7 +15,7 @@
 #ifndef Include_DCR_H
 #define Include_DCR_H
 
-class Rect_t;
+struct Rect_t;
 class CSurface;
 class TextTable_i;
 class TableInfo_t;

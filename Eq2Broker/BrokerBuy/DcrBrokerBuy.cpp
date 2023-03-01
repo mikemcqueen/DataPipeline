@@ -178,7 +178,7 @@ void Handler_t::PostData(DWORD /*Unused*/) const {
       LogError(L"DcrBrokerBuy::PostData(): PM.Callback() failed.");
     }
   }
-#if 1
+#if 0
   if (pageNumber.GetPage() < pageNumber.GetLastPage()) {
     m_windowManager.GetWindow().ClickWidget(Widget::Id::NextButton);
   }

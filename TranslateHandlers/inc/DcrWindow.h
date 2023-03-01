@@ -109,7 +109,7 @@ namespace Translate {
           return true;
         }
       }
-      LogError(L"validate failed, class: %ls, windowId actual(%d) expected(%d)",
+      LogError(L"validate failed, class: %s, windowId actual(%d) expected(%d)",
         pMessage->Class, ssWindowId, WindowId);
       return false;
     }

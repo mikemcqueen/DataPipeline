@@ -21,13 +21,12 @@
 
 Rect_t MainWindow_t::m_PopupRect;
 
-MainWindow_t::MainWindow_t(bool bTest) :
-  Ui::Window::Base_t(
+MainWindow_t::MainWindow_t() :
+  Ui::Window::WithHandle_t(
     Ui::Window::Id::MainWindow,
-    bTest ? "" : "EQ2ApplicationClass",
+    "EQ2ApplicationClass",
     "MainWindow")
-{
-}
+{}
 
 Broker::Window_t& MainWindow_t::GetBrokerWindow() const {
   using namespace Broker::Window;
@@ -65,7 +64,7 @@ Ui::Window::Base_t& MainWindow_t::GetWindow(Ui::WindowId_t windowId) const {
   static TransitionWindow_t zoningWindow;
   static SetPrice::Window_t setPricePopup(*this);
 #endif
-  static Broker::MainChatWindow_t   mainChatWindow;
+//  static Broker::MainChatWindow_t   mainChatWindow;
   static Broker::Window_t   brokerFrameWindow(*this);
 
   switch (windowId) {
@@ -80,7 +79,7 @@ Ui::Window::Base_t& MainWindow_t::GetWindow(Ui::WindowId_t windowId) const {
   case Window::Id::BrokerBuy: //[[fallthrough]]
   case Window::Id::BrokerSell:          return brokerFrameWindow.GetWindow(windowId);
   case Window::Id::BrokerFrame:         return brokerFrameWindow;
-  case Window::Id::MainChat:            return mainChatWindow;
+//  case Window::Id::MainChat:            return mainChatWindow;
   default:
     throw std::invalid_argument(std::format("MainWindow_t::GetWindow() unknown window({})", intValue(windowId)));
   }

@@ -15,7 +15,7 @@
 #ifndef Include_TESSERACTDCRIMPL_T_H
 #define Include_TESSERACTDCRIMPL_T_H
 
-class Rect_t;
+struct Rect_t;
 class Charset_t;
 class CSurface;
 class TableInfo_t;

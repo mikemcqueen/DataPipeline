@@ -16,6 +16,7 @@
 #include "Log.h"
 #include "Macros.h"
 #include "CommonTypes.h"
+#include "Rect.h"
 
 using namespace std;
 
@@ -24,31 +25,25 @@ DP::MessageId_t SsTask_t::s_MessageId = DP::Message::Id::Unknown;
 int release_count = 0;
 int ready_count = 0;
 
-/////////////////////////////////////////////////////////////////////////////
-
 /*static*/
 void
-SsTask::Acquire::Data_t::
-ReleaseFn(DP::Message::Data_t& data)
-{
-    auto& ssData = static_cast<SsTask::Acquire::Data_t&>(data);
-    if (nullptr == ssData.pPoolItem) {
-        throw invalid_argument("SsData::pPoolItem is null");
-    }
-    release_count++;
-    ssData.pPoolItem->release();
+SsTask::Acquire::Data_t::ReleaseFn(DP::Message::Data_t& data) {
+  auto& ssData = static_cast<SsTask::Acquire::Data_t&>(data);
+  if (nullptr == ssData.pPoolItem) {
+    throw invalid_argument("SsData::pPoolItem is null");
+  }
+  release_count++;
+  ssData.pPoolItem->release();
 }
-
-/////////////////////////////////////////////////////////////////////////////
 
 SsTask_t::
 SsTask_t(
   CDisplay& Display,
-  size_t      SurfaceWidth,
-  size_t      SurfaceHeight,
-  size_t      PoolSize,
-  size_t      DelayMs) // TODO: chrono?
-  :
+  size_t SurfaceWidth,
+  size_t SurfaceHeight,
+  GetWindowFn_t fnGetWindow,
+  size_t PoolSize,
+  size_t DelayMs) :// TODO: chrono?
   m_Display(Display),
   m_SurfaceWidth(SurfaceWidth),
   m_SurfaceHeight(SurfaceHeight),
@@ -58,22 +53,17 @@ SsTask_t(
   m_lSuspended(1),
   m_lSuspendCount(1),
   m_lEventPending(0),
-  m_EventCount(0)
+  m_EventCount(0),
+  m_fnGetWindow(std::move(fnGetWindow))
 {
   m_szTestSurface[0] = L'\0';
 }
 
-/////////////////////////////////////////////////////////////////////////////
-
-SsTask_t::
-~SsTask_t()
-{
-  if (nullptr != m_hTimer.get())
-  {
+SsTask_t::~SsTask_t() {
+  if (nullptr != m_hTimer.get()) {
     CancelWaitableTimer(m_hTimer.get());
   }
-  if (nullptr != m_hThread.get())
-  {
+  if (nullptr != m_hThread.get()) {
     if (!IsSuspended())
       Suspend();
     SignalObjectAndWait(m_hExitEvent.get(), m_hThread.get(), INFINITE, FALSE);
@@ -81,8 +71,7 @@ SsTask_t::
   // We've shut down the SS thread.  There may still be outstanding
   // pool items sitting in the PipelineManager queue waiting for 
   // translation, or being actively translated by the DCR thread.
-  if (!m_Pool.all_unused())
-  {
+  if (!m_Pool.all_unused()) {
     LogError(L"~SsTask_t(): Used SurfacePoolItems.. forced deleting...");
     for (auto index = 0; index < m_Pool.size(); ++index) {
       auto& item = m_Pool.at(index);
@@ -91,13 +80,7 @@ SsTask_t::
   }
 }
 
-/////////////////////////////////////////////////////////////////////////////
-
-bool
-SsTask_t::
-Initialize(
-  const wchar_t* pszClass)
-{
+bool SsTask_t::Initialize(const wchar_t* pszClass) {
   LogInfo(L"SsTask_t::Initialize()");
 
   if (!DP::Handler_t::Initialize(pszClass))
@@ -145,11 +128,7 @@ Initialize(
   return true;
 }
 
-/////////////////////////////////////////////////////////////////////////////
-
-HRESULT
-SsTask_t::
-InitSurfacePool(
+HRESULT SsTask_t::InitSurfacePool(
   CDisplay& Display,
   pool<CSurface>& Pool,
   size_t        cx,
@@ -173,61 +152,34 @@ InitSurfacePool(
   return S_OK;
 }
 
-/////////////////////////////////////////////////////////////////////////////
+#pragma warning(disable:4063) // enum in case statement
 
-#pragma warning(disable:4063)
-
-HRESULT
-SsTask_t::
-EventHandler(
-  DP::Event::Data_t& Data)
-{
+HRESULT SsTask_t::EventHandler(DP::Event::Data_t& Data){
   HRESULT hr = DP::Handler_t::EventHandler(Data);
   if (S_FALSE != hr)
     return hr;
-  switch (Data.Id)
-  {
-  case DP::Event::Id::Start:
-    Start();
-    break;
 
-  case DP::Event::Id::Stop:
-    Stop();
-    break;
-
-  default:
-    return S_FALSE;
+  switch (Data.Id) {
+  case DP::Event::Id::Start: Start(); break;
+  case DP::Event::Id::Stop:  Stop();  break;
+  default: return S_FALSE;
   }
   return S_OK;
 }
 
-/////////////////////////////////////////////////////////////////////////////
-
-bool
-SsTask_t::
-Start()
-{
+bool SsTask_t::Start() {
     LogInfo(L"SsTask_t::Start()");
     Resume();
     return true;
 }
 
-/////////////////////////////////////////////////////////////////////////////
-
-void
-SsTask_t::
-Stop()
+void SsTask_t::Stop()
 {
     LogInfo(L"SsTask_t::Stop()");
     Suspend();
 }
 
-/////////////////////////////////////////////////////////////////////////////
-
-void
-SsTask_t::
-Suspend()
-{
+void SsTask_t::Suspend() {
   LONG lCount = InterlockedIncrement(&m_lSuspendCount);
   LogInfo(L"SsTask_t::Suspend(%d)", lCount);
   if (1 == lCount)
@@ -244,12 +196,7 @@ Suspend()
   }
 }
 
-/////////////////////////////////////////////////////////////////////////////
-
-void
-SsTask_t::
-Resume()
-{
+void SsTask_t::Resume() {
   LONG lCount = InterlockedDecrement(&m_lSuspendCount);
   LogInfo(L"SsTask_t::Resume(%d)", lCount);
   if (0 == lCount)
@@ -267,44 +214,22 @@ Resume()
   }
 }
 
-/////////////////////////////////////////////////////////////////////////////
-
-bool
-SsTask_t::
-SetSuspended(
-    bool bSuspend)
-{
+bool SsTask_t::SetSuspended(bool bSuspend) {
     LONG lValue = bSuspend ? 1 : 0;
     bool bPrev = (1 == InterlockedExchange(&m_lSuspended, lValue));
     return bSuspend ^ bPrev;
 }
 
-/////////////////////////////////////////////////////////////////////////////
-
-bool
-SsTask_t::
-IsSuspended() const
-{
+bool SsTask_t::IsSuspended() const {
 	return 1 == InterlockedCompareExchange(&m_lSuspended, 0, 0);
 }
 
-/////////////////////////////////////////////////////////////////////////////
-
-void
-SsTask_t::
-ClearEventData() 
-{
+void SsTask_t::ClearEventData() {
     m_EventData.clear();
     m_EventCount = 0;
 }
 
-/////////////////////////////////////////////////////////////////////////////
-
-void
-SsTask_t::
-AddEventData(
-  const DP::Event::Data_t* pData)
-{
+void SsTask_t::AddEventData(const DP::Event::Data_t* pData){
   ASSERT(nullptr != pData);
   if ((0 == pData->Size) || (MaxEventDataSize < pData->Size))
   {
@@ -316,13 +241,7 @@ AddEventData(
   ++m_EventCount;
 }
 
-/////////////////////////////////////////////////////////////////////////////
-
-void
-SsTask_t::
-SetEventData(
-  const DP::Event::Data_t& Data)
-{
+void SsTask_t::SetEventData(const DP::Event::Data_t& Data) {
   if ((0 == Data.Size) || (MaxEventDataSize < Data.Size))
   {
     throw invalid_argument("SsTask_t::SetEventData() invalid size");
@@ -332,28 +251,20 @@ SetEventData(
   m_EventCount = 1;
 }
 
-/////////////////////////////////////////////////////////////////////////////
-
-const DP::Event::Data_t&
-SsTask_t::
-PeekEvent(
-  size_t Event) const
-{
+const DP::Event::Data_t& SsTask_t::PeekEvent(size_t Event) const {
 #if 0
   ASSERT(0 != m_EventData.size());
   ASSERT(m_EventCount > Event);
   ASSERT(0 < Size);
 #else
-  if (m_EventData.empty() || (Event >= m_EventCount))
-  {
+  if (m_EventData.empty() || (Event >= m_EventCount)) {
     LogError(L"SsTask_t::PeekEvent(): EventData empty (%d), or invalid index (%d)",
       m_EventData.size(), Event);
     throw logic_error("SsTask_t::PeekEvent(): EventData empty, or invalid index");
   }
 #endif
   size_t pos = 0;
-  while (0 < Event--)
-  {
+  while (0 < Event--) {
     const DP::Event::Data_t&
       data = reinterpret_cast<const DP::Event::Data_t&>(m_EventData[pos]);
     pos += data.Size;
@@ -363,9 +274,7 @@ PeekEvent(
 
 /////////////////////////////////////////////////////////////////////////////
 
-void
-SsTask_t::
-GetEventData(
+void SsTask_t::GetEventData(
   size_t             Event,
   DP::Event::Data_t& Data,
   size_t             Size) const
@@ -390,7 +299,7 @@ GetEventData(
   {
     LogError(L"SsTask_t::GetEventData(): Event size mismatch (%d,%d)",
       Size, data.Size);
-    throw logic_error("SsTask_t::GetEventData(): Event size mismatch");
+    throw std::invalid_argument("SsTask_t::GetEventData(): Event size mismatch");
   }
   memcpy(&Data, &data, Size);
 #endif
@@ -398,48 +307,30 @@ GetEventData(
 
 /////////////////////////////////////////////////////////////////////////////
 
-bool
-SsTask_t::
-SetEventPending(
-    bool bPending)
-{
-    bool bPrevious = (1 == InterlockedExchange(&m_lEventPending, bPending ? 1 : 0));
-    // return true if previous state is different than current state
-    return bPending ^ bPrevious;
+bool SsTask_t::SetEventPending(bool bPending) {
+  bool bPrevious = (1 == InterlockedExchange(&m_lEventPending, bPending ? 1 : 0));
+  // return true if previous state is different than current state
+  return bPending ^ bPrevious;
 }
 
 /////////////////////////////////////////////////////////////////////////////
 
-bool
-SsTask_t::
-IsEventPending() const
-{
+bool SsTask_t::IsEventPending() const {
 	return 1 == InterlockedCompareExchange(&m_lEventPending, 0, 0);
 }
 
 /////////////////////////////////////////////////////////////////////////////
 
-void
-SsTask_t::
-SuspendAndFlush()
-{
-    Suspend();
-    GetPipelineManager().Flush(
-        // hacko. could be fun template. actually, just swap param order and use variadic args
-        DP::Stage_t(intValue(DP::Stage_t::Acquire) | intValue(DP::Stage_t::Translate)),
-        GetClass().c_str());
+void SsTask_t::SuspendAndFlush() {
+  Suspend();
+  GetPipelineManager().Flush(
+    // hacko. could be fun template. actually, just swap param order and use variadic args
+    DP::Stage_t(intValue(DP::Stage_t::Acquire) | intValue(DP::Stage_t::Translate)),
+    GetClass().c_str());
 }
 
-/////////////////////////////////////////////////////////////////////////////
-
-DWORD
-WINAPI
-SsTask_t::
-ThreadFunc(
-  void* pvParam)
-{
-  enum
-  {
+DWORD WINAPI SsTask_t::ThreadFunc(void* pvParam){
+  enum {
     Exit = 0,
     Suspend,
     Event,
@@ -480,7 +371,7 @@ ThreadFunc(
     case WAIT_OBJECT_0 + Timer:
       if (!pClass->IsSuspended())
       {
-        LogInfo(L"SsTask_t::ThreadFunc()::Timer");
+        //LogInfo(L"SsTask_t::ThreadFunc()::Timer");
         pClass->Shutter();
       }
       break;
@@ -492,27 +383,22 @@ ThreadFunc(
   }
 }
 
-/////////////////////////////////////////////////////////////////////////////
-
 namespace DP {
 extern int release;
 extern int releaseFn;
 }
 
 // TODO: bool
-void
-SsTask_t::
-Shutter()
-{
+void SsTask_t::Shutter() {
   pool<CSurface>::item_t* pPoolItem = GetAvailableSurface();
-  if (nullptr == pPoolItem) {
-
-
-    LogWarning(L"SSTask_t::Shutter(): No surface available, ready(%d) released(%d), dp_release(%d), dp_realeaseFn(%d)",
+  if (!pPoolItem) {
+    LogWarning(L"SSTask_t::Shutter(): No surface available, ready(%d) released(%d), "
+      "dp_release(%d), dp_realeaseFn(%d)",
       ready_count, release_count, DP::release, DP::releaseFn);
     return;
   }
 
+// TODO final_action
   struct AutoRelease_t {
     pool<CSurface>::item_t* pPoolItem;
 
@@ -520,23 +406,19 @@ Shutter()
     ~AutoRelease_t() { pPoolItem->release(); }
   } AutoRelease(pPoolItem);
 
-  RECT rc;
-  HWND hWnd = GetSsWindowRect(rc);
-  if (nullptr != hWnd) {
+  Rect_t rc;
+  HWND hWnd = m_fnGetWindow(rc);
+  if (hWnd) {
     CSurface* pSurface = pPoolItem->get();
-    if (TakeSnapShot(hWnd, rc, pSurface))
-    {
+    if (TakeSnapShot(hWnd, rc, pSurface)) {
       pPoolItem->set_state(PF_READY);
       ready_count++;
       PostData(hWnd, pPoolItem);
     }
-  }
-  else {
-    LogWarning(L"SSTask_t::Shutter(): nullptr hWnd");
+  } else {
+    //LogWarning(L"SSTask_t::Shutter(): nullptr hWnd");
   }
 }
-
-/////////////////////////////////////////////////////////////////////////////
 
 pool<CSurface>::item_t*
 SsTask_t::
@@ -545,35 +427,19 @@ GetAvailableSurface( void )
     return m_Pool.get_unused();
 }
 
-/////////////////////////////////////////////////////////////////////////////
-
 /* static */
 bool SsTask_t::TakeSnapShot(HWND hWnd, const RECT& rc, CSurface* pSurface) {
   ASSERT(nullptr != hWnd);
-  if (nullptr != hWnd) {
+  if (hWnd) {
     if (SUCCEEDED(pSurface->BltWindow(hWnd, &rc))) {
       return true;
     }
     LogError(L"SsTask_t::TakeSnapShot(): BltWindow failed (%d)", GetLastError());
   } 
-  /*else if (m_szTestSurface[0]) {
-    wchar_t szPath[MAX_PATH];
-    wsprintf(szPath, L"%s\\%s", L"screens", m_szTestSurface);
-    pSurface->DrawBitmap(szPath, 0, 0);
-    m_szTestSurface[0] = 0;
-    return true;
-  }
-  */
   return false;
 }
 
-/////////////////////////////////////////////////////////////////////////////
-
-void
-SsTask_t::
-SetTestSurface(
-    wchar_t* pszPath)
-{
+void SsTask_t::SetTestSurface(wchar_t* pszPath) {
 	ASSERT(nullptr != pszPath);
 	wcscpy_s(m_szTestSurface, sizeof(m_szTestSurface), pszPath);
 }

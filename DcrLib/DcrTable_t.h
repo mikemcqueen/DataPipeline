@@ -17,7 +17,7 @@
 #include "ScreenTable_t.h"
 #include "ColorRange_t.h"
 
-class Rect_t;
+struct Rect_t;
 class Charset_t;
 class TextTable_i;
 

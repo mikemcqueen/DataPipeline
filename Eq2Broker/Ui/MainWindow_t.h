@@ -19,13 +19,13 @@
 //#include "Eq2LoginTypes.h"
 #include "DpMessage.h"
 
-class MainWindow_t : public Ui::Window::Base_t {
+class MainWindow_t : public Ui::Window::WithHandle_t {
 private:
   // TODO haxoid
   static Rect_t m_PopupRect;
 
 public:
-  MainWindow_t(bool bTest = false);
+  MainWindow_t();
 
   Broker::Window_t& GetBrokerWindow() const;
   Broker::Buy::Window_t& GetBrokerBuyWindow() const;
@@ -36,7 +36,6 @@ public:
 #endif
 
   // Ui::Window_t virtual:
-
   Ui::Window::Base_t& GetWindow(Ui::WindowId_t WindowId) const override;
 
   Ui::WindowId_t GetWindowId(
@@ -45,9 +44,11 @@ public:
 
   Ui::WindowId_t GetMessageWindowId(const DP::MessageId_t& messageId) const;
 
+  /*
   static const Rect_t& GetPopupRect() { return m_PopupRect; }
 
   static void SetPopupRect(const Rect_t& Rect) { m_PopupRect = Rect; }
+*/
 
 private:
   MainWindow_t(const MainWindow_t&);

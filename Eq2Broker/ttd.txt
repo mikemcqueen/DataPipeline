@@ -1,10 +1,7 @@
 
-add event:: namespace
-	event types inside this
 
 figure out the Class[] hack in DP::Message.
 string_view Class param?
-
 
 g_pDisplay
 
@@ -14,23 +11,44 @@ overall, clean up Dcr* of charset cruft
 DcrWindow.cpp, remove inline code from .h
 
 widget IDs as empty enum class + constexpr + MakeId
-review some of the enable_if/concepts ideas for restricting MakeId to specific types (WindowId_t, WidgetId_t, EventId_t, etc.)
+review some of the enable_if/concepts ideas for restricting MakeId to specific 
+types (WindowId_t, WidgetId_t, EventId_t, etc.)
 	maybe i can use typeid(T) == typeid(type1) || typeid(type2) etc.
 	probably need to use a magic value in the scoped enum to enable this.
 
-BrokerFrame *contains* a tab.  Tab is not a window type.
+BrokerFrame *contains* a (multiple) tab.  Tab is not a window type.
 TableWindow does not inherit from TabWidnow.  Tab is not a window type.
 
 cleanup TextTable_t.h
 
-I think the word transaction is wrong. State would also be wrong. This is a container for a set of states really.
-or a container for a state machine?
+I think the word transaction is wrong. State would also be wrong. This is a container
+for a set of states really.  or a container for a state machine?
 
 Move TableInfo_t.h to DcrLib. DcrTableTypes?
-DcrBase_t may still be necessary for Buy/Sell common table support.  Probably should name it differently.
-DcrTable_t::GetSelectedRow. member/accessor in DcrTable? two parts here: 1) translate 2) retrieve translated value in PostData.= {}
-Tesseract::End(). Tricky. We lose the type info. In theory we could capture the pTess pointer in a lambda callback supplied to
-constructor, to be called at destructor in Impl_t? seems a bit whacky
+
+DcrBase_t may still be necessary for Buy/Sell common table support.
+Probably should name it differently.
+
+DcrTable_t::GetSelectedRow. member/accessor in DcrTable? two parts here: 
+  1) translate
+  2) retrieve translated value in PostData.= {}
+    2a) answer: the selected row is part of the (translate) message. why is this hard?
+
+That godforsaken MainWindow that is passed around everywhere. Perhaps it should be a 
+Meyers singleton?
+
+Ui::Window:
+  --can be removed entirely:
+  * GetSsWindowRect
+  * GetTopWindow
+  * GetHwnd(windowId)
+  * all the clicky shit. Set/ClearWidgetText/Scroll.
+    think about how to structure this. should these methods even exist? aren't they
+	just click events that are sent from transactions?
+  --can be moved elsewhere:
+  * anything that takes a CSurface, yah?
+	
+Ui::Input is a namespace not a class.
 
 c++20: * == done(ish)
 	range_for (as_const? or just const auto) whereever const_iterator is defined. read up on as_const vs. const auto

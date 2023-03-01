@@ -53,26 +53,18 @@ namespace Ui::Window {
   ////////////////////////////////////////////////////////////////////////////
 
   class Base_t {
-  private:
-
-    const Base_t& m_ParentWindow;
-
-    WindowId_t         m_WindowId;
-    HWND               m_hMainWindow;
-    std::string       m_className;
-    std::string       m_windowName;
-    Flag_t             m_Flags;
-    Scroll::Position_t m_VertScrollPos;
-    Scroll::Position_t m_HorzScrollPos;
-    POINT              m_ptLastOrigin;
-    std::vector<Widget::Data_t> widgets_;
-
+    /*
+      public:
+        static Ui::Scroll::Position_t GetVertScrollPos(
+          const CSurface& Surface,
+          const Rect_t& ScrollUpRect,
+          const Rect_t& ScrollDownRect);
+    */
   public:
-
     Base_t(
       WindowId_t  WindowId,
       string_view className,
-      string_view windowName, //= wstring_view{},
+      string_view windowName,
       Flag_t      Flags = 0);
 
     Base_t(
@@ -88,15 +80,9 @@ namespace Ui::Window {
     Base_t(const Base_t&) = delete;
     const Base_t& operator=(const Base_t&) = delete;
 
-    // Ui::Window::Base_t virtual:
-
-    virtual HWND GetSsWindowRect(RECT& Rect) const;
-
-    virtual HWND GetHwnd(WindowId_t /*Id*/) const { return m_hMainWindow; }
-
-    virtual Handle_t GetTopWindow() const {
-      return Handle_t(m_hMainWindow, m_WindowId);
-    }
+    //    HWND GetSsWindowRect(RECT& Rect) const;
+    //    HWND GetHwnd(WindowId_t /*Id*/) const { return m_hMainWindow; }
+    //    Handle_t GetTopWindow() const { return Handle_t(m_hMainWindow, m_WindowId); }
 
     virtual Ui::Window::Base_t& GetWindow(Ui::WindowId_t WindowId) const;
 
@@ -130,22 +116,6 @@ namespace Ui::Window {
       const CSurface& surface,
       Rect_t& rect) const;
 
-    bool ClickWidget(
-      WidgetId_t WidgetId,
-      bool    bDirect = false,
-      const Rect_t* pRect = nullptr) const;
-
-    bool SetWidgetText(
-      WidgetId_t    WidgetId,
-      const std::wstring& text,
-      bool          bDirect = false) const;
-
-    bool ClearWidgetText(
-      WidgetId_t widgetId,
-      size_t     count) const;
-
-    const Widget::Data_t& GetWidgetData(WidgetId_t widgetId) const;
-
     bool GetWidgetRect(
       Ui::WidgetId_t  WidgetId,
       const Rect_t& RelativeRect,
@@ -162,33 +132,11 @@ namespace Ui::Window {
       return m_WindowId;
     }
 
-    HWND GetHwnd() const { return m_hMainWindow; }
+    //    HWND GetHwnd() const { return m_hMainWindow; }
 
     const char* GetWindowName() const { return m_windowName.c_str(); }
 
     Flag_t GetFlags() const { return m_Flags; }
-
-    Scroll::Position_t GetScrollPosition(Scroll::Bar_t ScrollBar) const {
-      // TODO: Lock
-      using namespace Scroll::Bar;
-      return (Vertical == ScrollBar) ? m_VertScrollPos : m_HorzScrollPos;
-    }
-
-    void SetScrollPosition(
-      Scroll::Bar_t      ScrollBar,
-      Scroll::Position_t ScrollPos)
-    {
-      // TODO: Lock
-      using namespace Scroll::Bar;
-      if (Vertical == ScrollBar) {
-        m_VertScrollPos = ScrollPos;
-      }
-      else {
-        m_HorzScrollPos = ScrollPos;
-      }
-    }
-
-    bool Scroll(Scroll::Direction_t Direction) const; // ,size_t Count)
 
     bool ValidateBorders(
       const CSurface& Surface,
@@ -210,7 +158,7 @@ namespace Ui::Window {
       const CSurface& Surface,
       const Rect_t& RelativeRect) const;
 
-    void GetWindowRect(Rect_t& Rect) const;
+//    void GetWindowRect(Rect_t& Rect) const;
 
     bool FindOrigin(
       const CSurface& Surface,
@@ -233,11 +181,80 @@ namespace Ui::Window {
 
     const Base_t& GetParent() const { return m_ParentWindow; }
 
+  private:
+    const Base_t& m_ParentWindow;
+    WindowId_t    m_WindowId;
+    std::string   m_windowName;
+    Flag_t        m_Flags;
+    POINT         m_ptLastOrigin;
+    std::vector<Widget::Data_t> widgets_;
+  };
+
+  class WithHandle_t : public Base_t {
   public:
-    static Ui::Scroll::Position_t GetVertScrollPos(
-      const CSurface& Surface,
-      const Rect_t& ScrollUpRect,
-      const Rect_t& ScrollDownRect);
+    WithHandle_t(
+      WindowId_t WindowId,
+      std::string_view class_name,
+      std::string_view window_name,
+      Flag_t Flags = 0);
+
+    HWND Hwnd() const { return hwnd_; }
+    void GetClientRect(Rect_t& rect) const { ::GetClientRect(hwnd_, &rect); }
+    bool IsVisibleTopWindow() const;
+
+    HWND SyncHwnd() const;
+    HWND SyncHwndGetClientRect(Rect_t& rect) const;
+
+    bool ClickWidget(
+      Base_t& Window,
+      WidgetId_t WidgetId,
+      bool    bDirect = false,
+      const Rect_t* pRect = nullptr) const;
+
+#if 0
+    bool SetWidgetText(
+      WidgetId_t    WidgetId,
+      const std::wstring& text,
+      bool          bDirect = false) const;
+
+    bool ClearWidgetText(
+      WidgetId_t widgetId,
+      size_t     count) const;
+
+    const Widget::Data_t& GetWidgetData(WidgetId_t widgetId) const;
+
+    bool Scroll(Scroll::Direction_t Direction) const; // ,size_t Count)
+
+    Scroll::Position_t GetScrollPosition(Scroll::Bar_t ScrollBar) const {
+      // TODO: Lock
+      using namespace Scroll::Bar;
+      return (Vertical == ScrollBar) ? m_VertScrollPos : m_HorzScrollPos;
+    }
+
+    void SetScrollPosition(
+      Scroll::Bar_t      ScrollBar,
+      Scroll::Position_t ScrollPos)
+    {
+      // TODO: Lock
+      using namespace Scroll::Bar;
+      if (Vertical == ScrollBar) {
+        m_VertScrollPos = ScrollPos;
+      }
+      else {
+        m_HorzScrollPos = ScrollPos;
+      }
+    }
+#endif
+
+  private:
+    HWND FindWindow(std::string_view class_name) const;
+    HWND FindWindow() const { return FindWindow(class_name_); }
+
+    std::string  class_name_;
+    mutable HWND hwnd_;
+
+    //Scroll::Position_t m_VertScrollPos = Scroll::Position::Unknown;
+    //Scroll::Position_t m_HorzScrollPos = Scroll::Position::Unknown;
   };
 } // namespace Ui::Window
 

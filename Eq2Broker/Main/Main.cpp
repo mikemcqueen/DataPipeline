@@ -121,7 +121,6 @@ ProcessCommandLine(
       break;
     }
   }
-
   return 1;
 }
 

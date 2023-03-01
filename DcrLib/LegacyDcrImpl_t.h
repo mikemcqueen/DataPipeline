@@ -44,12 +44,11 @@
 // is believed to be a DCR_LEFT_OVERLAP character.
 #define DCR_S_ADJACENT_LEFT_OVERLAP	    0x00000002
 
-class Rect_t;
+struct Rect_t;
 class Charset_t;
 class CSurface;
 class TextTable_i;
 class TableInfo_t;
-class Charset_t;
 
 class LegacyDcrImpl_t final
 {

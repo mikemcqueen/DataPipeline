@@ -28,15 +28,12 @@ namespace Broker
 {
 
 const TrWindowType_t::FnGetWindowId_t TrWindowType_t::s_brokerFunc   = &TrWindowType_t::GetBrokerWindowId;
-const TrWindowType_t::FnGetWindowId_t TrWindowType_t::s_mainChatFunc = &TrWindowType_t::GetMainChatWindowId;
 
 const TrWindowType_t::FnGetWindowId_t TrWindowType_t::s_windowIdFuncs[] = {
   &TrWindowType_t::GetBrokerWindowId
 //    &TrWindowType_t::GetLogonWindowId,
 //    &TrWindowType_t::GetOtherWindowId,
 };
-
-////////////////////////////////////////////////////////////////////////////////
 
 TrWindowType_t::TrWindowType_t(MainWindow_t& mainWindow) :
   m_mainWindow(mainWindow),
@@ -55,25 +52,25 @@ HRESULT TrWindowType_t::MessageHandler(const DP::Message::Data_t* pMessage) {
   }
   auto& ssData = *static_cast<const SsWindow::Acquire::Data_t*>(pMessage);
   using namespace Ui::Window;
-  // If the acquire handler didn't initialize the Window Id
-  if (Id::Unknown == ssData.WindowId) {
-    // Try to determine the Window Id by looking at the screenshot bits
-    Ui::WindowId_t windowId = GetWindowId(*ssData.pPoolItem->get());
-    // If we determined a valid Window Id, hack the id into the message
-    if (Id::Unknown != windowId) {
-      LogInfo(L"TrWindowType_t::MessageHandler() Matched window Id(%d) Name(%S)", windowId,
-        m_mainWindow.GetWindow(windowId).GetWindowName());
-      const_cast<SsWindow::Acquire::Data_t&>(ssData).WindowId = windowId;
-      return S_OK;
+  assert(Id::Unknown == ssData.WindowId);
+
+  // Try to determine the Window Id by looking at the screenshot bits
+  Ui::WindowId_t windowId = GetWindowId(*ssData.pPoolItem->get());
+  // If we determined a valid Window Id, hack the id into the message
+  if (Id::Unknown != windowId) {
+    LogInfo(L"TrWindowType_t::MessageHandler() Matched window Id(%d) Name(%S)", windowId,
+      m_mainWindow.GetWindow(windowId).GetWindowName());
+    const_cast<SsWindow::Acquire::Data_t&>(ssData).WindowId = windowId;
+    // update last window id
+    if (m_lastWindowId != windowId) {
+      m_lastWindowId = windowId;
+      LogAlways(L"Window(%S)", GetWindowName(windowId));
     }
-    LogInfo(L"TrWindowType_t: Unknown WindowId");
-    // Can't determine the Window Id, give up on translating this message
-    return E_ABORT;
+    return S_OK;
   }
-  LogInfo(L"TrWindowType_t::MessageHandler() Already set window Id(%d) Name(%S)", ssData.WindowId,
-    m_mainWindow.GetWindow(ssData.WindowId).GetWindowName());
-  // Acquire handler set Window Id, we didn't handle this message
-  return S_FALSE;
+  LogInfo(L"TrWindowType_t: Unknown WindowId - aborting further handler processing");
+  // Can't determine the Window Id, give up on processini this message
+  return E_ABORT;
 }
 
 Ui::WindowId_t TrWindowType_t::GetWindowId(const CSurface& surface) const {
@@ -82,24 +79,11 @@ Ui::WindowId_t TrWindowType_t::GetWindowId(const CSurface& surface) const {
   if (nullptr != m_lastWindowIdFunc) {
     windowId = (this->*m_lastWindowIdFunc)(surface, Locate::CompareLastOrigin);
   }
-  if ((Id::Unknown == windowId) || (Window::Id::MainChat == windowId)) {
+  if (Id::Unknown == windowId) {
     windowId = CompareAllLastOrigins(surface);
-    if (Window::Id::MainChat == windowId) {
-      Ui::WindowId_t loggedInWindowId = SearchLoggedInWindows(surface);
-      if (Id::Unknown != loggedInWindowId) {
-        windowId = loggedInWindowId;
-      }
-    }
-    else {
+    if (Id::Unknown == windowId) {
       windowId = SearchAllWindows(surface);
     }
-    if (Window::Id::MainChat == windowId) {
-      m_lastWindowIdFunc = s_mainChatFunc;
-    }
-  }
-  if (m_lastWindowId != windowId) {
-    m_lastWindowId = windowId;
-    LogAlways(L"Window(%S)", GetWindowName(windowId));
   }
   return windowId;
 }
@@ -109,7 +93,8 @@ Ui::WindowId_t TrWindowType_t::CompareAllLastOrigins(const CSurface& surface) co
   Ui::WindowId_t windowId = Id::Unknown;
   // first, check 'last origin' of all windows for the supplied bitmap
   for (int func = 0; func < _countof(s_windowIdFuncs); ++func) {
-    // TODO: optimization: if mainchat = windowid due to it being lastWindowIdFunc, 
+    // TODO: optimization: if main
+    // chat = windowid due to it being lastWindowIdFunc, 
     // only check 'logged in' window (currently only brokerwindow)
     if (s_windowIdFuncs[func] != m_lastWindowIdFunc) {
       windowId = (this->*s_windowIdFuncs[func])(surface, Locate::CompareLastOrigin);
@@ -119,14 +104,8 @@ Ui::WindowId_t TrWindowType_t::CompareAllLastOrigins(const CSurface& surface) co
       }
     }
   }
-  // if no match, check for the 'main chat' window at last origin
-  if ((Id::Unknown == windowId) && (m_lastWindowIdFunc != s_mainChatFunc)) {
-    windowId = (this->*s_mainChatFunc)(surface, Locate::CompareLastOrigin);
-  }
   return windowId;
 }
-
-////////////////////////////////////////////////////////////////////////////////
 
 Ui::WindowId_t TrWindowType_t::SearchLoggedInWindows(const CSurface& surface) const {
   // check all 'logged in' windows (currently only broker window)
@@ -148,14 +127,8 @@ Ui::WindowId_t TrWindowType_t::SearchAllWindows(const CSurface& surface) const {
       break;
     }
   }
-  // all searches failed; search for 'main chat' as last resort
-  if (Id::Unknown == windowId) {
-    windowId = (this->*s_mainChatFunc)(surface, Locate::Search);
-  }
   return windowId;
 }
-
-////////////////////////////////////////////////////////////////////////////////
 
 const char* TrWindowType_t::GetWindowName(Ui::WindowId_t windowId) const {
   const char* pName = "Error";
@@ -169,8 +142,6 @@ const char* TrWindowType_t::GetWindowName(Ui::WindowId_t windowId) const {
   }
   return pName;
 }
-
-////////////////////////////////////////////////////////////////////////////////
 
 Ui::WindowId_t
 TrWindowType_t::
@@ -186,8 +157,6 @@ GetLogonWindowId(
     return m_mainWindow.GetWindow(windowId).IsLocatedOn(surface, flags) ?
                windowId : Ui::Window::Id::Unknown;
 }
-
-////////////////////////////////////////////////////////////////////////////////
 
 Ui::WindowId_t
 TrWindowType_t::
@@ -208,8 +177,6 @@ GetOtherWindowId(
   return Ui::Window::Id::Unknown;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-
 Ui::WindowId_t TrWindowType_t::GetBrokerWindowId(
   const CSurface& surface,
   Flag_t flags) const
@@ -223,16 +190,6 @@ Ui::WindowId_t TrWindowType_t::GetBrokerWindowId(
     }
   }
   return windowId;
-}
-
-Ui::WindowId_t TrWindowType_t::GetMainChatWindowId(
-  const CSurface& surface,
-  Flag_t    flags) const
-{
-  if (m_mainWindow.GetWindow(Window::Id::MainChat).IsLocatedOn(surface, flags)) {
-    return Window::Id::MainChat;
-  }
-  return Ui::Window::Id::Unknown;
 }
 
 } // namespace Broker

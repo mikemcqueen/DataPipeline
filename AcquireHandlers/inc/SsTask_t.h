@@ -26,10 +26,9 @@
 class PipelineManager_t;
 class CDisplay;
 class CSurface;
+struct Rect_t;
 
-class SsTask_t :
-  public DP::Handler_t
-{
+class SsTask_t : public DP::Handler_t {
   inline static const size_t DefaultDelayMs = 300;
   inline static const size_t DefaultPoolSize = 3;
 
@@ -39,70 +38,31 @@ class SsTask_t :
 
 public:
 
-  static DP::MessageId_t
-    GetMessageId() {
+  static DP::MessageId_t GetMessageId() {
     ASSERT(DP::Message::Id::Unknown != s_MessageId);
     return s_MessageId;
   }
 
-private:
-
-  CDisplay& m_Display;
-  size_t      m_SurfaceWidth;
-  size_t      m_SurfaceHeight;
-  size_t      m_DelayMs;
-  size_t      m_PoolSize;
-
-  CAutoHandle m_hThread;
-  CAutoHandle m_hExitEvent;
-  CAutoHandle m_hSuspendEvent;
-  CAutoHandle m_hSuspendNotifyEvent;
-  CAutoHandle m_hEvent;
-  CAutoHandle m_hTimer;
-
-  DWORD             m_dwThreadId;
-
-  mutable LONG    m_lSuspended;
-  mutable LONG    m_lSuspendCount;
-
-  pool<CSurface>     m_Pool;
-
-  mutable volatile
-    LONG              m_lEventPending;
-  std::vector<char> m_EventData;
-  size_t            m_EventCount;
-
-  wchar_t m_szTestSurface[MAX_PATH];
+  using GetWindowFn_t = std::function<HWND(Rect_t&)>;
 
 public:
-
-  explicit
-    SsTask_t(
+  explicit SsTask_t(
       CDisplay& Display,
       size_t    SurfaceWidth,
       size_t    SurfaceHeight,
+      GetWindowFn_t fnGetWindow,
       size_t    PoolSize = DefaultPoolSize,
       size_t    DelayMs = DefaultDelayMs);
 
-  virtual
-    ~SsTask_t();
+  virtual ~SsTask_t();
 
-  //
   // DP::Handler_t virtual
-  //
-
   bool Initialize(const wchar_t* pszClass) override;
-
   HRESULT EventHandler(DP::Event::Data_t& Data) override;
 
-  //
   // SsTask_t virtual
-  //
-
-  virtual HWND GetSsWindowRect(RECT& rcBounds) const = 0;
-
+//  virtual HWND GetSsWindowRect(RECT& rcBounds) const = 0;
   virtual void ThreadProcessEvent() = 0;
-
   virtual void PostData(HWND hWnd, pool<CSurface>::item_t* pPoolItem) = 0;
 
 protected:
@@ -147,7 +107,7 @@ private:
     size_t        cy,
     size_t        Count);
 
-  HRESULT InitSurfacePool(size_t Size);
+  //HRESULT InitSurfacePool(size_t Size);
   pool<CSurface>& GetSurfacePool() { return m_Pool; }
   pool<CSurface>::item_t* GetAvailableSurface();
 
@@ -164,19 +124,41 @@ private:
   static DWORD WINAPI ThreadFunc(void* pvParam);
 
 private:
-
   SsTask_t() = delete;
   SsTask_t(const SsTask_t&) = delete;
   SsTask_t& operator=(const SsTask_t&) = delete;
+
+  CDisplay& m_Display;
+  size_t      m_SurfaceWidth;
+  size_t      m_SurfaceHeight;
+  size_t      m_DelayMs;
+  size_t      m_PoolSize;
+
+  CAutoHandle m_hThread;
+  CAutoHandle m_hExitEvent;
+  CAutoHandle m_hSuspendEvent;
+  CAutoHandle m_hSuspendNotifyEvent;
+  CAutoHandle m_hEvent;
+  CAutoHandle m_hTimer;
+
+  DWORD       m_dwThreadId;
+
+  mutable LONG m_lSuspended;
+  mutable LONG m_lSuspendCount;
+
+  pool<CSurface> m_Pool;
+
+  mutable LONG m_lEventPending;
+  std::vector<char> m_EventData;
+  size_t        m_EventCount;
+
+  GetWindowFn_t m_fnGetWindow;
+
+  wchar_t m_szTestSurface[MAX_PATH];
 };
 
-/////////////////////////////////////////////////////////////////////////////
-
 namespace SsTask::Acquire {
-
-  struct Data_t :
-    public DP::Message::Data_t
-  {
+  struct Data_t : public DP::Message::Data_t {
     pool<CSurface>::item_t* pPoolItem;
 
     static void ReleaseFn(DP::Message::Data_t&);
@@ -184,8 +166,7 @@ namespace SsTask::Acquire {
     Data_t(
       const wchar_t* pClass,
       pool<CSurface>::item_t* InitPoolItem,
-      size_t Size = sizeof(Data_t))
-      :
+      size_t Size = sizeof(Data_t)) :
       DP::Message::Data_t(
         DP::Stage_t::Acquire,
         SsTask_t::GetMessageId(),
