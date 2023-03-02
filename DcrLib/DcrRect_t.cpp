@@ -11,8 +11,7 @@
 #include "Macros.h"
 #include "Rect.h"
 #include "CommonTypes.h"
-
-/////////////////////////////////////////////////////////////////////////////
+#include "Timer_t.h"
 
 DcrRect_t::
 DcrRect_t(
@@ -27,8 +26,6 @@ DcrRect_t(
     m_highBkColor(highBkColor)
 { }
 
-/////////////////////////////////////////////////////////////////////////////
-
 bool
 DcrRect_t::
 TranslateSurface(
@@ -36,15 +33,16 @@ TranslateSurface(
     const Rect_t& rect)
 {
     LogInfo(L"DcrRect_t::TranslateSurface (%d)", id());
-#if 1
+#if 0
     static std::unordered_map<int, bool> firstTime;
     if (!firstTime.contains(id())) {
         pSurface->WriteBMP(std::format(L"diag\\DcrRect_{}.bmp", id()).c_str(), rect);
         firstTime[id()] = true;
     }
 #endif
+    Timer_t t("DcrRect_t::GetText");
     text_ = impl().GetText(pSurface, rect);
+    t.done();
     LogInfo(L"DcrRect_t(%d): %S", id(), text_.c_str());
     return true;
 }
-

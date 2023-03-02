@@ -15,7 +15,7 @@
 
 namespace Broker::Buy {
 
-static const Flag_t WindowFlags;
+constexpr Flag_t kWindowFlags;
 
 constexpr POINT BrokerDefaultTabOffset{ -55, 41 }; // Broker Buy
 constexpr POINT BrokerDefaultTableOffset{ -12, 102 };
@@ -41,7 +41,7 @@ Window_t::Window_t(const Ui::Window_t& parent) :
     parent,
     kWindowName,
     {},
-    WindowFlags,
+    kWindowFlags,
     std::span{ Widgets },
     BrokerDefaultTableOffset,
     InnerTableRect,

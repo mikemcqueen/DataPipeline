@@ -13,6 +13,8 @@
 #ifndef Include_EQ2BROKER_T_H
 #define Include_EQ2BROKER_T_H
 
+#include "Pool.h"
+
 //#include "BrokerUi.h"
 //#include "UiTypes.h"
 //#include "MainWindow_t.h"
@@ -68,6 +70,7 @@ private:
   bool CmdCharacter(const wchar_t* pszCmd);
 
   void LoadAndSendTestImage(const wstring& testImagePath);
+  void PostSurfaceItem(pool<CSurface>* pPool, std::wstring_view testImagePath);
 
 private:
   MainWindow_t& mainWindow_;

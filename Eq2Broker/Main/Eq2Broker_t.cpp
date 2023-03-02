@@ -240,28 +240,26 @@ CmdControl(
     return false;
 }
 
-void Eq2Broker_t::LoadAndSendTestImage(const wstring& testImagePath) {
-  LogInfo(L"Loading and processing test image: %s", testImagePath.c_str());
-
+void Eq2Broker_t::PostSurfaceItem(pool<CSurface>* pPool, std::wstring_view testImagePath) {
   extern CDisplay* g_pDisplay;
 
   CSurface* pSurface = new CSurface();
-  HRESULT hr = g_pDisplay->CreateSurfaceFromBitmap(pSurface, testImagePath.c_str());
+  HRESULT hr = g_pDisplay->CreateSurfaceFromBitmap(pSurface, testImagePath.data());
   if (FAILED(hr)) {
     throw invalid_argument("CreateSurfaceFromBitmap failed");
   }
-  // TODO: pool leaks.
-  pool<CSurface>* pPool = new pool<CSurface>();
-  pPool->reserve(1);
   pool<CSurface>::item_t item(pPool, pSurface);
   item.addref();
   pPool->add(item);
   m_pImpl->m_SsWindow.PostData(nullptr, pPool->get_unused());
 }
 
-/*
-Ui::Window_t& Eq2Broker_t::GetWindow(Ui::WindowId_t windowId) {
-  return mainWindow_.GetWindow(windowId);
-}
-*/
+void Eq2Broker_t::LoadAndSendTestImage(const wstring& testImagePath) {
+  LogInfo(L"Loading and processing test image: %s", testImagePath.c_str());
+  // TODO: pool leaks.
+  pool<CSurface>* pPool = new pool<CSurface>();
+  pPool->reserve(2);
 
+  PostSurfaceItem(pPool, testImagePath);
+  PostSurfaceItem(pPool, testImagePath);
+}

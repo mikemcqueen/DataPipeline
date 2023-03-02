@@ -9,6 +9,10 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseDLL|Win32">
+      <Configuration>ReleaseDLL</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
@@ -41,6 +45,13 @@
     <UseOfMfc>Dynamic</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDLL|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
@@ -51,6 +62,9 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DebugDLL|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDLL|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
@@ -75,6 +89,18 @@
     <CodeAnalysisRuleAssemblies />
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\build\inc;$(VCPKG)\installed\x86-windows\include</IncludePath>
     <GenerateManifest>false</GenerateManifest>
+    <ExecutablePath>$(VC_ExecutablePath_x86);$(VCPKG)\installed\x86-windows\debug\bin;$(CommonExecutablePath)</ExecutablePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDLL|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules />
+    <CodeAnalysisRuleAssemblies />
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\build\inc;$(VCPKG)\installed\x86-windows\include</IncludePath>
+    <GenerateManifest>false</GenerateManifest>
+    <ExecutablePath>$(VC_ExecutablePath_x86);$(VCPKG)\installed\x86-windows\bin;$(CommonExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
@@ -102,6 +128,8 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <CompileAsManaged>false</CompileAsManaged>
+      <CompileAsWinRT>false</CompileAsWinRT>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ddraw.lib;dxguid.lib;odbc32.lib;comctl32.lib;tesseract52d.lib;org.sw.demo.danbloomberg.leptonica-1.82.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -133,6 +161,8 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <CompileAsManaged>false</CompileAsManaged>
+      <CompileAsWinRT>false</CompileAsWinRT>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ddraw.lib;dxguid.lib;odbc32.lib;comctl32.lib;tesseract53d.lib;leptonica-1.83.1d.lib;tiffd.lib;libpng16d.lib;archive.lib;jpeg.lib;libwebp.lib;zstd.lib;lzma.lib;zlibd.lib;gif.lib;openjp2.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -151,6 +181,47 @@
       <Command>$(SolutionDir)\Deploy.cmd</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDLL|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories>$(SolutionDir);Main;BrokerBuy;BrokerSell;SetPrice;BrokerSell;SetPrice;Db;Ui;..\CommonUtils;..\Ui;..\DcrLib;..\PipelineManager;..\Accounts;..\TranslateHandlers\inc;..\AcquireHandlers\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level4</WarningLevel>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <PreprocessorDefinitions>_UNICODE;UNICODE;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <CompileAsManaged>false</CompileAsManaged>
+      <CompileAsWinRT>false</CompileAsWinRT>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>ddraw.lib;dxguid.lib;odbc32.lib;comctl32.lib;tesseract53.lib;leptonica-1.83.1.lib;tiff.lib;libpng16.lib;archive.lib;jpeg.lib;libwebp.lib;zstd.lib;lzma.lib;zlib.lib;gif.lib;openjp2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>build\lib;$(VCPKG)\installed\x86-windows\lib</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>UseFastLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+    </Link>
+    <PostBuildEvent>
+      <Message>copy fake exe</Message>
+      <Command>$(SolutionDir)\Deploy.cmd</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <AdditionalIncludeDirectories>$(SolutionDir);Main;BrokerBuy;BrokerSell;SetPrice;Db;Ui;..\CommonUtils;..\Ui;..\DcrLib;..\PipelineManager;..\Accounts;..\TranslateHandlers\inc;..\AcquireHandlers\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -163,6 +234,8 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <CompileAsManaged>false</CompileAsManaged>
+      <CompileAsWinRT>false</CompileAsWinRT>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ddraw.lib;dxguid.lib;odbc32.lib;comctl32.lib;tesseract52.lib;leptonica-1.82.0.lib;jpeg.lib;tiff.lib;libcurl.lib;libpng16.lib;bz2.lib;lzma.lib;zstd.lib;iconv.lib;libcrypto.lib;libssl.lib;lz4.lib;openjp2.lib;turbojpeg.lib;webp.lib;webpdemux.lib;webpdecoder.lib;zlib.lib;archive.lib;gif.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -193,6 +266,7 @@
     <ClCompile Include="Main\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugDLL|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseDLL|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Main\TrWindowType.cpp" />

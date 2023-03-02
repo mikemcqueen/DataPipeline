@@ -16,23 +16,13 @@ types (WindowId_t, WidgetId_t, EventId_t, etc.)
 	maybe i can use typeid(T) == typeid(type1) || typeid(type2) etc.
 	probably need to use a magic value in the scoped enum to enable this.
 
-TableWindow should not inherit from TabWidnow. A window contains a table,
-it not *is a* table.
-
-cleanup TextTable_t.h
+TableWindow should not inherit from TabWindow. A window *has a* a table,
+not *is a* table.
 
 I think the word transaction is wrong. State would also be wrong. This is a container
 for a set of states really.  or a container for a state machine?
 
 Move TableInfo_t.h to DcrLib. DcrTableTypes?
-
-DcrBase_t may still be necessary for Buy/Sell common table support.
-Probably should name it differently.
-
-DcrTable_t::GetSelectedRow. member/accessor in DcrTable? two parts here: 
-  1) translate
-  2) retrieve translated value in PostData.= {}
-    2a) answer: the selected row is part of the (translate) message. why is this hard?
 
 Ui::Window:
   --can be moved elsewhere:
@@ -46,6 +36,11 @@ with special Timing log level?
 Try release build after timing.
 
 saw weird "out of pool items (71)" error.  71?  WTF? I know tesseract is slow but jeez.
+
+Probably want TiBroker* to do some text massaging. that means a co-routine-loop sourced
+synchronous screenshot will want to "translate" then "interpret". and there will probably
+be some commonality between TiBrokerBuy, TiBrokerSell. price text for example
+
 	
 c++20: * == done(ish)
 	range_for (as_const? or just const auto) whereever const_iterator is defined. read up on as_const vs. const auto

@@ -17,7 +17,7 @@
 namespace Broker::Sell::Translate {
   constexpr Rect_t TextRects[Table::ColumnCount] = {
     { 2, 28, // first gap + quantitytexttop 
-      2 + Table::PixelColumnWidths[0] + 2, 28 + 12}, // first gap + width + fudge, quantitytexttop + quantitytextheight
+      2 + Table::PixelColumnWidths[0] + 2, 28 + 12 }, // first gap + width + fudge, quantitytexttop + quantitytextheight
 
     { 2 + Table::PixelColumnWidths[0], 0,  // first gap + first column pixel width
       2 + Table::PixelColumnWidths[0] + Table::PixelColumnWidths[1],

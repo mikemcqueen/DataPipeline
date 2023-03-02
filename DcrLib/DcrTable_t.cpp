@@ -12,6 +12,7 @@
 #include "Charset_t.h"
 #include "TextTable_t.h"
 #include "Rect.h"
+#include "Timer_t.h"
 
 DcrTable_t::DcrTable_t(
   int id,
@@ -34,19 +35,24 @@ bool DcrTable_t::Initialize() {
     LogError(L"Empty columnRects");
     return false;
   }
-  /*
+#if 0
   columnSurfaces_ = InitColumnSurfaces(columnRects_);
   if (columnSurfaces_.size() != columnRects_.size()) {
       LogError(L"Column surface count mismatch");
       return false;
   }
-  */
+#endif
   return true;
 }
 
 bool DcrTable_t::TranslateSurface(CSurface* pSurface, const Rect_t& rcSurface) {
   LogInfo(L"Dcr::Table_t::TranslateSurface");
+  auto start = std::chrono::high_resolution_clock::now();
+
+  Timer_t t("DcrTable_t::ReadTable");
   auto rowCount = ReadTable(pSurface, rcSurface, pTextTable_);
+  t.done();
+
   if (0 == rowCount) {
     LogInfo(L"ReadTable(): Table is empty.");
     selected_row_ = nullopt;
@@ -88,7 +94,7 @@ optional<int> DcrTable_t::GetSelectedRow(
       }
       selectedRow.emplace(row);
     }
-    surface.SlowRectangle(&selectRect, RGB(255, 0, 0));
+    //surface.SlowRectangle(&selectRect, RGB(255, 0, 0));
     ::OffsetRect(&selectRect, 0, rowHeight);
   }
   return selectedRow;

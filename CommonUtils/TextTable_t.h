@@ -696,8 +696,7 @@ public:
   protected:
     friend class NewTextTableData_t;
 
-    void
-      init(std::span<const int> charsPerColumn) {
+    void init(std::span<const int> charsPerColumn) {
       auto row = std::span{ text };
       auto start = 0;
       for (size_t i = 0; i < charsPerColumn.size(); ++i) {

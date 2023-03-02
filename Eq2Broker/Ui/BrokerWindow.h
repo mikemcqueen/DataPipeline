@@ -27,8 +27,6 @@ namespace Broker { //TODO: ::Frame {
     explicit Window_t(const Ui::Window_t& parent);
 
     // Ui::Window_t virtual:
-    //Ui::Window::Base_t& GetWindow(Ui::WindowId_t windowId) const override;
-
     Ui::WindowId_t GetWindowId(
       const CSurface& Surface,
       const POINT* pptHint = nullptr) const override;
@@ -42,8 +40,6 @@ namespace Broker { //TODO: ::Frame {
       const CSurface& surface,
       Rect_t& rect) const override;
 
-    // 
-
     Tab_t FindActiveTab(
       const CSurface& Surface,
       const POINT    ptOrigin,
@@ -55,16 +51,6 @@ namespace Broker { //TODO: ::Frame {
 
     auto& GetBrokerBuyWindow() const { return buy_window_; }
     auto& GetBrokerSellWindow() const { return sell_window_; }
-/*
-    auto& GetBrokerBuyWindow() const { return broker_buy_; }
-    using namespace Broker::Window;
-      return dynamic_cast<const Buy::Window_t&>(GetWindow(Id::BrokerBuy));
-    }
-    const Sell::Window_t& GetBrokerSellWindow() const {
-      using namespace Broker::Window;
-      return dynamic_cast<const Sell::Window_t&>(GetWindow(Id::BrokerBuy));
-    }
-*/
 
   private:
     void LoadSurfaces();

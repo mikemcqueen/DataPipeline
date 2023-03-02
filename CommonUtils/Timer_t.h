@@ -9,94 +9,40 @@
 
 #include "Log.h"
 
-class Timer_t final
-{
+class Timer_t final {
+public:
+  using TimePoint = std::chrono::time_point<std::chrono::steady_clock,
+    std::chrono::duration<double>>;
+
+  explicit Timer_t(std::string_view msg, bool log_now = false) :
+    msg_(msg)
+  {
+    using namespace std::chrono;
+    start_ = high_resolution_clock::now();
+    if (log_now) {
+      LogInfo(L"++%S", msg_.data());
+    }
+    done_ = false;
+  }
+
+  ~Timer_t() {
+    done();
+  }
+
+  void done() {
+    if (!done_) {
+      using namespace std::chrono;
+      auto end = high_resolution_clock::now();
+      double elapsed = 1e-6 * duration_cast<nanoseconds>(end - start_).count();
+      LogInfo(L"%S, elapsed: %.2fms", msg_.data(), elapsed);
+      done_ = true;
+    }
+  }
 
 private:
-
-    std::wstring strText;
-    FILETIME     FileTime;
-
-public:
-
-    explicit
-    Timer_t(
-        const wchar_t* pszText = L"Timer_t",
-        bool           bLogNow = true)
-        :
-        strText(pszText)
-    {
-        Now(FileTime);
-        if (bLogNow)
-        {
-            LogAlways(L"++%ls", strText.c_str());
-        }
-    }
-
-    ~Timer_t()
-    {
-        Show();
-    }
-
-    static
-    const FILETIME&
-    Now(
-        FILETIME& ft)
-    {
-        SYSTEMTIME st;
-        GetSystemTime(&st);
-        SystemTimeToFileTime(&st, &ft);
-        return ft;
-    }
-
-    size_t
-    Diff()
-    {
-        FILETIME ft;
-        Now(ft);
-        LARGE_INTEGER lNow;
-        lNow.LowPart =  ft.dwLowDateTime;
-        lNow.HighPart = ft.dwHighDateTime;
-        LARGE_INTEGER lThen;
-        lThen.LowPart =  FileTime.dwLowDateTime;
-        lThen.HighPart = FileTime.dwHighDateTime;
-        FileTime = ft;
-        return (size_t)((lNow.QuadPart - lThen.QuadPart) / 10000000);
-    }
-
-    void
-    Show(const wchar_t* pszText = nullptr,
-               bool     bAlways = false)
-    {
-        size_t diff = Diff();
-        if (nullptr == pszText)
-        {
-            if (bAlways)
-                LogAlways(L"--%ls: %d seconds", strText.c_str(), diff);
-            else
-                LogInfo(L"--%ls: %d seconds", strText.c_str(), diff);
-        }
-        else
-        {
-            if (bAlways)
-                LogAlways(L"%ls: %d seconds", pszText, diff);
-            else
-                LogInfo(L"%ls: %d seconds", pszText, diff);
-        }
-    }
-
-    void
-    Set(const FILETIME& Time)
-    {
-        FileTime = Time;
-    }
-
-    void
-    Set()
-    {
-        Now(FileTime);
-    }
-
+  TimePoint start_;
+  std::string_view msg_;
+  bool done_ = true;
 };
 
 #endif // Include_TIMER_T_H

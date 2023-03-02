@@ -16,7 +16,7 @@
 #include "Log.h"
 
 namespace Broker::Sell {
-  const Flag_t WindowFlags = Ui::Window::Flag::VerticalScroll;
+  constexpr Flag_t kWindowFlags = Ui::Window::Flag::VerticalScroll;
 
   constexpr POINT  BrokerDefaultTabOffset = { -3,  41 };
   constexpr POINT  BrokerTabToTableOffset = { -66, 178 };
@@ -50,7 +50,7 @@ namespace Broker::Sell {
       parent,
       kWindowName,
       {}, // TODO { setprice_window_ },
-      WindowFlags,
+      kWindowFlags,
       std::span{ Widgets },
       BrokerTabToTableOffset,
       InnerTableRect,
