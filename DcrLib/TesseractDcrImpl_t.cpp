@@ -9,7 +9,6 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-//#include "tesseract/baseapi.h"
 #include "TesseractDcrImpl_t.h"
 #include "DDUtil.h"
 #include "Log.h"
@@ -47,7 +46,6 @@ std::string TesseractDcrImpl_t::GetText(
   const CSurface* pSurface,
   const Rect_t& rect) const
 {
-  std::string str;
   DDSURFACEDESC2 ddsd;
   HRESULT hr = pSurface->Lock(&ddsd);
   if (FAILED(hr)) {
@@ -59,6 +57,7 @@ std::string TesseractDcrImpl_t::GetText(
     rect.Width(), rect.Height(),
     4, (int)ddsd.lPitch);
   std::unique_ptr<char> pResult(Tesseract()->GetUTF8Text());
+  std::string str;
   if (auto text = pResult.get(); text && text[0]) {
     str.assign(text);
     str.erase(str.end() - 1);
@@ -165,8 +164,7 @@ int TesseractDcrImpl_t::GetTableText(
     ::OffsetRect(&rcRow, 0, yExtent);
     yOffset += yExtent;
   }
-  // TODO   pTextTable->SetEndRow(row);
-     //pSurface->Unlock(nullptr);
+  // TODO ? pTextTable->SetEndRow(row);
   firstTime = false;
   return row;
 }

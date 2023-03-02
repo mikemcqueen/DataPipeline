@@ -73,10 +73,9 @@ namespace Ui::Window {
     const CSurface& /*Surface*/,
     const POINT*    /*pptHint*/) const
   {
-    return m_WindowId;
+    throw runtime_error("Ui::Window_t::GetWindowId() not implmented ?!");
+    // return m_WindowId;
   }
-
-  ////////////////////////////////////////////////////////////////////////////////
 
   bool Base_t::GetWidgetRect(
     Ui::WidgetId_t /*WidgetId*/,

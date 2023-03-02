@@ -17,19 +17,14 @@
 #include "Price_t.h"
 
 namespace Broker::Sell {
-
   using TextBase_t = NewTextTableData_t<Table::RowCount, Table::CharsPerRow, Table::ColumnCount>;
 
   class Text_t : public TextBase_t {
   public:
-
     Text_t() = default;
 
-    explicit Text_t(const TextBase_t& textBase) : TextBase_t(textBase)
-    { }
-
-    Text_t(span<const int> charsPerColumn) : TextBase_t(charsPerColumn)
-    { }
+    explicit Text_t(const TextBase_t& textBase) : TextBase_t(textBase) {}
+    Text_t(std::span<const int> charsPerColumn) : TextBase_t(charsPerColumn) {}
   };
 } // namespace Broker::Sell
 

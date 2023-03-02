@@ -13,26 +13,19 @@
 #include "TextTable_t.h"
 #include "Rect.h"
 
-DcrTable_t::
-DcrTable_t(
-    int id,
-    std::optional<DcrImpl> method,
-    TextTable_i* pTextTable,
-    const TableParams_t& tableParams,
-    std::span<const int> columnWidths,
-    std::span<const Rect_t> textRects)
-    :
+DcrTable_t::DcrTable_t(
+  int id,
+  std::optional<DcrImpl> method,
+  TextTable_i* pTextTable,
+  const TableParams_t& tableParams,
+  std::span<const int> columnWidths,
+  std::span<const Rect_t> textRects) :
     DCR(id, method),
     pTextTable_(pTextTable),
     tableInfo_(tableParams, columnWidths, textRects)
-{ }
+{}
 
-/////////////////////////////////////////////////////////////////////////////
-
-DcrTable_t::
-~DcrTable_t() = default;
-
-/////////////////////////////////////////////////////////////////////////////
+DcrTable_t::~DcrTable_t() = default;
 
 bool DcrTable_t::Initialize() {
   // TODO: exceptions probably more consistent here
@@ -51,30 +44,28 @@ bool DcrTable_t::Initialize() {
   return true;
 }
 
-/////////////////////////////////////////////////////////////////////////////
-
-bool DcrTable_t::TranslateSurface(
-  CSurface* pSurface,
-  const Rect_t& rcSurface)
-{
+bool DcrTable_t::TranslateSurface(CSurface* pSurface, const Rect_t& rcSurface) {
   LogInfo(L"Dcr::Table_t::TranslateSurface");
   auto rowCount = ReadTable(pSurface, rcSurface, pTextTable_);
   if (0 == rowCount) {
     LogInfo(L"ReadTable(): Table is empty.");
+    selected_row_ = nullopt;
+  }
+  else {
+    ColorRange_t colors{ RGB(45, 35, 40), RGB(50, 40, 45) };
+    selected_row_ = GetSelectedRow(*pSurface, rcSurface, colors);
   }
 #if 1
   static bool firstTime = true;
   if (firstTime) {
-    pSurface->WriteBMP(L"Diag\\DcrTable_t.bmp");
+    pSurface->WriteBMP(L"Diag\\DcrTable_t.bmp", rcSurface);
     firstTime = false;
   }
 #endif
   return true;
 }
 
-/////////////////////////////////////////////////////////////////////////////
-
-int DcrTable_t::GetSelectedRow(
+optional<int> DcrTable_t::GetSelectedRow(
   CSurface& surface,
   const Rect_t& tableRect,
   const ColorRange_t& colors) const
@@ -87,16 +78,17 @@ int DcrTable_t::GetSelectedRow(
   selectRect.right = selectRect.left + width;
   selectRect.top = tableRect.top;
   selectRect.bottom = selectRect.top + height;
-  int selectedRow = 0;
-  for (int row = 1; selectRect.top + rowHeight <= tableRect.bottom; ++row) {
+  optional<int> selectedRow{};
+  for (int row = 0; selectRect.top + rowHeight <= tableRect.bottom; ++row) {
     if (surface.CompareColorRange(selectRect, colors.low, colors.high)) {
-      if (0 < selectedRow) {
+      if (selectedRow) {
         LogError(L"Dcr::Table_t::GetSelectedRow() Two rows selected (%d,%d)",
-          selectedRow, row);
+          selectedRow.value(), row);
         return 0;
       }
-      selectedRow = row;
+      selectedRow.emplace(row);
     }
+    surface.SlowRectangle(&selectRect, RGB(255, 0, 0));
     ::OffsetRect(&selectRect, 0, rowHeight);
   }
   return selectedRow;

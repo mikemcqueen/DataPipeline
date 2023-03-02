@@ -41,6 +41,11 @@ Ui::Window:
 
 BrokerWindow::IsTabWindow shit. goes.
 
+Timing in Tesseract GetText, GetTableText, perhaps DP processing of each event?
+with special Timing log level?
+Try release build after timing.
+
+saw weird "out of pool items (71)" error.  71?  WTF? I know tesseract is slow but jeez.
 	
 c++20: * == done(ish)
 	range_for (as_const? or just const auto) whereever const_iterator is defined. read up on as_const vs. const auto

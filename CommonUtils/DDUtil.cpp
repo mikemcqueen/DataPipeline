@@ -1331,7 +1331,7 @@ CompareColorRange(
     COLORREF hi,
     DWORD dwFlags) const
 {
-    dwFlags;
+   dwFlags;
 	bool bRet = false;
 
 	DDSURFACEDESC2	ddsd;
@@ -1356,7 +1356,7 @@ CompareColorRange(
 	DWORD dwWidth = RECTWIDTH( rc );
 	for( DWORD dwLine=0; dwLine<dwHeight; ++dwLine )
 	{
-        const DWORD *pThisBits = (DWORD *)GetBitsAt( &ddsd, rc.left, rc.top+dwLine );
+    const DWORD *pThisBits = (DWORD *)GetBitsAt( &ddsd, rc.left, rc.top+dwLine );
 		for( DWORD dwPixel=0; dwPixel<dwWidth; ++dwPixel )
 		{
             DWORD pix = pThisBits[dwPixel] & 0x00ffffff;
@@ -1513,7 +1513,7 @@ CSurface::ColorFill( const RECT *pRect, COLORREF clr )
 	DDBLTFX fx;
 	ZeroMemory( &fx, sizeof(fx) );
 	fx.dwSize		= sizeof( fx );
-	fx.dwFillColor	= clr;
+	fx.dwFillColor	= ConvertGDIColor(clr);
 	return m_pdds->Blt( const_cast<RECT*>(pRect), 0, 0, DDBLT_COLORFILL, &fx );
 }
 
@@ -1525,7 +1525,7 @@ CSurface::SlowRectangle(const RECT* pRect, COLORREF clr)
 	DDBLTFX fx;
 	ZeroMemory(&fx, sizeof(fx));
 	fx.dwSize = sizeof(fx);
-	fx.dwFillColor = clr;
+	fx.dwFillColor = ConvertGDIColor(clr);
 	RECT left = { pRect->left, pRect->top, pRect->left + 1, pRect->top + RECTHEIGHT(*pRect) };
 	m_pdds->Blt(&left, 0, 0, DDBLT_COLORFILL, &fx);
 	RECT top = { pRect->left, pRect->top, pRect->right, pRect->top + 1 };

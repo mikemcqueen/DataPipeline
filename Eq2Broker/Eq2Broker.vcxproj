@@ -213,7 +213,6 @@
     <ClInclude Include="BrokerSell\TiBrokerSell.h" />
     <ClInclude Include="Main\BrokerId.h" />
     <ClInclude Include="Main\CmdParser_t.h" />
-    <ClInclude Include="Main\DcrBase_t.h" />
     <ClInclude Include="Main\Eq2BrokerImpl_t.h" />
     <ClInclude Include="Main\Eq2Broker_t.h" />
     <ClInclude Include="Main\PageNumber_t.h" />

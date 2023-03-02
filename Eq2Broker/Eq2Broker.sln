@@ -50,7 +50,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BrokerBuy", "BrokerBuy", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BrokerSell", "BrokerSell", "{E1CC13E8-0BF7-4BE2-9EE9-79EA7189CE22}"
 	ProjectSection(SolutionItems) = preProject
-		BrokerSell\BrokerSell.h = BrokerSell\BrokerSell.h
+		BrokerSell\BrokerSellText.h = BrokerSell\BrokerSellText.h
 		BrokerSell\BrokerSellTypes.h = BrokerSell\BrokerSellTypes.h
 		BrokerSell\BrokerSellWindow.cpp = BrokerSell\BrokerSellWindow.cpp
 		BrokerSell\BrokerSellWindow.h = BrokerSell\BrokerSellWindow.h
@@ -63,7 +63,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Main", "Main", "{2FEE4393-6C0A-48DA-9BC7-BFF302925B33}"
 	ProjectSection(SolutionItems) = preProject
 		Main\BrokerId.h = Main\BrokerId.h
-		Main\DcrBase_t.h = Main\DcrBase_t.h
 		Main\Eq2BrokerImpl_t.cpp = Main\Eq2BrokerImpl_t.cpp
 		Main\Eq2BrokerImpl_t.h = Main\Eq2BrokerImpl_t.h
 		Main\Eq2Broker_t.cpp = Main\Eq2Broker_t.cpp

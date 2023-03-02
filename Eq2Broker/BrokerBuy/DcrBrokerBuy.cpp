@@ -38,10 +38,10 @@ static const Rect_t TextRects[Table::ColumnCount] = {
 };
 
 constexpr TableParams_t TableParams = {
-    Broker::Table::RowHeight,//+ Broker::Table::GapSizeY,
-    Broker::Table::CharHeight,
-    Broker::Table::RowGapSize,
-    Table::ColumnCount
+  Broker::Table::RowHeight,//+ Broker::Table::GapSizeY,
+  Broker::Table::CharHeight,
+  Broker::Table::RowGapSize,
+  Table::ColumnCount
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -107,28 +107,19 @@ bool Handler_t::PreTranslateSurface(
   int dcrId,
   Rect_t* pRect) const
 {
-#if 1
+#if 0
   SaveWidgets(pSurface, std::span{ Broker::Buy::Widgets });
 #endif
-  extern bool g_bTableFixColor;
   windowId;
   pSurface;
 
   switch (dcrId) {
   case Widget::Id::Table:
   {
-    //rcSurface;
     Rect_t rect = m_windowManager.GetWindow().GetClientRect();
     if (!rect.IsEmpty()) {
       rect.top += Broker::Table::TopRowOffset;
-      //m_selectedRow = GetSelectedRow(*pSurface, rect);
-#if 0
-      if (g_bTableFixColor) {
-        // TODO: pSurface->ReplaceColorRange
-        pSurface->FixColor(rect, BkLowColor, BkHighColor, Black);
-      }
-#endif
-      * pRect = rect;
+      *pRect = rect;
       return true;
     }
   }

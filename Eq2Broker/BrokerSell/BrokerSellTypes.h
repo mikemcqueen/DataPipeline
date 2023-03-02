@@ -17,8 +17,6 @@
 #include "TextTable_t.h"
 #include "BrokerUi.h"
 
-///////////////////////////////////////////////////////////////////////////////
-
 namespace Broker::Sell {
   constexpr auto kWindowId = /*Broker::*/Window::Id::BrokerSell;
   constexpr auto kWindowName = "BrokerSell"sv;

@@ -74,10 +74,6 @@ namespace Broker::Sell::Translate {
     int dcrId,
     Rect_t* pRect) const
   {
-#if 1
-//    SaveWidgets(pSurface, std::span{ Broker::Buy::Widgets });
-#endif
-    extern bool g_bTableFixColor;
     windowId;
     pSurface;
 
@@ -88,14 +84,7 @@ namespace Broker::Sell::Translate {
       Rect_t rect = m_windowManager.GetWindow().GetClientRect();
       if (!rect.IsEmpty()) {
         rect.top += Broker::Table::TopRowOffset;
-        //m_selectedRow = GetSelectedRow(*pSurface, rect);
-#if 0
-        if (g_bTableFixColor) {
-          // TODO: pSurface->ReplaceColorRange
-          pSurface->FixColor(rect, BkLowColor, BkHighColor, Black);
-        }
-#endif
-        * pRect = rect;
+        *pRect = rect;
         return true;
       }
     }
@@ -116,11 +105,11 @@ namespace Broker::Sell::Translate {
     void* pBuffer = GetPipelineManager().Alloc(sizeof(Data_t));
     if (nullptr != pBuffer) {
       m_TextTable.GetData().Dump(L"DcrBrokerSell");
-      // LogInfo(L"SeletecedRow(%d)", m_DcrTable.GetSelectedRow());// TODO
+      LogInfo(L"SeletecedRow(%d)", m_DcrTable.GetSelectedRow().value_or(-1));
       Data_t* pData = new (pBuffer) Data_t(
         GetClass().c_str(),
         m_TextTable,
-        1, // m_DcrTable.GetSelectedRow(), // TODO
+        m_DcrTable.GetSelectedRow().value_or(-1),
         Ui::Scroll::Position::Unknown); // TODO:
         // GetManager().GetWindow().GetScrollPosition(Ui::Scroll::Bar::Vertical));
       GetPipelineManager().Callback(pData);

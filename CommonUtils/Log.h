@@ -39,9 +39,9 @@ namespace Log
 wchar_t* GetTimeString(SYSTEMTIME& t);
 
 void LogAlways (const wchar_t* pszFormat, ...);
-void LogInfo   (const wchar_t* pszFormat, ...);
+void LogError(const wchar_t* pszFormat, ...);
 void LogWarning(const wchar_t* pszFormat, ...);
-void LogError  (const wchar_t* pszFormat, ...);
+void LogInfo(const wchar_t* pszFormat, ...);
 
 void Assert    (bool bExpr, const char* pFile, int iLine);
 
