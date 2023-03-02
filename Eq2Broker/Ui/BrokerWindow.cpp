@@ -17,8 +17,7 @@
 #include "MainWindow_t.h"
 #include "Resource.h"
 
-namespace Broker
-{
+namespace Broker {
 
 static const Flag_t WindowFlags;
 
@@ -55,17 +54,19 @@ Window_t::Window_t(const Ui::Window_t& parent) :
   Ui::Window_t(
     Broker::Window::Id::BrokerFrame,
     parent,
-    ""sv, // L"BrokerFrame", // why?
+    "BrokerFrame"sv,
+    { buy_window_, sell_window_ },
     WindowFlags),
+  buy_window_(parent),
+  sell_window_(parent),
   m_layout(Frame::Layout::Unknown)
 {
-  loadSurfaces();
+  LoadSurfaces();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void Window_t::loadSurfaces()
-{
+void Window_t::LoadSurfaces() {
   //TODO: array
   extern CDisplay* g_pDisplay;
   HRESULT hr = S_OK;
@@ -111,26 +112,24 @@ void Window_t::loadSurfaces()
   }
 }
 
+/*
 Ui::Window_t& Window_t::GetWindow(Ui::WindowId_t windowId) const {
-  static Buy::Window_t      buyWindow(GetParent());
-  static Sell::Window_t     sellWindow(GetParent());
-  // static SalesLog::Window_t salesLogTab(GetParent());
-
   using namespace Broker::Window;
   switch (windowId) {
-  case Id::BrokerBuy:      return buyWindow;
-  case Id::BrokerSell:     return sellWindow;
+  case Id::BrokerBuy:    return buyWindow;
+  case Id::BrokerSell:   return sellWindow;
     //    case Id::BrokerSalesLogTab: return salesLogTab;
   default:
     throw std::invalid_argument("BrokerWindow::GetWindow()");
   }
 }
+*/
 
-TabWindow_t& Window_t::GetTabWindow(Tab_t Tab) const {
+const TabWindow_t& Window_t::GetTabWindow(Tab_t Tab) const {
   using namespace Broker::Window;
   switch (Tab) {
-  case Tab::Id::Buy:      return static_cast<TabWindow_t&>(GetWindow(Id::BrokerBuy));
-  case Tab::Id::Sell:     return static_cast<TabWindow_t&>(GetWindow(Id::BrokerSell));
+  case Tab::Id::Buy:  return GetBrokerBuyWindow();
+  case Tab::Id::Sell: return GetBrokerSellWindow(); 
     //case Tab::Id::SalesLog: return static_cast<TabWindow_t&>(GetWindow(Id::BrokerSalesLog));
   default:
     throw std::invalid_argument("BrokerWindow::GetTabWindow()");
@@ -148,11 +147,11 @@ Ui::WindowId_t Window_t::GetWindowId(
   const CSurface& surface,
   const POINT*    /*pptHint*/) const
 {
-  ///using namespace Ui::Window;
-  auto windowId = Ui::Window::Id::Unknown;
+  using namespace Ui::Window;
+  auto windowId = Id::Unknown;
   POINT ptCaption;
-  if (IsLocatedOn(surface, Ui::Window::Locate::CompareLastOrigin |
-    Ui::Window::Locate::Search, &ptCaption))
+  if (IsLocatedOn(surface, Locate::CompareLastOrigin|Ui::Window::Locate::Search,
+    &ptCaption))
   {
     POINT ptTab;
     Tab_t Tab = FindActiveTab(surface, ptCaption, ptTab);
@@ -219,18 +218,14 @@ void Window_t::GetOriginSearchRect(
   rect.bottom /= 3;
 }
 
-MainWindow_t& Window_t::GetMainWindow() const {
-  return const_cast<MainWindow_t&>(dynamic_cast<const MainWindow_t&>(GetParent()));
-}
 
 #if 1
 void Window_t::SetLayout(Frame::Layout_t layout) const {
   if (layout != m_layout) {
     m_layout = layout;
-    const MainWindow_t& mainWindow = GetMainWindow();//static_cast<const MainWindow_t&>(GetParent());
-    mainWindow.GetBrokerBuyWindow().SetLayout(layout);
-    //        mainWindow.GetBrokerSellWindow().SetLayout(layout);
-    //        mainWindow.GetBrokerSalesLogWindow().SetLayout(layout);
+    GetBrokerBuyWindow().SetLayout(layout);
+    GetBrokerSellWindow().SetLayout(layout);
+    //mainWindow.GetBrokerSalesLogWindow().SetLayout(layout);
   }
 }
 #endif
@@ -291,8 +286,6 @@ Tab_t Window_t::FindActiveTab(
   LogError(L"BrokerWindow::FindActiveTab(): No tab active");
   return Tab::Id::None;
 }
-
-////////////////////////////////////////////////////////////////////////////////
 
 const Rect_t& Window_t::GetTabAreaRect(const POINT ptOrigin) const {
   // TODO: get rid of literals

@@ -42,9 +42,6 @@ namespace SsWindow::Acquire {
     // DP::Handler_t virtual:
     HRESULT EventHandler(DP::Event::Data_t& Event) override;
 
-    // SSTask virtual:
-    //HWND GetSsWindowRect(RECT& rcBounds) const override;
-
     void ThreadProcessEvent() override;
 
     void PostData(
@@ -63,14 +60,6 @@ namespace SsWindow::Acquire {
     void ClickWidget(const Ui::Event::Click::Data_t& Data);
 
     void SendChars(const Ui::Event::SendChars::Data_t& Data);
-
-/*
-    bool ValidateEventData(
-      const DP::Event::Data_t& Data,
-      size_t Size);
-*/
-
-//    HWND ValidateWindow(Ui::WindowId_t WindowId);
 
   private:
     Ui::Window::WithHandle_t& m_Window;

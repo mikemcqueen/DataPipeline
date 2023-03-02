@@ -27,6 +27,7 @@ namespace Ui::Window {
     static const unsigned Search = 0x02;
   }
 
+#if 0
   ////////////////////////////////////////////////////////////////////////////
   //
   // Ui::Window::Handle_t
@@ -45,6 +46,10 @@ namespace Ui::Window {
       WindowId(InitWindowId)
     { }
   };
+#endif
+
+  class Base_t;
+  using Vector_t = std::vector<std::reference_wrapper<const Base_t>>;
 
   ////////////////////////////////////////////////////////////////////////////
   //
@@ -62,15 +67,10 @@ namespace Ui::Window {
     */
   public:
     Base_t(
-      WindowId_t  WindowId,
-      string_view className,
-      string_view windowName,
-      Flag_t      Flags = 0);
-
-    Base_t(
       WindowId_t WindowId,
       const Base_t& ParentWindow,
       string_view windowName,
+      Vector_t children = {},
       Flag_t Flags = 0,
       std::span<const Widget::Data_t> widgets = std::span<const Widget::Data_t>{});
 
@@ -79,12 +79,6 @@ namespace Ui::Window {
     Base_t() = delete;
     Base_t(const Base_t&) = delete;
     const Base_t& operator=(const Base_t&) = delete;
-
-    //    HWND GetSsWindowRect(RECT& Rect) const;
-    //    HWND GetHwnd(WindowId_t /*Id*/) const { return m_hMainWindow; }
-    //    Handle_t GetTopWindow() const { return Handle_t(m_hMainWindow, m_WindowId); }
-
-    virtual Ui::Window::Base_t& GetWindow(Ui::WindowId_t WindowId) const;
 
     // Determine the active window Id and rectangle by looking
     // at pixels of the supplied surface:
@@ -116,6 +110,9 @@ namespace Ui::Window {
       const CSurface& surface,
       Rect_t& rect) const;
 
+    bool HasChildWindow(WindowId_t WindowId) const;
+    const Base_t& GetWindow(Ui::WindowId_t WindowId) const;
+
     bool GetWidgetRect(
       Ui::WidgetId_t  WidgetId,
       const Rect_t& RelativeRect,
@@ -131,8 +128,6 @@ namespace Ui::Window {
     {
       return m_WindowId;
     }
-
-    //    HWND GetHwnd() const { return m_hMainWindow; }
 
     const char* GetWindowName() const { return m_windowName.c_str(); }
 
@@ -158,17 +153,13 @@ namespace Ui::Window {
       const CSurface& Surface,
       const Rect_t& RelativeRect) const;
 
-//    void GetWindowRect(Rect_t& Rect) const;
-
     bool FindOrigin(
       const CSurface& Surface,
       const POINT& ptHint,
       POINT& ptOrigin) const;
 
-    void SetLastOrigin(POINT ptOrigin) { m_ptLastOrigin = ptOrigin; }
-
     const POINT& GetLastOrigin() const { return m_ptLastOrigin; }
-
+    void SetLastOrigin(POINT ptOrigin) const { m_ptLastOrigin = ptOrigin; }
     bool CompareLastOrigin(
       const CSurface& surface,
       const CSurface& image,
@@ -186,7 +177,8 @@ namespace Ui::Window {
     WindowId_t    m_WindowId;
     std::string   m_windowName;
     Flag_t        m_Flags;
-    POINT         m_ptLastOrigin;
+    mutable POINT m_ptLastOrigin;
+    Vector_t children_;
     std::vector<Widget::Data_t> widgets_;
   };
 
@@ -196,6 +188,7 @@ namespace Ui::Window {
       WindowId_t WindowId,
       std::string_view class_name,
       std::string_view window_name,
+      Vector_t children = {},
       Flag_t Flags = 0);
 
     HWND Hwnd() const { return hwnd_; }
@@ -206,16 +199,14 @@ namespace Ui::Window {
     HWND SyncHwndGetClientRect(Rect_t& rect) const;
 
     bool ClickWidget(
-      Base_t& Window,
+      const Base_t& Window,
       WidgetId_t WidgetId,
-      bool    bDirect = false,
       const Rect_t* pRect = nullptr) const;
 
 #if 0
     bool SetWidgetText(
       WidgetId_t    WidgetId,
-      const std::wstring& text,
-      bool          bDirect = false) const;
+      const std::wstring& text) const;
 
     bool ClearWidgetText(
       WidgetId_t widgetId,

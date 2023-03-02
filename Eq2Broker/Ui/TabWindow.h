@@ -24,14 +24,12 @@ class CSurface;
 ////////////////////////////////////////////////////////////////////////////
 
 class TabWindow_t : public Ui::Window::Base_t {
-private:
-  mutable POINT m_TabOffset;
-
 public:
   TabWindow_t(
     Ui::WindowId_t WindowId,
     const Ui::Window_t& parent,
     std::string_view WindowName,
+    Ui::Window::Vector_t children,
     Flag_t Flags,
     std::span<const Ui::Widget::Data_t> widgets,
     POINT TabOffset);
@@ -43,13 +41,11 @@ public:
     const POINT& ptOrigin,
     POINT& ptTabFound) const;
 
-  const POINT& GetTabOffset() const {
-    return m_TabOffset;
-  }
+  const POINT& GetTabOffset() const { return m_TabOffset; }
+  void SetTabOffset(POINT offset) const { m_TabOffset = offset; }
 
-  void SetTabOffset(POINT offset) {
-    m_TabOffset = offset;
-  }
+private:
+  mutable POINT m_TabOffset;
 };
 
 ////////////////////////////////////////////////////////////////////////////
@@ -59,71 +55,47 @@ public:
 ////////////////////////////////////////////////////////////////////////////
 
 class TableWindow_t : public TabWindow_t {
-private:
-  static const int      MinTableWidth = 500; // wider than SearchEdit box
-
-  const Rect_t    m_InnerTableRect;
-  mutable POINT   m_TableOffset;
-  mutable SIZE    m_TableSize;
-  mutable Rect_t  m_TableRect;
-  mutable Rect_t  m_ClientRect;
+  inline static constexpr auto kMinTableWidth = 500; // wider than SearchEdit box
 
 public:
   TableWindow_t(
-    Ui::WindowId_t      WindowId,
+    Ui::WindowId_t WindowId,
     const Ui::Window_t& parent,
     std::string_view WindowName,
+    Ui::Window::Vector_t children,
     Flag_t              Flags,
     std::span<const Ui::Widget::Data_t> widgets,
     POINT               TableOffset,
     const RECT& InnerTableRect,
     POINT               TabOffset);
 
-  //
   // Ui::Window_t virtual:
-  //
-
   Ui::WindowId_t GetWindowId(
     const CSurface& Surface,
     const POINT* pptHint) const override;
 
-  bool GetWidgetRect(
-    Ui::WidgetId_t  WidgetId,
-    Rect_t* pWidgetRect) const override;
+  bool GetWidgetRect(Ui::WidgetId_t  WidgetId, Rect_t* pWidgetRect) const override;
 
   bool UpdateScrollPosition(
     Ui::Scroll::Bar_t ScrollBar,
     const CSurface& Surface) override;
 
-  //
-  // TableWindow_t virtual:
-  //
-
+  // TableWindow_t
   void GetScrollOffsets(
     const CSurface& Surface,
     const Rect_t& TableRect,
     SIZE& ScrollOffsets) const;
 
-  //
   // Public methods:
-  //
+  const Rect_t& GetTableRect() const { return m_TableRect; }
 
-  const Rect_t& GetTableRect() const {
-    return m_TableRect;
-  }
-
-  const Rect_t& GetClientRect() const {
-    return m_ClientRect;
-  }
+  const Rect_t& GetClientRect() const { return m_ClientRect; }
 
   bool ClickRow(size_t Row) const;
 
-  void SetTableOffset(POINT offset) { m_TableOffset = offset; }
+  void SetTableOffset(POINT offset) const { m_TableOffset = offset; }
 
-  void SetOffsets(
-    POINT tabOffset,
-    POINT tableOffset)
-  {
+  void SetOffsets(POINT tabOffset,POINT tableOffset) const {
     SetTabOffset(tabOffset);
     SetTableOffset(tableOffset);
   }
@@ -158,6 +130,13 @@ private:
     const CSurface& Surface,
     const Rect_t& TableRect,
     SIZE& ScrollOffsets) const;
+
+private:
+  const Rect_t    m_InnerTableRect;
+  mutable POINT   m_TableOffset;
+  mutable SIZE    m_TableSize;
+  mutable Rect_t  m_TableRect;
+  mutable Rect_t  m_ClientRect;
 };
 
 #endif // INCLUDE_TABWINDOW_H

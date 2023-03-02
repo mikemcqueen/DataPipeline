@@ -93,12 +93,6 @@ namespace SsWindow::Acquire {
     SetAsyncEvent();
   }
 
-  /*
-    HWND Handler_t::GetSsWindowRect(RECT& rcBounds) const {
-      return m_Window.GetSsWindowRect(rcBounds);
-    }
-  */
-
   void Handler_t::ThreadProcessEvent() {
     if (!IsEventPending()) {
       LogError(L"SsWindow::ThreadProcessEvent(): No event pending.");
@@ -179,29 +173,10 @@ namespace SsWindow::Acquire {
     const Ui::WidgetId_t WidgetId = Data.Destination.WidgetId;
     LogInfo(L"SsWindow::ClickWidget(%d)", WidgetId);
     if (m_bClick && m_Window.IsVisibleTopWindow()) {
-      m_Window.ClickWidget(m_Window.GetWindow(Data.WindowId), WidgetId, true);
+      m_Window.ClickWidget(m_Window.GetWindow(Data.WindowId), WidgetId);
     }
   }
 
-/*
-  HWND Handler_t::ValidateWindow(Ui::WindowId_t WindowId) {
-    // TODO: Shouldn't we use GetMainWindow() for the GetForegroundWindow() check?
-
-    HWND hWnd = m_Window.GetHwnd(WindowId);
-    if ((nullptr == hWnd) || !IsWindowVisible(hWnd) || (hWnd != ::GetForegroundWindow())) {
-      LogError(L"SsWindow::ValidateWindow() failed for hWnd (%08x)", hWnd);
-      return nullptr;
-    }
-    const Ui::Window::Handle_t Top = m_Window.GetTopWindow();
-    // TODO : Window::IsParent
-    if ((Top.hWnd != hWnd) && !util::IsParent(Top.hWnd, hWnd)) {
-      LogError(L"SsWindow::ValidateWindow(): WindowId (%d) is not top window"
-        L" or a child of top window (%d)", WindowId, Top.WindowId);
-      return nullptr;
-    }
-    return hWnd;
-  }
-*/
   void Handler_t::SendChars(const Ui::Event::SendChars::Data_t& Data) {
     LogInfo(L"SsWindow::SendChars(%ls)", Data.Chars);
     if (!m_bClick || !m_Window.IsVisibleTopWindow()) {

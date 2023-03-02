@@ -16,8 +16,8 @@ types (WindowId_t, WidgetId_t, EventId_t, etc.)
 	maybe i can use typeid(T) == typeid(type1) || typeid(type2) etc.
 	probably need to use a magic value in the scoped enum to enable this.
 
-BrokerFrame *contains* a (multiple) tab.  Tab is not a window type.
-TableWindow does not inherit from TabWidnow.  Tab is not a window type.
+TableWindow should not inherit from TabWidnow. A window contains a table,
+it not *is a* table.
 
 cleanup TextTable_t.h
 
@@ -34,22 +34,14 @@ DcrTable_t::GetSelectedRow. member/accessor in DcrTable? two parts here:
   2) retrieve translated value in PostData.= {}
     2a) answer: the selected row is part of the (translate) message. why is this hard?
 
-That godforsaken MainWindow that is passed around everywhere. Perhaps it should be a 
-Meyers singleton?
-
 Ui::Window:
-  --can be removed entirely:
-  * GetSsWindowRect
-  * GetTopWindow
-  * GetHwnd(windowId)
-  * all the clicky shit. Set/ClearWidgetText/Scroll.
-    think about how to structure this. should these methods even exist? aren't they
-	just click events that are sent from transactions?
   --can be moved elsewhere:
-  * anything that takes a CSurface, yah?
-	
-Ui::Input is a namespace not a class.
+  * anything that takes a CSurface, maybe? New derived type: Virtual_t, parallel
+    type of WithHandle_t, emphasizing "CSurface-based" recognition.
 
+BrokerWindow::IsTabWindow shit. goes.
+
+	
 c++20: * == done(ish)
 	range_for (as_const? or just const auto) whereever const_iterator is defined. read up on as_const vs. const auto
 	public + delete instead of private copy/assignment/move

@@ -21,21 +21,22 @@ using namespace Broker;
 ////////////////////////////////////////////////////////////////////////////////
 
 TabWindow_t::TabWindow_t(
-    Ui::WindowId_t WindowId,
-    const Ui::Window_t& parent,
-    std::string_view WindowName,
-    Flag_t Flags,
-    std::span<const Ui::Widget::Data_t> widgets,
-    POINT tabOffset) : 
+  Ui::WindowId_t WindowId,
+  const Ui::Window_t& parent,
+  std::string_view WindowName,
+  Ui::Window::Vector_t children,
+  Flag_t Flags,
+  std::span<const Ui::Widget::Data_t> widgets,
+  POINT tabOffset) : 
   Ui::Window_t(
     WindowId,
     parent,
     WindowName,
+    children,
     Flags,
     widgets),
   m_TabOffset(tabOffset)
-{
-}
+{}
 
 bool TabWindow_t::FindTab(
   const CSurface& surface,
@@ -67,6 +68,7 @@ TableWindow_t::TableWindow_t(
   Ui::WindowId_t WindowId,
   const Ui::Window_t& parent,
   std::string_view WindowName,
+  Ui::Window::Vector_t children,
   Flag_t Flags,
   std::span<const Ui::Widget::Data_t> widgets,
   POINT tableOffset,
@@ -77,6 +79,7 @@ TableWindow_t::TableWindow_t(
     WindowId,
     parent,
     WindowName,
+    children,
     Flags,
     widgets,
     tabOffset),
@@ -97,7 +100,7 @@ Ui::WindowId_t TableWindow_t::GetWindowId(
   if (FindTable(Surface, *pptHint, TableRect, ScrollOffsets)) {
     m_TableRect = TableRect;
     POINT ptOrigin = { m_TableRect.left, m_TableRect.top };
-    const_cast<TableWindow_t*>(this)->SetLastOrigin(ptOrigin);
+    SetLastOrigin(ptOrigin);
     GetClientRect(m_ClientRect, m_TableRect, ScrollOffsets);
     return Ui::Window_t::GetWindowId();
   }
@@ -197,9 +200,9 @@ bool TableWindow_t::FindTable(
   DWORD Flags = 1;// set to 1 to debug
   const int TopBorderWidth = Surface.GetWidthInColorRange(
     ptTable.x, ptTable.y, BorderLowColor, BorderHighColor, Flags);
-  if (MinTableWidth > TopBorderWidth) {
+  if (kMinTableWidth > TopBorderWidth) {
     LogInfo(L"%S::FindTable(): TopBorderWidth(%d) < Min(%d) @ (%d, %d)",
-      GetWindowName(), TopBorderWidth, MinTableWidth, ptTable.x, ptTable.y);
+      GetWindowName(), TopBorderWidth, kMinTableWidth, ptTable.x, ptTable.y);
     return false;
   }
   // TODO: use CompareColorRange(Rect)
@@ -361,9 +364,9 @@ bool TableWindow_t::ValidateClient(
 }
 
 void TableWindow_t::GetScrollOffsets(
-    const CSurface&   /*Surface*/,
-    const Rect_t&     /*TableRect*/,
-          SIZE&       ScrollOffsets) const
+  const CSurface&   /*Surface*/,
+  const Rect_t&     /*TableRect*/,
+  SIZE& ScrollOffsets) const
 {
-    ScrollOffsets.cx = ScrollOffsets.cy = 0;
+  ScrollOffsets.cx = ScrollOffsets.cy = 0;
 }

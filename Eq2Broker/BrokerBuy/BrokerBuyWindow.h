@@ -14,23 +14,21 @@
 #include "TabWindow.h"
 #include "BrokerUi.h"
 
-class MainWindow_t;
-
 namespace Broker::Buy {
+  class Broker::Window_t;
+
   class Window_t : public TableWindow_t {
   public:
     explicit Window_t(const Ui::Window_t& parent);
-
-    //static const Ui::Widget::Data_t& GetWidgetData(Ui::WidgetId_t widgetId);
 
     bool GetWidgetRect(
       Ui::WidgetId_t widgetId,
       Rect_t* pRect) const override;
 
-    void SetLayout(Frame::Layout_t layout);
+    void SetLayout(Frame::Layout_t layout) const;
 
   private:
-    MainWindow_t& GetMainWindow() const;
+    const Broker::Window_t& GetBrokerWindow() const;
 
     Window_t();
     Window_t(const Window_t&);

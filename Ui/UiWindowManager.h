@@ -14,11 +14,7 @@
 #define Include_UIWINDOWMANAGER_H
 
 namespace Ui::Window {
-
-  template<
-    class Window_t,
-    class Translator_t,
-    class Interpreter_t>
+  template<class Window_t, class Translator_t, class Interpreter_t>
   class Manager_t {
   public:
     Manager_t(const Window_t& Window) :
@@ -45,7 +41,6 @@ namespace Ui::Window {
     Translator_t    m_Translator;
     Interpreter_t   m_Interpreter;
   };
-
 } // Ui::Window
 
 #endif // Include_UIWINDOWMANAGER_H

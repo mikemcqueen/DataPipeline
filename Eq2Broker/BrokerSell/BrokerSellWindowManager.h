@@ -19,7 +19,7 @@
 namespace Broker::Sell::Window {
   class Manager_t : public ManagerBase_t {
   public:
-    Manager_t(Window_t& window) : ManagerBase_t(window) {}
+    Manager_t(const Window_t& window) : ManagerBase_t(window) {}
   };
 } // namespace Broker::Sell::Window
 

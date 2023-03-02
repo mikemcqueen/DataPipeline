@@ -10,10 +10,10 @@
 #include "MainWindow_t.h"
 #include "BrokerSellWindow.h"
 #include "BrokerSellTypes.h"
+#include "BrokerWindow.h"
 //#include "SetPriceWindow.h"
 #include "DdUtil.h"
 #include "Log.h"
-#include "BrokerWindow.h"
 
 namespace Broker::Sell {
   const Flag_t WindowFlags = Ui::Window::Flag::VerticalScroll;
@@ -49,6 +49,7 @@ namespace Broker::Sell {
       kWindowId,
       parent,
       kWindowName,
+      {}, // { setprice_window_ },
       WindowFlags,
       std::span{ Widgets },
       BrokerTabToTableOffset,
@@ -57,9 +58,8 @@ namespace Broker::Sell {
   {
   }
 
-  // TODO: this would go away if we host setPricePopup via GetWindow() in this class
-  MainWindow_t& Window_t::GetMainWindow() const {
-    return const_cast<MainWindow_t&>(dynamic_cast<const MainWindow_t&>(GetParent()));
+  const Broker::Window_t& Window_t::GetBrokerWindow() const {
+    return dynamic_cast<const Broker::Window_t&>(GetParent());
   }
 
   Ui::WindowId_t Window_t::GetWindowId(
@@ -140,11 +140,10 @@ namespace Broker::Sell {
     Ui::WidgetId_t widgetId,
     Rect_t* rect) const
   {
-    const MainWindow_t& mainWindow = GetMainWindow();
     if ((Frame::Widget::Id::BuyTab == widgetId) ||
       (Frame::Widget::Id::SalesLogTab == widgetId))
     {
-      switch (mainWindow.GetBrokerWindow().GetLayout()) {
+      switch (GetBrokerWindow().GetLayout()) {
       case Frame::Layout::Broker:
         return Ui::Window_t::GetWidgetRect(widgetId, GetTableRect(), rect,
           std::span{ brokerWidgets });
@@ -159,7 +158,7 @@ namespace Broker::Sell {
     }
   }
 
-  void Window_t::SetLayout(Frame::Layout_t layout) {
+  void Window_t::SetLayout(Frame::Layout_t layout) const {
     switch (layout) {
     case Frame::Layout::Broker:
       SetOffsets(BrokerDefaultTabOffset, BrokerTabToTableOffset);

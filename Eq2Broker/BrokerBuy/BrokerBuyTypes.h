@@ -18,7 +18,7 @@
 #include "BrokerUi.h"
 
 namespace Broker::Buy {
-  constexpr auto kWindowId = Broker::Window::Id::BrokerBuy;
+  constexpr auto kWindowId = /*Broker::*/Window::Id::BrokerBuy;
   constexpr auto kWindowName = "BrokerBuy"sv;
 
   namespace Table {

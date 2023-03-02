@@ -26,40 +26,47 @@ namespace Ui::Window {
     WindowId_t WindowId,
     const Base_t& ParentWindow,
     std::string_view windowName,
+    Vector_t children,
     Flag_t Flags /*= 0*/,
     std::span<const Widget::Data_t> widgets) :
     m_WindowId(WindowId),
     m_ParentWindow(ParentWindow),
     m_windowName(windowName.empty() ? "Undefined" : windowName),
     m_Flags(Flags),
+    children_(children),
     widgets_(widgets.begin(), widgets.end())
   {
   }
 
   Base_t::~Base_t() = default;
 
-  /*
-    HWND Base_t::GetSsWindowRect(RECT& Rect) const {
-      if (nullptr != m_hMainWindow) {
-        if (::IsWindow(m_hMainWindow)) {
-          // !::IsWindowVisible(m_hMainWindow) seems overkill
-          if (::GetForegroundWindow() != m_hMainWindow) {
-            // don't screenshot if we're not foreground
-            return nullptr;
-          }
-          ::GetClientRect(m_hMainWindow, &Rect);
-        }
-        else {
-          // TODO: make m_hMainWindow mutable?
-          const_cast<Base_t*>(this)->m_hMainWindow = nullptr;
-        }
+  bool Base_t::HasChildWindow(WindowId_t WindowId) const {
+    for (auto child : children_) {
+      if (child.get().GetWindowId() == WindowId) {
+        return true;
       }
-      return m_hMainWindow;
     }
-  */
-
-  Base_t& Base_t::GetWindow(WindowId_t /*WindowId*/) const {
-    throw logic_error("Ui::Window_t::GetWindow() not implemented");
+    for (auto child : children_) {
+      if (child.get().HasChildWindow(WindowId)) {
+        return true;
+      }
+    }
+    return false;
+  }
+    
+  const Base_t& Base_t::GetWindow(WindowId_t WindowId) const {
+    for (auto child : children_) {
+      if (child.get().GetWindowId() == WindowId) {
+        return child.get();
+      }
+    }
+    for (auto child : children_) {
+      if (child.get().HasChildWindow(WindowId)) {
+        return child.get().GetWindow(WindowId);
+      }
+    }
+    LogError(L"%S:GetWindow failed, id: %d", GetWindowName(), WindowId);
+    throw std::invalid_argument("GetWindow failed, call HasChildWindow first?");
   }
 
   WindowId_t Base_t::GetWindowId(
@@ -101,17 +108,13 @@ namespace Ui::Window {
     return false;
   }
 
-  ////////////////////////////////////////////////////////////////////////////////
-
   bool Base_t::GetWidgetRect(
     Ui::WidgetId_t WidgetId,
     const Rect_t& RelativeRect,
     Rect_t* pWidgetRect) const
   {
-    return GetWidgetRect(WidgetId, RelativeRect, pWidgetRect, span{ widgets_ });
+    return GetWidgetRect(WidgetId, RelativeRect, pWidgetRect, std::span{ widgets_ });
   }
-
-  ////////////////////////////////////////////////////////////////////////////////
 
   bool Base_t::IsLocatedOn(
     const CSurface& surface,
@@ -179,17 +182,14 @@ namespace Ui::Window {
     if (surface.FindSurfaceInRect(image, searchRect, ptOrigin, nullptr)) {
       LogInfo(L"%S::OriginSearch(): Found @ (%d, %d)", GetWindowName(),
         ptOrigin.x, ptOrigin.y);
-      if (nullptr != pptOrigin) {
+      if (pptOrigin) {
         *pptOrigin = ptOrigin;
       }
-      // TODO: Bad
-      const_cast<Window_t*>(this)->SetLastOrigin(ptOrigin);
+      SetLastOrigin(ptOrigin);
       return true;
     }
     return false;
   }
-
-  ////////////////////////////////////////////////////////////////////////////////
 
   bool Window_t::ValidateBorders(
     const CSurface& Surface,
@@ -222,8 +222,6 @@ namespace Ui::Window {
     return true;
   }
 
-  ////////////////////////////////////////////////////////////////////////////////
-
   bool Window_t::ValidateBorder(
     const CSurface& Surface,
     const Rect_t& BorderRect,
@@ -238,17 +236,6 @@ namespace Ui::Window {
     }
     return true;
   }
-
-  /*
-    ////////////////////////////////////////////////////////////////////////////////
-
-    void Window_t::GetWindowRect(
-      Rect_t& Rect) const
-    {
-      ::GetWindowRect(m_hMainWindow, &Rect);
-      ::OffsetRect(&Rect, -Rect.left, -Rect.top);
-    }
-  */
 
   void Window_t::DumpWidgets(
     const CSurface& Surface,
@@ -303,6 +290,7 @@ namespace Ui::Window {
     return Pos;
   }
   */
+
   ////////////////////////////////////////////////////////////////////////////////
   //
   //
@@ -312,8 +300,9 @@ namespace Ui::Window {
     WindowId_t WindowId,
     std::string_view class_name,
     std::string_view window_name,
+    Vector_t children,
     Flag_t flags /* = 0 */) :
-    Base_t(WindowId, *this, window_name, flags),
+    Base_t(WindowId, *this, window_name, children, flags),
     class_name_(class_name),
     hwnd_(FindWindow(class_name))
   {
@@ -362,12 +351,10 @@ namespace Ui::Window {
   }
 
   bool WithHandle_t::ClickWidget(
-    Base_t& Window,
+    const Base_t& Window,
     WidgetId_t WidgetId,
-    bool bDirect /*= false*/,
     const Rect_t* pRect /*= nullptr*/) const
   {
-    assert(bDirect);
     Rect_t rect;
     if (!pRect) {
       if (!Window.GetWidgetRect(WidgetId, &rect)) {
@@ -378,12 +365,6 @@ namespace Ui::Window {
       pRect = &rect;
     }
     Ui::Input_t::Click(hwnd_, pRect->Center());
-#if 0
-    else {
-      Ui::Event::Click::Data_t Click(GetWindowId(), WidgetId);
-      GetPipelineManager().SendEvent(Click);
-    }
-#endif
     return true;
   }
 
@@ -410,24 +391,17 @@ namespace Ui::Window {
 
   bool WithHandle_t::SetWidgetText(
     WidgetId_t widgetId,
-    const wstring& text,
-    bool bDirect) const
+    const wstring& text)
   {
-    if (bDirect) {
-      // TODO: why this?
-      Rect_t rect;
-      if (!GetWidgetRect(widgetId, &rect)) {
-        LogError(L"%S::SetWidgetText(direct): GetWidgetRect(%d) failed",
-          GetWindowName(), widgetId);
-        return false;
-      }
-      Ui::Input_t Chars; // huh?
-      Chars.SendChars(text.c_str());
+    // TODO: why this?
+    Rect_t rect;
+    if (!GetWidgetRect(widgetId, &rect)) {
+      LogError(L"%S::SetWidgetText(direct): GetWidgetRect(%d) failed",
+        GetWindowName(), widgetId);
+      return false;
     }
-    else {
-      Ui::Event::SendChars::Data_t sendChars(text.c_str(), GetWindowId(), widgetId);
-      GetPipelineManager().SendEvent(sendChars);
-    }
+    Ui::Input_t Chars; // huh?
+    Chars.SendChars(text.c_str());
     return true;
   }
 

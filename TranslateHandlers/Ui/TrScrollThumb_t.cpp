@@ -43,7 +43,7 @@ MessageHandler(
         return S_FALSE;
     }
     const Acquire::Data_t& SsData = *static_cast<const Acquire::Data_t*>(pData);
-    Ui::Window_t& Window = m_MainWindow.GetWindow(SsData.WindowId);
+    const Ui::Window_t& Window = m_MainWindow.GetWindow(SsData.WindowId);
     // Ignore message if window has no scroll flags.
     using namespace Ui::Window;
     Flag_t Flags = Window.GetFlags();
@@ -54,12 +54,13 @@ MessageHandler(
     const CSurface& Surface = *SsData.pPoolItem->get();
     if (Flags.Test(Flag::VerticalScroll))
     {
-        Window.UpdateScrollPosition(Ui::Scroll::Bar::Vertical, Surface);
+      Surface;
+       // Window.UpdateScrollPosition(Ui::Scroll::Bar::Vertical, Surface);
         // , SsData.SurfaceRect);
     }
     if (Flags.Test(Flag::HorizontalScroll))
     {
-        Window.UpdateScrollPosition(Ui::Scroll::Bar::Horizontal, Surface);
+      //  Window.UpdateScrollPosition(Ui::Scroll::Bar::Horizontal, Surface);
         // , SsData.SurfaceRect);
     }
     return S_OK;

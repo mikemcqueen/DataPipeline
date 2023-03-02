@@ -61,7 +61,6 @@ public:
   HRESULT EventHandler(DP::Event::Data_t& Data) override;
 
   // SsTask_t virtual
-//  virtual HWND GetSsWindowRect(RECT& rcBounds) const = 0;
   virtual void ThreadProcessEvent() = 0;
   virtual void PostData(HWND hWnd, pool<CSurface>::item_t* pPoolItem) = 0;
 
@@ -107,7 +106,6 @@ private:
     size_t        cy,
     size_t        Count);
 
-  //HRESULT InitSurfacePool(size_t Size);
   pool<CSurface>& GetSurfacePool() { return m_Pool; }
   pool<CSurface>::item_t* GetAvailableSurface();
 
@@ -177,7 +175,6 @@ namespace SsTask::Acquire {
       pPoolItem(InitPoolItem)
     { }
   };
-
 } // SsTask::Acquire
 
 #endif // Include_SSTASK_T_H

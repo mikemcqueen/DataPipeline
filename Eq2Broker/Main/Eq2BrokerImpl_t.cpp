@@ -9,16 +9,19 @@
 #include "stdafx.h"
 #include "Eq2BrokerImpl_t.h"
 #include "MainWindow_t.h"
+#include "BrokerWindow.h"
 #include "DdUtil.h"
 
 extern CDisplay* g_pDisplay;
+
+using namespace Broker;
 
 Eq2BrokerImpl_t::Eq2BrokerImpl_t(MainWindow_t& mainWindow) :
   m_SsWindow(*g_pDisplay, mainWindow),
   m_TrWindowType(mainWindow),
   m_TrScroll(mainWindow),
-  buyWindowManager_(mainWindow.GetBrokerBuyWindow()),
-  sellWindowManager_(mainWindow.GetBrokerSellWindow())
+  buyWindowManager_(mainWindow.GetBrokerWindow().GetBrokerBuyWindow()),
+  sellWindowManager_(mainWindow.GetBrokerWindow().GetBrokerSellWindow())
 #if 0
   m_SetPricePopup(mainWindow.GetSetPricePopup()),
   m_eq2LoginWindow(mainWindow.GetEq2LoginWindow()),
@@ -36,5 +39,4 @@ Eq2BrokerImpl_t::Eq2BrokerImpl_t(MainWindow_t& mainWindow) :
 {
 }
 
-Eq2BrokerImpl_t::
-~Eq2BrokerImpl_t() = default;
+Eq2BrokerImpl_t::~Eq2BrokerImpl_t() = default;

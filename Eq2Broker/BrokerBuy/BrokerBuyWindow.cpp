@@ -8,11 +8,10 @@
 
 #include "stdafx.h"
 #include "BrokerBuyWindow.h"
-#include "BrokerUi.h"
-#include "Log.h"
-#include "MainWindow_t.h"
-#include "BrokerWindow.h"
+#include "BrokerBuyTypes.h"
 #include "BrokerBuyWidgets.h"
+#include "BrokerWindow.h"
+#include "Log.h"
 
 namespace Broker::Buy {
 
@@ -36,13 +35,12 @@ const Ui::Widget::Data_t& Window_t::GetWidgetData(Ui::WidgetId_t widgetId) {
 }
 #endif
 
-////////////////////////////////////////////////////////////////////////////////
-
 Window_t::Window_t(const Ui::Window_t& parent) :
   TableWindow_t(
     kWindowId,
     parent,
     kWindowName,
+    {},
     WindowFlags,
     std::span{ Widgets },
     BrokerDefaultTableOffset,
@@ -51,11 +49,8 @@ Window_t::Window_t(const Ui::Window_t& parent) :
 {
 }
 
-////////////////////////////////////////////////////////////////////////////////
-
-MainWindow_t& Window_t::GetMainWindow() const {
-  // TODO: almost certainly not good
-  return const_cast<MainWindow_t&>(dynamic_cast<const MainWindow_t&>(GetParent()));
+const Broker::Window_t& Window_t::GetBrokerWindow() const {
+  return dynamic_cast<const Broker::Window_t&>(GetParent());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -65,15 +60,15 @@ MainWindow_t& Window_t::GetMainWindow() const {
 // owned by BrokerFrameWindow.
 //
 bool Window_t::GetWidgetRect(Ui::WidgetId_t widgetId, Rect_t* pRect) const {
-  const MainWindow_t& mainWindow = GetMainWindow();//static_cast<const MainWindow_t&>(GetParent());
+  using namespace Broker::Frame;
   if ((Frame::Widget::Id::SellTab == widgetId) ||
     (Frame::Widget::Id::SalesLogTab == widgetId))
   {
-    switch (mainWindow.GetBrokerWindow().GetLayout()) {
-    case Frame::Layout::Broker:
+    switch (GetBrokerWindow().GetLayout()) {
+    case Layout::Broker:
       return Ui::Window_t::GetWidgetRect(widgetId, GetTableRect(), pRect,
         std::span{ BrokerTabs });
-    case Frame::Layout::Market:
+    case Layout::Market:
       return Ui::Window_t::GetWidgetRect(widgetId, GetTableRect(), pRect,
         std::span{ MarketTabs });
     default:
@@ -84,9 +79,7 @@ bool Window_t::GetWidgetRect(Ui::WidgetId_t widgetId, Rect_t* pRect) const {
   }
 }
 
-////////////////////////////////////////////////////////////////////////////////
-
-void Window_t::SetLayout(Frame::Layout_t layout) {
+void Window_t::SetLayout(Frame::Layout_t layout) const {
   switch (layout) {
   case Frame::Layout::Broker:
     SetOffsets(BrokerDefaultTabOffset, BrokerDefaultTableOffset);
@@ -98,5 +91,4 @@ void Window_t::SetLayout(Frame::Layout_t layout) {
     throw logic_error("BrokerBuyWindow::SetLayout() Invalid layout");
   }
 }
-
 } // namespace Broker::Buy

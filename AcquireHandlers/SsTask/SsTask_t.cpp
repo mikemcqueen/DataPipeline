@@ -272,8 +272,6 @@ const DP::Event::Data_t& SsTask_t::PeekEvent(size_t Event) const {
   return reinterpret_cast<const DP::Event::Data_t&>(m_EventData[pos]);
 }
 
-/////////////////////////////////////////////////////////////////////////////
-
 void SsTask_t::GetEventData(
   size_t             Event,
   DP::Event::Data_t& Data,
@@ -305,21 +303,15 @@ void SsTask_t::GetEventData(
 #endif
 }
 
-/////////////////////////////////////////////////////////////////////////////
-
 bool SsTask_t::SetEventPending(bool bPending) {
   bool bPrevious = (1 == InterlockedExchange(&m_lEventPending, bPending ? 1 : 0));
   // return true if previous state is different than current state
   return bPending ^ bPrevious;
 }
 
-/////////////////////////////////////////////////////////////////////////////
-
 bool SsTask_t::IsEventPending() const {
 	return 1 == InterlockedCompareExchange(&m_lEventPending, 0, 0);
 }
-
-/////////////////////////////////////////////////////////////////////////////
 
 void SsTask_t::SuspendAndFlush() {
   Suspend();
