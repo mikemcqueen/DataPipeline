@@ -17,103 +17,93 @@
 #include "SsWindow.h"
 //#include "TxRepriceItems.h"
 
-////////////////////////////////////////////////////////////////////////////////
-
 namespace Broker::Sell::Interpret {
 
-  Handler_t::Handler_t(Window::ManagerBase_t& Manager) :
-    m_windowManager(Manager)
-  {}
+  Handler_t::Handler_t(const Window_t& window) : window_(window) {}
 
-/*
-bool
-Handler_t::
-Initialize(
-        const wchar_t* pClass)
-{
+#if 0
+  bool Handler_t::Initialize(const wchar_t* pClass) {
     LogInfo(L"TiBrokerSell::Initialize()");
     if (!DP::Handler_t::Initialize(pClass))
-        return false;
+      return false;
     return true;
-}
+  }
 
-/////////////////////////////////////////////////////////////////////////////
-
-void
-Handler_t::
-Shutdown()
-{
+  void
+    Handler_t::
+    Shutdown()
+  {
     LogAlways(L"TiBrokerSell::Shutdown()");
     m_MessageThread.Shutdown();
-}
-*/
+  }
+#endif
 
-HRESULT Handler_t::ExecuteTransaction(DP::Transaction::Data_t& /*Data*/) {
-/*
-    using namespace Transaction;
-    switch (Data.Id)
-    {
-    case Id::RepriceItems:
-        RepriceItems::Handler_t::Start(static_cast<RepriceItems::Data_t&>(Data));
-        return S_OK;
-    default:
-        break;
-    }
-*/
+  HRESULT Handler_t::ExecuteTransaction(DP::Transaction::Data_t& /*Data*/) {
+    /*
+        using namespace Transaction;
+        switch (Data.Id)
+        {
+        case Id::RepriceItems:
+            RepriceItems::Handler_t::Start(static_cast<RepriceItems::Data_t&>(Data));
+            return S_OK;
+        default:
+            break;
+        }
+    */
     return S_FALSE;
-}
+  }
 
-HRESULT Handler_t::MessageHandler(const DP::Message::Data_t* pMessage) {
+  HRESULT Handler_t::MessageHandler(const DP::Message::Data_t* pMessage) {
     if (Message::Id::Sell != pMessage->Id)
     {
-        return S_FALSE;
+      return S_FALSE;
     }
 #if 0
 
     const Translate::Data_t&
-        Message = *static_cast<const Translate::Data_t*>(pMessage);
-Message;
-//    if (Window::PostedTradeDetailWindow != pDetailData->WindowType)
-//        return S_FALSE;
+      Message = *static_cast<const Translate::Data_t*>(pMessage);
+    Message;
+    //    if (Window::PostedTradeDetailWindow != pDetailData->WindowType)
+    //        return S_FALSE;
 
     DP::Transaction::Data_t* pData = GetTransactionManager().Acquire();
     DP::TransactionManager_t::AutoRelease_t ar(pData);
     if (nullptr == pData)
     {
-        return S_FALSE;
+      return S_FALSE;
     }
 
     using namespace Transaction;
     switch (pData->Id)
     {
     case Id::RepriceItems:
-        return RepriceItems::Handler_t::Message(
-                   *pMessage, // Message,
-                   static_cast<RepriceItems::Data_t&>(*pData),
-                   GetManager().GetWindow());
+      return RepriceItems::Handler_t::Message(
+        *pMessage, // Message,
+        static_cast<RepriceItems::Data_t&>(*pData),
+        GetManager().GetWindow());
     default:
-        break;
+      break;
     }
 #endif
     return S_FALSE;
-}
+  }
 
-////////////////////////////////////////////////////////////////////////////////
-// Returns true if we're currently scrolled to top (or can't scroll)
-/* static */
-bool Handler_t::IsScrolledToTop(const Translate::Data_t& Message) {
-  using namespace Ui::Scroll;
-  return ((Position::Top == Message.VScrollPos) ||
-    (Position::Unknown == Message.VScrollPos));
-}
+  ////////////////////////////////////////////////////////////////////////////////
+  // Returns true if we're currently scrolled to top (or can't scroll)
+  /* static */
+  bool Handler_t::IsScrolledToTop(const Translate::Data_t& Message) {
+    using namespace Ui::Scroll;
+    return ((Position::Top == Message.VScrollPos) ||
+      (Position::Unknown == Message.VScrollPos));
+  }
 
-////////////////////////////////////////////////////////////////////////////////
-// Returns true if we're currently scrolled to bottom (or can't scroll)
-/* static */
-bool Handler_t::IsScrolledToBottom(const Translate::Data_t& Message) {
-  using namespace Ui::Scroll;
-  return (Position::Bottom == Message.VScrollPos) ||
-    (Position::Unknown == Message.VScrollPos);
-}
+  ////////////////////////////////////////////////////////////////////////////////
+  // Returns true if we're currently scrolled to bottom (or can't scroll)
+  /* static */
+  bool Handler_t::IsScrolledToBottom(const Translate::Data_t& Message) {
+    using namespace Ui::Scroll;
+    return (Position::Bottom == Message.VScrollPos) ||
+      (Position::Unknown == Message.VScrollPos);
+  }
 
 } // namespace Broker::Sell::Interpret

@@ -13,14 +13,19 @@
 #ifndef Include_UIWINDOWMANAGER_H
 #define Include_UIWINDOWMANAGER_H
 
+#include "UiWindow.h"
+
 namespace Ui::Window {
-  template<class Window_t, class Translator_t, class Interpreter_t>
+  template<typename T>
+  concept UiWindow = std::derived_from<T, Base_t>;
+
+  template<UiWindow windowT, class Translator_t, class Interpreter_t>
   class Manager_t {
   public:
-    Manager_t(const Window_t& Window) :
-      m_Window(Window),
-      m_Translator(*this),
-      m_Interpreter(*this)
+    Manager_t(const Base_t& window) :
+      m_Window(window),
+      m_Translator(GetWindow()), // *this),
+      m_Interpreter(GetWindow()) // *this)
     { }
 
     Manager_t() = delete;
@@ -28,18 +33,20 @@ namespace Ui::Window {
     Manager_t& operator=(const Manager_t&) = delete;
 
     // Accessors:
-    const Window_t& GetWindow() const { return m_Window; }
+    constexpr const windowT& GetWindow() const {
+      return static_cast<const windowT&>(m_Window);
+    }
 
-    const Translator_t& GetTranslator() const { return m_Translator; }
+    constexpr Translator_t& GetTranslator() const { return m_Translator; }
     Translator_t& GetTranslator() { return m_Translator; }
 
-    const Interpreter_t& GetInterpreter() const { return m_Interpreter; }
+    constexpr Interpreter_t& GetInterpreter() const { return m_Interpreter; }
     Interpreter_t& GetInterpreter() { return m_Interpreter; }
 
   private:
-    const Window_t& m_Window;
-    Translator_t    m_Translator;
-    Interpreter_t   m_Interpreter;
+    const Base_t& m_Window;
+    Translator_t m_Translator;
+    Interpreter_t m_Interpreter;
   };
 } // Ui::Window
 

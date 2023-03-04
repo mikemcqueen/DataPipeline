@@ -41,6 +41,13 @@ Probably want TiBroker* to do some text massaging. that means a co-routine-loop 
 synchronous screenshot will want to "translate" then "interpret". and there will probably
 be some commonality between TiBrokerBuy, TiBrokerSell. price text for example
 
+broker_sell2.bmp:
+BrokerSell::ValidateClient(): Line (0) @ (218, 297) doesn't match
+
+SetLastOrigin is not being called consistently for all window types?
+Ui::WindowId_t WindowType_t::LastOriginMatchAll is broken if we have more than 1 window_ids
+Window::Base_t optional<POINT> last origin?
+Unique_ptr<CSurface> in all windows (for all bmps)
 	
 c++20: * == done(ish)
 	range_for (as_const? or just const auto) whereever const_iterator is defined. read up on as_const vs. const auto

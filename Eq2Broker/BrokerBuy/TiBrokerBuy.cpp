@@ -18,53 +18,32 @@
 #include "SsWindow.h"
 
 namespace Broker::Buy::Interpret {
+  Handler_t::Handler_t(const Window_t& window) : window_(window) {}
 
-Handler_t::
-Handler_t(
-    Window::ManagerBase_t& windowManager)
-    :
-    windowManager_(windowManager)
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-bool
-Handler_t::
-Initialize(
-        const wchar_t* pClass)
-{
+  bool Handler_t::Initialize(const wchar_t* pClass) {
     LogInfo(L"TiBrokerBuy::Initialize()");
     if (!DP::Handler_t::Initialize(pClass))
-        return false;
+      return false;
 #if 0
     if (!Transaction::GetItemsForSale::Handler_t::Initialize())
-        return false;
+      return false;
 #endif
     return true;
-}
-
-/////////////////////////////////////////////////////////////////////////////
+  }
 
 #if 0
-void
-Handler_t::
-Shutdown()
-{
+  void
+    Handler_t::
+    Shutdown()
+  {
     LogAlways(L"TiBrokerBuy::Shutdown()");
     Transaction::GetItemsForSale::Handler_t::Shutdown();
-}
+  }
 #endif
 
-////////////////////////////////////////////////////////////////////////////////
-
-HRESULT
-Handler_t::
-MessageHandler(
-    const DP::Message::Data_t* pMessage)
-{
+  HRESULT Handler_t::MessageHandler(const DP::Message::Data_t* pMessage) {
     if (Message::Id::Buy != pMessage->Id) {
-        return S_FALSE;
+      return S_FALSE;
     }
     auto& message = static_cast<const Translate::Data_t&>(*pMessage);
     message.tableText.Dump(L"TiBrokerBuy");
@@ -78,20 +57,20 @@ MessageHandler(
     DP::TransactionManager_t::AutoRelease_t ar(pData);
     if (nullptr != pData)
     {
-        using namespace Transaction;
-        switch (pData->Id)
-        {
+      using namespace Transaction;
+      switch (pData->Id)
+      {
 
-        case Id::GetItemsForSale:
-            return GetItemsForSale::Handler_t::Message(Message,
-                       static_cast<GetItemsForSale::Data_t&>(*pData),
-                       GetManager().GetWindow());
-        default:
-            break;
-        }
+      case Id::GetItemsForSale:
+        return GetItemsForSale::Handler_t::Message(Message,
+          static_cast<GetItemsForSale::Data_t&>(*pData),
+          GetManager().GetWindow());
+      default:
+        break;
+      }
     }
 #endif
     return S_FALSE;
-}
+  }
 
 } // Broker::Buy::Interpret

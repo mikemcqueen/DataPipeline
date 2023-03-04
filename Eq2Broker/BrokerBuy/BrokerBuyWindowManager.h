@@ -19,9 +19,12 @@
 #include "BrokerBuyTypes.h"
 
 namespace Broker::Buy::Window {
+  using ManagerBase_t = Ui::Window::Manager_t<Window_t,
+    Translate::Handler_t, Interpret::Handler_t>;
+
   class Manager_t : public ManagerBase_t {
   public:
-    Manager_t(const Window_t& window) : ManagerBase_t(window) {}
+    Manager_t(const Ui::Window::Base_t& window) : ManagerBase_t(window) {}
   };
 } // namespace Broker::Buy::Window
 

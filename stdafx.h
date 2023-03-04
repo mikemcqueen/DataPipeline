@@ -49,28 +49,27 @@
 #include <shlwapi.h>
 #include <time.h>
 
+#include <algorithm>
+#include <cassert>
 #include <chrono>
 #include <concepts>
-#include <type_traits>
-#include <cassert>
-#include <format>
-#include <vector>
-#include <queue>
-#include <stack>
-#include <map>
-#include <unordered_map>
-#include <set>
-#include <string>
 #include <cwctype>
-#include <iostream>
+#include <format>
 #include <fstream>
-#include <algorithm>
-//#include <hash_map>
-//#include <hash_set>
 #include <functional>
-#include <numeric>
+#include <iostream>
+#include <map>
 #include <memory>
+#include <numeric>
+#include <queue>
+#include <ranges>
+#include <set>
 #include <span>
+#include <stack>
+#include <string>
+#include <type_traits>
+#include <unordered_map>
+#include <vector>
 
 #include "xmllite.h"
 

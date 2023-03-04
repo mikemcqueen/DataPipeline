@@ -2,7 +2,7 @@
 //
 // Copyright (C) 2009 Mike McQueen.  All rights reserved.
 //
-// TrWindowType.h
+// WindowType.h
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -20,26 +20,13 @@ class CSurface;
 struct Rect_t;
 class MainWindow_t;
 
-namespace Broker
-{
-
-  class TrWindowType_t : public DP::Handler_t {
-    typedef Ui::WindowId_t(TrWindowType_t::* FnGetWindowId_t)(const CSurface& surface, Flag_t flags) const;
-
-    static const FnGetWindowId_t s_brokerFunc;
-    static const FnGetWindowId_t s_mainChatFunc;
-    static const FnGetWindowId_t s_windowIdFuncs[];
-
+namespace Broker::Translate {
+  class WindowType_t : public DP::Handler_t {
   public:
-    TrWindowType_t(MainWindow_t& mainWindow);
+    WindowType_t(MainWindow_t& mainWindow);
 
     // DP::Handler_t virtual:
     HRESULT MessageHandler(const DP::Message::Data_t* pMessage) override;
-
-  private:
-    Ui::WindowId_t GetWindowId(const CSurface& Surface) const;
-
-    const char* GetWindowName(Ui::WindowId_t windowId) const;
 
     Ui::WindowId_t GetBrokerWindowId(
       const CSurface& Surface,
@@ -53,30 +40,25 @@ namespace Broker
       const CSurface& Surface,
       Flag_t flags) const;
 
-    Ui::WindowId_t GetMainChatWindowId(
-      const CSurface& Surface,
-      Flag_t flags) const;
+  private:
+    Ui::WindowId_t GetWindowId(const CSurface& Surface) const;
 
-    Ui::WindowId_t CompareAllLastOrigins(
+    Ui::WindowId_t LastOriginMatchAll(
+      const CSurface& surface) const;
+
+    Ui::WindowId_t OriginSearchAll(
       const CSurface& surface) const;
 
     Ui::WindowId_t SearchLoggedInWindows(
       const CSurface& surface) const;
 
-    Ui::WindowId_t SearchAllWindows(
-      const CSurface& surface) const;
+    const char* GetWindowName(Ui::WindowId_t windowId) const;
+    void UpdateLastWindowId(Ui::WindowId_t window_id) const;
 
   private:
-    TrWindowType_t();
-    TrWindowType_t(const TrWindowType_t&);
-    TrWindowType_t& operator=(const TrWindowType_t&);
-
-    // Member data:
-    MainWindow_t& m_mainWindow;
-    mutable Ui::WindowId_t  m_lastWindowId;
-    mutable FnGetWindowId_t m_lastWindowIdFunc;
+    MainWindow_t& main_window_;
+    mutable Ui::WindowId_t last_window_id_;
   };
-
-} // Broker
+} // Broker::Translate
 
 #endif // INCLUDE_IDWINDOWTYPE_H

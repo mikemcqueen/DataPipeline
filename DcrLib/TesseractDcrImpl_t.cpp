@@ -58,6 +58,9 @@ std::string TesseractDcrImpl_t::GetText(
   Tesseract()->SetImage((std::uint8_t*)GetBitsAt(&ddsd, rect.left, rect.top),
     rect.Width(), rect.Height(),
     4, (int)ddsd.lPitch);
+
+//  Tesseract()->SetVariable("tessedit_char_whitelist", "1234567890");
+
   std::unique_ptr<char> pResult(Tesseract()->GetUTF8Text());
   if (auto text = pResult.get(); text && text[0]) {
     str.assign(text);
@@ -133,7 +136,7 @@ int TesseractDcrImpl_t::GetTableText(
         WCHAR szFile[MAX_PATH];
         wsprintf(szFile, L"Diag\\dcr_row_%d_column_%d.bmp", row, column);
 #if 0 // draw rectangles
-        const_cast<CSurface*>(pSurface)->SlowRectangle(&rcBmp, RGB(0, 0, 0));
+        const_cast<CSurface*>(pSurface)->SlowRectangle(&rcBmp, RGB(0, 0, 255));
 #endif
       }
       Tesseract()->SetImage((std::uint8_t*)GetBitsAt(&ddsd, rc.left, rc.top + yOffset),

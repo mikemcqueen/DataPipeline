@@ -14,6 +14,9 @@
     <ClCompile Include="BrokerSell\DcrBrokerSell.cpp" />
     <ClCompile Include="BrokerSell\TiBrokerSell.cpp" />
     <ClCompile Include="BrokerSell\BrokerSellWindow.cpp" />
+    <ClCompile Include="SetPrice\DcrSetPrice.cpp" />
+    <ClCompile Include="SetPrice\SetPriceWindow.cpp" />
+    <ClCompile Include="SetPrice\TiSetPrice.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main\BrokerId.h" />
@@ -38,6 +41,13 @@
     <ClInclude Include="BrokerSell\BrokerSellWindow.h" />
     <ClInclude Include="BrokerSell\BrokerSellText.h" />
     <ClInclude Include="BrokerSell\BrokerSellWindowManager.h" />
+    <ClInclude Include="SetPrice\DcrSetPrice.h" />
+    <ClInclude Include="SetPrice\SetPrice.h" />
+    <ClInclude Include="SetPrice\SetPriceTypes.h" />
+    <ClInclude Include="SetPrice\SetPriceWindow.h" />
+    <ClInclude Include="SetPrice\TiSetPrice.h" />
+    <ClInclude Include="SetPrice\Header.h" />
+    <ClInclude Include="SetPrice\SetPriceWidgets.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Res\Broker_BuyTab_Active.bmp">

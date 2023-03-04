@@ -21,18 +21,17 @@ namespace Broker::Buy {
   public:
     explicit Window_t(const Ui::Window_t& parent);
 
+#if 1
     bool GetWidgetRect(
       Ui::WidgetId_t widgetId,
       Rect_t* pRect) const override;
+#endif
 
+    // TODO: shold be owned by Broker(Frame)Window
     void SetLayout(Frame::Layout_t layout) const;
 
   private:
     const Broker::Window_t& GetBrokerWindow() const;
-
-    Window_t();
-    Window_t(const Window_t&);
-    Window_t& operator=(const Window_t&);
   };
 } // Broker::Buy
 

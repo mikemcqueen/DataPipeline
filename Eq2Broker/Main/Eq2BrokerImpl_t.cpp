@@ -20,10 +20,10 @@ Eq2BrokerImpl_t::Eq2BrokerImpl_t(MainWindow_t& mainWindow) :
   m_SsWindow(*g_pDisplay, mainWindow),
   m_TrWindowType(mainWindow),
   m_TrScroll(mainWindow),
-  buyWindowManager_(mainWindow.GetBrokerWindow().GetBrokerBuyWindow()),
-  sellWindowManager_(mainWindow.GetBrokerWindow().GetBrokerSellWindow())
+  buyWindowManager_(mainWindow.GetWindow(Window::Id::BrokerBuy)),
+  sellWindowManager_(mainWindow.GetWindow(Window::Id::BrokerSell)),
+  setprice_manager_(mainWindow.GetWindow(Window::Id::SetPrice))
 #if 0
-  m_SetPricePopup(mainWindow.GetSetPricePopup()),
   m_eq2LoginWindow(mainWindow.GetEq2LoginWindow()),
   m_txSetActiveWindow(mainWindow),
   m_txBuyTabGetItems(broker),

@@ -22,9 +22,10 @@ class CSurface;
 ////////////////////////////////////////////////////////////////////////////////
 
 namespace Ui::Window {
-  namespace Locate {
-    static const unsigned CompareLastOrigin = 0x01;
-    static const unsigned Search = 0x02;
+  namespace LocateBy {
+    constexpr unsigned LastOriginMatch = 0x1;
+    constexpr unsigned OriginSearch = 0x2;
+    constexpr unsigned AnyMeans = (LastOriginMatch | OriginSearch);
   }
 
 #if 0
@@ -124,14 +125,11 @@ namespace Ui::Window {
       const Rect_t& RelativeRect,
       Rect_t* pWidgetRect) const;
 
-    WindowId_t  GetWindowId() const
-    {
-      return m_WindowId;
-    }
-
+    WindowId_t  GetWindowId() const { return m_WindowId; }
     const char* GetWindowName() const { return m_windowName.c_str(); }
-
+    const Base_t& GetParent() const { return m_ParentWindow; }
     Flag_t GetFlags() const { return m_Flags; }
+    size_t GetWidgetCount() const { return widgets_.size(); }
 
     bool ValidateBorders(
       const CSurface& Surface,
@@ -147,8 +145,6 @@ namespace Ui::Window {
       const COLORREF  LowColor,
       const COLORREF  HighColor) const;
 
-    size_t GetWidgetCount() const { return widgets_.size(); }
-
     void DumpWidgets(
       const CSurface& Surface,
       const Rect_t& RelativeRect) const;
@@ -158,8 +154,9 @@ namespace Ui::Window {
       const POINT& ptHint,
       POINT& ptOrigin) const;
 
-    const POINT& GetLastOrigin() const { return m_ptLastOrigin; }
+    const POINT GetLastOrigin() const { return m_ptLastOrigin; }
     void SetLastOrigin(POINT ptOrigin) const { m_ptLastOrigin = ptOrigin; }
+
     bool CompareLastOrigin(
       const CSurface& surface,
       const CSurface& image,
@@ -169,8 +166,6 @@ namespace Ui::Window {
       const CSurface& surface,
       const CSurface& image,
       POINT* pptOrigin) const;
-
-    const Base_t& GetParent() const { return m_ParentWindow; }
 
   private:
     const Base_t& m_ParentWindow;

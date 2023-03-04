@@ -14,19 +14,14 @@
 #define Include_EQ2BROKERIMPL_T_H
 
 #include "SsWindow.h"
-//#include "MainWindow_t.h"
-
 #include "TrWindowType.h"
 #include "TrScrollThumb_t.h"
-
 #include "BrokerBuyWindowManager.h"
 #include "BrokerSellWindowManager.h"
+#include "SetPrice.h"
 
 #if 0
-#include "BrokerSell.h"
-#include "SetPrice.h"
 #include "Eq2Login.h"
-
 #include "TxLogon.h"
 #include "TxSetActiveWindow.h"
 #include "TxBuyTabGetItems.h"
@@ -58,15 +53,15 @@ public:
   SsWindow::Acquire::Handler_t m_SsWindow;
 
   // Translate handlers
-  TrWindowType_t               m_TrWindowType;
+  Translate::WindowType_t      m_TrWindowType;
   TrScrollThumb_t              m_TrScroll;
 
   // Translate/Interpret handlers
   Buy::Window::Manager_t       buyWindowManager_;
   Sell::Window::Manager_t      sellWindowManager_;
+  SetPrice::Window::Manager_t  setprice_manager_;
 
 #if 0
-  SetPrice::Window::Manager_t  m_SetPricePopup;
   Eq2Login::Window::Manager_t  m_eq2LoginWindow;
 
   // Transaction handlers

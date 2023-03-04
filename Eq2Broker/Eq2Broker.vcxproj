@@ -270,6 +270,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Main\TrWindowType.cpp" />
+    <ClCompile Include="SetPrice\DcrSetPrice.cpp" />
+    <ClCompile Include="SetPrice\SetPriceWindow.cpp" />
+    <ClCompile Include="SetPrice\TiSetPrice.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BrokerBuy\BrokerBuyText.h" />
@@ -294,6 +297,13 @@
     <ClInclude Include="Main\stdafx.h" />
     <ClInclude Include="Main\TrWindowType.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="SetPrice\DcrSetPrice.h" />
+    <ClInclude Include="SetPrice\Header.h" />
+    <ClInclude Include="SetPrice\SetPrice.h" />
+    <ClInclude Include="SetPrice\SetPriceTypes.h" />
+    <ClInclude Include="SetPrice\SetPriceWidgets.h" />
+    <ClInclude Include="SetPrice\SetPriceWindow.h" />
+    <ClInclude Include="SetPrice\TiSetPrice.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Res\Broker_BuyTab_Active.bmp" />

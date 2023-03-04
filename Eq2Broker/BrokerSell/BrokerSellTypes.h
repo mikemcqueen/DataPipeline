@@ -49,11 +49,13 @@ namespace Broker::Sell {
   } // Interpret
 
   class Window_t;
+#if 0
   namespace Window {
-    using  ManagerBase_t = Ui::Window::Manager_t<
+    using ManagerBase_t = Ui::Window::Manager_t<
       Window_t, Translate::Handler_t, Interpret::Handler_t>;
     class Manager_t;
   }
+#endif
 } // namespace Broker::Sell
 
 #endif // Include_BROKERSELLTYPES_H

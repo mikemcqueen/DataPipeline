@@ -18,7 +18,6 @@
 #include "Resource.h"
 
 namespace Broker {
-
   constexpr Flag_t kWindowFlags{};
 
   Window_t::Window_t(const Ui::Window_t& parent) :
@@ -28,8 +27,8 @@ namespace Broker {
       "BrokerFrame"sv,
       { buy_window_, sell_window_ },
       kWindowFlags),
-    buy_window_(parent),
-    sell_window_(parent),
+    buy_window_(*this),
+    sell_window_(*this),
     m_layout(Frame::Layout::Unknown)
   {
     LoadSurfaces();
@@ -39,43 +38,53 @@ namespace Broker {
     //TODO: array
     extern CDisplay* g_pDisplay;
     HRESULT hr = S_OK;
-    hr = g_pDisplay->CreateSurfaceFromBitmap(&m_brokerCaption, MAKEINTRESOURCE(IDB_BROKER_CAPTION));
+    hr = g_pDisplay->CreateSurfaceFromBitmap(&m_brokerCaption,
+      MAKEINTRESOURCE(IDB_BROKER_CAPTION));
     if (FAILED(hr)) {
       throw runtime_error("Create BrokerCaption surface");
     }
-    hr = g_pDisplay->CreateSurfaceFromBitmap(&m_buyTabActive, MAKEINTRESOURCE(IDB_BROKER_BUYTAB_ACTIVE));
+    hr = g_pDisplay->CreateSurfaceFromBitmap(&m_buyTabActive,
+      MAKEINTRESOURCE(IDB_BROKER_BUYTAB_ACTIVE));
     if (FAILED(hr)) {
       throw runtime_error("Create BrokerBuyTabActive surface");
     }
-    hr = g_pDisplay->CreateSurfaceFromBitmap(&m_buyTabInactive, MAKEINTRESOURCE(IDB_BROKER_BUYTAB_INACTIVE));
+    hr = g_pDisplay->CreateSurfaceFromBitmap(&m_buyTabInactive,
+      MAKEINTRESOURCE(IDB_BROKER_BUYTAB_INACTIVE));
     if (FAILED(hr)) {
       throw runtime_error("Create BrokerBuyTabInactive surface");
     }
-    hr = g_pDisplay->CreateSurfaceFromBitmap(&m_marketCaption, MAKEINTRESOURCE(IDB_MARKET_CAPTION));
+    hr = g_pDisplay->CreateSurfaceFromBitmap(&m_marketCaption,
+      MAKEINTRESOURCE(IDB_MARKET_CAPTION));
     if (FAILED(hr)) {
       throw runtime_error("Create MarketCaption surface");
     }
-    hr = g_pDisplay->CreateSurfaceFromBitmap(&m_browseTabActive, MAKEINTRESOURCE(IDB_MARKET_BROWSETAB_ACTIVE));
+    hr = g_pDisplay->CreateSurfaceFromBitmap(&m_browseTabActive,
+      MAKEINTRESOURCE(IDB_MARKET_BROWSETAB_ACTIVE));
     if (FAILED(hr)) {
       throw runtime_error("Create BrowseTabActive surface");
     }
-    hr = g_pDisplay->CreateSurfaceFromBitmap(&m_browseTabInactive, MAKEINTRESOURCE(IDB_MARKET_BROWSETAB_INACTIVE));
+    hr = g_pDisplay->CreateSurfaceFromBitmap(&m_browseTabInactive,
+      MAKEINTRESOURCE(IDB_MARKET_BROWSETAB_INACTIVE));
     if (FAILED(hr)) {
       throw runtime_error("Create BrowseTabInactive surface");
     }
-    hr = g_pDisplay->CreateSurfaceFromBitmap(&m_sellTabActive, MAKEINTRESOURCE(IDB_BROKER_SELLTAB_ACTIVE));
+    hr = g_pDisplay->CreateSurfaceFromBitmap(&m_sellTabActive,
+      MAKEINTRESOURCE(IDB_BROKER_SELLTAB_ACTIVE));
     if (FAILED(hr)) {
       throw runtime_error("Create BrokerSellTabActive surface");
     }
-    hr = g_pDisplay->CreateSurfaceFromBitmap(&m_sellTabInactive, MAKEINTRESOURCE(IDB_BROKER_SELLTAB_INACTIVE));
+    hr = g_pDisplay->CreateSurfaceFromBitmap(&m_sellTabInactive,
+      MAKEINTRESOURCE(IDB_BROKER_SELLTAB_INACTIVE));
     if (FAILED(hr)) {
       throw runtime_error("Create BrokerSellTabInactive surface");
     }
-    hr = g_pDisplay->CreateSurfaceFromBitmap(&m_salesLogTabActive, MAKEINTRESOURCE(IDB_BROKER_SALESLOGTAB_ACTIVE));
+    hr = g_pDisplay->CreateSurfaceFromBitmap(&m_salesLogTabActive,
+      MAKEINTRESOURCE(IDB_BROKER_SALESLOGTAB_ACTIVE));
     if (FAILED(hr)) {
       // throw runtime_error("Create BrokerSalesLogTabActive surface");
     }
-    hr = g_pDisplay->CreateSurfaceFromBitmap(&m_salesLogTabInactive, MAKEINTRESOURCE(IDB_BROKER_SALESLOGTAB_INACTIVE));
+    hr = g_pDisplay->CreateSurfaceFromBitmap(&m_salesLogTabInactive,
+      MAKEINTRESOURCE(IDB_BROKER_SALESLOGTAB_INACTIVE));
     if (FAILED(hr)) {
       // throw runtime_error("Create BrokerSalesLogTabInactive surface");
     }
@@ -101,14 +110,12 @@ namespace Broker {
 
   Ui::WindowId_t Window_t::GetWindowId(
     const CSurface& surface,
-    const POINT*    /*pptHint*/) const
+    const POINT* /* pptHint = nullptr */) const
   {
     using namespace Ui::Window;
     auto windowId = Id::Unknown;
     POINT ptCaption;
-    if (IsLocatedOn(surface, Locate::CompareLastOrigin | Ui::Window::Locate::Search,
-      &ptCaption))
-    {
+    if (IsLocatedOn(surface, LocateBy::AnyMeans, &ptCaption)) {
       POINT ptTab;
       Tab_t Tab = FindActiveTab(surface, ptCaption, ptTab);
       if (Tab::Id::None != Tab) {
@@ -125,31 +132,31 @@ namespace Broker {
 
   bool Window_t::IsLocatedOn(
     const CSurface& surface,
-    Flag_t    flags,
+    Flag_t flags,
     POINT* pptOrigin) const
   {
     static const CSurface* pLastCaption = nullptr;
-    static const CSurface Window_t::* captions[] = {
+    static const CSurface Window_t::* captions[] = { // TODO: std::array
         &Window_t::m_marketCaption,
         &Window_t::m_brokerCaption,
     };
 
     using namespace Ui::Window;
-    if (flags.Test(Locate::CompareLastOrigin) && (nullptr != pLastCaption) &&
-      CompareLastOrigin(surface, *pLastCaption, pptOrigin))
+    if (flags.Test(LocateBy::LastOriginMatch) && pLastCaption
+      && CompareLastOrigin(surface, *pLastCaption, pptOrigin))
     {
       return true;
     }
-    if (flags.Test(Locate::Search)) {
+    if (flags.Test(LocateBy::OriginSearch)) {
+      // I'm trying to be wayy too clever here
       size_t index = 0;
-      const CSurface* pCaption = pLastCaption;
-      if (nullptr == pCaption) {
-        pCaption = &(this->*captions[index++]);
-      }
+      const CSurface* pCaption = pLastCaption ? pLastCaption :
+        &(this->*captions[index++]);
       for (;;) {
         // Look for caption bitmap on the supplied surface
-        if (((0 == index) || (pCaption != pLastCaption)) &&
-          OriginSearch(surface, *pCaption, pptOrigin)) {
+        if ((!index || (pCaption != pLastCaption)) &&
+          OriginSearch(surface, *pCaption, pptOrigin))
+        {
           SetLayout((pCaption == &m_marketCaption) ? Frame::Layout::Market
             : Frame::Layout::Broker);
           pLastCaption = pCaption;
@@ -173,7 +180,6 @@ namespace Broker {
     rect.right /= 3;
     rect.bottom /= 3;
   }
-
 
 #if 1
   void Window_t::SetLayout(Frame::Layout_t layout) const {

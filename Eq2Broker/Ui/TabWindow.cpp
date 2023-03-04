@@ -73,8 +73,7 @@ TableWindow_t::TableWindow_t(
   std::span<const Ui::Widget::Data_t> widgets,
   POINT tableOffset,
   const RECT& innerTableRect,
-  POINT tabOffset)
-  :
+  POINT tabOffset):
   TabWindow_t(
     WindowId,
     parent,
@@ -92,7 +91,7 @@ Ui::WindowId_t TableWindow_t::GetWindowId(
   const CSurface& Surface,
   const POINT* pptHint) const
 {
-  if (nullptr == pptHint) {
+  if (!pptHint) {
     throw invalid_argument("TableWindow_t::GetWindowId()");
   }
   Rect_t TableRect;

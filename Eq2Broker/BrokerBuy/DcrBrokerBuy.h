@@ -73,7 +73,7 @@ namespace Broker::Buy::Translate {
     friend struct Translate::Data_t;
 
   public:
-    Handler_t(Window::ManagerBase_t& windowManager);
+    explicit Handler_t(const Window_t& window);
 
     // Handler_t virtual:
     bool PreTranslateSurface(
@@ -87,13 +87,16 @@ namespace Broker::Buy::Translate {
     const Text_t& GetText() const { return m_TextTable.GetData(); }
     const DcrTable_t& GetDcr() const { return m_DcrTable; }
 
-  private:
-    void SaveWidgets(
+  public:
+    static void SaveImageWithWidgetRects(
+      std::wstring_view name,
       const CSurface* pSurface,
-      std::span<const Ui::Widget::Data_t> widgets) const;
+      const Rect_t& rc,
+      std::span<const Ui::Widget::Data_t> widgets);
 
   private:
-    Window::ManagerBase_t& m_windowManager;
+//    Window::ManagerBase_t& m_windowManager;
+    const Window_t& window_;
     TranslatePolicy_t m_TranslatePolicy;
     ValidatePolicy_t  m_ValidatePolicy;
     DcrVector_t       m_DcrVector; // TODO get rid of this, pass by value

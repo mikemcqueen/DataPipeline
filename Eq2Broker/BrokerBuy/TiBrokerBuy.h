@@ -24,22 +24,20 @@
 namespace Broker::Buy::Interpret {
   class Handler_t : public DP::Handler_t {
   public:
-    explicit Handler_t(Window::ManagerBase_t& windowManager);
-
-    Handler_t() = delete;
-    Handler_t(const Handler_t&) = delete;
-    Handler_t& operator= (const Handler_t&) = delete;
+    explicit Handler_t(const Window_t& window); //  Window::ManagerBase_t& windowManager);
 
     // DP::Handler_t virtual:
     bool Initialize(const wchar_t* pszClass) override;
     HRESULT MessageHandler(const DP::Message::Data_t* pData) override;
 
   private:
+#if 0
     Window::ManagerBase_t& GetWindowManager() const { return windowManager_; }
 
     Window::ManagerBase_t& windowManager_;
+#endif
+    const Window_t& window_;
     PageNumber_t m_PageNumber;
-    mutable CAutoCritSec m_csState;
   };
 } // Broker::Buy::Interpret
 

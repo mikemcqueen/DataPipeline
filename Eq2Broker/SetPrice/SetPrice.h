@@ -18,30 +18,14 @@
 #include "TiSetPrice.h"
 #include "SetPriceTypes.h"
 
-namespace Broker
-{
-namespace SetPrice
-{
-namespace Window
-{
+namespace Broker::SetPrice::Window {
+  using ManagerBase_t = Ui::Window::Manager_t<Window_t,
+    Translate::Handler_t, Interpret::Handler_t>;
 
-///////////////////////////////////////////////////////////////////////////////
-
-    class Manager_t :
-        public ManagerBase_t
-    {
-    public:
-        Manager_t(Window_t& Window) :
-             ManagerBase_t(Window)
-        { }
-    };
-
-///////////////////////////////////////////////////////////////////////////////
-
-} // Window
-} // SetPrice
-} // Broker
+  class Manager_t : public ManagerBase_t {
+  public:
+    Manager_t(const Ui::Window::Base_t& Window) : ManagerBase_t(Window) {}
+  };
+} // namespace Broker::SetPrice::Window
 
 #endif // Include_SETPRICE_H
-
-///////////////////////////////////////////////////////////////////////////////

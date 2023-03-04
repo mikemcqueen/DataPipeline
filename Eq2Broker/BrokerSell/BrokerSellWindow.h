@@ -9,6 +9,7 @@
 #pragma once
 
 #include "TabWindow.h"
+#include "SetPriceWindow.h"
 #include "BrokerUi.h"
 
 namespace Broker::Sell {
@@ -42,5 +43,7 @@ namespace Broker::Sell {
       const CSurface& surface,
       const POINT& ptHint,
       Rect_t& surfaceRect) const;
+
+    SetPrice::Window_t setprice_window_;
   };
 } // namespace Broker::Sell

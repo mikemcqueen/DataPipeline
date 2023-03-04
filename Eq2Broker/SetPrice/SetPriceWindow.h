@@ -10,33 +10,32 @@
 
 #include "UiWindow.h"
 #include "BrokerUi.h"
+#include "DDUtil.h"
 
-namespace Broker
-{
-  namespace SetPrice
-  {
-    class Window_t : public Ui::Window_t {
-    public:
+namespace Broker::SetPrice {
+  class Window_t : public Ui::Window_t {
+  public:
+    explicit Window_t(const Ui::Window_t& parent);
 
-      explicit Window_t(const Ui::Window_t& parent);
+    // Ui::Window_t virtual:
+/*    bool GetWidgetRect(
+      Ui::WidgetId_t WidgetId,
+      Rect_t* WidgetRect) const override;
+*/
+    // UI::Window_t virtual:
+    const CSurface* GetOriginSurface() const override { return &origin_surface_; }
+    void GetOriginSearchRect(const CSurface& surface, Rect_t& rect) const override;
 
-      // Ui::Window_t virtual:
+    bool FindBorder(
+      const CSurface& Surface,
+      const POINT& ptTab,
+      Rect_t& SurfaceRect) const;
 
-      bool GetWidgetRect(
-        Ui::WidgetId_t WidgetId,
-        Rect_t& WidgetRect) const override;
+  private:
+    void LoadSurfaces();
 
-      bool FindBorder(
-        const CSurface& Surface,
-        const POINT& ptTab,
-        Rect_t& SurfaceRect) const;
+    // TODO: make this a unique_ptr to ensure we instantiate/load
+    CSurface origin_surface_;
+  };
 
-    private:
-      Window_t();
-      Window_t(const Window_t&);
-      Window_t& operator=(const Window_t&);
-    };
-  } // SetPrice
-} // Broker
-
-////////////////////////////////////////////////////////////////////////////////
+} // namespace Broker::SetPrice

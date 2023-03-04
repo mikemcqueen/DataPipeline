@@ -7,7 +7,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "BrokerSellWindowManager.h"
+#include "DcrBrokerSell.h"
+#include "BrokerSellWindow.h"
 #include "PipelineManager.h"
 #include "SsWindow.h"
 #include "DdUtil.h"
@@ -39,7 +40,7 @@ namespace Broker::Sell::Translate {
       Table::ColumnCount
   };
 
-  Handler_t::Handler_t(Window::ManagerBase_t& Manager) :
+  Handler_t::Handler_t(const Window_t& window) :
     BaseHandler_t(
       kWindowId,
       m_TranslatePolicy,
@@ -61,7 +62,8 @@ namespace Broker::Sell::Translate {
       Widget::Id::SetPriceButton),
     m_DcrListItem(
       Widget::Id::ListItemButton),
-    m_windowManager(Manager)
+    window_(window)
+//    m_windowManager(Manager)
   {
     m_DcrVector.push_back(&m_DcrTable);
     m_DcrVector.push_back(&m_DcrSetPrice);
@@ -81,7 +83,7 @@ namespace Broker::Sell::Translate {
     case Widget::Id::Table:
     {
       //rcSurface;
-      Rect_t rect = m_windowManager.GetWindow().GetClientRect();
+      Rect_t rect = window_.GetClientRect();
       if (!rect.IsEmpty()) {
         rect.top += Broker::Table::TopRowOffset;
         *pRect = rect;
@@ -91,7 +93,7 @@ namespace Broker::Sell::Translate {
     break;
 
     default:
-      m_windowManager.GetWindow().GetWidgetRect(dcrId, pRect);
+      window_.GetWidgetRect(dcrId, pRect);
       return true;
     }
     return false;

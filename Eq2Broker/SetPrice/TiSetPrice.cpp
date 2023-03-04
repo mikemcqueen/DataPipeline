@@ -16,67 +16,37 @@
 //#include "TransactionManager.h"
 //#include "TxRepriceItems.h"
 
-////////////////////////////////////////////////////////////////////////////////
+namespace Broker {
+namespace SetPrice {
+  namespace Interpret {
 
-namespace Broker
-{
-namespace SetPrice
-{
-namespace Interpret
-{
+    Handler_t::Handler_t(const Window_t& window) : window_(window) {}
 
-////////////////////////////////////////////////////////////////////////////////
-
-Handler_t::
-Handler_t(
-    Window::ManagerBase_t& Manager)
-:
-    m_Manager(Manager)
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-HRESULT
-Handler_t::
-ExecuteTransaction(
-    DP::Transaction::Data_t& /*Data*/)
-
-{
+    HRESULT Handler_t::ExecuteTransaction(DP::Transaction::Data_t& /*Data*/) {
 #if 0
-    using namespace Transaction;
-    switch (Data.Id)
-    {
-    case Id::RepriceItems:
+      using namespace Transaction;
+      switch (Data.Id)
+      {
+      case Id::RepriceItems:
         // RepriceItems::Handler_t::Start(static_cast<RepriceItems::Data_t&>(Data));
         break; // return S_OK;
-    default:
+      default:
         break;
-    }
+      }
 #endif
-    return S_FALSE;
-}
+      return S_FALSE;
+    }
 
-////////////////////////////////////////////////////////////////////////////////
-
-HRESULT
-Handler_t::
-MessageHandler(
-    const DP::Message::Data_t* /*pMessage*/)
-{
+    HRESULT Handler_t::MessageHandler(const DP::Message::Data_t* /*pMessage*/) {
 #if 0
-    if (Message::Id::SetPrice != pMessage->Id)
-    {
+      if (Message::Id::SetPrice != pMessage->Id)
+      {
         return S_FALSE;
-    }
+      }
 #endif
-    return S_FALSE;
-}
+      return S_FALSE;
+    }
 
-////////////////////////////////////////////////////////////////////////////////
-
-} // Interpret
+  } // Interpret
 } // SetPrice
 } // Broker
-
-////////////////////////////////////////////////////////////////////////////////

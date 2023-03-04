@@ -33,7 +33,7 @@ namespace Broker { //TODO: ::Frame {
 
     bool IsLocatedOn(
       const CSurface& Surface,
-      Flag_t    flags,
+      Flag_t flags,
       POINT* pptOrigin = nullptr) const override;
 
     void GetOriginSearchRect(

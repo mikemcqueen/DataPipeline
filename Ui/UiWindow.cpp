@@ -65,7 +65,7 @@ namespace Ui::Window {
         return child.get().GetWindow(WindowId);
       }
     }
-    LogError(L"%S:GetWindow failed, id: %d", GetWindowName(), WindowId);
+    LogError(L"%S:GetWindow() failed, id: %d", GetWindowName(), WindowId);
     throw std::invalid_argument("GetWindow failed, call HasChildWindow first?");
   }
 
@@ -73,23 +73,32 @@ namespace Ui::Window {
     const CSurface& /*Surface*/,
     const POINT*    /*pptHint*/) const
   {
-    throw runtime_error("Ui::Window_t::GetWindowId() not implmented ?!");
-    // return m_WindowId;
+    // TODO pure virtual?
+    throw runtime_error("Ui::Window_t::GetWindowId() not implemented");
+    //return m_WindowId;
   }
 
   bool Base_t::GetWidgetRect(
-    Ui::WidgetId_t /*WidgetId*/,
-    Rect_t* /*WidgetRect*/) const
+    Ui::WidgetId_t WidgetId,
+    Rect_t* WidgetRect) const
   {
+    Rect_t originRect(m_ptLastOrigin, { 0, 0 });
+    return GetWidgetRect(WidgetId, originRect, WidgetRect);
     // NOTE: we could support this, by using "windowrect" as default
     // but i don't need that functionality, and i want to be warned
     // when i haven't overridden this in a derived class, so it stays
     // like this.
     // TODO: should be a flag to select behavior
-    throw logic_error("Ui::Window_t::GetWidgetRect() not implemented");
+    //throw logic_error("Ui::Window_t::GetWidgetRect() not implemented");
   }
 
-  ////////////////////////////////////////////////////////////////////////////////
+  bool Base_t::GetWidgetRect(
+    Ui::WidgetId_t WidgetId,
+    const Rect_t& RelativeRect,
+    Rect_t* pWidgetRect) const
+  {
+    return GetWidgetRect(WidgetId, RelativeRect, pWidgetRect, std::span{ widgets_ });
+  }
 
   bool Base_t::GetWidgetRect(
     Ui::WidgetId_t WidgetId,
@@ -107,28 +116,20 @@ namespace Ui::Window {
     return false;
   }
 
-  bool Base_t::GetWidgetRect(
-    Ui::WidgetId_t WidgetId,
-    const Rect_t& RelativeRect,
-    Rect_t* pWidgetRect) const
-  {
-    return GetWidgetRect(WidgetId, RelativeRect, pWidgetRect, std::span{ widgets_ });
-  }
-
   bool Base_t::IsLocatedOn(
     const CSurface& surface,
-    Flag_t    flags,
+    Flag_t flags,
     POINT* pptOrigin /*= nullptr*/) const
   {
     const CSurface* pOriginSurface = GetOriginSurface();
-    if (nullptr != pOriginSurface) {
+    if (pOriginSurface) {
       using namespace Ui::Window;
-      if (flags.Test(Locate::CompareLastOrigin) &&
+      if (flags.Test(LocateBy::LastOriginMatch) &&
         CompareLastOrigin(surface, *pOriginSurface, pptOrigin))
       {
         return true;
       }
-      if (flags.Test(Locate::Search) &&
+      if (flags.Test(LocateBy::OriginSearch) &&
         OriginSearch(surface, *pOriginSurface, pptOrigin))
       {
         return true;
@@ -154,10 +155,10 @@ namespace Ui::Window {
     const CSurface& image,
     POINT* pptOrigin) const
   {
-    const POINT& pt = GetLastOrigin();
+    const POINT pt = GetLastOrigin();
     if ((0 < pt.x) || (0 < pt.y)) {
       if (surface.Compare(pt.x, pt.y, image)) {
-        if (nullptr != pptOrigin) {
+        if (pptOrigin) {
           *pptOrigin = pt;
         }
         LogInfo(L"%S::CompareLastOrigin() Match", GetWindowName());
@@ -249,8 +250,8 @@ namespace Ui::Window {
     }
   }
 
-
-  /* static
+#if 0
+  static
   Ui::Scroll::Position_t Window_t::GetVertScrollPos(
     const CSurface& Surface,
     const Rect_t& VScrollUpRect,
@@ -288,7 +289,7 @@ namespace Ui::Window {
     //          ScrollRect.left, ScrollRect.top, ScrollRect.right, ScrollRect.bottom);
     return Pos;
   }
-  */
+#endif
 
   ////////////////////////////////////////////////////////////////////////////////
   //

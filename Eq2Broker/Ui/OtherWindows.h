@@ -15,87 +15,46 @@
 #include "Rect.h"
 #include "DdUtil.h"
 
-namespace Broker
-{
+namespace Broker {
 
-class Eq2LoadingWindow_t :
-    public Ui::Window_t
-{
-private:
-
-    CSurface m_cancelButton;
-
-public:
-
+  class Eq2LoadingWindow_t : public Ui::Window_t {
+  public:
     Eq2LoadingWindow_t();
 
-    const CSurface*
-    GetOriginSurface() const override;
+    const CSurface* GetOriginSurface() const override;
+    void GetOriginSearchRect(const CSurface& surface, Rect_t& rect) const override;
 
-    void
-    GetOriginSearchRect(
-        const CSurface& surface,
-              Rect_t&   rect) const override;
+  private:
+    void loadSurfaces();
 
-private:
+    CSurface m_cancelButton;
+  };
 
-    void
-    loadSurfaces();
-};
-
-////////////////////////////////////////////////////////////////////////////////
-
-class TransitionWindow_t :
-    public Ui::Window_t
-{
-private:
-
-    CSurface m_transitionImage;
-
-public:
-
+  class TransitionWindow_t : public Ui::Window_t {
+  public:
     TransitionWindow_t();
 
-    const CSurface*
-    GetOriginSurface() const override;
+    const CSurface* GetOriginSurface() const override;
+    void GetOriginSearchRect(const CSurface& surface, Rect_t& rect) const override;
 
-    void
-    GetOriginSearchRect(
-        const CSurface& surface,
-              Rect_t&   rect) const override;
+  private:
+    void loadSurfaces();
 
-private:
+    CSurface m_transitionImage;
+  };
 
-    void
-    loadSurfaces();
-};
-
-////////////////////////////////////////////////////////////////////////////////
-
-class MainChatWindow_t :
-    public Ui::Window_t
-{
-private:
-
-    CSurface m_mainChatCaption;
-
-public:
-
+  class MainChatWindow_t : public Ui::Window_t {
+  public:
     MainChatWindow_t();
 
-    const CSurface*
-    GetOriginSurface() const override;
+    const CSurface* GetOriginSurface() const override;
+    void GetOriginSearchRect(const CSurface& surface, Rect_t& rect) const override;
 
-    void
-    GetOriginSearchRect(
-        const CSurface& surface,
-              Rect_t&   rect) const override;
+  private:
+    void loadSurfaces();
 
-private:
-
-    void
-    loadSurfaces();
-};
+    CSurface m_mainChatCaption;
+  };
 
 } // Broker
 

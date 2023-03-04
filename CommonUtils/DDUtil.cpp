@@ -371,14 +371,11 @@ DWORD		dwDesiredHeight
 //		 Use MAKEINTRESOURCE() to pass a constant into strBMP.
 //
 
-HRESULT
-CDisplay::CreateSurfaceFromBitmap
-(
-CSurface *	pSurface,
-LPCTSTR		strBMP,											   
-DWORD		dwDesiredWidth, 
-DWORD		dwDesiredHeight
-)
+HRESULT CDisplay::CreateSurfaceFromBitmap(
+  CSurface* pSurface,
+  LPCTSTR		strBMP,
+  DWORD		dwDesiredWidth,
+  DWORD		dwDesiredHeight)
 {
 	HRESULT		   hr;
 	HBITMAP		   hBMP = nullptr;
@@ -1787,43 +1784,36 @@ GetBltRect() const
 
 /////////////////////////////////////////////////////////////////////////////
 
-bool
-CSurface::
-FindSurfaceInRect(
-    const CSurface& surface,
-    const Rect_t&   findRect,
-          POINT&    ptOrigin,
-    const POINT*    pptHint) const
+bool CSurface::FindSurfaceInRect(
+	const CSurface& surface,
+	const Rect_t& findRect,
+	POINT& ptOrigin,
+	const POINT* pptHint) const
 {
-    // Check if origin is found at hint location
-    if ((nullptr != pptHint) && ((0 < pptHint->x) || (0 < pptHint->y)))
-    {
-        if (Compare(pptHint->x, pptHint->y, surface))
-        {
-            LogInfo(L"CSurface::FindSurfaceInRect() Hint match");
-            ptOrigin = *pptHint;
-            return true;
-        }
-        LogInfo(L"CSurface::FindSurfaceInRect() Hint mis-match");
-    }
-    Rect_t surfaceRect;
-    surface.GetClientRect(&surfaceRect);
-    Rect_t scanRect(findRect);
-    scanRect.right -= surfaceRect.Width();
-    scanRect.bottom -= surfaceRect.Height();
-    for (int y = scanRect.top; y < scanRect.bottom; ++y)
-    {
-        for (int x = scanRect.left; x < scanRect.right; ++x)
-        {
-            if (Compare(x, y, surface))
-            {
-                ptOrigin.x = x;
-                ptOrigin.y = y;
-                return true;
-            }
-        }
-    }
-    return false;
+	// Check if origin is found at hint location
+	if ((nullptr != pptHint) && ((0 < pptHint->x) || (0 < pptHint->y))) {
+		if (Compare(pptHint->x, pptHint->y, surface)) {
+			LogInfo(L"CSurface::FindSurfaceInRect() Hint match");
+			ptOrigin = *pptHint;
+			return true;
+		}
+		LogInfo(L"CSurface::FindSurfaceInRect() Hint mis-match");
+	}
+	Rect_t surfaceRect;
+	surface.GetClientRect(&surfaceRect);
+	Rect_t scanRect(findRect);
+	scanRect.right -= surfaceRect.Width();
+	scanRect.bottom -= surfaceRect.Height();
+	for (int y = scanRect.top; y < scanRect.bottom; ++y) {
+		for (int x = scanRect.left; x < scanRect.right; ++x) {
+			if (Compare(x, y, surface)) {
+				ptOrigin.x = x;
+				ptOrigin.y = y;
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 /////////////////////////////////////////////////////////////////////////////

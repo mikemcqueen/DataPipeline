@@ -22,51 +22,26 @@
 #include "BrokerId.h"
 #include "AutoCs.h"
 
-namespace Broker
-{
-namespace SetPrice
-{
-namespace Interpret
-{
-
-/////////////////////////////////////////////////////////////////////////////
-
-class Handler_t :
+namespace Broker {
+namespace SetPrice{
+namespace Interpret {
+  class Handler_t :
     public DP::Handler_t
-{
+  {
+  public:
+    explicit Handler_t(const Window_t& window);
 
-private:
-
-    Window::ManagerBase_t&  m_Manager;
-
-public:
-
-    Handler_t(
-        Window::ManagerBase_t& Manager);
-
-    //
     // DP::Handler_t virtual:
-    //
+    HRESULT MessageHandler(const DP::Message::Data_t* pData) override;
+    HRESULT ExecuteTransaction(DP::Transaction::Data_t& Data) override;
 
-    HRESULT
-    MessageHandler(
-        const DP::Message::Data_t* pData) override;
-
-    HRESULT
-    ExecuteTransaction(
-        DP::Transaction::Data_t& Data) override;
-
-private:
-
+  private:
+#if 0
     Window::ManagerBase_t& GetManager() const { return m_Manager; }
-
-private:
-
-    Handler_t();
-    Handler_t(const Handler_t&);
-    Handler_t& operator= (const Handler_t&);
-};
-
+    Window::ManagerBase_t& m_Manager;
+#endif
+    const Window_t& window_;
+  };
 } // Interpret
 } // SetPrice
 } // Broker

@@ -58,7 +58,7 @@ namespace Broker {
       constexpr auto BrokerBuy = MakeId(5);
       constexpr auto BrokerSell = MakeId(6);
       constexpr auto BrokerSalesLog = MakeId(7);
-      constexpr auto BrokerSetPrice = MakeId(8);
+      constexpr auto SetPrice = MakeId(8);
     } // Id
   } // Window
 

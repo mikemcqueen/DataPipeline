@@ -18,6 +18,7 @@
 #include "DcrTable_t.h"
 #include "DcrRect_t.h"
 #include "BrokerSellText.h"
+#include "BrokerSellTypes.h"
 #include "Macros.h"
 #include "Rect.h"
 #include "BrokerId.h"
@@ -59,7 +60,7 @@ namespace Broker::Sell::Translate {
     friend struct Translate::Data_t;
 
   public:
-    Handler_t(Window::ManagerBase_t& Manager);
+    explicit Handler_t(const Window_t& window); // Window::ManagerBase_t& Manager);
 
     // Handler_t virtual:
     bool PreTranslateSurface(
@@ -74,10 +75,11 @@ namespace Broker::Sell::Translate {
     const DcrTable_t& GetDcr() const { return m_DcrTable; }
 
   private:
-    Window::ManagerBase_t& GetManager() const { return m_windowManager; }
+//    Window::ManagerBase_t& GetManager() const { return m_windowManager; }
 
   private:
-    Window::ManagerBase_t& m_windowManager;
+//    Window::ManagerBase_t& m_windowManager;
+    const Window_t& window_;
     TranslatePolicy_t m_TranslatePolicy;
     ValidatePolicy_t m_ValidatePolicy;
     DcrVector_t m_DcrVector;

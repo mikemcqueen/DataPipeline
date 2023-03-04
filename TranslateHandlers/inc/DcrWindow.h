@@ -30,7 +30,6 @@ namespace DcrWindow {
 using AcquireData_t = SsWindow::Acquire::Data_t;
 
 namespace Translate {
-
   class AbstractHandler_t : public DP::Handler_t {
   public:
 
@@ -49,14 +48,9 @@ namespace Translate {
 
   ////////////////////////////////////////////////////////////////////////////////
 
-  template<
-    class TranslatePolicy_t,
-    class ValidatePolicy_t> //  = Policy::NoValidate_t<int, int>>
-  class Handler_t :
-    public AbstractHandler_t
-  {
+  template<class TranslatePolicy_t, class ValidatePolicy_t>
+  class Handler_t : public AbstractHandler_t {
   public:
-
     Handler_t(
       Ui::WindowId_t     WindowId,
       TranslatePolicy_t& TranslatePolicy,
@@ -94,6 +88,9 @@ namespace Translate {
       }
       return S_FALSE;
     }
+
+    // used by SaveWidgets.. in DcrHandler
+    const std::wstring& name() const { return m_name; } 
 
   private:
 

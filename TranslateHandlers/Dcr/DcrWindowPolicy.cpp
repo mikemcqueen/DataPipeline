@@ -66,8 +66,8 @@ Translate(
   for (size_t Index = 0; m_DcrVector.end() != it; ++it, ++Index) {
     DCR& dcr = **it;
     Rect_t rect;
-    if (!handler_.PreTranslateSurface(pSurface, data.WindowId, dcr.id(), &rect) ||
-      !dcr.TranslateSurface(pSurface, rect))
+    if (!handler_.PreTranslateSurface(pSurface, data.WindowId, dcr.id(), &rect)
+      || !dcr.TranslateSurface(pSurface, rect))
     {
       LogError(L"Translate::Many_t::Translate() failed on index(%d) of size(%d)",
         Index, m_DcrVector.size());

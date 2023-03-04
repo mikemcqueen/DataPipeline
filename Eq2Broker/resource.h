@@ -21,6 +21,7 @@
 #define IDB_EQ2LOADING_CANCEL           1012
 #define IDB_EQ2_TRANSITION              1013
 #define IDB_MAINCHAT_CAPTION            1014
+#define IDB_SETPRICE_OKBUTTON           1015
 
 #if 0
 CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "Eq2Broker.exe.manifest"

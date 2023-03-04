@@ -49,12 +49,13 @@ namespace Broker::Sell {
       kWindowId,
       parent,
       kWindowName,
-      {}, // TODO { setprice_window_ },
+      { setprice_window_ },
       kWindowFlags,
       std::span{ Widgets },
       BrokerTabToTableOffset,
       InnerTableRect,
-      BrokerDefaultTabOffset)
+      BrokerDefaultTabOffset),
+    setprice_window_(*this)
   {
   }
 
@@ -62,29 +63,31 @@ namespace Broker::Sell {
     return dynamic_cast<const Broker::Window_t&>(GetParent());
   }
 
+  // TODO: this logic could possibly be done generically within Ui::Window_t
   Ui::WindowId_t Window_t::GetWindowId(
     const CSurface& Surface,
     const POINT* pptHint) const
   {
-    Ui::WindowId_t WindowId = TableWindow_t::GetWindowId(Surface, pptHint); // , SurfaceRect);
-    if (Ui::Window::Id::Unknown != WindowId)
-    {
+    using namespace Ui::Window;
+    Ui::WindowId_t WindowId = TableWindow_t::GetWindowId(Surface, pptHint);
+    // if the Sell table (border) is validated, assume we are on the sell
+    // window, and there is no popup.
+    // i'm suspicious of the robustness of this. works in 95% of cases but 
+    // something like a "reconnnecting..." window popup might not be seen
+    if (WindowId != Id::Unknown) {
       return WindowId;
     }
-    // State: the broker sell tab window is active, but something is preventing
-    //        its table from being validated.
-    Rect_t popupRect;
-    if (nullptr == pptHint)
-    {
-      throw invalid_argument("BrokerSellWindow::GetWindowId()");
+    // the broker sell window is active, but something is preventing its
+    // table from being validated.
+    // TODO: for(auto& child : children_) in Window::Base_t
+    const auto& sp = GetWindow(Broker::Window::Id::SetPrice);
+    // TODO i think the hint might always be bogus here
+    // debug the call chain look at values as it progresses
+    // TODO: this can probably become "AnyMeans" after i implement
+    // optional<POINT> last_origin_
+    if (sp.IsLocatedOn(Surface, LocateBy::OriginSearch)) {
+      WindowId = sp.GetWindowId();
     }
-    /*
-    if (GetMainWindow().GetSetPricePopup().FindBorder(Surface, *pptHint, popupRect))
-    {
-      WindowId = Broker::Window::Id::BrokerSetPricePopup;
-      GetMainWindow().SetPopupRect(popupRect);
-    }
-    */
     return WindowId;
   }
 
