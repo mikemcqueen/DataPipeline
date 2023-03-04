@@ -28,6 +28,8 @@ namespace Game {
     std::wstring characterName{ L"Human" };
     std::wstring serverName{ L"Mistmoore" };
     std::wstring testImagePath;
+    bool coroutines;
+    std::exception exception;
   };
 }
 

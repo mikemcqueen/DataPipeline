@@ -117,7 +117,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir);Main;BrokerBuy;BrokerSell;SetPrice;Db;Ui;..\CommonUtils;..\Ui;..\DcrLib;..\PipelineManager;..\Accounts;..\TranslateHandlers\inc;..\AcquireHandlers\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);cope;..\dp;Main;BrokerBuy;BrokerSell;SetPrice;Db;Ui;..\CommonUtils;..\Ui;..\DcrLib;..\PipelineManager;..\Accounts;..\TranslateHandlers\inc;..\AcquireHandlers\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -150,7 +150,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugDLL|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir);Main;BrokerBuy;BrokerSell;SetPrice;BrokerSell;SetPrice;Db;Ui;..\CommonUtils;..\Ui;..\DcrLib;..\PipelineManager;..\Accounts;..\TranslateHandlers\inc;..\AcquireHandlers\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);cope;..\dp;Main;BrokerBuy;BrokerSell;SetPrice;BrokerSell;SetPrice;Db;Ui;..\CommonUtils;..\Ui;..\DcrLib;..\PipelineManager;..\Accounts;..\TranslateHandlers\inc;..\AcquireHandlers\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -184,7 +184,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDLL|Win32'">
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir);Main;BrokerBuy;BrokerSell;SetPrice;BrokerSell;SetPrice;Db;Ui;..\CommonUtils;..\Ui;..\DcrLib;..\PipelineManager;..\Accounts;..\TranslateHandlers\inc;..\AcquireHandlers\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);cope;..\dp;Main;BrokerBuy;BrokerSell;SetPrice;BrokerSell;SetPrice;Db;Ui;..\CommonUtils;..\Ui;..\DcrLib;..\PipelineManager;..\Accounts;..\TranslateHandlers\inc;..\AcquireHandlers\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -224,7 +224,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir);Main;BrokerBuy;BrokerSell;SetPrice;Db;Ui;..\CommonUtils;..\Ui;..\DcrLib;..\PipelineManager;..\Accounts;..\TranslateHandlers\inc;..\AcquireHandlers\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);cope;..\dp;Main;BrokerBuy;BrokerSell;SetPrice;Db;Ui;..\CommonUtils;..\Ui;..\DcrLib;..\PipelineManager;..\Accounts;..\TranslateHandlers\inc;..\AcquireHandlers\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -258,6 +258,9 @@
     <ClCompile Include="BrokerSell\BrokerSellWindow.cpp" />
     <ClCompile Include="BrokerSell\DcrBrokerSell.cpp" />
     <ClCompile Include="BrokerSell\TiBrokerSell.cpp" />
+    <ClCompile Include="cope\cope.cpp" />
+    <ClCompile Include="cope\txsellitem.cpp" />
+    <ClCompile Include="cope\txsetprice.cpp" />
     <ClCompile Include="Main\Eq2BrokerImpl_t.cpp" />
     <ClCompile Include="Main\Eq2Broker_t.cpp" />
     <ClCompile Include="Main\Main.cpp" />
@@ -288,6 +291,9 @@
     <ClInclude Include="BrokerSell\BrokerSellWindowManager.h" />
     <ClInclude Include="BrokerSell\DcrBrokerSell.h" />
     <ClInclude Include="BrokerSell\TiBrokerSell.h" />
+    <ClInclude Include="cope\cope.h" />
+    <ClInclude Include="cope\txsellitem.h" />
+    <ClInclude Include="cope\txsetprice.h" />
     <ClInclude Include="Main\BrokerId.h" />
     <ClInclude Include="Main\CmdParser_t.h" />
     <ClInclude Include="Main\Eq2BrokerImpl_t.h" />
@@ -298,7 +304,6 @@
     <ClInclude Include="Main\TrWindowType.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SetPrice\DcrSetPrice.h" />
-    <ClInclude Include="SetPrice\Header.h" />
     <ClInclude Include="SetPrice\SetPrice.h" />
     <ClInclude Include="SetPrice\SetPriceTypes.h" />
     <ClInclude Include="SetPrice\SetPriceWidgets.h" />

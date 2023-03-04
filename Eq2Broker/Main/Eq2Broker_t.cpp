@@ -19,6 +19,7 @@
 #include "Character_t.h"
 #include "Log_t.h"
 #include "DDUtil.h"
+#include "cope.h"
 
 using namespace Broker;
 
@@ -32,13 +33,9 @@ Eq2Broker_t::Eq2Broker_t(
 {
 }
 
-Eq2Broker_t::~Eq2Broker_t()
-{
-}
+Eq2Broker_t::~Eq2Broker_t() { }
 
-bool
-Eq2Broker_t::
-Initialize() {
+bool Eq2Broker_t::Initialize() {
   if (!InitHandlers()) {
     LogError(L"InitHandlers() failed");
     return false;
@@ -86,8 +83,11 @@ bool Eq2Broker_t::Start() {
   if (!m_options.testImagePath.empty()) {
     LoadAndSendTestImage(m_options.testImagePath);
   }
+  else if (m_options.coroutines) {
+    cope::run();
+  }
   else {
-    constexpr size_t requiredTaskCount = 1; // 1 == SsTask
+    constexpr size_t requiredTaskCount = 1; // 1 == SsWindow/SsTask
     auto startedTaskCount = GetPipelineManager().StartAcquiring();
     if (requiredTaskCount != startedTaskCount) {
       LogError(L"Only (%d) of (%d) acquire handler(s) started",
@@ -98,12 +98,7 @@ bool Eq2Broker_t::Start() {
   return true;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-
-void
-Eq2Broker_t::
-Stop()
-{
+void Eq2Broker_t::Stop() {
     LogInfo(L"Eq2Broker_t::Stop()");
     DP::Event::StopAcquire_t EventStop;
     GetPipelineManager().SendEvent(EventStop);
@@ -125,8 +120,6 @@ void Eq2Broker_t::ReadConsoleLoop() {
     }
   }
 }
-
-////////////////////////////////////////////////////////////////////////////////
 
 bool Eq2Broker_t::CommandLoop(wchar_t* buf, DWORD size) {
   HWND hLog = Log_t::Get().GetLogWindow().GetHwnd();
@@ -219,6 +212,16 @@ bool Eq2Broker_t::CmdControl(const wchar_t* pszCmd) {
   return false;
 }
 
+void Eq2Broker_t::LoadAndSendTestImage(const wstring& testImagePath) {
+  LogInfo(L"Loading and processing test image: %s", testImagePath.c_str());
+  // TODO: pool leaks.
+  pool<CSurface>* pPool = new pool<CSurface>();
+  pPool->reserve(2);
+
+  PostSurfaceItem(pPool, testImagePath);
+  //  PostSurfaceItem(pPool, testImagePath);
+}
+
 void Eq2Broker_t::PostSurfaceItem(pool<CSurface>* pPool, std::wstring_view testImagePath) {
   extern CDisplay* g_pDisplay;
 
@@ -231,14 +234,4 @@ void Eq2Broker_t::PostSurfaceItem(pool<CSurface>* pPool, std::wstring_view testI
   item.addref();
   pPool->add(item);
   m_pImpl->m_SsWindow.PostData(nullptr, pPool->get_unused());
-}
-
-void Eq2Broker_t::LoadAndSendTestImage(const wstring& testImagePath) {
-  LogInfo(L"Loading and processing test image: %s", testImagePath.c_str());
-  // TODO: pool leaks.
-  pool<CSurface>* pPool = new pool<CSurface>();
-  pPool->reserve(2);
-
-  PostSurfaceItem(pPool, testImagePath);
-//  PostSurfaceItem(pPool, testImagePath);
 }

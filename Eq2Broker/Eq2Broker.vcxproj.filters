@@ -1,118 +1,242 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Main\Eq2BrokerImpl_t.cpp" />
-    <ClCompile Include="Main\Eq2Broker_t.cpp" />
-    <ClCompile Include="Main\Main.cpp" />
-    <ClCompile Include="Main\PageNumber_t.cpp" />
-    <ClCompile Include="Main\Price_t.cpp" />
-    <ClCompile Include="Main\stdafx.cpp" />
-    <ClCompile Include="Main\TrWindowType.cpp" />
-    <ClCompile Include="BrokerBuy\BrokerBuyWindow.cpp" />
-    <ClCompile Include="BrokerBuy\DcrBrokerBuy.cpp" />
-    <ClCompile Include="BrokerBuy\TiBrokerBuy.cpp" />
-    <ClCompile Include="BrokerSell\DcrBrokerSell.cpp" />
-    <ClCompile Include="BrokerSell\TiBrokerSell.cpp" />
-    <ClCompile Include="BrokerSell\BrokerSellWindow.cpp" />
-    <ClCompile Include="SetPrice\DcrSetPrice.cpp" />
-    <ClCompile Include="SetPrice\SetPriceWindow.cpp" />
-    <ClCompile Include="SetPrice\TiSetPrice.cpp" />
+    <ClCompile Include="BrokerBuy\BrokerBuyWindow.cpp">
+      <Filter>BrokerBuy</Filter>
+    </ClCompile>
+    <ClCompile Include="BrokerSell\BrokerSellWindow.cpp">
+      <Filter>BrokerSell</Filter>
+    </ClCompile>
+    <ClCompile Include="BrokerSell\DcrBrokerSell.cpp">
+      <Filter>BrokerSell</Filter>
+    </ClCompile>
+    <ClCompile Include="BrokerBuy\DcrBrokerBuy.cpp">
+      <Filter>BrokerBuy</Filter>
+    </ClCompile>
+    <ClCompile Include="SetPrice\SetPriceWindow.cpp">
+      <Filter>SetPrice</Filter>
+    </ClCompile>
+    <ClCompile Include="SetPrice\TiSetPrice.cpp">
+      <Filter>SetPrice</Filter>
+    </ClCompile>
+    <ClCompile Include="BrokerBuy\TiBrokerBuy.cpp">
+      <Filter>BrokerBuy</Filter>
+    </ClCompile>
+    <ClCompile Include="BrokerSell\TiBrokerSell.cpp">
+      <Filter>BrokerSell</Filter>
+    </ClCompile>
+    <ClCompile Include="SetPrice\DcrSetPrice.cpp">
+      <Filter>SetPrice</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\Eq2Broker_t.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\Eq2BrokerImpl_t.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\Main.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\Price_t.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\PageNumber_t.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\stdafx.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\TrWindowType.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="cope\cope.cpp">
+      <Filter>cope</Filter>
+    </ClCompile>
+    <ClCompile Include="cope\txsellitem.cpp">
+      <Filter>cope</Filter>
+    </ClCompile>
+    <ClCompile Include="cope\txsetprice.cpp">
+      <Filter>cope</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Main\BrokerId.h" />
-    <ClInclude Include="Main\CmdParser_t.h" />
-    <ClInclude Include="Main\Eq2BrokerImpl_t.h" />
-    <ClInclude Include="Main\Eq2Broker_t.h" />
-    <ClInclude Include="Main\PageNumber_t.h" />
-    <ClInclude Include="Main\Price_t.h" />
-    <ClInclude Include="Main\stdafx.h" />
-    <ClInclude Include="Main\TrWindowType.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="BrokerBuy\BrokerBuyText.h" />
-    <ClInclude Include="BrokerBuy\BrokerBuyTypes.h" />
-    <ClInclude Include="BrokerBuy\BrokerBuyWidgets.h" />
-    <ClInclude Include="BrokerBuy\BrokerBuyWindow.h" />
-    <ClInclude Include="BrokerBuy\BrokerBuyWindowManager.h" />
-    <ClInclude Include="BrokerBuy\DcrBrokerBuy.h" />
-    <ClInclude Include="BrokerBuy\TiBrokerBuy.h" />
-    <ClInclude Include="BrokerSell\BrokerSellTypes.h" />
-    <ClInclude Include="BrokerSell\DcrBrokerSell.h" />
-    <ClInclude Include="BrokerSell\TiBrokerSell.h" />
-    <ClInclude Include="BrokerSell\BrokerSellWindow.h" />
-    <ClInclude Include="BrokerSell\BrokerSellText.h" />
-    <ClInclude Include="BrokerSell\BrokerSellWindowManager.h" />
-    <ClInclude Include="SetPrice\DcrSetPrice.h" />
-    <ClInclude Include="SetPrice\SetPrice.h" />
-    <ClInclude Include="SetPrice\SetPriceTypes.h" />
-    <ClInclude Include="SetPrice\SetPriceWindow.h" />
-    <ClInclude Include="SetPrice\TiSetPrice.h" />
-    <ClInclude Include="SetPrice\Header.h" />
-    <ClInclude Include="SetPrice\SetPriceWidgets.h" />
+    <ClInclude Include="BrokerBuy\BrokerBuyText.h">
+      <Filter>BrokerBuy</Filter>
+    </ClInclude>
+    <ClInclude Include="BrokerBuy\BrokerBuyTypes.h">
+      <Filter>BrokerBuy</Filter>
+    </ClInclude>
+    <ClInclude Include="BrokerBuy\BrokerBuyWidgets.h">
+      <Filter>BrokerBuy</Filter>
+    </ClInclude>
+    <ClInclude Include="BrokerBuy\BrokerBuyWindow.h">
+      <Filter>BrokerBuy</Filter>
+    </ClInclude>
+    <ClInclude Include="BrokerBuy\BrokerBuyWindowManager.h">
+      <Filter>BrokerBuy</Filter>
+    </ClInclude>
+    <ClInclude Include="BrokerSell\BrokerSellText.h">
+      <Filter>BrokerSell</Filter>
+    </ClInclude>
+    <ClInclude Include="BrokerSell\BrokerSellTypes.h">
+      <Filter>BrokerSell</Filter>
+    </ClInclude>
+    <ClInclude Include="BrokerSell\BrokerSellWindow.h">
+      <Filter>BrokerSell</Filter>
+    </ClInclude>
+    <ClInclude Include="BrokerSell\BrokerSellWindowManager.h">
+      <Filter>BrokerSell</Filter>
+    </ClInclude>
+    <ClInclude Include="BrokerSell\DcrBrokerSell.h">
+      <Filter>BrokerSell</Filter>
+    </ClInclude>
+    <ClInclude Include="BrokerBuy\DcrBrokerBuy.h">
+      <Filter>BrokerBuy</Filter>
+    </ClInclude>
+    <ClInclude Include="SetPrice\SetPrice.h">
+      <Filter>SetPrice</Filter>
+    </ClInclude>
+    <ClInclude Include="SetPrice\SetPriceTypes.h">
+      <Filter>SetPrice</Filter>
+    </ClInclude>
+    <ClInclude Include="SetPrice\SetPriceWidgets.h">
+      <Filter>SetPrice</Filter>
+    </ClInclude>
+    <ClInclude Include="SetPrice\SetPriceWindow.h">
+      <Filter>SetPrice</Filter>
+    </ClInclude>
+    <ClInclude Include="SetPrice\TiSetPrice.h">
+      <Filter>SetPrice</Filter>
+    </ClInclude>
+    <ClInclude Include="BrokerBuy\TiBrokerBuy.h">
+      <Filter>BrokerBuy</Filter>
+    </ClInclude>
+    <ClInclude Include="BrokerSell\TiBrokerSell.h">
+      <Filter>BrokerSell</Filter>
+    </ClInclude>
+    <ClInclude Include="SetPrice\DcrSetPrice.h">
+      <Filter>SetPrice</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\Eq2Broker_t.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\Eq2BrokerImpl_t.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>.Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\BrokerId.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\Price_t.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\PageNumber_t.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\CmdParser_t.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\stdafx.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TrWindowType.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="cope\cope.h">
+      <Filter>cope</Filter>
+    </ClInclude>
+    <ClInclude Include="cope\txsellitem.h">
+      <Filter>cope</Filter>
+    </ClInclude>
+    <ClInclude Include="cope\txsetprice.h">
+      <Filter>cope</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Res\Broker_BuyTab_Active.bmp">
-      <Filter>Resources</Filter>
+      <Filter>.Resources</Filter>
     </Image>
     <Image Include="Res\Broker_BuyTab_Inactive.bmp">
-      <Filter>Resources</Filter>
+      <Filter>.Resources</Filter>
     </Image>
     <Image Include="Res\Broker_Caption.bmp">
-      <Filter>Resources</Filter>
+      <Filter>.Resources</Filter>
     </Image>
     <Image Include="Res\Broker_Cursor_Mask.bmp">
-      <Filter>Resources</Filter>
+      <Filter>.Resources</Filter>
     </Image>
     <Image Include="Res\Broker_SalesLogTab_Active.bmp">
-      <Filter>Resources</Filter>
+      <Filter>.Resources</Filter>
     </Image>
     <Image Include="Res\Broker_SalesLogTab_Inactive.bmp">
-      <Filter>Resources</Filter>
+      <Filter>.Resources</Filter>
     </Image>
     <Image Include="Res\Broker_SellTab_Active.bmp">
-      <Filter>Resources</Filter>
+      <Filter>.Resources</Filter>
     </Image>
     <Image Include="Res\Broker_SellTab_Inactive.bmp">
-      <Filter>Resources</Filter>
+      <Filter>.Resources</Filter>
     </Image>
     <Image Include="Res\MainChat_Caption.bmp">
-      <Filter>Resources</Filter>
+      <Filter>.Resources</Filter>
     </Image>
     <Image Include="Res\Login_Caption.bmp">
-      <Filter>Resources</Filter>
+      <Filter>.Resources</Filter>
     </Image>
     <Image Include="Res\Eq2Loading_Cancel.bmp">
-      <Filter>Resources</Filter>
+      <Filter>.Resources</Filter>
     </Image>
     <Image Include="Res\Eq2Login_Connect.bmp">
-      <Filter>Resources</Filter>
+      <Filter>.Resources</Filter>
     </Image>
     <Image Include="Res\Market_BrowseTab_Active.BMP">
-      <Filter>Resources</Filter>
+      <Filter>.Resources</Filter>
     </Image>
     <Image Include="Res\Market_BrowseTab_Inactive.bmp">
-      <Filter>Resources</Filter>
+      <Filter>.Resources</Filter>
     </Image>
     <Image Include="Res\Market_Caption.bmp">
-      <Filter>Resources</Filter>
+      <Filter>.Resources</Filter>
     </Image>
     <Image Include="Res\Zoning_Caption.bmp">
-      <Filter>Resources</Filter>
+      <Filter>.Resources</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Resources">
+    <Filter Include="BrokerBuy">
+      <UniqueIdentifier>{168be061-37f8-4eb5-9217-dcdec0bbc14c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include=".Resources">
       <UniqueIdentifier>{afdf07e9-7b38-4bab-962b-0454948b87e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BrokerSell">
+      <UniqueIdentifier>{388d49ee-dba7-4527-9670-277e94154ed3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SetPrice">
+      <UniqueIdentifier>{e2c4a8ed-61ce-45a3-a043-c66117cb9018}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main">
+      <UniqueIdentifier>{7c6cd490-29a8-432a-82e9-42196afc8d3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cope">
+      <UniqueIdentifier>{922ce14b-4b49-4c7f-bbf0-40996dfd5c6b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="Res\cursor1.cur">
-      <Filter>Resources</Filter>
+      <Filter>.Resources</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Eq2Broker3.rc" />
+    <ResourceCompile Include="Eq2Broker3.rc">
+      <Filter>.Resources</Filter>
+    </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Manifest Include="Res\Eq2Broker.exe.manifest" />
+    <Manifest Include="Res\Eq2Broker.exe.manifest">
+      <Filter>.Resources</Filter>
+    </Manifest>
   </ItemGroup>
 </Project>

@@ -91,7 +91,7 @@ namespace Broker::Buy::Translate {
     int dcrId,
     Rect_t* pRect) const
   {
-#if 1
+#if 0
     static bool first = true;
     if (first) {
       SaveImageWithWidgetRects(name(), pSurface, window_.GetTableRect(),

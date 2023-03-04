@@ -51,6 +51,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <charconv>
 #include <chrono>
 #include <concepts>
 #include <cwctype>

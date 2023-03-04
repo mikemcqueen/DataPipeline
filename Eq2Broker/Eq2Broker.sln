@@ -30,77 +30,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Eq2Ui", "Ui\Eq2Ui.vcxproj",
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Accounts", "..\Accounts\Accounts.vcxproj", "{82D084F1-C785-4CF3-ADFD-AB010EFF60E2}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Eq2Broker", "Eq2Broker", "{38E3D177-0862-4AEC-92CA-2E61529528B7}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projects", "Projects", "{4B359BEE-0356-455F-8494-43D46AEBB355}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BrokerBuy", "BrokerBuy", "{D6B30A99-E03F-4E4D-A3A3-A97E1A15D88F}"
-	ProjectSection(SolutionItems) = preProject
-		BrokerBuy\BrokerBuyText.h = BrokerBuy\BrokerBuyText.h
-		BrokerBuy\BrokerBuyTypes.h = BrokerBuy\BrokerBuyTypes.h
-		BrokerBuy\BrokerBuyWidgets.h = BrokerBuy\BrokerBuyWidgets.h
-		BrokerBuy\BrokerBuyWindow.cpp = BrokerBuy\BrokerBuyWindow.cpp
-		BrokerBuy\BrokerBuyWindow.h = BrokerBuy\BrokerBuyWindow.h
-		BrokerBuy\BrokerBuyWindowManager.h = BrokerBuy\BrokerBuyWindowManager.h
-		BrokerBuy\DcrBrokerBuy.cpp = BrokerBuy\DcrBrokerBuy.cpp
-		BrokerBuy\DcrBrokerBuy.h = BrokerBuy\DcrBrokerBuy.h
-		BrokerBuy\TiBrokerBuy.cpp = BrokerBuy\TiBrokerBuy.cpp
-		BrokerBuy\TiBrokerBuy.h = BrokerBuy\TiBrokerBuy.h
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BrokerSell", "BrokerSell", "{E1CC13E8-0BF7-4BE2-9EE9-79EA7189CE22}"
-	ProjectSection(SolutionItems) = preProject
-		BrokerSell\BrokerSellText.h = BrokerSell\BrokerSellText.h
-		BrokerSell\BrokerSellTypes.h = BrokerSell\BrokerSellTypes.h
-		BrokerSell\BrokerSellWindow.cpp = BrokerSell\BrokerSellWindow.cpp
-		BrokerSell\BrokerSellWindow.h = BrokerSell\BrokerSellWindow.h
-		BrokerSell\DcrBrokerSell.cpp = BrokerSell\DcrBrokerSell.cpp
-		BrokerSell\DcrBrokerSell.h = BrokerSell\DcrBrokerSell.h
-		BrokerSell\TiBrokerSell.cpp = BrokerSell\TiBrokerSell.cpp
-		BrokerSell\TiBrokerSell.h = BrokerSell\TiBrokerSell.h
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Main", "Main", "{2FEE4393-6C0A-48DA-9BC7-BFF302925B33}"
-	ProjectSection(SolutionItems) = preProject
-		Main\BrokerId.h = Main\BrokerId.h
-		Main\Eq2BrokerImpl_t.cpp = Main\Eq2BrokerImpl_t.cpp
-		Main\Eq2BrokerImpl_t.h = Main\Eq2BrokerImpl_t.h
-		Main\Eq2Broker_t.cpp = Main\Eq2Broker_t.cpp
-		Main\Eq2Broker_t.h = Main\Eq2Broker_t.h
-		Main\Main.cpp = Main\Main.cpp
-		Main\PageNumber_t.cpp = Main\PageNumber_t.cpp
-		Main\PageNumber_t.h = Main\PageNumber_t.h
-		Main\Price_t.cpp = Main\Price_t.cpp
-		Main\Price_t.h = Main\Price_t.h
-		Main\TrWindowType.cpp = Main\TrWindowType.cpp
-		Main\TrWindowType.h = Main\TrWindowType.h
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BrokerUI", "BrokerUI", "{2BDB782A-3096-458B-9B4B-30FD2D3D66CD}"
-	ProjectSection(SolutionItems) = preProject
-		Ui\BrokerUi.h = Ui\BrokerUi.h
-		Ui\BrokerWindow.cpp = Ui\BrokerWindow.cpp
-		Ui\BrokerWindow.h = Ui\BrokerWindow.h
-		Ui\MainWindow_t.cpp = Ui\MainWindow_t.cpp
-		Ui\MainWindow_t.h = Ui\MainWindow_t.h
-		Ui\OtherWindows.cpp = Ui\OtherWindows.cpp
-		Ui\OtherWindows.h = Ui\OtherWindows.h
-		Ui\TabWindow.cpp = Ui\TabWindow.cpp
-		Ui\TabWindow.h = Ui\TabWindow.h
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SetPricePopup", "SetPricePopup", "{E0A0DDC2-C9F6-41E4-86AB-CF127FB9159B}"
-	ProjectSection(SolutionItems) = preProject
-		SetPrice\DcrSetPrice.cpp = SetPrice\DcrSetPrice.cpp
-		SetPrice\DcrSetPrice.h = SetPrice\DcrSetPrice.h
-		SetPrice\SetPrice.h = SetPrice\SetPrice.h
-		SetPrice\SetPriceTypes.h = SetPrice\SetPriceTypes.h
-		SetPrice\SetPriceWindow.cpp = SetPrice\SetPriceWindow.cpp
-		SetPrice\SetPriceWindow.h = SetPrice\SetPriceWindow.h
-		SetPrice\TiSetPrice.cpp = SetPrice\TiSetPrice.cpp
-		SetPrice\TiSetPrice.h = SetPrice\TiSetPrice.h
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -192,17 +121,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{B6FDD539-623A-4B09-AC64-BB936E359F07} = {4B359BEE-0356-455F-8494-43D46AEBB355}
-		{D0863D03-6C53-4A65-9FE2-C0B56235C210} = {4B359BEE-0356-455F-8494-43D46AEBB355}
-		{44512971-CA39-44D6-B4EF-21E7DB1D47FE} = {4B359BEE-0356-455F-8494-43D46AEBB355}
-		{4B359BEE-0356-455F-8494-43D46AEBB355} = {38E3D177-0862-4AEC-92CA-2E61529528B7}
-		{D6B30A99-E03F-4E4D-A3A3-A97E1A15D88F} = {38E3D177-0862-4AEC-92CA-2E61529528B7}
-		{E1CC13E8-0BF7-4BE2-9EE9-79EA7189CE22} = {38E3D177-0862-4AEC-92CA-2E61529528B7}
-		{2FEE4393-6C0A-48DA-9BC7-BFF302925B33} = {38E3D177-0862-4AEC-92CA-2E61529528B7}
-		{2BDB782A-3096-458B-9B4B-30FD2D3D66CD} = {38E3D177-0862-4AEC-92CA-2E61529528B7}
-		{E0A0DDC2-C9F6-41E4-86AB-CF127FB9159B} = {38E3D177-0862-4AEC-92CA-2E61529528B7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {563619C4-6EE0-435A-A934-19F1DB250AA9}

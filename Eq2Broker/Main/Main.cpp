@@ -20,8 +20,6 @@
 #include "TesseractDcrImpl_t.h"
 #include "Dcr.h"
 
-///////////////////////////////////////////////////////////////////////////////
-
 static const wchar_t g_szLogPrefix[] = L"eq2";
 
 static CWinApp   theApp;
@@ -32,12 +30,7 @@ static CWinApp   theApp;
 CDisplay*        g_pDisplay;
 DWORD            g_dwSleep = 0;
 
-///////////////////////////////////////////////////////////////////////////////
-
-HRESULT
-InitDirectDraw(
-    HWND hWnd)
-{
+HRESULT InitDirectDraw(HWND hWnd) {
     static const int WINDOW_WIDTH   = 32;
     static const int WINDOW_HEIGHT  = 4;
 
@@ -45,36 +38,25 @@ InitDirectDraw(
     return g_pDisplay->CreateWindowedDisplay(hWnd, WINDOW_WIDTH, WINDOW_HEIGHT, false);
 }
 
-/////////////////////////////////////////////////////////////////////////////
-
-void
-FreeDirectDraw()
-{
-    if (nullptr != g_pDisplay)
-    {
-        delete g_pDisplay;
-        g_pDisplay = nullptr;
-    }
+void FreeDirectDraw() {
+  if (nullptr != g_pDisplay)
+  {
+    delete g_pDisplay;
+    g_pDisplay = nullptr;
+  }
 }
 
-/////////////////////////////////////////////////////////////////////////////
 
-void
-InitLogLevel(
-    wchar_t* arg)
-{
-    int Level = _wtoi(arg);
-    Log::SetLevel(Level);
-    LogAlways(L"LogLevel=%d", Level);
+void InitLogLevel(wchar_t* arg) {
+  int Level = _wtoi(arg);
+  Log::SetLevel(Level);
+  LogAlways(L"LogLevel=%d", Level);
 }
-
-/////////////////////////////////////////////////////////////////////////////
 
 extern int      optopt;
 extern wchar_t* optarg;
 
-int
-ProcessCommandLine(
+int ProcessCommandLine(
   int      argc,
   wchar_t* argv[],
   Game::Options_t* pOptions)
@@ -82,7 +64,7 @@ ProcessCommandLine(
   bool bDbSupplied = false;
   int c;
 
-  while ((c = util::getopt(argc, argv, L"c:d:l:p:s:t:")) != -1) {
+  while ((c = util::getopt(argc, argv, L"c:d:l:p:rs:t:x")) != -1) {
     switch (wchar_t(c)) {
     case L'c': // Character name
       pOptions->characterName.assign(optarg);
@@ -106,12 +88,20 @@ ProcessCommandLine(
       }
       break;
 
+    case L'r': // coroutines
+      pOptions->coroutines = true;
+      break;
+
     case L's': // Server name
       pOptions->serverName.assign(optarg);
       break;
 
     case L't': // Test image path
       pOptions->testImagePath.assign(optarg);
+      break;
+
+    case L'x': // throw exception omewhere soon (test cleanup)
+      pOptions->exception = std::runtime_error("as requested");
       break;
 
     case L'?':
@@ -121,10 +111,14 @@ ProcessCommandLine(
       break;
     }
   }
+  
+  if (pOptions->coroutines && !pOptions->testImagePath.empty()) {
+    LogError(L"Test image path + coroutines isn't supported");
+    return -1;
+  }
+
   return 1;
 }
-
-/////////////////////////////////////////////////////////////////////////////
 
 void StartupInitialize(
   int argc,
@@ -149,7 +143,6 @@ void StartupInitialize(
     throw runtime_error("InitDirectDraw() failed");
   }
 
-  // Tesseract/DCR.
   TesseractDcrImpl_t::Init();
 
   if (!GetPipelineManager().Initialize()) {
@@ -168,16 +161,12 @@ void StartupInitialize(
 #endif
 }
 
-////////////////////////////////////////////////////////////////////////////////
-
 void ShutdownCleanup() {
     GetPipelineManager().Shutdown();
     FreeDirectDraw();
     TesseractDcrImpl_t::Cleanup();
     Log_t::Get().Shutdown();
 }
-
-////////////////////////////////////////////////////////////////////////////////
 
 void BrokerLoop(const Game::Options_t& options) {
   // TODO: account move to broker class?
@@ -204,31 +193,32 @@ void BrokerLoop(const Game::Options_t& options) {
   broker.Stop();
 }
 
-////////////////////////////////////////////////////////////////////////////////
-
 int wmain(
-    int      argc,
-    wchar_t* argv[],
-    wchar_t* /*envp[]*/)
+  int      argc,
+  wchar_t* argv[],
+  wchar_t* /*envp[]*/)
 {
-    struct Cleanup_t {
-        ~Cleanup_t() { ShutdownCleanup(); }
-    } cleanup;
+  struct Cleanup_t {
+    ~Cleanup_t() { ShutdownCleanup(); }
+  } cleanup;
 
-    extern bool g_bTableFixColor;
-    g_bTableFixColor = false;
+  extern bool g_bTableFixColor;
+  g_bTableFixColor = false;
 
-    Game::Options_t options;
-    try {
-        StartupInitialize(argc, argv, &options);
-        BrokerLoop(options);
-    } catch (std::exception& e) {
-        LogError(L"wmain() ### Caught %hs: %hs ###", typeid(e).name(), e.what());
-    } catch (CDBException* e) {
-        LogError(L"wmain() ### Caught CDBException: %s ###", (LPCTSTR)e->m_strError);
-        e->Delete();
-    } catch (...) {
-        LogError(L"wmain() ### Unhandled exception ###");
-    }
-    return 0;
+  Game::Options_t options;
+  try {
+    StartupInitialize(argc, argv, &options);
+    BrokerLoop(options);
+  }
+  catch (std::exception& e) {
+    LogError(L"wmain() ### Caught %hs: %hs ###", typeid(e).name(), e.what());
+  }
+  catch (CDBException* e) {
+    LogError(L"wmain() ### Caught CDBException: %s ###", (LPCTSTR)e->m_strError);
+    e->Delete();
+  }
+  catch (...) {
+    LogError(L"wmain() ### Unhandled exception ###");
+  }
+  return 0;
 }

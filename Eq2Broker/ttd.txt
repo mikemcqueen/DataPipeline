@@ -31,10 +31,6 @@ Ui::Window:
 
 BrokerWindow::IsTabWindow shit. goes.
 
-Timing in Tesseract GetText, GetTableText, perhaps DP processing of each event?
-with special Timing log level?
-Try release build after timing.
-
 saw weird "out of pool items (71)" error.  71?  WTF? I know tesseract is slow but jeez.
 
 Probably want TiBroker* to do some text massaging. that means a co-routine-loop sourced

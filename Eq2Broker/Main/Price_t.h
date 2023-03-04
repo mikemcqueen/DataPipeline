@@ -17,23 +17,20 @@
 
 class Price_t {
 public:
-  struct Data_t {
-    Data_t() : Price(0) {}
+  static std::optional<Price_t> MakeFromString(std::string_view text);
 
-    int Price;
-  };
+  Price_t() : plat_(0) {}
+  explicit Price_t(int plat) : plat_(plat) {}
 
-  Price_t() {}
-  Price_t(const Data_t& Data) : m_Data(Data) {}
+  Price_t(const Price_t& price) = default;
 
-  bool Parse(std::string_view text, bool bAllowSmallCoin = true);
-  size_t GetPrice() const { return m_Data.Price; }
-  const Data_t& GetData() const { return m_Data; }
-  // bool IsValid() const          { return (0 != GetPage()) && (0 != GetLastPage()); }
-  void Reset() { m_Data.Price = 0; }
+  int GetPlat() const { return plat_; }
+  void Reset() { plat_ = 0; }
+  std::string ToString() const;
+  bool FromString(std::string_view text);
 
 private:
-  Data_t m_Data;
+  int plat_;
 };
 
 #endif Include_PRICE_T_H

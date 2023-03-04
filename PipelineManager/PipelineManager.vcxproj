@@ -158,6 +158,7 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\dp\dp.cpp" />
     <ClCompile Include="PipelineManager.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -168,6 +169,7 @@
     <ClCompile Include="TransactionManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\dp\dp.h" />
     <ClInclude Include="DpEvent.h" />
     <ClInclude Include="DpHandler_t.h" />
     <ClInclude Include="DpMessage.h" />

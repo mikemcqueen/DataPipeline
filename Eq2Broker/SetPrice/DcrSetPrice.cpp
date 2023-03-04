@@ -38,7 +38,7 @@ window_(window)
     int dcrId,
     Rect_t* pRect) const
   {
-#if 1
+#if 0
     static bool first = true;
     if (first) {
       Rect_t originRect(window_.GetLastOrigin(), {0, 0});
@@ -54,18 +54,17 @@ window_(window)
   }
 
   void Handler_t::PostData(DWORD /*Unused*/) const {
-    LogAlways(L"DcrSetPrice::PostData, PriceText [%S]", m_DcrPriceText.GetText().c_str());
-#if 0
-    bool ExtraLog = 0;
-    Price_t Price;
-    if (!Price.Parse(m_DcrPriceText.GetText().c_str())) {
+    LogAlways(L"DcrSetPrice::PostData, PriceText [%S]",
+      m_DcrPriceText.GetText().c_str());
+    std::optional<Price_t> Price =
+      Price_t::MakeFromString(m_DcrPriceText.GetText());
+    if (!Price.has_value()) {
       LogError(L"DcrSetPrice::PostData(): Price.Parse(%S) failed",
         m_DcrPriceText.GetText().c_str());
       return;
     }
-    if (ExtraLog) {
-      LogAlways(L"DcrSetPrice::PostData() Price(%d)", Price);
-    }
+#if 1
+    LogAlways(L"DcrSetPrice::PostData() Price(%d)", Price.value().GetPlat());
 #endif
     void* pBuffer = GetPipelineManager().Alloc(sizeof(Data_t));
     if (nullptr == pBuffer) {
@@ -73,7 +72,7 @@ window_(window)
     }
     else {
       Data_t* pData = new (pBuffer)
-        Data_t(GetClass().c_str(), 1); //TODO Price.GetPrice());
+        Data_t(GetClass().c_str(), Price.value().GetPlat());
       HRESULT hr = GetPipelineManager().Callback(pData);
       if (FAILED(hr)) {
         LogError(L"DcrSetPrice::PostData(): PM.Callback() failed.");

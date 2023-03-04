@@ -9,6 +9,9 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
+    <Filter Include="dp">
+      <UniqueIdentifier>{65ce25e7-93e0-4d89-ba48-ff88ccd1f3d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PipelineManager.cpp">
@@ -19,6 +22,9 @@
     </ClCompile>
     <ClCompile Include="TransactionManager.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dp\dp.cpp">
+      <Filter>dp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -42,6 +48,9 @@
     </ClInclude>
     <ClInclude Include="TransactionManager.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dp\dp.h">
+      <Filter>dp</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
