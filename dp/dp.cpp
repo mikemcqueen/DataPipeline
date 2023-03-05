@@ -6,7 +6,7 @@
 
 namespace dp {
   namespace msg {
-    auto validate_name(const msg_t& msg, std::string_view name)
+    auto validate_name(const Msg_t& msg, std::string_view name)
       -> result_code
     {
       result_code rc = result_code::success;
@@ -20,7 +20,7 @@ namespace dp {
   } // namespace msg
 
   namespace txn {
-    complete_txn_awaitable complete(promise_type& promise, msg_ptr_t msg_ptr) {
+    complete_txn_awaitable complete(promise_type& promise, MsgPtr_t msg_ptr) {
       return complete_txn_awaitable{
         promise.prev_handle(),
         std::move(msg_ptr)

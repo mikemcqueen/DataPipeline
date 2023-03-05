@@ -28,7 +28,7 @@ namespace Broker::Buy::Interpret {
 
     // DP::Handler_t virtual:
     bool Initialize(const wchar_t* pszClass) override;
-    HRESULT MessageHandler(const DP::Message::Data_t* pData) override;
+    HRESULT MessageHandler(const DP::Message::Legacy::Data_t* pData) override;
 
   private:
 #if 0

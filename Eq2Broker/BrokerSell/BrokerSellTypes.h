@@ -16,6 +16,7 @@
 #include "UiWindowManager.h"
 #include "TextTable_t.h"
 #include "BrokerUi.h"
+#include "Price_t.h"
 
 namespace Broker::Sell {
   constexpr auto kWindowId = Window::Id::BrokerSell;
@@ -33,17 +34,33 @@ namespace Broker::Sell {
 
     // TableInfo_t data: TODO: all zero width last entry
     constexpr int PixelColumnWidths[ColumnCount] = { 42, 782, 42, 105 };
+
+    struct RowData_t {
+      std::string item_name;
+      int item_quantity;
+      Price_t item_price;
+      bool selected;
+      bool item_listed;
+      // std::unique_ptr<int> enforce_no_copies;
+    };
+    using RowVector = std::vector<RowData_t>;
   }
 
   class Text_t;
   using TextTable_t = TextTable3<Text_t>;
 
   namespace Translate {
+    namespace Legacy {
+      struct Data_t;
+    }
     struct Data_t;
     class Handler_t;
   } // Translate
 
   namespace Interpret {
+    namespace Legacy {
+      struct Data_t;
+    }
     struct Data_t;
     class Handler_t;
   } // Interpret

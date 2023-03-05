@@ -35,14 +35,15 @@ TrScrollThumb_t::
 HRESULT
 TrScrollThumb_t::
 MessageHandler(
-    const DP::Message::Data_t* pData)
+    const DP::Message::Legacy::Data_t* pData)
 {
-    using namespace SsWindow;
-    if (typeid(*pData) != typeid(Acquire::Data_t))
+    using namespace SsWindow::Acquire;
+    using Legacy::Data_t;
+    if (typeid(*pData) != typeid(Data_t))
     {
         return S_FALSE;
     }
-    const Acquire::Data_t& SsData = *static_cast<const Acquire::Data_t*>(pData);
+    const Data_t& SsData = *static_cast<const Data_t*>(pData);
     const Ui::Window_t& Window = m_MainWindow.GetWindow(SsData.WindowId);
     // Ignore message if window has no scroll flags.
     using namespace Ui::Window;

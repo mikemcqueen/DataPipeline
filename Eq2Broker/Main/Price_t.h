@@ -20,14 +20,14 @@ public:
   static std::optional<Price_t> MakeFromString(std::string_view text);
 
   Price_t() : plat_(0) {}
-  explicit Price_t(int plat) : plat_(plat) {}
+  Price_t(int plat) : plat_(plat) {}
 
   Price_t(const Price_t& price) = default;
 
   int GetPlat() const { return plat_; }
   void Reset() { plat_ = 0; }
   std::string ToString() const;
-  bool FromString(std::string_view text);
+  bool FromString(std::string_view text); // i'm not convinced this is necessary
 
 private:
   int plat_;

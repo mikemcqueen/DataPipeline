@@ -32,7 +32,7 @@ namespace Interpret {
     explicit Handler_t(const Window_t& window);
 
     // DP::Handler_t virtual:
-    HRESULT MessageHandler(const DP::Message::Data_t* pData) override;
+    HRESULT MessageHandler(const DP::Message::Legacy::Data_t* pData) override;
     HRESULT ExecuteTransaction(DP::Transaction::Data_t& Data) override;
 
   private:

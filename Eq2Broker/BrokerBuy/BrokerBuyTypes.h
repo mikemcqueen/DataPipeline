@@ -42,11 +42,17 @@ namespace Broker::Buy {
   using TextTable_t = TextTable3<Text_t>;
 
   namespace Translate {
+    namespace Legacy {
+      struct Data_t;
+    }
     struct Data_t;
     class Handler_t;
   } // namespace Translate
 
   namespace Interpret {
+    namespace Legacy {
+      struct Data_t;
+    }
     struct Data_t;
     class Handler_t;
   } // namespace Interpret

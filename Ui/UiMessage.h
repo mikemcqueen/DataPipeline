@@ -36,7 +36,7 @@ namespace Message
 */
 /*
     struct Data_t :
-        DP::Message::Data_t
+        DP::Message::Legacy::Data_t
     {
         WindowId_t WindowId;
 
@@ -47,7 +47,7 @@ namespace Message
             size_t            Size         = sizeof(Data_t),
             const wchar_t*    pClass       = nullptr)
         :
-            DP::Message::Data_t(
+            DP::Message::Legacy::Data_t(
                 Stage,
                 Id,
                 Size,

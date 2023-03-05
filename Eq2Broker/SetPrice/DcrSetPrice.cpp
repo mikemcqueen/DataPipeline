@@ -54,6 +54,7 @@ window_(window)
   }
 
   void Handler_t::PostData(DWORD /*Unused*/) const {
+    using Legacy::Data_t;
     LogAlways(L"DcrSetPrice::PostData, PriceText [%S]",
       m_DcrPriceText.GetText().c_str());
     std::optional<Price_t> Price =

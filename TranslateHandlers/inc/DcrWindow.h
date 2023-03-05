@@ -27,7 +27,7 @@ using DcrVector_t = std::vector<DCR*>;
 
 namespace DcrWindow {
 
-using AcquireData_t = SsWindow::Acquire::Data_t;
+using AcquireData_t = SsWindow::Acquire::Legacy::Data_t;
 
 namespace Translate {
   class AbstractHandler_t : public DP::Handler_t {
@@ -75,7 +75,7 @@ namespace Translate {
         && m_ValidatePolicy.Initialize();
     }
 
-    HRESULT MessageHandler(const DP::Message::Data_t* pMessage) override {
+    HRESULT MessageHandler(const DP::Message::Legacy::Data_t* pMessage) override {
       LogInfo(L"Dcr%s::MessageHandler()", m_name.c_str());
       if (Validate(pMessage, m_WindowId)) {
         auto& ssData = static_cast<const AcquireData_t&>(*pMessage);
@@ -95,7 +95,7 @@ namespace Translate {
   private:
 
     bool Validate(
-      const DP::Message::Data_t* pMessage,
+      const DP::Message::Legacy::Data_t* pMessage,
       Ui::WindowId_t       WindowId) const
     {
       Ui::WindowId_t ssWindowId = Ui::Window::Id::Unknown;

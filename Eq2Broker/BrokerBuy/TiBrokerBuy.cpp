@@ -41,11 +41,11 @@ namespace Broker::Buy::Interpret {
   }
 #endif
 
-  HRESULT Handler_t::MessageHandler(const DP::Message::Data_t* pMessage) {
+  HRESULT Handler_t::MessageHandler(const DP::Message::Legacy::Data_t* pMessage) {
     if (Message::Id::Buy != pMessage->Id) {
       return S_FALSE;
     }
-    auto& message = static_cast<const Translate::Data_t&>(*pMessage);
+    auto& message = static_cast<const Translate::Legacy::Data_t&>(*pMessage);
     message.tableText.Dump(L"TiBrokerBuy");
 
     // if page number has changed, queue items to GetItemsForSale thread

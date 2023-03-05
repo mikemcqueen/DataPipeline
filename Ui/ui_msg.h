@@ -23,9 +23,9 @@ namespace ui::msg {
     constexpr auto set_widget_text{ "ui::msg::set_widget_text"sv };
   }
 
-  struct data_t : dp::msg_t {
+  struct data_t : dp::Msg_t {
     data_t(std::string_view msg_name, std::string_view wnd_name) :
-      dp::msg_t(msg_name), window_name(wnd_name) {}
+      dp::Msg_t(msg_name), window_name(wnd_name) {}
 
     std::string window_name;
   };
@@ -105,7 +105,7 @@ namespace ui::msg {
   } // namespace set_widget_text
 
   void toggle_enabled();
-  auto dispatch(const dp::msg_t& msg) -> dp::result_code;
+  auto dispatch(const dp::Msg_t& msg) -> dp::result_code;
 } // namespace ui::msg
 
 #endif // Include_UI_MSG_H

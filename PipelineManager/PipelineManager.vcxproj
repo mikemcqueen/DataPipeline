@@ -170,6 +170,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\dp\dp.h" />
+    <ClInclude Include="..\dp\dp_msg.h" />
+    <ClInclude Include="..\dp\dp_result.h" />
     <ClInclude Include="DpEvent.h" />
     <ClInclude Include="DpHandler_t.h" />
     <ClInclude Include="DpMessage.h" />

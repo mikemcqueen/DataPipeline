@@ -126,7 +126,7 @@ OnTransactionComplete(
 HRESULT
 Handler_t::
 MessageHandler(
-    const DP::Message::Data_t* pMessage)
+    const DP::Message::Legacy::Data_t* pMessage)
 {
     LogInfo(L"TxRepriceItems::MessageHandler()");
     DP::TransactionManager_t::AutoRelease_t tm(GetTransactionManager().Acquire());
@@ -283,7 +283,7 @@ CalcPrice(
 bool
 Handler_t::
 ValidateMessage(
-    const DP::Message::Data_t& Message,
+    const DP::Message::Legacy::Data_t& Message,
           Data_t&              txData) const
 {
     static const

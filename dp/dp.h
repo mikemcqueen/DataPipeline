@@ -7,108 +7,46 @@
 #include <optional>
 #include <stdexcept>
 #include <string_view>
+#include "dp_msg.h"
 #include "log.h"
 
-namespace dp {
-  enum class result_code {
-    success = 0,
-    expected_error,
-    unexpected_error
-  };
-
-  /*
-  template <>
-  struct std::formatter<Point> : std::formatter<std::string> {
-    auto format(Point p, format_context& ctx) {
-      return formatter<string>::format(
-        std::format("[{}, {}]", p.x, p.y), ctx);
-    }
-  };
-  */
-
-  struct move_only {
-    move_only& operator=(const move_only& m) = delete;
-    move_only& operator=(move_only&& m) = default;
-  };
-
-  namespace msg { struct data_t; }
-
-  using msg_t = msg::data_t;
-  using msg_ptr_t = std::unique_ptr<msg_t>;
-
-  namespace msg {
-    namespace name {
-      constexpr std::string_view txn_start = "msg::txn_start";
-      constexpr std::string_view txn_complete = "msg::txn_complete";
-    }
-
-    struct data_t {
-      data_t(std::string_view name) : msg_name(name) {}
-      data_t(const data_t&) = delete;
-      data_t& operator=(const data_t&) = delete;
-      virtual ~data_t() {}
-
-      template<typename T> const T& as() const {
-        return *dynamic_cast<const T*>(this);
-      }
-      template<typename T> T& as() {
-        return *dynamic_cast<T*>(this);
-      }
-
-      std::string msg_name;
-    };
-
-    auto validate_name(const msg_t& msg, std::string_view msg_name) -> result_code;
-
-    template<typename msgT>
-    auto validate(const msg_t& msg, std::string_view msg_name) {
-      result_code rc = validate_name(msg, msg_name);
-      if (rc == result_code::success) {
-        if (!dynamic_cast<const msgT*>(&msg)) {
-          LogError(L"msg::validate: type mismatch");
-          rc = result_code::unexpected_error;
-        }
-      }
-      return rc;
-    }
-  } // namespace msg
-} // namespace dp
-
 namespace dp::txn {
-  struct data_t : msg::data_t {
-    data_t(std::string_view msgName, std::string_view txnName) :
-      msg::data_t(msgName), txn_name(txnName) {}
+  struct Data_t : msg::Data_t {
+    Data_t(std::string_view msg_name, std::string_view tn) :
+      msg::Data_t(msg_name), txn_name(tn) {}
 
     std::string txn_name;
   };
 
   template<typename stateT>
-  struct start_t : data_t {
+  struct start_t : Data_t {
     using state_ptr_t = std::unique_ptr<stateT>;
 
-    static const msg_t& msg_from(const msg_t& txn) {
+    static const Msg_t& msg_from(const Msg_t& txn) {
       auto& txn_start = dynamic_cast<const start_t<stateT>&>(txn);
       return *txn_start.msg.get();
     }
  
     // getting state from a message usually precedes a move, therefore no const.
     // maybe this should just be move_state(txn, stateT*)
-    static stateT&& state_from(msg_t& txn) {
+    static stateT&& state_from(Msg_t& txn) {
       start_t<stateT>& txn_start = dynamic_cast<start_t<stateT>&>(txn);
       return std::move(*txn_start.state.get());
     }
 
-    constexpr start_t(std::string_view txn_name, msg_ptr_t m, state_ptr_t s) :
-      data_t(msg::name::txn_start, txn_name), msg(std::move(m)), state(std::move(s)) {}
+    constexpr start_t(std::string_view txn_name, MsgPtr_t m, state_ptr_t s) :
+      Data_t(msg::name::txn_start, txn_name),
+      msg(std::move(m)), state(std::move(s)) {}
 
-    msg_ptr_t msg;
+    MsgPtr_t msg;
     state_ptr_t state;
   };
 
   // todo: T, -> reqires derives_from data_t ??
-  struct complete_t : data_t {
+  struct complete_t : Data_t {
     complete_t(std::string_view txn_name, result_code rc) :
-      data_t(msg::name::txn_complete, txn_name), code(rc) {}
+      Data_t(msg::name::txn_complete, txn_name),
+      code(rc) {}
 
     result_code code;
   };
@@ -143,7 +81,7 @@ namespace dp::txn {
       void unhandled_exception() { throw; }
       void return_void() { throw std::runtime_error("co_return not allowed"); }
       // TODO: return private awaitable w/o txn name?
-      awaitable yield_value(dp::msg_ptr_t value) {
+      awaitable yield_value(dp::MsgPtr_t value) {
         LogInfo(L"Yielding %S from %S...", value.get()->msg_name.c_str(),
           txn_name().c_str());
         root_handle_.promise().emplace_out(std::move(value));
@@ -165,30 +103,30 @@ namespace dp::txn {
       //auto& txn_handler() const { return *txn_handler_;  }
       //void set_txn_handler(handler_t* handler) { txn_handler_ = handler; }
 
-      const msg_t& in() const { return *in_.get(); }
-      msg_t& in() { return *in_.get(); }
+      const Msg_t& in() const { return *in_.get(); }
+      Msg_t& in() { return *in_.get(); }
       /*
       // would be nice for this overload to work. doesn't default to const? why?
       // read up on overload selection
-      dp::msg_ptr_t&& in() { return std::move(in_); }
+      dp::MsgPtr_t&& in() { return std::move(in_); }
       template<typename T> const T& in_as() const {
         return *dynamic_cast<const T*>(in_.get());
       }
       */
-      dp::msg_ptr_t in_ptr() { return std::move(in_); }
-      void emplace_in(dp::msg_ptr_t value) { in_ = std::move(value); }
+      dp::MsgPtr_t in_ptr() { return std::move(in_); }
+      void emplace_in(dp::MsgPtr_t value) { in_ = std::move(value); }
 
       auto& out() const { return *out_.get(); }
-      dp::msg_ptr_t&& out_ptr() { return std::move(out_); }
-      void emplace_out(dp::msg_ptr_t value) { out_ = std::move(value); }
+      dp::MsgPtr_t&& out_ptr() { return std::move(out_); }
+      void emplace_out(dp::MsgPtr_t value) { out_ = std::move(value); }
 
     private:
       handle_t root_handle_;
       handle_t active_handle_;
       std::optional<handle_t> prev_handle_;
       std::string txn_name_;
-      dp::msg_ptr_t in_;
-      dp::msg_ptr_t out_;
+      dp::MsgPtr_t in_;
+      dp::MsgPtr_t out_;
     };
 
     // TODO: private?
@@ -220,7 +158,7 @@ namespace dp::txn {
 
   public:
     // TODO: this logic should be in an awaitable?
-    [[nodiscard]] dp::msg_ptr_t&& send_value(dp::msg_ptr_t value)
+    [[nodiscard]] dp::MsgPtr_t&& send_value(dp::MsgPtr_t value)
     {
       auto& active_p = active_handle().promise();
       active_p.emplace_in(std::move(value));
@@ -242,10 +180,10 @@ namespace dp::txn {
   struct transfer_txn_awaitable {
     using handle_t = handler_t::handle_t;
 
-    transfer_txn_awaitable(std::optional<handle_t> dst_handle, dp::msg_ptr_t msg) :
+    transfer_txn_awaitable(std::optional<handle_t> dst_handle, dp::MsgPtr_t msg) :
       dst_handle_(dst_handle), msg_(std::move(msg)) {}
 
-    transfer_txn_awaitable(handle_t dst_handle, dp::msg_ptr_t msg) :
+    transfer_txn_awaitable(handle_t dst_handle, dp::MsgPtr_t msg) :
       transfer_txn_awaitable(std::make_optional(dst_handle), std::move(msg)) {}
 
     auto await_ready() { return false; }
@@ -256,14 +194,14 @@ namespace dp::txn {
   protected:
     handler_t::promise_type* src_promise_ = nullptr;
     std::optional<handle_t> dst_handle_;
-    dp::msg_ptr_t msg_;
+    dp::MsgPtr_t msg_;
   };
 
   template<typename stateT>
   struct start_txn_awaitable;
     
   template<typename stateT>
-  auto make_start_txn(std::string_view txn_name, dp::msg_ptr_t msg,
+  auto make_start_txn(std::string_view txn_name, dp::MsgPtr_t msg,
     typename start_t<stateT>::state_ptr_t state)
   {
     return std::make_unique<start_t<stateT>>(txn_name, std::move(msg), std::move(state));
@@ -274,7 +212,7 @@ namespace dp::txn {
     using start_t = dp::txn::start_t<stateT>;
     using state_ptr_t = start_t::state_ptr_t;
 
-    start_txn_awaitable(handle_t handle, dp::msg_ptr_t msg, state_ptr_t state) :
+    start_txn_awaitable(handle_t handle, dp::MsgPtr_t msg, state_ptr_t state) :
       transfer_txn_awaitable(handle, std::move(msg)), state_(std::move(state)) {}
 
     auto await_suspend(handle_t h) {
@@ -297,7 +235,7 @@ namespace dp::txn {
   };
 
   struct complete_txn_awaitable : transfer_txn_awaitable {
-    complete_txn_awaitable(std::optional<handle_t> handle, dp::msg_ptr_t msg) :
+    complete_txn_awaitable(std::optional<handle_t> handle, dp::MsgPtr_t msg) :
       transfer_txn_awaitable(handle, std::move(msg)) {}
 
     std::coroutine_handle<> await_suspend(handle_t h) {
@@ -323,13 +261,13 @@ namespace dp::txn {
     }
   };
 
-  // complete_txn_awaitable complete(promise_type& promise, msg_ptr_t msg_ptr);
+  // complete_txn_awaitable complete(promise_type& promise, MsgPtr_t msg_ptr);
   // complete_txn_awaitable complete(promise_type& promise);
   complete_txn_awaitable complete(promise_type& promise, result_code rc);
 
   // TODO: this should validate txn_name, for completeness (and slowness)
   template<typename startT, typename msgT>
-  auto validate_start(const msg_t& txn, std::string_view txn_name,
+  auto validate_start(const Msg_t& txn, std::string_view txn_name,
     std::string_view msg_name) {
     // would call txn::validate(txn, txn_name) here instead
     txn_name;
@@ -344,11 +282,11 @@ namespace dp::txn {
 
 // TODO: probably want to put this in a dp::msg{} block
 namespace dp {
-  constexpr auto is_start_txn(const msg_t& msg) {
+  constexpr auto is_start_txn(const Msg_t& msg) {
     return msg.msg_name == msg::name::txn_start;
   }
   /*
-  constexpr auto is_complete_txn(const msg_t& msg) {
+  constexpr auto is_complete_txn(const Msg_t& msg) {
     return msg.msg_name == msg::name::txn_complete;
   }
   */

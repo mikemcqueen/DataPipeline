@@ -16,9 +16,6 @@
 #include "CommonTypes.h"
 
 namespace DP {
-
-  ////////////////////////////////////////////////////////////////////////////////
-
   enum class Stage_t {
     None = 0,
     Acquire = 0x00000001,
@@ -32,7 +29,6 @@ namespace DP {
   enum class MessageId_t : int {};
 
   namespace Message {
-
     enum class Type
     {
       Unknown = 0,
@@ -67,44 +63,47 @@ namespace DP {
       constexpr auto Transaction_Last = MakeId<0x3FFFF>();
     }
 
-    struct Data_t;
-    using ReleaseFn_t = void (*)(Data_t& data);
+    namespace Legacy {
+      struct Data_t;
+    }
+    using ReleaseFn_t = void (*)(Legacy::Data_t& data);
 
-    struct Data_t
-    {
-      static constexpr int ClassLength = 32;
-
-      Stage_t       Stage;
-      MessageId_t   Id;
-      size_t        Size;
-      wchar_t       Class[ClassLength];
-      Message::Type Type;
-      ReleaseFn_t   ReleaseFn;
-
-      explicit
-        Data_t(
-          Stage_t        stage,
-          MessageId_t    messageId = Message::Id::Unknown,
-          size_t         size = sizeof(Data_t),
-          const wchar_t* className = nullptr,
-          Message::Type  messageType = Type::Message,
-          ReleaseFn_t    releaseFn = nullptr)
-        :
-        Stage(stage),
-        Type(messageType),
-        Id(messageId),
-        Size(size),
-        ReleaseFn(releaseFn)
+    namespace Legacy {
+      struct Data_t
       {
-        Class[0] = L'\0';
-        if (nullptr != className) {
-          wcscpy_s(Class, className);
+        static constexpr int ClassLength = 32;
+
+        Stage_t       Stage;
+        MessageId_t   Id;
+        size_t        Size;
+        wchar_t       Class[ClassLength];
+        Message::Type Type;
+        ReleaseFn_t   ReleaseFn;
+
+        explicit
+          Data_t(
+            Stage_t        stage,
+            MessageId_t    messageId = Message::Id::Unknown,
+            size_t         size = sizeof(Data_t),
+            const wchar_t* className = nullptr,
+            Message::Type  messageType = Type::Message,
+            ReleaseFn_t    releaseFn = nullptr)
+          :
+          Stage(stage),
+          Type(messageType),
+          Id(messageId),
+          Size(size),
+          ReleaseFn(releaseFn)
+        {
+          Class[0] = L'\0';
+          if (nullptr != className) {
+            wcscpy_s(Class, className);
+          }
         }
-      }
 
-      Data_t() = default;
-    };
-
+        Data_t() = default;
+      };
+    } // namespace Legacy
   }// Message
 } // DP
 

@@ -22,17 +22,29 @@
 #include "UiWindowId.h"
 
 namespace SsWindow::Acquire {
-  struct Data_t : SsTask::Acquire::Data_t {
-    Ui::WindowId_t WindowId;
+  namespace Legacy {
+    struct Data_t : SsTask::Acquire::Legacy::Data_t {
+      Ui::WindowId_t WindowId;
 
-    Data_t(
-      const wchar_t* pClass,
-      Ui::WindowId_t InitWindowId,
-      pool<CSurface>::item_t* pPoolItem,
-      size_t Size = sizeof(Data_t)) :
-      SsTask::Acquire::Data_t(pClass, pPoolItem, Size),
-      WindowId(InitWindowId)
+      Data_t(
+        const wchar_t* pClass,
+        Ui::WindowId_t InitWindowId,
+        pool<CSurface>::item_t* pPoolItem,
+        size_t Size = sizeof(Data_t)) :
+        SsTask::Acquire::Legacy::Data_t(pClass, pPoolItem, Size),
+        WindowId(InitWindowId)
+      {}
+    };
+  } // namespace Legacy
+
+  struct Data_t : SsTask::Acquire::Data_t {
+    Data_t(std::string_view msg_name, pool<CSurface>::item_t& pool_item,
+      Ui::WindowId_t wid) :
+      SsTask::Acquire::Data_t(msg_name, pool_item),
+      window_id(wid)
     {}
+
+    Ui::WindowId_t window_id;
   };
 
   class Handler_t :public SsTask_t {

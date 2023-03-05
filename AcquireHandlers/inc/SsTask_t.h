@@ -22,6 +22,7 @@
 #include "AutoCs.h"
 #include "Pool.h"
 #include "Macros.h"
+#include "dp_msg.h"
 
 class PipelineManager_t;
 class CDisplay;
@@ -156,24 +157,38 @@ private:
 };
 
 namespace SsTask::Acquire {
-  struct Data_t : public DP::Message::Data_t {
-    pool<CSurface>::item_t* pPoolItem;
+  namespace Legacy {
+    struct Data_t : DP::Message::Legacy::Data_t {
+      pool<CSurface>::item_t* pPoolItem;
 
-    static void ReleaseFn(DP::Message::Data_t&);
+      static void ReleaseFn(DP::Message::Legacy::Data_t&);
 
-    Data_t(
-      const wchar_t* pClass,
-      pool<CSurface>::item_t* InitPoolItem,
-      size_t Size = sizeof(Data_t)) :
-      DP::Message::Data_t(
-        DP::Stage_t::Acquire,
-        SsTask_t::GetMessageId(),
-        Size,
-        pClass,
-        DP::Message::Type::Message,
-        ReleaseFn),
-      pPoolItem(InitPoolItem)
-    { }
+      Data_t(
+        const wchar_t* pClass,
+        pool<CSurface>::item_t* InitPoolItem,
+        size_t Size = sizeof(Data_t)) :
+        DP::Message::Legacy::Data_t(
+          DP::Stage_t::Acquire,
+          SsTask_t::GetMessageId(),
+          Size,
+          pClass,
+          DP::Message::Type::Message,
+          ReleaseFn),
+        pPoolItem(InitPoolItem)
+      { }
+    };
+  }
+
+  struct Data_t : dp::msg::Data_t {
+    Data_t(std::string_view msg_name, pool<CSurface>::item_t& pi) :
+      dp::msg::Data_t(msg_name),
+      pool_item(pi)
+    {}
+    ~Data_t() {
+      pool_item.release();
+    }
+
+    pool<CSurface>::item_t& pool_item;
   };
 } // SsTask::Acquire
 

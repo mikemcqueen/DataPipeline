@@ -124,6 +124,7 @@ namespace Broker::Buy::Translate {
   ////////////////////////////////////////////////////////////////////////////////
 
   void Handler_t::PostData(DWORD /*Unused*/) const {
+    using Legacy::Data_t;
     extern bool g_noDcrPost;
     if (g_noDcrPost) {
       return;

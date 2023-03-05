@@ -15,82 +15,66 @@
 #ifndef Include_DCRWINDOWPOLICY_H
 #define Include_DCRWINDOWPOLICY_H
 
+#include "DcrWindow.h"
+
 namespace DcrWindow::Policy { // TODO Strategy?
+  namespace Translate {
+    class Many_t {
+    public:
 
-namespace Translate {
+      explicit Many_t(
+        const DcrWindow::Translate::AbstractHandler_t& handler,
+        DcrVector_t& DcrVector);
 
-class Many_t
-{
-public:
+      ~Many_t();
 
-    explicit
-        Many_t(
-            const DcrWindow::Translate::AbstractHandler_t& handler,
-            DcrVector_t& DcrVector);
+      Many_t() = delete;
+      Many_t(const Many_t&) = delete;
+      Many_t& operator=(const Many_t&) = delete;
 
-    ~Many_t();
+      bool Initialize();
 
-    Many_t() = delete;
-    Many_t(const Many_t&) = delete;
-    Many_t& operator=(const Many_t&) = delete;
+      bool Translate(const AcquireData_t& Data);
 
-    bool
-        Initialize();
+    private:
+      const DcrWindow::Translate::AbstractHandler_t& handler_;
+      DcrVector_t& m_DcrVector;
+    };
+  } // Translate
 
-    bool
-        Translate(
-            const AcquireData_t& Data);
-
-private:
-    const DcrWindow::Translate::AbstractHandler_t& handler_;
-    DcrVector_t& m_DcrVector;
-};
-
-} // Translate
-
-////////////////////////////////////////////////////////////////////////////////
-
-class NoValidate_t
-{
-public:
+  class NoValidate_t {
+  public:
     NoValidate_t() = default;
 
     bool Initialize() { return true; }
     bool Validate(const AcquireData_t& /*Data*/) { return true; }
-};
-
-////////////////////////////////////////////////////////////////////////////////
+  };
 
 #if PENDING
-class ValidateWindowPolicy_t
-{
+  class ValidateWindowPolicy_t
+  {
 
-public:
+  public:
 
     ValidateWindowPolicy_t();
 
-    bool
-        Initialize();
+    bool Initialize();
 
-    bool
-        Validate(
-            const SsTrades_t::ScreenShotData_t* pData);
+    bool Validate(
+        const SsTrades_t::ScreenShotData_t* pData);
 
-private:
+  private:
 
-    bool
-        InitAllBitmaps();
+    bool InitAllBitmaps();
 
-    bool
-        ValidateSides(
-            const CSurface* pSurface,
-            const RECT& rcBounds);
+    bool ValidateSides(
+        const CSurface* pSurface,
+        const RECT& rcBounds);
 
-    bool
-        ValidateCorners(
-            const CSurface* pSurface,
-            const RECT& rcBounds);
-};
+    bool ValidateCorners(
+        const CSurface* pSurface,
+        const RECT& rcBounds);
+  };
 #endif
 
 } // DcrWindow::Policy

@@ -26,7 +26,7 @@ namespace Broker::Translate {
     WindowType_t(MainWindow_t& mainWindow);
 
     // DP::Handler_t virtual:
-    HRESULT MessageHandler(const DP::Message::Data_t* pMessage) override;
+    HRESULT MessageHandler(const DP::Message::Legacy::Data_t* pMessage) override;
 
     Ui::WindowId_t GetBrokerWindowId(
       const CSurface& Surface,

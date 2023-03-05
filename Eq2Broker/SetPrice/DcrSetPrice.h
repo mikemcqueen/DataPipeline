@@ -22,23 +22,41 @@
 #include "BrokerUi.h"
 #include "DcrRect_t.h"
 #include "DpMessage.h"
+#include "dp_msg.h"
+#include "Price_t.h"
 
 namespace Broker::SetPrice::Translate {
-  struct Data_t : DP::Message::Data_t {
-    Data_t(const wchar_t* pClass, const size_t InitPrice) :
-      DP::Message::Data_t(
-        DP::Stage_t::Translate,
-        Message::Id::SetPrice,
-        sizeof(Data_t),
-        pClass),
-      Price(InitPrice)
-    {}
+  constexpr auto kMsgName{ "msg::set_price"sv };
 
-    size_t Price;
+  struct Data_t : dp::msg::Data_t {
+    Data_t(Price_t pr) : dp::msg::Data_t(kMsgName), price(pr) {}
+
+    Price_t price;
   };
 
-  typedef SsWindow::Acquire::Data_t             AcquireData_t;
-  typedef DcrWindow::Policy::Translate::Many_t    TranslatePolicy_t;
+  namespace msg {
+    inline auto validate(const dp::Msg_t& msg) {
+      return dp::msg::validate<Data_t>(msg, kMsgName);
+    }
+  }
+
+  namespace Legacy {
+    struct Data_t : DP::Message::Legacy::Data_t {
+      Data_t(const wchar_t* pClass, const size_t InitPrice) :
+        DP::Message::Legacy::Data_t(
+          DP::Stage_t::Translate,
+          Message::Id::SetPrice,
+          sizeof(Data_t),
+          pClass),
+        Price(InitPrice)
+      {}
+
+      size_t Price;
+    };
+  }
+
+  typedef SsWindow::Acquire::Legacy::Data_t     AcquireData_t;
+  typedef DcrWindow::Policy::Translate::Many_t  TranslatePolicy_t;
   typedef DcrWindow::Policy::NoValidate_t       ValidatePolicy_t;
 
   typedef DcrWindow::Translate::Handler_t<TranslatePolicy_t,

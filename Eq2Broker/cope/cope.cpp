@@ -16,7 +16,7 @@
 using namespace std::literals;
 
 namespace dp {
-  result_code dispatch(const msg_t& msg) {
+  result_code dispatch(const Msg_t& msg) {
     result_code rc{ result_code::success };
     if (!msg.msg_name.starts_with("ui::msg")) {
       LogInfo(L"dispatch(): unsupported message name, %S", msg.msg_name.c_str());
@@ -28,46 +28,50 @@ namespace dp {
   }
 }
 
-dp::msg_ptr_t start_txn_sellitem(dp::msg_ptr_t msg_ptr) {
-  using namespace sellitem;
+dp::MsgPtr_t start_txn_sellitem(dp::MsgPtr_t msg_ptr) {
+  using namespace Broker::Sell;
   LogInfo(L"starting txn::sell_item");
   // TODO: would like to allow this and build a unique_ptr from it
   // sellitem::txn::state_t state{ "some item", 1 };
   auto state = std::make_unique<txn::state_t>("magic beans"s, 2);
-  return std::move(dp::txn::make_start_txn<txn::state_t>(txn::name,
+  return std::move(dp::txn::make_start_txn<txn::state_t>(txn::kTxnName,
     std::move(msg_ptr), std::move(state)));
 }
 
 auto screenshot() {
-  return std::make_unique<dp::msg_t>("dp::msg::screenshot");
+  return std::make_unique<dp::Msg_t>("dp::msg::screenshot");
 }
 
-dp::msg_ptr_t translate(dp::msg_ptr_t msg_ptr, std::string& out_msg,
+dp::MsgPtr_t translate(dp::MsgPtr_t msg_ptr, std::string& out_msg,
   std::string& out_extra)
 {
   msg_ptr;
-  using namespace sellitem::msg;
+  using namespace Broker::Sell;
 
-  static data_t::row_vector rows_page_1{
-    //{ "magic balls", 7, false, false },
-    { "magic beans", 1, false, false },
+  static Table::RowData_t test1{
+    "magic beans"s, 1, { 1 }, false, false
+  };
+
+  static Table::RowVector rows_page_1{
+    //{ "magic balls", 1, 7, false, false },
+    { "magic beans", 1, { 1 }, false, false },
 #if 0
-    { "magic beans", 1, false, false },
-    { "magic beans", 1, true, false },
-    { "magic beans", 1, false, true },
-    { "magic beans", 1, true, true },
+    { "magic beans", 1, 1, false, false },
+    { "magic beans", 1, 1, true, false },
+    { "magic beans", 1, 1, false, true },
+    { "magic beans", 1, 1, true, true },
 
-    { "magic balls", 7, false, false },
+    { "magic balls", 1, 7, false, false },
 
-    { "magic beans", 2, false, false },
-    { "magic beans", 2, true, false},
-    { "magic beans", 2, false, true },
-    { "magic beans", 2, true, true },
+    { "magic beans", 1, 2, false, false },
+    { "magic beans", 1, 2, true, false},
+    { "magic beans", 1, 2, false, true },
+    { "magic beans", 1, 2, true, true },
 
-    { "magic balls", 8, false, false },
-    { "magic beans", 3, false, true },
-    { "magic beans", 5, true, false },
-    { "magic balls", 9, false, false }
+    { "magic balls", 1, 8, false, false },
+    { "magic beans", 1, 3, false, true },
+    { "magic beans", 1, 5, true, false },
+    { "magic balls", 1, 9, false, false }
 #endif
   };
   static bool first = true;
@@ -90,11 +94,11 @@ dp::msg_ptr_t translate(dp::msg_ptr_t msg_ptr, std::string& out_msg,
     auto& row = rows_page_1[index];
 
     if (row.item_name != "magic beans") continue;
-    if (row.price == 2 && row.listed) continue;
+    if (row.item_price.GetPlat() == 2 && row.item_listed) continue;
 
     if (first) {
       LogInfo(L"---ROW %d--- selected: %d, listed: %d", index, row.selected,
-        row.listed);
+        row.item_listed);
     }
 
     if (!row.selected) {
@@ -105,28 +109,28 @@ dp::msg_ptr_t translate(dp::msg_ptr_t msg_ptr, std::string& out_msg,
       }
       row.selected = true;
     }
-    if (row.price != 2 && !setprice_clicked) {
+    if (row.item_price.GetPlat() != 2 && !setprice_clicked) {
       out_msg.assign(ui::msg::name::click_widget); // click set_price_button
       out_extra.assign(std::to_string(Broker::Sell::Widget::Id::SetPriceButton));
       setprice_clicked = true;
       if (xtralog) LogInfo(L"****2");
       break;
     }
-    if (row.price != 2) {
+    if (row.item_price.GetPlat() != 2) {
       if (!in_setprice) {
         in_setprice = true;
         out_msg.assign(ui::msg::name::send_chars); // enter price_text
-        if (xtralog) LogInfo(L"****3  price(%d)", row.price);
+        if (xtralog) LogInfo(L"****3  price(%d)", row.item_price.GetPlat());
         break;
       }
       out_msg.assign(ui::msg::name::click_widget); // click ok_button
       out_extra.assign(std::to_string(Broker::SetPrice::Widget::Id::OkButton));
-      if (xtralog) LogInfo(L"****4  price(%d) row(%d)", row.price, index);
-      row.price = 2;
+      if (xtralog) LogInfo(L"****4  price(%d) row(%d)", row.item_price.GetPlat(), index);
+      row.item_price = Price_t(2);
       break;
     }
     in_setprice = false;
-    if (!row.listed) {
+    if (!row.item_listed) {
       if (!listed_clicked) {
         listed_clicked = true;
         out_msg.assign(out_msg.assign(ui::msg::name::click_widget)); // click list_item_button
@@ -134,7 +138,7 @@ dp::msg_ptr_t translate(dp::msg_ptr_t msg_ptr, std::string& out_msg,
         if (xtralog) LogInfo(L"****5 ");
         break;
       }
-      row.listed = true;
+      row.item_listed = true;
       //if (xtralog) LogInfo(L"****6 ");
       //out_msg.assign("skip");
       //break;
@@ -145,24 +149,27 @@ dp::msg_ptr_t translate(dp::msg_ptr_t msg_ptr, std::string& out_msg,
   if (index == rows_page_1.size()) {
     if (final_message_sent) {
       final_message_sent = false;
-      return std::move(std::make_unique<dp::msg_t>("done"));
+      return std::move(std::make_unique<dp::Msg_t>("done"));
     } else {
       final_message_sent = true;
     }
   } else if (in_setprice) {
-    return std::move(std::make_unique<setprice::msg::data_t>(rows_page_1[index].price));
+    using namespace Broker::SetPrice::Translate;
+    return std::move(std::make_unique<Data_t>(rows_page_1[index].item_price));
   }
-  data_t::row_vector rows_copy = rows_page_1; //unnecessary. pass & copy directly below/ (no move)
-  return std::move(std::make_unique<data_t>(std::move(rows_copy)));
+  /*Data_t::row_vector*/auto rows_copy = rows_page_1; //unnecessary. pass & copy directly below/ (no move)
+  using namespace Broker::Sell::Translate;
+  return std::move(std::make_unique<Data_t>(std::move(rows_copy), 0,
+    Ui::Scroll::Position::Unknown));
 }
 
 namespace cope {
   dp::result_code run() {
     using namespace std::chrono;
 
-    dp::txn::handler_t tx_sell{ sellitem::txn::handler() };
+    dp::txn::handler_t tx_sell{ Broker::Sell::txn::handler() };
     bool tx_active = false;
-    dp::msg_ptr_t out{};
+    dp::MsgPtr_t out{};
 
     auto start = high_resolution_clock::now();
     int i{};
@@ -170,7 +177,7 @@ namespace cope {
       std::string expected_out_msg_name;
       std::string extra;
 
-      dp::msg_ptr_t out_ptr = std::move(translate(screenshot(),
+      dp::MsgPtr_t out_ptr = std::move(translate(screenshot(),
         expected_out_msg_name, extra));
       if (out_ptr->msg_name == "done") break;
       if (!tx_active) {

@@ -29,40 +29,40 @@ namespace Broker::Buy::Translate {
   constexpr auto kSearchTextMax = 101;
   constexpr auto kSavedSearchMax = 30;
 
-  struct Data_t : public DP::Message::Data_t {
-    Buy::Text_t tableText;
-    int selectedRow;
-    PageNumber_t pageNumber;
-    char searchText[kSearchTextMax];
-    bool searchBoxHasCaret;
-    char savedSearch[kSavedSearchMax];
+  namespace Legacy {
+    struct Data_t : public DP::Message::Legacy::Data_t {
+      Buy::Text_t tableText;
+      int selectedRow;
+      PageNumber_t pageNumber;
+      char searchText[kSearchTextMax];
+      bool searchBoxHasCaret;
+      char savedSearch[kSavedSearchMax];
 
-    Data_t(
-      const wchar_t* pClass,
-      const TextTable_t& textTable,
-      size_t initSelectedRow,
-      const PageNumber_t& initPageNumber,
-      const string& initSearchText,
-      bool initSearchBoxHasCaret,
-      const string& initSavedSearch) :
-      DP::Message::Data_t(
-        DP::Stage_t::Translate,
-        Message::Id::Buy,
-        sizeof(Data_t),
-        pClass),
-      tableText(textTable.GetData()),
-      selectedRow(initSelectedRow),
-      pageNumber(initPageNumber),
-      searchBoxHasCaret(initSearchBoxHasCaret)
-    {
-      strcpy_s(searchText, initSearchText.c_str());
-      strcpy_s(savedSearch, initSavedSearch.c_str());
-    }
-  };
+      Data_t(
+        const wchar_t* pClass,
+        const TextTable_t& textTable,
+        size_t initSelectedRow,
+        const PageNumber_t& initPageNumber,
+        const string& initSearchText,
+        bool initSearchBoxHasCaret,
+        const string& initSavedSearch) :
+        DP::Message::Legacy::Data_t(
+          DP::Stage_t::Translate,
+          Message::Id::Buy,
+          sizeof(Data_t),
+          pClass),
+        tableText(textTable.GetData()),
+        selectedRow(initSelectedRow),
+        pageNumber(initPageNumber),
+        searchBoxHasCaret(initSearchBoxHasCaret)
+      {
+        strcpy_s(searchText, initSearchText.c_str());
+        strcpy_s(savedSearch, initSavedSearch.c_str());
+      }
+    };
+  } // namespace Legacy
 
-  ////////////////////////////////////////////////////////////////////////////////
-
-  typedef SsWindow::Acquire::Data_t             AcquireData_t;
+  typedef SsWindow::Acquire::Legacy::Data_t     AcquireData_t;
   typedef DcrWindow::Policy::Translate::Many_t  TranslatePolicy_t;
   typedef DcrWindow::Policy::NoValidate_t       ValidatePolicy_t;
 
@@ -95,7 +95,6 @@ namespace Broker::Buy::Translate {
       std::span<const Ui::Widget::Data_t> widgets);
 
   private:
-//    Window::ManagerBase_t& m_windowManager;
     const Window_t& window_;
     TranslatePolicy_t m_TranslatePolicy;
     ValidatePolicy_t  m_ValidatePolicy;

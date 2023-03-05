@@ -198,6 +198,7 @@ namespace SsWindow::Acquire {
     HWND, //hWnd,
     pool<CSurface>::item_t* pPoolItem)
   {
+    using Legacy::Data_t;
     LogInfo(L"SsWindow::PostData()");
     void* pBuffer = GetPipelineManager().Alloc(sizeof(Data_t));
     if (nullptr == pBuffer) {

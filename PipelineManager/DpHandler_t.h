@@ -43,7 +43,7 @@ public:
 
   // virtual void Shutdown() {} // TODO
 
-  virtual HRESULT MessageHandler(const Message::Data_t* /* pMessage */) {
+  virtual HRESULT MessageHandler(const Message::Legacy::Data_t* /* pMessage */) {
     return S_FALSE;
   }
 

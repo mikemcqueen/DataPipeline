@@ -17,26 +17,32 @@
 #include "BrokerUi.h"
 
 namespace Broker::SetPrice {
-    constexpr Ui::WindowId_t kWindowId = Broker::Window::Id::SetPrice;
-    constexpr auto kWindowName = "SetPricePopup"sv;
+  constexpr auto kWindowId = Broker::Window::Id::SetPrice;
+  constexpr auto kWindowName = "SetPrice"sv;
 
-    namespace Translate {
-        struct Data_t;
-        class Handler_t;
-    } // Translate
+  namespace Translate {
+    namespace Legacy {
+      struct Data_t;
+    }
+    struct Data_t;
+    class Handler_t;
+  } // Translate
 
-    namespace Interpret {
-        struct Data_t;
-        class Handler_t;
-    } // Interpret
+  namespace Interpret {
+    namespace Legacy {
+      struct Data_t;
+    }
+    struct Data_t;
+    class Handler_t;
+  } // Interpret
 
-    class Window_t;
+  class Window_t;
 #if 0
-    namespace Window {
-        typedef Ui::Window::Manager_t<Window_t, Translate::Handler_t,
-          Interpret::Handler_t> ManagerBase_t;
-        class Manager_t;
-    } // Window
+  namespace Window {
+    typedef Ui::Window::Manager_t<Window_t, Translate::Handler_t,
+      Interpret::Handler_t> ManagerBase_t;
+    class Manager_t;
+  } // Window
 #endif
 
 } // namespace Broker::SetPrice

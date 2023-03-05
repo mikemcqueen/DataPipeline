@@ -27,8 +27,8 @@ int ready_count = 0;
 
 /*static*/
 void
-SsTask::Acquire::Data_t::ReleaseFn(DP::Message::Data_t& data) {
-  auto& ssData = static_cast<SsTask::Acquire::Data_t&>(data);
+SsTask::Acquire::Legacy::Data_t::ReleaseFn(DP::Message::Legacy::Data_t& data) {
+  auto& ssData = static_cast<SsTask::Acquire::Legacy::Data_t&>(data);
   if (nullptr == ssData.pPoolItem) {
     throw invalid_argument("SsData::pPoolItem is null");
   }
@@ -36,8 +36,7 @@ SsTask::Acquire::Data_t::ReleaseFn(DP::Message::Data_t& data) {
   ssData.pPoolItem->release();
 }
 
-SsTask_t::
-SsTask_t(
+SsTask_t::SsTask_t(
   CDisplay& Display,
   size_t SurfaceWidth,
   size_t SurfaceHeight,

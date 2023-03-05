@@ -29,7 +29,7 @@ namespace DP {
 
   bool PipelineManager_t::ProcessThreadData_t::operator()(
     ThreadQueue::State_t State,
-    Message::Data_t* pData,
+    Message::Legacy::Data_t* pData,
     PipelineManager_t* pPM) const
   {
     using namespace ThreadQueue;
@@ -76,8 +76,8 @@ namespace DP {
   }
 
   bool PipelineManager_t::CompareMessage_t::operator()(
-    const Message::Data_t* pD1,
-    const Message::Data_t* pD2) const
+    const Message::Legacy::Data_t* pD1,
+    const Message::Legacy::Data_t* pD2) const
   {
     if (0 == (intValue(pD1->Stage) & intValue(pD2->Stage)))
       return false;
@@ -313,7 +313,7 @@ namespace DP {
     free(pMem);
   }
 
-  HRESULT PipelineManager_t::Callback(Message::Data_t* pMessage) {
+  HRESULT PipelineManager_t::Callback(Message::Legacy::Data_t* pMessage) {
     LogInfo(L"PipelineManager_t::Callback pMessage %S", typeid(*pMessage).name());
 
     if (nullptr == pMessage) {
@@ -339,7 +339,7 @@ namespace DP {
   {
     // TODO:
     // if (!SameThread()) SignalObjectAndWait(hFlush, hFlushNotify);
-    Message::Data_t Data;
+    Message::Legacy::Data_t Data;
     memset(&Data, 0, sizeof(Data));
     Data.Stage = Stage;
     wcscpy_s(Data.Class, _countof(Data.Class), pszClass);
@@ -350,7 +350,7 @@ namespace DP {
     return RemovedCount;
   }
 
-  void PipelineManager_t::Dispatch(Message::Data_t* pMessage) {
+  void PipelineManager_t::Dispatch(Message::Legacy::Data_t* pMessage) {
     Stage_t NextStage = Stage_t::None;
     switch (pMessage->Stage) {
     case Stage_t::Acquire:     NextStage = Stage_t::Translate; break;
@@ -402,7 +402,7 @@ namespace DP {
   }
 
   HRESULT PipelineManager_t::TrySendTransactionMessage(
-    Message::Data_t* pMessage,
+    Message::Legacy::Data_t* pMessage,
     Stage_t          stage)
   {
     HRESULT hr = E_FAIL;
@@ -431,7 +431,7 @@ namespace DP {
   int release = 0;
   int releaseFn = 0;
 
-  void PipelineManager_t::Release(DP::Message::Data_t* pData) {
+  void PipelineManager_t::Release(DP::Message::Legacy::Data_t* pData) {
     release++;
     if (nullptr != pData->ReleaseFn) {
       releaseFn++;

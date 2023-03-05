@@ -205,7 +205,7 @@ InitItemNames(
 HRESULT
 Handler_t::
 MessageHandler(
-    const DP::Message::Data_t* pMessage)
+    const DP::Message::Legacy::Data_t* pMessage)
 {
     LogInfo(L"TxBuySellItems::MessageHandler()");
     DP::TransactionManager_t::AutoRelease_t tm(GetTransactionManager().Acquire());

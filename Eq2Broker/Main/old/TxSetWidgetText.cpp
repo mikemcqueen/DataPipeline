@@ -63,7 +63,7 @@ OnTransactionComplete(
 HRESULT
 Handler_t::
 MessageHandler(
-    const DP::Message::Data_t* pMessage)
+    const DP::Message::Legacy::Data_t* pMessage)
 {
     LogInfo(L"TxSetWidgetText::MessageHandler()");
     DP::TransactionManager_t::AutoRelease_t TxData(GetTransactionManager().Acquire());

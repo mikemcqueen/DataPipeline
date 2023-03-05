@@ -23,32 +23,57 @@
 #include "Rect.h"
 #include "BrokerId.h"
 #include "BrokerUi.h"
+#include "dp_msg.h"
 
 namespace Broker::Sell::Translate {
-  struct Data_t : public DP::Message::Data_t {
-    typedef Sell::Text_t Text_t;
-    Text_t                 Text;
-    size_t                 selectedRow;
-    Ui::Scroll::Position_t VScrollPos;
+  inline constexpr auto kMsgName{ "msg::broker_sell"sv };
 
-    Data_t(
-      const wchar_t* pClass,
-      const TextTable_t& TextTable,
-      size_t           initSelectedRow,
-      Ui::Scroll::Position_t InitVScrollPos) :
-      DP::Message::Data_t(
-        DP::Stage_t::Translate,
-        Message::Id::Sell,
-        sizeof(Data_t),
-        pClass),
-      Text(TextTable.GetData()),
-      selectedRow(initSelectedRow),
-      VScrollPos(InitVScrollPos)
-    { }
+  struct Data_t : dp::msg::Data_t {
+    Data_t(const Table::RowVector rws, int sel_row,
+      Ui::Scroll::Position_t vs_pos) :
+      dp::msg::Data_t(kMsgName),
+        rows(std::move(rws)),
+        selected_row(sel_row),
+        vscroll_pos(vs_pos)
+      {}
 
-  private:
-    Data_t();
+    Table::RowVector rows;
+    int selected_row;
+    Ui::Scroll::Position_t vscroll_pos;
   };
+
+  namespace msg {
+    inline auto validate(const dp::Msg_t& msg) {
+      return dp::msg::validate<Data_t>(msg, kMsgName);
+    }
+  }
+
+  namespace Legacy {
+    struct Data_t : DP::Message::Legacy::Data_t {
+      typedef Sell::Text_t Text_t;
+      Text_t                 Text;
+      size_t                 selectedRow;
+      Ui::Scroll::Position_t VScrollPos;
+
+      Data_t(
+        const wchar_t* pClass,
+        const TextTable_t& TextTable,
+        size_t           initSelectedRow,
+        Ui::Scroll::Position_t InitVScrollPos) :
+        DP::Message::Legacy::Data_t(
+          DP::Stage_t::Translate,
+          Message::Id::Sell,
+          sizeof(Data_t),
+          pClass),
+        Text(TextTable.GetData()),
+        selectedRow(initSelectedRow),
+        VScrollPos(InitVScrollPos)
+      { }
+
+    private:
+      Data_t();
+    };
+  } // namespace Legacy
 
   typedef DcrWindow::Policy::Translate::Many_t TranslatePolicy_t;
   typedef DcrWindow::Policy::NoValidate_t      ValidatePolicy_t;

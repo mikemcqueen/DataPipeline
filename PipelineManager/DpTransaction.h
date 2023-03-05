@@ -17,121 +17,107 @@
 
 namespace DP {
 
-using TransactionId_t = MessageId_t;
+  using TransactionId_t = MessageId_t;
 
-namespace Transaction {
+  namespace Transaction {
 
     template<int Id>
     constexpr auto MakeId() noexcept {
-        return Message::MakeId<Id, Message::Id::Transaction_First, Message::Id::Transaction_Last>();
+      return Message::MakeId<Id, Message::Id::Transaction_First, Message::Id::Transaction_Last>();
     }
 
     namespace Id
     {
-        static const TransactionId_t Unknown = TransactionId_t(Message::Id::Unknown);
-        static const TransactionId_t User_First = MakeId<0x1000>();
+      static const TransactionId_t Unknown = TransactionId_t(Message::Id::Unknown);
+      static const TransactionId_t User_First = MakeId<0x1000>();
     }
 
     typedef unsigned State_t;
     namespace State
     {
-        enum E : State_t
-        {
-            New,
-            Pending,
-            Complete,
-            // Error, ?
-            User_First = 0x00040000
-        };
+      enum E : State_t
+      {
+        New,
+        Pending,
+        Complete,
+        // Error, ?
+        User_First = 0x00040000
+      };
     }
 
     typedef unsigned Error_t;
-    namespace Error
-    {
-        enum E : Error_t
-        {
-            None = 0,
-            Aborted = 0x80000001,
-            Timeout = 0x80000002,
-            User_First = 0x80040000
-        };
+    namespace Error {
+      enum E : Error_t {
+        None = 0,
+        Aborted = 0x80000001,
+        Timeout = 0x80000002,
+        User_First = 0x80040000
+      };
     }
 
-    struct Data_t :
-        public Event::Data_t
-    {
+    struct Data_t : public Event::Data_t {
     private:
 
-        State_t   State;
-        size_t    stateTimeout;
+      State_t   State;
+      size_t    stateTimeout;
 
     public:
 
-        Error_t   Error;
+      Error_t   Error;
 
-        Data_t(
-            TransactionId_t transactionId,
-            size_t          size = sizeof(Data_t),
-            Stage_t         stage = Stage_t::Any)
-            :
-            Event::Data_t(
-                stage,
-                transactionId,
-                size,
-                0,
-                Message::Type::Transaction),
-            State(State::New),
-            stateTimeout(0),
-            Error(Error::None)
-        { }
+      Data_t(
+        TransactionId_t transactionId,
+        size_t          size = sizeof(Data_t),
+        Stage_t         stage = Stage_t::Any) :
+        Event::Data_t(
+          stage,
+          transactionId,
+          size,
+          0,
+          Message::Type::Transaction),
+        State(State::New),
+        stateTimeout(0),
+        Error(Error::None)
+      { }
 
-        State_t
-            GetState() const
-        {
-            return State;
-        }
+      State_t GetState() const
+      {
+        return State;
+      }
 
-        size_t
-            GetStateTimeout() const
-        {
-            return stateTimeout;
-        }
+      size_t GetStateTimeout() const
+      {
+        return stateTimeout;
+      }
 
-        size_t
-            IncStateTimeout()
-        {
-            return ++stateTimeout;
-        }
+      size_t IncStateTimeout()
+      {
+        return ++stateTimeout;
+      }
 
-        bool
-            Execute(
-                bool fInterrupt = false);
+      bool Execute(
+        bool fInterrupt = false);
 
-        void
-            Complete(
-                Transaction::Error_t Error = Transaction::Error::None) const;
+      void Complete(
+        Transaction::Error_t Error = Transaction::Error::None) const;
 
-        void
-            PrevState()
-        {
-            SetState(State - 1);
-        }
+      void PrevState()
+      {
+        SetState(State - 1);
+      }
 
-        void
-            NextState()
-        {
-            SetState(State + 1);
-        }
+      void NextState()
+      {
+        SetState(State + 1);
+      }
 
-        void
-            SetState(State_t state);
+      void SetState(State_t state);
 
     private:
-
-        Data_t();
+      Data_t() = delete;
     };
 
-} // Transaction
+  } // Transaction
 } // DP
 
 

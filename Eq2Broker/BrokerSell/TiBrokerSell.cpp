@@ -53,7 +53,7 @@ namespace Broker::Sell::Interpret {
     return S_FALSE;
   }
 
-  HRESULT Handler_t::MessageHandler(const DP::Message::Data_t* pMessage) {
+  HRESULT Handler_t::MessageHandler(const DP::Message::Legacy::Data_t* pMessage) {
     if (Message::Id::Sell != pMessage->Id)
     {
       return S_FALSE;
@@ -91,7 +91,7 @@ namespace Broker::Sell::Interpret {
   ////////////////////////////////////////////////////////////////////////////////
   // Returns true if we're currently scrolled to top (or can't scroll)
   /* static */
-  bool Handler_t::IsScrolledToTop(const Translate::Data_t& Message) {
+  bool Handler_t::IsScrolledToTop(const Translate::Legacy::Data_t& Message) {
     using namespace Ui::Scroll;
     return ((Position::Top == Message.VScrollPos) ||
       (Position::Unknown == Message.VScrollPos));
@@ -100,7 +100,7 @@ namespace Broker::Sell::Interpret {
   ////////////////////////////////////////////////////////////////////////////////
   // Returns true if we're currently scrolled to bottom (or can't scroll)
   /* static */
-  bool Handler_t::IsScrolledToBottom(const Translate::Data_t& Message) {
+  bool Handler_t::IsScrolledToBottom(const Translate::Legacy::Data_t& Message) {
     using namespace Ui::Scroll;
     return (Position::Bottom == Message.VScrollPos) ||
       (Position::Unknown == Message.VScrollPos);

@@ -34,7 +34,7 @@ namespace Broker::Translate {
     last_window_id_(Ui::Window::Id::Unknown)
   {}
 
-  HRESULT WindowType_t::MessageHandler(const DP::Message::Data_t* pMessage) {
+  HRESULT WindowType_t::MessageHandler(const DP::Message::Legacy::Data_t* pMessage) {
     LogInfo(L"WindowType::MessageHandler()");
     // TODO: access SsWindow::GetClass() from instance? make class static? why is there a class.
     if (0 != wcscmp(pMessage->Class, L"SsWindow")) {
@@ -42,7 +42,7 @@ namespace Broker::Translate {
         pMessage->Class, L"SsWindow");
       return S_FALSE;
     }
-    auto& ssData = *static_cast<const SsWindow::Acquire::Data_t*>(pMessage);
+    auto& ssData = *static_cast<const SsWindow::Acquire::Legacy::Data_t*>(pMessage);
     using namespace Ui::Window;
     assert(Id::Unknown == ssData.WindowId);
 
@@ -52,7 +52,7 @@ namespace Broker::Translate {
     if (Id::Unknown != windowId) {
       LogInfo(L"WindowType_t::MessageHandler() Matched window Id(%d) Name(%S)",
         windowId, GetWindowName(windowId));
-      const_cast<SsWindow::Acquire::Data_t&>(ssData).WindowId = windowId;
+      const_cast<SsWindow::Acquire::Legacy::Data_t&>(ssData).WindowId = windowId;
       // i.e.: LastKnownGOODWindowId
       UpdateLastWindowId(windowId);
       return S_OK;
