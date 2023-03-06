@@ -35,12 +35,11 @@ TrScrollThumb_t::
 HRESULT
 TrScrollThumb_t::
 MessageHandler(
-    const DP::Message::Legacy::Data_t* pData)
+    const DP::Message::Data_t* pData)
 {
     using namespace SsWindow::Acquire;
-    using Legacy::Data_t;
-    if (typeid(*pData) != typeid(Data_t))
-    {
+    //using Legacy::Data_t;
+    if (typeid(*pData) != typeid(Data_t)) {
         return S_FALSE;
     }
     const Data_t& SsData = *static_cast<const Data_t*>(pData);

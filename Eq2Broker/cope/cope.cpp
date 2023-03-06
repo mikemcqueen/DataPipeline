@@ -11,32 +11,13 @@
 #include "txsellitem.h"
 #include "ui_msg.h" // dispatch, or "register_dispatch"
 #include "BrokerUi.h"
-//#include "Eq2UiIds.h"
+#include "MainWindow_t.h"
+
+// Screenshot/Translate
+//#include "SsTask_t.h"
+//#include "Rect.h"
 
 using namespace std::literals;
-
-namespace dp {
-  result_code dispatch(const Msg_t& msg) {
-    result_code rc{ result_code::success };
-    if (!msg.msg_name.starts_with("ui::msg")) {
-      LogInfo(L"dispatch(): unsupported message name, %S", msg.msg_name.c_str());
-      rc = result_code::unexpected_error;
-    } else {
-      rc = ui::msg::dispatch(msg);
-    }
-    return rc;
-  }
-}
-
-dp::MsgPtr_t start_txn_sellitem(dp::MsgPtr_t msg_ptr) {
-  using namespace Broker::Sell;
-  LogInfo(L"starting txn::sell_item");
-  // TODO: would like to allow this and build a unique_ptr from it
-  // sellitem::txn::state_t state{ "some item", 1 };
-  auto state = std::make_unique<txn::state_t>("magic beans"s, 2);
-  return std::move(dp::txn::make_start_txn<txn::state_t>(txn::kTxnName,
-    std::move(msg_ptr), std::move(state)));
-}
 
 auto screenshot() {
   return std::make_unique<dp::Msg_t>("dp::msg::screenshot");
@@ -54,7 +35,7 @@ dp::MsgPtr_t translate(dp::MsgPtr_t msg_ptr, std::string& out_msg,
 
   static Table::RowVector rows_page_1{
     //{ "magic balls", 1, 7, false, false },
-    { "magic beans", 1, { 1 }, false, false },
+    { "magic beans", 1, 1, false, false },
 #if 0
     { "magic beans", 1, 1, false, false },
     { "magic beans", 1, 1, true, false },
@@ -163,8 +144,30 @@ dp::MsgPtr_t translate(dp::MsgPtr_t msg_ptr, std::string& out_msg,
     Ui::Scroll::Position::Unknown));
 }
 
+namespace dp {
+  result_code dispatch(const Msg_t& msg) {
+    result_code rc{ result_code::success };
+    if (!msg.msg_name.starts_with("ui::msg")) {
+      LogInfo(L"dispatch(): unsupported message name, %S", msg.msg_name.c_str());
+      rc = result_code::unexpected_error;
+    }
+    else {
+      rc = ui::msg::dispatch(msg);
+    }
+    return rc;
+  }
+}
+
 namespace cope {
-  dp::result_code run() {
+  dp::MsgPtr_t start_txn_sellitem(dp::MsgPtr_t msg_ptr) {
+    using namespace Broker::Sell;
+    LogInfo(L"starting txn::sell_item");
+    auto state = std::make_unique<txn::state_t>("magic beans"s, 2);
+    return dp::txn::make_start_txn<txn::state_t>(txn::kTxnName,
+      std::move(msg_ptr), std::move(state));
+  }
+
+  dp::result_code SellItem(const MainWindow_t& window) {
     using namespace std::chrono;
 
     dp::txn::handler_t tx_sell{ Broker::Sell::txn::handler() };
@@ -177,6 +180,7 @@ namespace cope {
       std::string expected_out_msg_name;
       std::string extra;
 
+      window;
       dp::MsgPtr_t out_ptr = std::move(translate(screenshot(),
         expected_out_msg_name, extra));
       if (out_ptr->msg_name == "done") break;
@@ -199,9 +203,7 @@ namespace cope {
     }
     auto end = std::chrono::high_resolution_clock::now();
     double elapsed = 1e-6 * duration_cast<nanoseconds>(end - start).count();
-
-    std::cerr << "Elapsed: " << std::fixed << elapsed << std::setprecision(9)
-      << "ms (" << i << " frames)" << std::endl;
+    LogInfo(L"Elapsed: %.2fms (%d frames)", elapsed, i);
 
     return dp::result_code::success;
   }

@@ -53,7 +53,7 @@ namespace Broker::Sell::Interpret {
     return S_FALSE;
   }
 
-  HRESULT Handler_t::MessageHandler(const DP::Message::Legacy::Data_t* pMessage) {
+  HRESULT Handler_t::MessageHandler(const DP::Message::Data_t* pMessage) {
     if (Message::Id::Sell != pMessage->Id)
     {
       return S_FALSE;

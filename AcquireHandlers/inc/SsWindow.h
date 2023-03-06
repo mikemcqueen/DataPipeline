@@ -22,29 +22,31 @@
 #include "UiWindowId.h"
 
 namespace SsWindow::Acquire {
-  namespace Legacy {
-    struct Data_t : SsTask::Acquire::Legacy::Data_t {
-      Ui::WindowId_t WindowId;
+  constexpr auto kHandlerName = "SsWindow"sv;
+  constexpr auto kMsgName = "msg::screenshot"sv;
 
-      Data_t(
-        const wchar_t* pClass,
-        Ui::WindowId_t InitWindowId,
-        pool<CSurface>::item_t* pPoolItem,
-        size_t Size = sizeof(Data_t)) :
-        SsTask::Acquire::Legacy::Data_t(pClass, pPoolItem, Size),
-        WindowId(InitWindowId)
-      {}
-    };
-  } // namespace Legacy
-
+#if 0
   struct Data_t : SsTask::Acquire::Data_t {
-    Data_t(std::string_view msg_name, pool<CSurface>::item_t& pool_item,
-      Ui::WindowId_t wid) :
-      SsTask::Acquire::Data_t(msg_name, pool_item),
-      window_id(wid)
+    Data_t(CSurface* surface) :
+      SsTask::Acquire::Data_t(kMsgName, surface),
+      window_id(Ui::Window::Id::Unknown)
     {}
 
     Ui::WindowId_t window_id;
+  };
+#endif
+
+  struct Data_t : SsTask::Acquire::Data_t {
+    Ui::WindowId_t WindowId;
+
+    Data_t(
+      std::string_view msg_name,
+      Ui::WindowId_t windowId,
+      pool<CSurface>::item_t* pPoolItem,
+      size_t Size = sizeof(Data_t)) :
+      SsTask::Acquire::Data_t(msg_name, pPoolItem, Size),
+      WindowId(windowId)
+    {}
   };
 
   class Handler_t :public SsTask_t {

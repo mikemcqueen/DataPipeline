@@ -58,6 +58,9 @@
     <ClCompile Include="cope\txsetprice.cpp">
       <Filter>cope</Filter>
     </ClCompile>
+    <ClCompile Include="Main\TxSellItems.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BrokerBuy\BrokerBuyText.h">
@@ -152,6 +155,9 @@
     </ClInclude>
     <ClInclude Include="cope\txsetprice.h">
       <Filter>cope</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TxSellItems.h">
+      <Filter>Main</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -9,6 +9,8 @@
 #include <string_view>
 #include "dp_msg.h"
 #include "log.h"
+#include "Rect.h"
+#include "dp_result.h"
 
 namespace dp::txn {
   struct Data_t : msg::Data_t {
@@ -271,20 +273,28 @@ namespace dp::txn {
     std::string_view msg_name) {
     // would call txn::validate(txn, txn_name) here instead
     txn_name;
+    cout << "  dp 1. validate txn" << endl;
     result_code rc = msg::validate<startT>(txn, msg::name::txn_start);
     if (rc == result_code::success) {
       // validate that the msg contained within is of supplied type and name
+      cout << "  dp 2. validate msg" << endl;
       rc = msg::validate<msgT>(startT::msg_from(txn), msg_name);
+      cout << "  dp 3. rc = " << (int)rc << endl;
     }
     return rc;
   }
 } // namespace dp::txn
+
+class CSurface;
 
 // TODO: probably want to put this in a dp::msg{} block
 namespace dp {
   constexpr auto is_start_txn(const Msg_t& msg) {
     return msg.msg_name == msg::name::txn_start;
   }
+
+  //result_code dispatch(const Msg_t& msg);
+
   /*
   constexpr auto is_complete_txn(const Msg_t& msg) {
     return msg.msg_name == msg::name::txn_complete;

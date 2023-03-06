@@ -193,6 +193,8 @@ namespace Ui::Window {
     HWND SyncHwnd() const;
     HWND SyncHwndGetClientRect(Rect_t& rect) const;
 
+    bool TakeSnapshot(CSurface& surface);
+      
     bool ClickWidget(
       const Base_t& Window,
       WidgetId_t WidgetId,

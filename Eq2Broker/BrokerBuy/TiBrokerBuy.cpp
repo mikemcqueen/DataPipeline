@@ -20,14 +20,10 @@
 namespace Broker::Buy::Interpret {
   Handler_t::Handler_t(const Window_t& window) : window_(window) {}
 
-  bool Handler_t::Initialize(const wchar_t* pClass) {
+  bool Handler_t::Initialize(std::string_view name) {
     LogInfo(L"TiBrokerBuy::Initialize()");
-    if (!DP::Handler_t::Initialize(pClass))
+    if (!DP::Handler_t::Initialize(name))
       return false;
-#if 0
-    if (!Transaction::GetItemsForSale::Handler_t::Initialize())
-      return false;
-#endif
     return true;
   }
 
@@ -41,7 +37,7 @@ namespace Broker::Buy::Interpret {
   }
 #endif
 
-  HRESULT Handler_t::MessageHandler(const DP::Message::Legacy::Data_t* pMessage) {
+  HRESULT Handler_t::MessageHandler(const DP::Message::Data_t* pMessage) {
     if (Message::Id::Buy != pMessage->Id) {
       return S_FALSE;
     }

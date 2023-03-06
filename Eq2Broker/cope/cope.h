@@ -7,6 +7,9 @@
 
 #include "dp.h"
 
+class MainWindow_t;
+
 namespace cope {
-  dp::result_code run();
+  HRESULT Intialize(SIZE size);
+  dp::result_code SellItem(const MainWindow_t& main_window);
 }

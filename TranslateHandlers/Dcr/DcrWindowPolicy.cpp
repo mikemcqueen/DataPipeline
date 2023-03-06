@@ -28,8 +28,7 @@ namespace Translate {
 //
 /////////////////////////////////////////////////////////////////////////////
 
-Many_t::
-Many_t(
+Many_t::Many_t(
     const DcrWindow::Translate::AbstractHandler_t& handler,
     DcrVector_t& DcrVector)
     :
@@ -39,12 +38,7 @@ Many_t(
 
 Many_t::~Many_t() = default;
 
-///////////////////////////////////////////////////////////////////////////////
-
-bool
-Many_t::
-Initialize()
-{
+bool Many_t::Initialize() {
     DcrVector_t::iterator it = m_DcrVector.begin();
     for (; m_DcrVector.end() != it; ++it) {
         if (!(*it)->Initialize())
@@ -53,24 +47,25 @@ Initialize()
     return true;
 }
 
-///////////////////////////////////////////////////////////////////////////////
-
-bool
-Many_t::
-Translate(
-  const AcquireData_t& data)
-{
+bool Many_t::Translate(const AcquireData_t& data) {
   LogInfo(L"Translate::Many_t::Translate()");
   CSurface* pSurface = data.pPoolItem->get();
-  DcrVector_t::iterator it = m_DcrVector.begin();
-  for (size_t Index = 0; m_DcrVector.end() != it; ++it, ++Index) {
+  return Translate(*pSurface, m_DcrVector, data.WindowId, handler_);
+}
+
+// static
+bool Many_t::Translate(CSurface& surface, DcrVector_t& dcrVector,
+  Ui::WindowId_t windowId, const Handler_t& handler)
+{
+  auto it = dcrVector.begin();
+  for (auto Index = 0; it != dcrVector.end(); ++it, ++Index) {
     DCR& dcr = **it;
     Rect_t rect;
-    if (!handler_.PreTranslateSurface(pSurface, data.WindowId, dcr.id(), &rect)
-      || !dcr.TranslateSurface(pSurface, rect))
+    if (!handler.PreTranslateSurface(&surface, windowId, dcr.id(), &rect)
+      || !dcr.TranslateSurface(&surface, rect))
     {
       LogError(L"Translate::Many_t::Translate() failed on index(%d) of size(%d)",
-        Index, m_DcrVector.size());
+        Index, dcrVector.size());
       // TODO? TEMP? return false;
     }
   }

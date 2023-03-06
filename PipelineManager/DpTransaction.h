@@ -74,6 +74,7 @@ namespace DP {
           transactionId,
           size,
           0,
+          "DpTxnDefault"sv,
           Message::Type::Transaction),
         State(State::New),
         stateTimeout(0),

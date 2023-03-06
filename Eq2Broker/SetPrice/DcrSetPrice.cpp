@@ -26,8 +26,7 @@ namespace Broker::SetPrice::Translate {
       L"SetPrice"),
     m_TranslatePolicy(*this, m_DcrVector),
     m_DcrPriceText(Widget::Id::PriceText),
-window_(window)
-//    m_windowManager(windowManager)
+    window_(window)
   {
     m_DcrVector.push_back(&m_DcrPriceText);
   }
@@ -72,8 +71,7 @@ window_(window)
       LogError(L"DcrSetPrice::PostData(): Alloc callback data failed.");
     }
     else {
-      Data_t* pData = new (pBuffer)
-        Data_t(GetClass().c_str(), Price.value().GetPlat());
+      Data_t* pData = new (pBuffer) Data_t(Price.value().GetPlat());
       HRESULT hr = GetPipelineManager().Callback(pData);
       if (FAILED(hr)) {
         LogError(L"DcrSetPrice::PostData(): PM.Callback() failed.");

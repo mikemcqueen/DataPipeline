@@ -21,6 +21,7 @@
 namespace Broker::Sell {
   constexpr auto kWindowId = Window::Id::BrokerSell;
   constexpr auto kWindowName = "BrokerSell"sv;
+  constexpr auto kMsgName = "msg::broker_sell";
 
   namespace Table {
     constexpr auto RowCount = 10;

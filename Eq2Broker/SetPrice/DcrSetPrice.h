@@ -26,8 +26,6 @@
 #include "Price_t.h"
 
 namespace Broker::SetPrice::Translate {
-  constexpr auto kMsgName{ "msg::set_price"sv };
-
   struct Data_t : dp::msg::Data_t {
     Data_t(Price_t pr) : dp::msg::Data_t(kMsgName), price(pr) {}
 
@@ -41,21 +39,21 @@ namespace Broker::SetPrice::Translate {
   }
 
   namespace Legacy {
-    struct Data_t : DP::Message::Legacy::Data_t {
-      Data_t(const wchar_t* pClass, const size_t InitPrice) :
-        DP::Message::Legacy::Data_t(
+    struct Data_t : DP::Message::Data_t {
+      Data_t(const int InitPrice) :
+        DP::Message::Data_t(
           DP::Stage_t::Translate,
           Message::Id::SetPrice,
           sizeof(Data_t),
-          pClass),
+          kMsgName),
         Price(InitPrice)
       {}
 
-      size_t Price;
+      int Price;
     };
   }
 
-  typedef SsWindow::Acquire::Legacy::Data_t     AcquireData_t;
+  typedef SsWindow::Acquire::Data_t     AcquireData_t;
   typedef DcrWindow::Policy::Translate::Many_t  TranslatePolicy_t;
   typedef DcrWindow::Policy::NoValidate_t       ValidatePolicy_t;
 

@@ -12,7 +12,7 @@ namespace Broker::SetPrice::txn {
 
   auto validate_price(const dp::Msg_t& msg, int price) {
     using namespace Translate;
-    result_code rc = validate(msg);
+    result_code rc = msg::validate(msg);
     if (rc == result_code::success) {
       const auto& spmsg = msg.as<Data_t>();
       if (spmsg.price.GetPlat() != price) {

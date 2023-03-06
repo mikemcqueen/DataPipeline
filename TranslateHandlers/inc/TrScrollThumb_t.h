@@ -38,7 +38,7 @@ public:
     virtual
     HRESULT
     MessageHandler(
-        const DP::Message::Legacy::Data_t* pMessage);
+        const DP::Message::Data_t* pMessage);
 
 private:
 

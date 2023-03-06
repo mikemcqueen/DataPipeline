@@ -25,12 +25,11 @@
 #include "PageNumber_t.h"
 
 namespace Broker::Buy::Translate {
-
   constexpr auto kSearchTextMax = 101;
   constexpr auto kSavedSearchMax = 30;
 
   namespace Legacy {
-    struct Data_t : public DP::Message::Legacy::Data_t {
+    struct Data_t : public DP::Message::Data_t {
       Buy::Text_t tableText;
       int selectedRow;
       PageNumber_t pageNumber;
@@ -39,18 +38,17 @@ namespace Broker::Buy::Translate {
       char savedSearch[kSavedSearchMax];
 
       Data_t(
-        const wchar_t* pClass,
         const TextTable_t& textTable,
         size_t initSelectedRow,
         const PageNumber_t& initPageNumber,
         const string& initSearchText,
         bool initSearchBoxHasCaret,
         const string& initSavedSearch) :
-        DP::Message::Legacy::Data_t(
+        DP::Message::Data_t(
           DP::Stage_t::Translate,
           Message::Id::Buy,
           sizeof(Data_t),
-          pClass),
+          kMsgName),
         tableText(textTable.GetData()),
         selectedRow(initSelectedRow),
         pageNumber(initPageNumber),
@@ -62,7 +60,7 @@ namespace Broker::Buy::Translate {
     };
   } // namespace Legacy
 
-  typedef SsWindow::Acquire::Legacy::Data_t     AcquireData_t;
+  typedef SsWindow::Acquire::Data_t             AcquireData_t;
   typedef DcrWindow::Policy::Translate::Many_t  TranslatePolicy_t;
   typedef DcrWindow::Policy::NoValidate_t       ValidatePolicy_t;
 

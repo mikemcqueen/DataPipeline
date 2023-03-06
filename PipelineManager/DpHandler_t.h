@@ -28,22 +28,21 @@ class Handler_t {
 public:
   Handler_t() = default;
 
-  virtual
-    ~Handler_t() {}
+  virtual  ~Handler_t() {}
 
   Handler_t(const Handler_t&) = delete;
   Handler_t& operator=(const Handler_t&) = delete;
   Handler_t(const Handler_t&&) = delete;
   Handler_t& operator=(const Handler_t&&) = delete;
 
-  virtual bool Initialize(const wchar_t* pszClass) {
-    SetClass(pszClass);
+  virtual bool Initialize(std::string_view name) {
+    SetName(name);
     return true;
   }
 
   // virtual void Shutdown() {} // TODO
 
-  virtual HRESULT MessageHandler(const Message::Legacy::Data_t* /* pMessage */) {
+  virtual HRESULT MessageHandler(const Message::Data_t* /* pMessage */) {
     return S_FALSE;
   }
 
@@ -108,21 +107,16 @@ public:
     return S_FALSE;
   }
 
-  const std::wstring& GetClass() const { return m_strClass; }
+  const std::string& GetName() const { return m_strName; }
 
 private:
 
-  void SetClass(const wchar_t* pszClass) {
-    if (nullptr != pszClass) {
-      m_strClass.assign(pszClass);
-    }
-    else {
-      m_strClass.clear();
-    }
+  void SetName(std::string_view name) {
+    m_strName.assign(name);
   }
 
 private:
-  std::wstring m_strClass;
+  std::string m_strName;
 };
 
 } // DP

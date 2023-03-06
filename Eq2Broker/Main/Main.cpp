@@ -111,12 +111,6 @@ int ProcessCommandLine(
       break;
     }
   }
-  
-  if (pOptions->coroutines && !pOptions->testImagePath.empty()) {
-    LogError(L"Test image path + coroutines isn't supported");
-    return -1;
-  }
-
   return 1;
 }
 

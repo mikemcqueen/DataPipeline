@@ -103,7 +103,7 @@ namespace Broker::Sell::txn {
   {
     // build a SetPrice txn state that contains a Broker::Sell::Translate msg
     auto setprice_state = std::make_unique<SetPrice::txn::state_t>(
-      std::string(Translate::kMsgName), sell_state.item_price);
+      std::string(kMsgName), sell_state.item_price);
     return dp::txn::start_txn_awaitable<SetPrice::txn::state_t>{
       handle, std::move(promise.in_ptr()), std::move(setprice_state)
     };
@@ -149,9 +149,13 @@ namespace Broker::Sell::txn {
       co_await dp::txn::complete(promise, rc))
     {
       dp::Msg_t& txn = promise.in();
+      cout << "1. txn: " << txn.msg_name << endl;
       if (error(validate_start(txn))) continue;
+      cout << "2. get state" << endl;
       state = start_t::state_from(txn);
+      cout << "3. get msg " << endl;
       const auto& msg = start_t::msg_from(txn).as<Translate::Data_t>();
+      cout << "4. loop" << endl;
 
       for (auto opt_row = get_candidate_row(msg, state);
         (rc != result_code::unexpected_error) && opt_row.has_value();

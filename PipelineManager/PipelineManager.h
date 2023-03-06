@@ -20,12 +20,6 @@
 #include "DpTransaction.h"
 
 namespace DP {
-    class PipelineManager_t;
-} // DP
-
-DP::PipelineManager_t& GetPipelineManager();
-
-namespace DP {
 
   ////////////////////////////////////////////////////////////////////////////////
   //
@@ -35,26 +29,20 @@ namespace DP {
 
   class PipelineManager_t {
     friend class TransactionManager_t;
-
+//    friend class dp::PmParasite_t;
   public:
-
     struct ProcessThreadData_t
     {
       bool
         operator()(
           ThreadQueue::State_t State,
-          Message::Legacy::Data_t* pData,
+          Message::Data_t* pData,
           PipelineManager_t* pPm) const;
     };
 
   private:
 
-    struct HandlerData_t
-    {
-      Stage_t    Stage;
-      Handler_t* pHandler;
-      std::wstring name;
-
+    struct HandlerData_t {
       HandlerData_t() :
         HandlerData_t(Stage_t::None, nullptr)
       { }
@@ -62,36 +50,33 @@ namespace DP {
       HandlerData_t(
         Stage_t stage,
         Handler_t* handler,
-        const wchar_t* pName = 0)
+        std::string_view nm = {})
         :
         Stage(stage),
         pHandler(handler),
-        name((nullptr != pName) ? pName : L"")
+        name(nm)
       { }
+
+      Stage_t Stage;
+      Handler_t* pHandler;
+      std::string name;
     };
+
     typedef vector<HandlerData_t>                HandlerVector_t;
     typedef map<TransactionId_t, HandlerData_t>  TxIdHandlerMap_t;
 
-    struct CompareMessage_t final
-    {
+    struct CompareMessage_t final {
       bool operator()(
-        const Message::Legacy::Data_t* pD1,
-        const Message::Legacy::Data_t* pD2) const;
+        const Message::Data_t* pD1,
+        const Message::Data_t* pD2) const;
     };
 
-    typedef ThreadQueue_t<Message::Legacy::Data_t*,
+    typedef ThreadQueue_t<Message::Data_t*,
       PipelineManager_t,
       ProcessThreadData_t,
       CompareMessage_t>  MessageThread_t;
 
     friend class MessageThread_t;
-
-  private:
-
-    MessageThread_t  m_MessageThread;
-    HandlerVector_t  m_Handlers;
-    TxIdHandlerMap_t m_txHandlerMap;
-    CAutoCritSec     m_csHandlers;
 
   public:
 
@@ -109,21 +94,22 @@ namespace DP {
     void Shutdown();
 
     void AddHandler(
-        Stage_t    Stage,
-        Handler_t& Handler,
-        const wchar_t* pszClass = nullptr);
+      Stage_t    Stage,
+      Handler_t& Handler,
+      std::string_view msg_name = {});
+
 
     void AddTransactionHandler(
-        Stage_t          stage,
-        TransactionId_t  transactionId,
-        Handler_t& handler,
-        const wchar_t* displayName = nullptr);
+      Stage_t          stage,
+      TransactionId_t  transactionId,
+      Handler_t& handler,
+      std::string_view displayName);
 
     size_t StartAcquiring(
-      const wchar_t* pszClass = nullptr);
+      std::string_view msg_name = {},
+      bool on_demand = false);
 
-    size_t StopAcquiring(
-      const wchar_t* pszClass = nullptr);
+    size_t StopAcquiring(std::string_view msg_name = {});
 
     size_t SendEvent(
       Event::Data_t& Data);
@@ -132,36 +118,32 @@ namespace DP {
 
     void Free(void* pMem);
 
-    HRESULT Callback(Message::Legacy::Data_t* pData);
+    HRESULT Callback(Message::Data_t* pData);
 
-    size_t Flush(
-      Stage_t   Stage,
-      const wchar_t* pszClass);
+    size_t Flush(Stage_t Stage, std::string_view msg_name);
 
     void QueueApc(
-      PAPCFUNC  ApcFunc,
+      PAPCFUNC ApcFunc,
       ULONG_PTR Param);
 
     HANDLE GetIdleEvent() const { return m_MessageThread.GetIdleEvent(); }
 
-    const wchar_t* GetTransactionName(TransactionId_t txId) const;
+    const char* GetTransactionName(TransactionId_t txId) const;
 
   private:
 
-    void Dispatch(
-      Message::Legacy::Data_t* pMessage);
+    void Dispatch(Message::Data_t* pMessage);
 
-    void Release(
-      Message::Legacy::Data_t* pData);
+    void Release(Message::Data_t* pData);
 
     bool GetNextHandler(
-      Stage_t   Stage,
-      const wchar_t* pszClass,
+      Stage_t Stage,
+      std::string_view msg_name,
       HandlerVector_t::const_iterator& it) const;
 
     HRESULT TrySendTransactionMessage(
-      Message::Legacy::Data_t* pMessage,
-      Stage_t          stage);
+      Message::Data_t* pMessage,
+      Stage_t stage);
 
     // TransactionManager internal call
     HRESULT SendTransactionEvent(
@@ -171,9 +153,16 @@ namespace DP {
   private:
     PipelineManager_t(const PipelineManager_t&) = delete;
     PipelineManager_t& operator=(const PipelineManager_t&) = delete;
+
+    MessageThread_t  m_MessageThread;
+    HandlerVector_t  m_Handlers;
+    TxIdHandlerMap_t m_txHandlerMap;
+    CAutoCritSec     m_csHandlers;
+    bool acquire_on_demand_ = false;
   };
 
 } // DP
 
-#endif // Include_PIPELINEMANAGER_H
+DP::PipelineManager_t& GetPipelineManager();
 
+#endif // Include_PIPELINEMANAGER_H

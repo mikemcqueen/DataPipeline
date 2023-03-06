@@ -1,7 +1,41 @@
 
-
-figure out the Class[] hack in DP::Message.
-string_view Class param?
+So here's what I'm thinking.  Take TxBuySellItems and call it TxHandler.
+Insert handler as Interpreter.  No need to insert buy/sell/setprice interpreters (yet)
+as they don't do anything.
+m_txHandler is owned by Eq2BrokerImpl.
+I already have some kind of a TransactionStart event. Can I just use that?
+Do I have to register the Tx handler somehow for that?
+The	goal:
+  * user input: t sell_item name price
+  * send start txn msg. or otherwise manufacture and post a message for TxHandler to see.
+    ** Can't I just call SendEvent and have an EventHandler on TxnHaandler
+  * TxHandler (eventually, maybe, TransactionManager) can own the tx_sell coroutine.
+  * if tx_sell is not active, "activate" it whatever that means. set a flag basically.
+  * StartAcquiring(false). Auto-Stops after first acquire data.
+  * in MessageHandler, if tx is active, send_event to tx_sell.
+    * NO: But! we want this to run on tx_sells thread. Or, the "current txn" thread.
+	* NO: For now, there is only one, so can probably just create one in TxHandler.
+	* NO: See old new thing for thread switch trick awaitable.
+  * when txn done.. what does that even mean? Who's waiting on this coro?
+  * YES: I think actually need to do the "send event" to coro from within a thread,
+    and not have the coro switch threads from caller.
+  * NO: be nice to figure out how to put a stop-token to use here. but maybe the
+	  YES MAYBE: txn_start/stop is my own mechanism?
+  * YES: question is why do i actually need another thread here? why can't i just
+    commandeer the PM::MessageThread for consuming 1 message?
+  * I mean, in theory, it'd be nice, but for first PoC it's probably not necessary.
+  * All of the threading shit needs to be standardized anyway. I don't want to
+    be in the quagmire of threading shit right now. I want to make the coroutine
+	transaction PoC work, then I can start thinking about how that interops with
+	threads.
+  * So, after MessageHandler handles:
+    * if txn_complete message, "disable" tx_sell. May need to call TM.txnComplete().
+      * I really don't think I want to use TM though. it fucks with the processing.
+	  ** Can't I just call SendEvent and have an EventHandler on TxnHaandler
+	* else, call StartAcquiring(true) again
+  * I may need/want to write some transformer from Legacy to New msg data,
+    For BrokerSell and BrokerSetPrice.
+  * 
 
 g_pDisplay
 

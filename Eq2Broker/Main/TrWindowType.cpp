@@ -34,33 +34,40 @@ namespace Broker::Translate {
     last_window_id_(Ui::Window::Id::Unknown)
   {}
 
-  HRESULT WindowType_t::MessageHandler(const DP::Message::Legacy::Data_t* pMessage) {
+  HRESULT WindowType_t::MessageHandler(const DP::Message::Data_t* pMessage) {
     LogInfo(L"WindowType::MessageHandler()");
     // TODO: access SsWindow::GetClass() from instance? make class static? why is there a class.
-    if (0 != wcscmp(pMessage->Class, L"SsWindow")) {
-      LogInfo(L"WindowType_t::MessageHandler(): Data type not supported, %s - expected %s",
-        pMessage->Class, L"SsWindow");
+    if (0 != strcmp(pMessage->msg_name.data(), "SsWindow")) {
+      LogInfo(L"WindowType_t::MessageHandler(): Data type not supported, %S - expected %S",
+        pMessage->msg_name.data(), "SsWindow");
       return S_FALSE;
     }
-    auto& ssData = *static_cast<const SsWindow::Acquire::Legacy::Data_t*>(pMessage);
-    using namespace Ui::Window;
-    assert(Id::Unknown == ssData.WindowId);
+    auto& ssData = *static_cast<const SsWindow::Acquire::Data_t*>(pMessage);
+    assert(Ui::Window::Id::Unknown == ssData.WindowId);
 
-    // Try to determine the Window Id by looking at the screenshot bits
-    Ui::WindowId_t windowId = GetWindowId(*ssData.pPoolItem->get());
-    // If we determined a valid Window Id, hack the id into the message
-    if (Id::Unknown != windowId) {
-      LogInfo(L"WindowType_t::MessageHandler() Matched window Id(%d) Name(%S)",
-        windowId, GetWindowName(windowId));
-      const_cast<SsWindow::Acquire::Legacy::Data_t&>(ssData).WindowId = windowId;
-      // i.e.: LastKnownGOODWindowId
-      UpdateLastWindowId(windowId);
+    if (Ui::WindowId_t windowId = ProcessSurface(*ssData.pPoolItem->get());
+      windowId != Ui::Window::Id::Unknown)
+    {
+      const_cast<SsWindow::Acquire::Data_t&>(ssData).WindowId = windowId;
       return S_OK;
     }
     // Can't determine the Window Id, abort processing this message
     LogInfo(L"WindowType_t::MessageHandler(): Unknown WindowId - "
       "aborting further handler processing");
     return E_ABORT;
+  }
+
+  // Try to determine the Window Id by looking at the screenshot bits
+  Ui::WindowId_t WindowType_t::ProcessSurface(const CSurface& surface) {
+    Ui::WindowId_t windowId = GetWindowId(surface);
+    if (windowId != Ui::Window::Id::Unknown) {
+      // If we determined a valid Window Id, hack the id into the message
+      LogInfo(L"WindowType_t::MessageHandler() Matched window Id(%d) Name(%S)",
+        windowId, GetWindowName(windowId));
+      // i.e.: LastKnownGOODWindowId
+      UpdateLastWindowId(windowId);
+    }
+    return windowId;
   }
 
   Ui::WindowId_t WindowType_t::GetWindowId(const CSurface& surface) const {
@@ -128,12 +135,8 @@ namespace Broker::Translate {
   const char* WindowType_t::GetWindowName(Ui::WindowId_t windowId) const {
     const char* pName = "Error";
     switch (windowId) {
-    case Ui::Window::Id::Unknown:
-      pName = "Unknown";
-      break;
-    default:
-      pName = main_window_.GetWindow(windowId).GetWindowName();
-      break;
+    case Ui::Window::Id::Unknown: pName = "Unknown"; break;
+    default: pName = main_window_.GetWindow(windowId).GetWindowName(); break;
     }
     return pName;
   }

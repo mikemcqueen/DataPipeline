@@ -39,13 +39,16 @@ namespace dp {
 
     template<typename msgT>
     auto validate(const Msg_t& msg, std::string_view msg_name) {
+      cout << "    msg 1. validate name" << endl;
       result_code rc = validate_name(msg, msg_name);
       if (rc == result_code::success) {
+        cout << "    msg 2. dynacast" << endl;
         if (!dynamic_cast<const msgT*>(&msg)) {
           LogError(L"msg::validate: type mismatch");
           rc = result_code::unexpected_error;
         }
       }
+      cout << "    msg 3. rc = " << (int)rc << endl;
       return rc;
     }
   } // namespace msg

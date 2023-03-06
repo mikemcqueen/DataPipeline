@@ -117,7 +117,6 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)\cope;..\dp;$(SolutionDir)\Main;$(SolutionDir)\BrokerBuy;$(SolutionDir)\BrokerSell;$(SolutionDir)\SetPrice;Db;$(SolutionDir)\Ui;..\CommonUtils;..\Ui;..\DcrLib;..\PipelineManager;..\Accounts;..\TranslateHandlers\inc;..\AcquireHandlers\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -130,6 +129,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <CompileAsManaged>false</CompileAsManaged>
       <CompileAsWinRT>false</CompileAsWinRT>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)Main;$(SolutionDir)BrokerBuy;$(SolutionDir)BrokerSell;$(SolutionDir)SetPrice;$(SolutionDir)Ui;$(SolutionDir)Db;$(SolutionDir)cope;$(SolutionDir)..\Accounts;$(SolutionDir)..\PipelineManager;$(SolutionDir)..\dp;$(SolutionDir)..\Ui;$(SolutionDir)..\DcrLib;$(SolutionDir)..\CommonUtils;$(SolutionDir)..\AcquireHandlers\inc;$(SolutionDir)..\TranslateHandlers\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ddraw.lib;dxguid.lib;odbc32.lib;comctl32.lib;tesseract52d.lib;org.sw.demo.danbloomberg.leptonica-1.82.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -150,7 +150,6 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugDLL|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)\cope;..\dp;$(SolutionDir)\Main;$(SolutionDir)\BrokerBuy;$(SolutionDir)\BrokerSell;$(SolutionDir)\SetPrice;Db;$(SolutionDir)\Ui;..\CommonUtils;..\Ui;..\DcrLib;..\PipelineManager;..\Accounts;..\TranslateHandlers\inc;..\AcquireHandlers\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -163,6 +162,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <CompileAsManaged>false</CompileAsManaged>
       <CompileAsWinRT>false</CompileAsWinRT>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)Main;$(SolutionDir)BrokerBuy;$(SolutionDir)BrokerSell;$(SolutionDir)SetPrice;$(SolutionDir)Ui;$(SolutionDir)Db;$(SolutionDir)cope;$(SolutionDir)..\Accounts;$(SolutionDir)..\PipelineManager;$(SolutionDir)..\dp;$(SolutionDir)..\Ui;$(SolutionDir)..\DcrLib;$(SolutionDir)..\CommonUtils;$(SolutionDir)..\AcquireHandlers\inc;$(SolutionDir)..\TranslateHandlers\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ddraw.lib;dxguid.lib;odbc32.lib;comctl32.lib;tesseract53d.lib;leptonica-1.83.1d.lib;tiffd.lib;libpng16d.lib;archive.lib;jpeg.lib;libwebp.lib;zstd.lib;lzma.lib;zlibd.lib;gif.lib;openjp2.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -184,7 +184,6 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDLL|Win32'">
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)\cope;..\dp;$(SolutionDir)\Main;$(SolutionDir)\BrokerBuy;$(SolutionDir)\BrokerSell;$(SolutionDir)\SetPrice;Db;$(SolutionDir)\Ui;..\CommonUtils;..\Ui;..\DcrLib;..\PipelineManager;..\Accounts;..\TranslateHandlers\inc;..\AcquireHandlers\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -201,6 +200,7 @@
       <PreprocessorDefinitions>_UNICODE;UNICODE;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CompileAsManaged>false</CompileAsManaged>
       <CompileAsWinRT>false</CompileAsWinRT>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)Main;$(SolutionDir)BrokerBuy;$(SolutionDir)BrokerSell;$(SolutionDir)SetPrice;$(SolutionDir)Ui;$(SolutionDir)Db;$(SolutionDir)cope;$(SolutionDir)..\Accounts;$(SolutionDir)..\PipelineManager;$(SolutionDir)..\dp;$(SolutionDir)..\Ui;$(SolutionDir)..\DcrLib;$(SolutionDir)..\CommonUtils;$(SolutionDir)..\AcquireHandlers\inc;$(SolutionDir)..\TranslateHandlers\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ddraw.lib;dxguid.lib;odbc32.lib;comctl32.lib;tesseract53.lib;leptonica-1.83.1.lib;tiff.lib;libpng16.lib;archive.lib;jpeg.lib;libwebp.lib;zstd.lib;lzma.lib;zlib.lib;gif.lib;openjp2.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -224,7 +224,6 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)\cope;..\dp;$(SolutionDir)\Main;$(SolutionDir)\BrokerBuy;$(SolutionDir)\BrokerSell;$(SolutionDir)\SetPrice;Db;$(SolutionDir)\Ui;..\CommonUtils;..\Ui;..\DcrLib;..\PipelineManager;..\Accounts;..\TranslateHandlers\inc;..\AcquireHandlers\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -236,6 +235,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <CompileAsManaged>false</CompileAsManaged>
       <CompileAsWinRT>false</CompileAsWinRT>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)Main;$(SolutionDir)BrokerBuy;$(SolutionDir)BrokerSell;$(SolutionDir)SetPrice;$(SolutionDir)Ui;$(SolutionDir)Db;$(SolutionDir)cope;$(SolutionDir)..\Accounts;$(SolutionDir)..\PipelineManager;$(SolutionDir)..\dp;$(SolutionDir)..\Ui;$(SolutionDir)..\DcrLib;$(SolutionDir)..\CommonUtils;$(SolutionDir)..\AcquireHandlers\inc;$(SolutionDir)..\TranslateHandlers\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ddraw.lib;dxguid.lib;odbc32.lib;comctl32.lib;tesseract52.lib;leptonica-1.82.0.lib;jpeg.lib;tiff.lib;libcurl.lib;libpng16.lib;bz2.lib;lzma.lib;zstd.lib;iconv.lib;libcrypto.lib;libssl.lib;lz4.lib;openjp2.lib;turbojpeg.lib;webp.lib;webpdemux.lib;webpdecoder.lib;zlib.lib;archive.lib;gif.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -273,6 +273,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Main\TrWindowType.cpp" />
+    <ClCompile Include="Main\TxSellItems.cpp" />
     <ClCompile Include="SetPrice\DcrSetPrice.cpp" />
     <ClCompile Include="SetPrice\SetPriceWindow.cpp" />
     <ClCompile Include="SetPrice\TiSetPrice.cpp" />
@@ -302,6 +303,7 @@
     <ClInclude Include="Main\Price_t.h" />
     <ClInclude Include="Main\stdafx.h" />
     <ClInclude Include="Main\TrWindowType.h" />
+    <ClInclude Include="Main\TxSellItems.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SetPrice\DcrSetPrice.h" />
     <ClInclude Include="SetPrice\SetPrice.h" />

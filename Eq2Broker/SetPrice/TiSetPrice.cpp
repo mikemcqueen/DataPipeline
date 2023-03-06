@@ -37,7 +37,7 @@ namespace SetPrice {
       return S_FALSE;
     }
 
-    HRESULT Handler_t::MessageHandler(const DP::Message::Legacy::Data_t* /*pMessage*/) {
+    HRESULT Handler_t::MessageHandler(const DP::Message::Data_t* /*pMessage*/) {
 #if 0
       if (Message::Id::SetPrice != pMessage->Id)
       {

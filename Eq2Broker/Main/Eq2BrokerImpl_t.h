@@ -19,6 +19,7 @@
 #include "BrokerBuyWindowManager.h"
 #include "BrokerSellWindowManager.h"
 #include "SetPrice.h"
+#include "TxSellItems.h"
 
 #if 0
 #include "Eq2Login.h"
@@ -60,6 +61,8 @@ public:
   Buy::Window::Manager_t       buyWindowManager_;
   Sell::Window::Manager_t      sellWindowManager_;
   SetPrice::Window::Manager_t  setprice_manager_;
+
+  Broker::Transaction::SellItems::Handler_t   tx_sellitems_;
 
 #if 0
   Eq2Login::Window::Manager_t  m_eq2LoginWindow;

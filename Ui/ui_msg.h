@@ -13,6 +13,8 @@
 //#include "UiWindowId.h"
 
 namespace ui::msg {
+  constexpr auto kMsgPrefix = "ui::msg";
+
   namespace name {
     using namespace std::literals;
 

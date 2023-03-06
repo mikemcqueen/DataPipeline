@@ -20,10 +20,12 @@
 namespace DcrWindow::Policy { // TODO Strategy?
   namespace Translate {
     class Many_t {
+      using Handler_t = DcrWindow::Translate::AbstractHandler_t;
+
     public:
 
       explicit Many_t(
-        const DcrWindow::Translate::AbstractHandler_t& handler,
+        const Handler_t& handler,
         DcrVector_t& DcrVector);
 
       ~Many_t();
@@ -36,8 +38,12 @@ namespace DcrWindow::Policy { // TODO Strategy?
 
       bool Translate(const AcquireData_t& Data);
 
+      // new-dp hack
+      static bool Translate(CSurface& surface, DcrVector_t& dcrVector,
+        Ui::WindowId_t windowId, const Handler_t& handler);
+        
     private:
-      const DcrWindow::Translate::AbstractHandler_t& handler_;
+      const Handler_t& handler_;
       DcrVector_t& m_DcrVector;
     };
   } // Translate

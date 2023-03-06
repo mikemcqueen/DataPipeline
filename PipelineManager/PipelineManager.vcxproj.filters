@@ -1,54 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
     <Filter Include="dp">
       <UniqueIdentifier>{65ce25e7-93e0-4d89-ba48-ff88ccd1f3d3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="dp\Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="PipelineManager.cpp">
-      <Filter>dp\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>dp\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TransactionManager.cpp">
-      <Filter>dp\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\dp\dp.cpp">
       <Filter>dp</Filter>
     </ClCompile>
+    <ClCompile Include="PipelineManager.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="TransactionManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DpEvent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DpHandler_t.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DpMessage.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DpTransaction.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PipelineManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="stdafx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TransactionManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\dp\dp.h">
       <Filter>dp</Filter>
     </ClInclude>
@@ -58,5 +23,12 @@
     <ClInclude Include="..\dp\dp_result.h">
       <Filter>dp</Filter>
     </ClInclude>
+    <ClInclude Include="DpEvent.h" />
+    <ClInclude Include="DpHandler_t.h" />
+    <ClInclude Include="DpMessage.h" />
+    <ClInclude Include="DpTransaction.h" />
+    <ClInclude Include="PipelineManager.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="TransactionManager.h" />
   </ItemGroup>
 </Project>

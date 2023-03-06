@@ -44,9 +44,10 @@ public:
     return s_MessageId;
   }
 
+  static bool TakeSnapShot(HWND hWnd, const RECT& rc, CSurface* pSurface);
+
   using GetWindowFn_t = std::function<HWND(Rect_t&)>;
 
-public:
   explicit SsTask_t(
       CDisplay& Display,
       size_t    SurfaceWidth,
@@ -58,7 +59,7 @@ public:
   virtual ~SsTask_t();
 
   // DP::Handler_t virtual
-  bool Initialize(const wchar_t* pszClass) override;
+  bool Initialize(std::string_view name) override;
   HRESULT EventHandler(DP::Event::Data_t& Data) override;
 
   // SsTask_t virtual
@@ -112,8 +113,6 @@ private:
 
   void Shutter();
 
-  static bool TakeSnapShot(HWND hWnd, const RECT& rc, CSurface* pSurface);
-
   bool SetSuspended(bool bSuspended);
 
   bool IsSuspended() const;
@@ -157,38 +156,34 @@ private:
 };
 
 namespace SsTask::Acquire {
-  namespace Legacy {
-    struct Data_t : DP::Message::Legacy::Data_t {
-      pool<CSurface>::item_t* pPoolItem;
-
-      static void ReleaseFn(DP::Message::Legacy::Data_t&);
-
-      Data_t(
-        const wchar_t* pClass,
-        pool<CSurface>::item_t* InitPoolItem,
-        size_t Size = sizeof(Data_t)) :
-        DP::Message::Legacy::Data_t(
-          DP::Stage_t::Acquire,
-          SsTask_t::GetMessageId(),
-          Size,
-          pClass,
-          DP::Message::Type::Message,
-          ReleaseFn),
-        pPoolItem(InitPoolItem)
-      { }
-    };
-  }
-
+#if 0
   struct Data_t : dp::msg::Data_t {
-    Data_t(std::string_view msg_name, pool<CSurface>::item_t& pi) :
-      dp::msg::Data_t(msg_name),
-      pool_item(pi)
+    Data_t(std::string_view msg_name, CSurface* sfc) :
+      dp::msg::Data_t(msg_name), surface(sfc)
     {}
-    ~Data_t() {
-      pool_item.release();
-    }
 
-    pool<CSurface>::item_t& pool_item;
+    CSurface* surface;
+  };
+#endif
+
+  struct Data_t : DP::Message::Data_t {
+    pool<CSurface>::item_t* pPoolItem;
+
+    static void ReleaseFn(DP::Message::Data_t&);
+
+    Data_t(
+      std::string_view msg_name,
+      pool<CSurface>::item_t* pi,
+      size_t Size = sizeof(Data_t)) :
+      DP::Message::Data_t(
+        DP::Stage_t::Acquire,
+        SsTask_t::GetMessageId(),
+        Size,
+        msg_name,
+        DP::Message::Type::Message,
+        ReleaseFn),
+      pPoolItem(pi)
+    { }
   };
 } // SsTask::Acquire
 

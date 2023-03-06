@@ -27,8 +27,8 @@ int ready_count = 0;
 
 /*static*/
 void
-SsTask::Acquire::Legacy::Data_t::ReleaseFn(DP::Message::Legacy::Data_t& data) {
-  auto& ssData = static_cast<SsTask::Acquire::Legacy::Data_t&>(data);
+SsTask::Acquire::Data_t::ReleaseFn(DP::Message::Data_t& data) {
+  auto& ssData = static_cast<SsTask::Acquire::Data_t&>(data);
   if (nullptr == ssData.pPoolItem) {
     throw invalid_argument("SsData::pPoolItem is null");
   }
@@ -79,10 +79,10 @@ SsTask_t::~SsTask_t() {
   }
 }
 
-bool SsTask_t::Initialize(const wchar_t* pszClass) {
+bool SsTask_t::Initialize(std::string_view msg_name) {
   LogInfo(L"SsTask_t::Initialize()");
 
-  if (!DP::Handler_t::Initialize(pszClass))
+  if (!DP::Handler_t::Initialize(msg_name))
     return false;
 
   //TODO: m_MessageId = GetPipelineManager().RegisterMessage(L"Screenshot");
@@ -151,7 +151,7 @@ HRESULT SsTask_t::InitSurfacePool(
   return S_OK;
 }
 
-#pragma warning(disable:4063) // enum in case statement
+//#pragma warning(disable:4063) // enum in case statement
 
 HRESULT SsTask_t::EventHandler(DP::Event::Data_t& Data){
   HRESULT hr = DP::Handler_t::EventHandler(Data);
@@ -317,7 +317,7 @@ void SsTask_t::SuspendAndFlush() {
   GetPipelineManager().Flush(
     // hacko. could be fun template. actually, just swap param order and use variadic args
     DP::Stage_t(intValue(DP::Stage_t::Acquire) | intValue(DP::Stage_t::Translate)),
-    GetClass().c_str());
+    GetName()); // TODO probably not doing what i think it's doing
 }
 
 DWORD WINAPI SsTask_t::ThreadFunc(void* pvParam){
@@ -397,6 +397,7 @@ void SsTask_t::Shutter() {
     ~AutoRelease_t() { pPoolItem->release(); }
   } AutoRelease(pPoolItem);
 
+  static bool last_hwnd_null = true;
   Rect_t rc;
   HWND hWnd = m_fnGetWindow(rc);
   if (hWnd) {
@@ -406,21 +407,22 @@ void SsTask_t::Shutter() {
       ready_count++;
       PostData(hWnd, pPoolItem);
     }
+    last_hwnd_null = false;
   } else {
-    //LogWarning(L"SSTask_t::Shutter(): nullptr hWnd");
+    if (!last_hwnd_null) {
+      LogWarning(L"SSTask_t::Shutter(): nullptr hWnd");
+    }
+    last_hwnd_null = true;
   }
 }
 
-pool<CSurface>::item_t*
-SsTask_t::
-GetAvailableSurface( void )
-{
+pool<CSurface>::item_t* SsTask_t::GetAvailableSurface( void ) {
     return m_Pool.get_unused();
 }
 
 /* static */
 bool SsTask_t::TakeSnapShot(HWND hWnd, const RECT& rc, CSurface* pSurface) {
-  ASSERT(nullptr != hWnd);
+  ASSERT(hWnd);
   if (hWnd) {
     if (SUCCEEDED(pSurface->BltWindow(hWnd, &rc))) {
       return true;

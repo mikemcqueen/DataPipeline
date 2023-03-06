@@ -62,7 +62,6 @@ namespace Broker::Buy::Translate {
     m_DcrSearchDropdown(Widget::Id::SearchDropdown),
     m_DcrPageNumber(Widget::Id::PageNumber),
     window_(window)
-    //  m_windowManager(windowManager)
   {
     m_DcrVector.push_back(&m_DcrTable);
     m_DcrVector.push_back(&m_DcrSearchEdit);
@@ -146,7 +145,6 @@ namespace Broker::Buy::Translate {
       m_TextTable.GetData().Dump(L"DcrBrokerBuy");
       //LogInfo(L"SeletecedRow(%d)", m_DcrTable.GetSelectedRow()); TODO
       Data_t* pData = new (pBuffer) Data_t(
-        GetClass().c_str(),
         m_TextTable,
         1, // m_DcrTable.GetSelectedRow(),
         pageNumber,

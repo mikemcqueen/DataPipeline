@@ -14,8 +14,7 @@
 #include "Log.h"
 
 DP::PipelineManager_t&
-GetPipelineManager()
-{
+GetPipelineManager() {
   return DP::PipelineManager_t::Get();
 }
 
@@ -29,7 +28,7 @@ namespace DP {
 
   bool PipelineManager_t::ProcessThreadData_t::operator()(
     ThreadQueue::State_t State,
-    Message::Legacy::Data_t* pData,
+    Message::Data_t* pData,
     PipelineManager_t* pPM) const
   {
     using namespace ThreadQueue;
@@ -76,12 +75,12 @@ namespace DP {
   }
 
   bool PipelineManager_t::CompareMessage_t::operator()(
-    const Message::Legacy::Data_t* pD1,
-    const Message::Legacy::Data_t* pD2) const
+    const Message::Data_t* pD1,
+    const Message::Data_t* pD2) const
   {
     if (0 == (intValue(pD1->Stage) & intValue(pD2->Stage)))
       return false;
-    if (0 != wcscmp(pD1->Class, pD2->Class))
+    if (0 != strcmp(pD1->msg_name.data(), pD2->msg_name.data()))
       return false;
     return true;
   }
@@ -100,12 +99,16 @@ namespace DP {
     m_MessageThread.Shutdown();
   }
 
-  size_t PipelineManager_t::StartAcquiring(const wchar_t* /*pszClass*/) {
+  size_t PipelineManager_t::StartAcquiring(
+    std::string_view, /* msg_name = {} */
+    bool on_demand /* = false */)
+  {
+    acquire_on_demand_ = on_demand;
     Event::StartAcquire_t eventStart;
     return SendEvent(eventStart);
   }
 
-  size_t PipelineManager_t::StopAcquiring(const wchar_t* /*pszClass*/) {
+  size_t PipelineManager_t::StopAcquiring(std::string_view /* msg_name = {} */) {
     Event::StopAcquire_t eventStop;
     return SendEvent(eventStop);
   }
@@ -157,20 +160,17 @@ namespace DP {
   // Assumes m_Handlers is locked on entry.
   //
   bool PipelineManager_t::GetNextHandler(
-    Stage_t                          Stage,
-    const wchar_t* pszClass,
+    Stage_t Stage,
+    std::string_view msg_name,
     HandlerVector_t::const_iterator& it) const
   {
     // TODO: revisit the entirety of this opaque logic
     while (m_Handlers.end() != it) {
-      if ((0 != (intValue(it->Stage) & intValue(Stage)))) // todo template func
-        // TODO: revisit this class nonsense when necessary. maybe
-        // consider adding an "application" or "domain" message::Data
-        // member in addition to "class".
-        // 
-        // && ((nullptr == pszClass) || (0 == it->pHandler->GetClass().compare(pszClass))))
+      if (((intValue(it->Stage) & intValue(Stage)) > 0))
+        // this is goofy and makes no sense. seed of an idea here. E_badimpl.
+        //(msg_name.empty() || (it->pHandler->GetName().compare(msg_name) == 0)))
       {
-        pszClass;
+        msg_name;
         return true;
       }
       ++it;
@@ -181,10 +181,11 @@ namespace DP {
   void PipelineManager_t::AddHandler(
     Stage_t    Stage,
     Handler_t& Handler,
-    const wchar_t* pszClass)
+    std::string_view msg_name)
   {
-    if (!Handler.Initialize(pszClass)) {
-      LogError(L"PM::AddHandler(%d): Handler.Initialize() failed", Stage);
+    if (!Handler.Initialize(msg_name)) {
+      LogError(L"PM::AddHandler(%d, %S): Handler.Initialize() failed", Stage,
+        msg_name);
       throw runtime_error("PM::AddHandler()");
     }
     HandlerData_t hd(Stage, &Handler);
@@ -196,7 +197,7 @@ namespace DP {
     Stage_t         stage,
     TransactionId_t transactionId,
     Handler_t& handler,
-    const wchar_t* displayName /*= nullptr*/)
+    std::string_view displayName /* = {} */)
   {
     if (handler.Initialize(nullptr)) {
       // NOTE: obviously this only allows for one handler per transaction Id,
@@ -205,9 +206,9 @@ namespace DP {
       CLock lock(m_csHandlers);
       TxIdHandlerMap_t::const_iterator itFind = m_txHandlerMap.find(transactionId);
       if (m_txHandlerMap.end() == itFind) {
-        wchar_t stringId[16];
-        if (nullptr == displayName) {
-          swprintf_s(stringId, L"TX-0%x", transactionId);
+        char stringId[16];
+        if (displayName.empty()) {
+          sprintf_s(stringId, "TX-0%x", transactionId);
           displayName = stringId;
         }
         HandlerData_t handlerData(stage, &handler, displayName);
@@ -242,10 +243,12 @@ namespace DP {
     size_t Total = 0;
     size_t Handled = 0;
     CLock lock(m_csHandlers);
-    const wchar_t* pClass = nullptr;
+#if 0
+    const char* pClass = nullptr;
     if (L'\0' != Data.Class[0]) {
       pClass = Data.Class;
     }
+#endif
     //using namespace DP::Message;
 #if 0
     if (SUCCEEDED(TrySendTransactionEvent(Data)))
@@ -253,8 +256,8 @@ namespace DP {
       return 1;
     }
 #endif
-    HandlerVector_t::const_iterator it = m_Handlers.begin();
-    while (GetNextHandler(Data.Stage, pClass, it)) {
+    auto it = m_Handlers.begin();
+    while (GetNextHandler(Data.Stage, Data.msg_name.data(), it)) {
       ++Total;
       HRESULT hr = it->pHandler->EventHandler(Data);
       // S_FALSE means not handled, no error
@@ -313,7 +316,7 @@ namespace DP {
     free(pMem);
   }
 
-  HRESULT PipelineManager_t::Callback(Message::Legacy::Data_t* pMessage) {
+  HRESULT PipelineManager_t::Callback(Message::Data_t* pMessage) {
     LogInfo(L"PipelineManager_t::Callback pMessage %S", typeid(*pMessage).name());
 
     if (nullptr == pMessage) {
@@ -321,6 +324,10 @@ namespace DP {
     }
     switch (pMessage->Stage) {
     case Stage_t::Acquire:
+      if (acquire_on_demand_) {
+        StopAcquiring();
+      }
+      // [[fallthrough]
     case Stage_t::Translate:
     case Stage_t::Interpret:
       LogInfo(L"PM::Callback (%s)", GetStageString(pMessage->Stage));
@@ -335,22 +342,23 @@ namespace DP {
 
   size_t PipelineManager_t::Flush(
     Stage_t Stage,
-    const wchar_t* pszClass)
+    std::string_view msg_name)
   {
     // TODO:
     // if (!SameThread()) SignalObjectAndWait(hFlush, hFlushNotify);
-    Message::Legacy::Data_t Data;
+    Message::Data_t Data;
     memset(&Data, 0, sizeof(Data));
     Data.Stage = Stage;
-    wcscpy_s(Data.Class, _countof(Data.Class), pszClass);
+    strcpy_s(Data.msg_name.data(), Data.msg_name.size(), msg_name.data());
     size_t RemovedCount = m_MessageThread.RemoveAll(&Data);
     if (0 < RemovedCount) {
-      LogInfo(L"PM::Flush(%d, '%ls'): Removed %d item(s)", Stage, pszClass, RemovedCount);
+      LogInfo(L"PM::Flush(%d, '%S'): Removed %d item(s)", Stage,
+        Data.msg_name.data(), RemovedCount);
     }
     return RemovedCount;
   }
 
-  void PipelineManager_t::Dispatch(Message::Legacy::Data_t* pMessage) {
+  void PipelineManager_t::Dispatch(Message::Data_t* pMessage) {
     Stage_t NextStage = Stage_t::None;
     switch (pMessage->Stage) {
     case Stage_t::Acquire:     NextStage = Stage_t::Translate; break;
@@ -371,8 +379,8 @@ namespace DP {
     size_t Handled = 0;
     {
       CLock lock(m_csHandlers);
-      HandlerVector_t::const_iterator it = m_Handlers.begin();
-      while (GetNextHandler(NextStage, pMessage->Class, it)) {
+      auto it = m_Handlers.cbegin();
+      while (GetNextHandler(NextStage, pMessage->msg_name.data(), it)) {
         // at this point, how do we know that TiText is the required 
         // output type? a handler can support multiple? we don't just 
         // do them all, we need to know if there are any Analyze/Compare 
@@ -402,7 +410,7 @@ namespace DP {
   }
 
   HRESULT PipelineManager_t::TrySendTransactionMessage(
-    Message::Legacy::Data_t* pMessage,
+    Message::Data_t* pMessage,
     Stage_t          stage)
   {
     HRESULT hr = E_FAIL;
@@ -431,7 +439,7 @@ namespace DP {
   int release = 0;
   int releaseFn = 0;
 
-  void PipelineManager_t::Release(DP::Message::Legacy::Data_t* pData) {
+  void PipelineManager_t::Release(DP::Message::Data_t* pData) {
     release++;
     if (nullptr != pData->ReleaseFn) {
       releaseFn++;
@@ -487,11 +495,9 @@ namespace DP {
     }
   }
 
-  const wchar_t* PipelineManager_t::GetTransactionName(TransactionId_t txId) const {
-    static const wchar_t unknownName[] = L"[Unknown]";
-    TxIdHandlerMap_t::const_iterator it = m_txHandlerMap.find(txId);
-    return (m_txHandlerMap.end() != it) ? it->second.name.c_str()
-      : unknownName;
+  const char* PipelineManager_t::GetTransactionName(TransactionId_t txId) const {
+    static const char unknownName[] = "[Unknown]";
+    auto it = m_txHandlerMap.find(txId);
+    return (it != m_txHandlerMap.end()) ? it->second.name.c_str() : unknownName;
   }
-
 } // namespace DP

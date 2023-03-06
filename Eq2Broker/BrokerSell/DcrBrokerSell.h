@@ -26,13 +26,13 @@
 #include "dp_msg.h"
 
 namespace Broker::Sell::Translate {
-  inline constexpr auto kMsgName{ "msg::broker_sell"sv };
-
   struct Data_t : dp::msg::Data_t {
+    Data_t(int i) : dp::msg::Data_t(kMsgName) { i; } // TEMP
+
     Data_t(const Table::RowVector rws, int sel_row,
       Ui::Scroll::Position_t vs_pos) :
       dp::msg::Data_t(kMsgName),
-        rows(std::move(rws)),
+      rows(std::move(rws)),
         selected_row(sel_row),
         vscroll_pos(vs_pos)
       {}
@@ -49,22 +49,21 @@ namespace Broker::Sell::Translate {
   }
 
   namespace Legacy {
-    struct Data_t : DP::Message::Legacy::Data_t {
+    struct Data_t : DP::Message::Data_t {
       typedef Sell::Text_t Text_t;
       Text_t                 Text;
       size_t                 selectedRow;
       Ui::Scroll::Position_t VScrollPos;
 
       Data_t(
-        const wchar_t* pClass,
         const TextTable_t& TextTable,
         size_t           initSelectedRow,
         Ui::Scroll::Position_t InitVScrollPos) :
-        DP::Message::Legacy::Data_t(
+        DP::Message::Data_t(
           DP::Stage_t::Translate,
           Message::Id::Sell,
           sizeof(Data_t),
-          pClass),
+          kMsgName),
         Text(TextTable.GetData()),
         selectedRow(initSelectedRow),
         VScrollPos(InitVScrollPos)

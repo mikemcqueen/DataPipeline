@@ -33,7 +33,7 @@ namespace Broker::Sell::Interpret {
     Handler_t() = default;
 
     // DP::Handler_t virtual:
-    HRESULT MessageHandler(const DP::Message::Legacy::Data_t* pData) override;
+    HRESULT MessageHandler(const DP::Message::Data_t* pData) override;
     HRESULT ExecuteTransaction(DP::Transaction::Data_t& Data) override;
 
     static bool IsScrolledToTop(const Translate::Legacy::Data_t& Message);

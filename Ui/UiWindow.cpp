@@ -14,6 +14,7 @@
 #include "DdUtil.h"
 #include "Log.h"
 #include "Macros.h"
+#include "dp_msg.h"
 
 namespace Ui::Window {
 

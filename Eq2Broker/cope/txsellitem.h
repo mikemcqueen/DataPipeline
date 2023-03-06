@@ -7,7 +7,7 @@
 #include "DcrBrokerSell.h"
 
 namespace Broker::Sell::txn {
-  inline constexpr auto kTxnName{ "txn::sell_item"sv };
+  inline constexpr auto kTxnName{ "txn::sell_item" };
 
   struct state_t {
     std::string item_name;
@@ -20,6 +20,6 @@ namespace Broker::Sell::txn {
 
   inline auto validate_start(const dp::Msg_t& txn) {
     return dp::txn::validate_start<start_t, Translate::Data_t>(txn, kTxnName,
-      Translate::kMsgName);
+      kMsgName);
   }
 } // namespace Broker::Sell::txn

@@ -27,7 +27,7 @@ using DcrVector_t = std::vector<DCR*>;
 
 namespace DcrWindow {
 
-using AcquireData_t = SsWindow::Acquire::Legacy::Data_t;
+using AcquireData_t = SsWindow::Acquire::Data_t;
 
 namespace Translate {
   class AbstractHandler_t : public DP::Handler_t {
@@ -69,13 +69,13 @@ namespace Translate {
     // DP::Handler_t virtual:
     //
 
-    bool Initialize(const wchar_t* pClass) override {
-      return DP::Handler_t::Initialize(pClass)
+    bool Initialize(std::string_view name) override {
+      return DP::Handler_t::Initialize(name)
         && m_TranslatePolicy.Initialize()
         && m_ValidatePolicy.Initialize();
     }
 
-    HRESULT MessageHandler(const DP::Message::Legacy::Data_t* pMessage) override {
+    HRESULT MessageHandler(const DP::Message::Data_t* pMessage) override {
       LogInfo(L"Dcr%s::MessageHandler()", m_name.c_str());
       if (Validate(pMessage, m_WindowId)) {
         auto& ssData = static_cast<const AcquireData_t&>(*pMessage);
@@ -95,19 +95,19 @@ namespace Translate {
   private:
 
     bool Validate(
-      const DP::Message::Legacy::Data_t* pMessage,
+      const DP::Message::Data_t* pMessage,
       Ui::WindowId_t       WindowId) const
     {
       Ui::WindowId_t ssWindowId = Ui::Window::Id::Unknown;
-      if (0 == wcscmp(pMessage->Class, L"SsWindow")) {
+      if (0 == strcmp(pMessage->msg_name.data(), "SsWindow")) {
         auto& ssData = static_cast<const AcquireData_t&>(*pMessage);
         ssWindowId = ssData.WindowId;
         if (ssData.WindowId == WindowId) {
           return true;
         }
       }
-      LogError(L"validate failed, class: %s, windowId actual(%d) expected(%d)",
-        pMessage->Class, ssWindowId, WindowId);
+      LogError(L"validate failed, msg_name: %S, windowId actual(%d) expected(%d)",
+        pMessage->msg_name.data(), ssWindowId, WindowId);
       return false;
     }
 

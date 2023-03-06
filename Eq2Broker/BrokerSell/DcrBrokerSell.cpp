@@ -63,7 +63,6 @@ namespace Broker::Sell::Translate {
     m_DcrListItem(
       Widget::Id::ListItemButton),
     window_(window)
-//    m_windowManager(Manager)
   {
     m_DcrVector.push_back(&m_DcrTable);
     m_DcrVector.push_back(&m_DcrSetPrice);
@@ -110,11 +109,9 @@ namespace Broker::Sell::Translate {
       m_TextTable.GetData().Dump(L"DcrBrokerSell");
       LogInfo(L"SeletecedRow(%d)", m_DcrTable.GetSelectedRow().value_or(-1));
       Data_t* pData = new (pBuffer) Data_t(
-        GetClass().c_str(),
         m_TextTable,
         m_DcrTable.GetSelectedRow().value_or(-1),
         Ui::Scroll::Position::Unknown); // TODO:
-        // GetManager().GetWindow().GetScrollPosition(Ui::Scroll::Bar::Vertical));
       GetPipelineManager().Callback(pData);
     } else {
       LogError(L"DcrBrokerSell::PostData(): Alloc callback data failed.");

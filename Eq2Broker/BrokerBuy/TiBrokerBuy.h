@@ -27,8 +27,8 @@ namespace Broker::Buy::Interpret {
     explicit Handler_t(const Window_t& window); //  Window::ManagerBase_t& windowManager);
 
     // DP::Handler_t virtual:
-    bool Initialize(const wchar_t* pszClass) override;
-    HRESULT MessageHandler(const DP::Message::Legacy::Data_t* pData) override;
+    bool Initialize(std::string_view name) override;
+    HRESULT MessageHandler(const DP::Message::Data_t* pData) override;
 
   private:
 #if 0
