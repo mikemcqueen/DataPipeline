@@ -227,7 +227,7 @@ void Eq2Broker_t::LoadAndSendTestImage(const wstring& testImagePath) {
   pPool->reserve(2);
 
   PostSurfaceItem(pPool, testImagePath);
-  //  PostSurfaceItem(pPool, testImagePath);
+  PostSurfaceItem(pPool, testImagePath);
 }
 
 void Eq2Broker_t::PostSurfaceItem(pool<CSurface>* pPool, std::wstring_view testImagePath) {

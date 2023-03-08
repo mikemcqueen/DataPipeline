@@ -10,7 +10,7 @@ namespace Broker::SetPrice::txn {
   using dp::txn::handler_t;
   using promise_type = handler_t::promise_type;
 
-  auto validate_price(const dp::Msg_t& msg, int price) {
+  auto validate_price(const dp::msg_t& msg, int price) {
     using namespace Translate;
     result_code rc = msg::validate(msg);
     if (rc == result_code::success) {
@@ -59,17 +59,18 @@ namespace Broker::SetPrice::txn {
     };
     state_t state;
 
-    for (auto& promise = co_await handler_t::awaitable{ kTxnName }; true;
-      co_await dp::txn::complete(promise, rc))
-    {
+    while (true) {
+      auto& promise = co_await dp::txn::receive_txn_awaitable{ kTxnName, state };
+#if 0
       auto& txn = promise.in();
-      if (error(validate_start(txn))) continue;
+      if (error(dp::txn::validate_start(txn, kTxnName))) continue;
       state = start_t::state_from(txn);
       const auto& msg = start_t::msg_from(txn).as<Translate::Data_t>();
+#endif
       // TODO: I don't like this. validation errors should always continue?
       // can't we access the price? have it returned via &price param?
       // result_t, succeeded, s_false
-      if (error(validate_price(msg, state.price))) {
+      if (error(validate_price(promise, state.price))) {
         if (rc == result_code::unexpected_error) continue;
         co_yield enter_price_text(state.price);
         if (error(validate_price(promise, state.price))) continue;
@@ -77,6 +78,8 @@ namespace Broker::SetPrice::txn {
 
       co_yield click_ok_button();
       error(validate_complete(promise, state.prev_msg_name));
+
+      dp::txn::complete(promise, rc);
     }
   }
 } // namespace Broker::SetPrice::Txn

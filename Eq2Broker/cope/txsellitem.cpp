@@ -3,13 +3,12 @@
 #include "txsellitem.h"
 #include "txsetprice.h"
 #include "ui_msg.h"
-//#include "Eq2UiIds.h"
 #include "BrokerSellTypes.h"
 
 namespace Broker::Sell::txn {
   using namespace std::literals;
 
-  using dp::Msg_t;
+  using dp::msg_t;
   using dp::result_code;
   using dp::txn::handler_t;
   using promise_type = handler_t::promise_type;
@@ -19,7 +18,7 @@ namespace Broker::Sell::txn {
   {
     using Translate::Data_t;
     const Data_t* msg{ nullptr };
-    if (dp::is_start_txn(promise.in())) {
+    if (dp::msg::is_start_txn(promise.in())) {
       const auto& txn = promise.in().as<start_t>();
       msg = &start_t::msg_from(txn).as<Data_t>();
       //msg = dynamic_cast<const msg::data_t*>(&txn::start_t::msg_from(txn));
@@ -114,7 +113,7 @@ namespace Broker::Sell::txn {
     // with window stuff here. we could dynamic_cast current window to 
     // TableWindow, and call GetRowRect (or ClickRow directly). click_table_row maybe
     row_index;
-    return std::make_unique<Msg_t>(ui::msg::name::click_table_row);
+    return std::make_unique<msg_t>(ui::msg::name::click_table_row);
   }
 
   auto click_setprice_button() {
@@ -145,23 +144,23 @@ namespace Broker::Sell::txn {
     dp::txn::handler_t setprice_handler{ SetPrice::txn::handler() };
     state_t state;
 
-    for (auto& promise = co_await handler_t::awaitable{ kTxnName }; true;
-      co_await dp::txn::complete(promise, rc))
-    {
-      dp::Msg_t& txn = promise.in();
-      cout << "1. txn: " << txn.msg_name << endl;
-      if (error(validate_start(txn))) continue;
-      cout << "2. get state" << endl;
-      state = start_t::state_from(txn);
-      cout << "3. get msg " << endl;
-      const auto& msg = start_t::msg_from(txn).as<Translate::Data_t>();
-      cout << "4. loop" << endl;
+    // TODO: helper func for this type, dp::txn::receive() ?
+    while (true) {
+      auto& promise = co_await dp::txn::receive_txn_awaitable{ kTxnName, state };
 
-      for (auto opt_row = get_candidate_row(msg, state);
+#if 1
+      // TODO: better:
+      while (rc != result_code::unexpected_error) { // TODO: e_abort
+        auto opt_row_index = get_candidate_row(promise, state);
+        if (!opt_row_index.has_value()) break;
+        auto row_index = opt_row_index.value();
+#else
+      for (auto opt_row = get_candidate_row(promise, state));
         (rc != result_code::unexpected_error) && opt_row.has_value();
         opt_row = get_candidate_row(promise, state))
       {
         auto row_index = opt_row.value();
+#endif
         const Table::RowData_t* row;
         if (error(get_row(promise, row_index, &row))) continue;
 
@@ -186,6 +185,7 @@ namespace Broker::Sell::txn {
             { .selected{true}, .price{true}, .listed{true} }))) continue;
         }
       }
+      dp::txn::complete(promise, rc);
     }
   }
 } // namespace Broker::Sell:txn

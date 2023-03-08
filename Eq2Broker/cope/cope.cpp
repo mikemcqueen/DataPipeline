@@ -20,10 +20,10 @@
 using namespace std::literals;
 
 auto screenshot() {
-  return std::make_unique<dp::Msg_t>("dp::msg::screenshot");
+  return std::make_unique<dp::msg_t>("dp::msg::screenshot");
 }
 
-dp::MsgPtr_t translate(dp::MsgPtr_t msg_ptr, std::string& out_msg,
+dp::msg_ptr_t translate(dp::msg_ptr_t msg_ptr, std::string& out_msg,
   std::string& out_extra)
 {
   msg_ptr;
@@ -130,7 +130,7 @@ dp::MsgPtr_t translate(dp::MsgPtr_t msg_ptr, std::string& out_msg,
   if (index == rows_page_1.size()) {
     if (final_message_sent) {
       final_message_sent = false;
-      return std::move(std::make_unique<dp::Msg_t>("done"));
+      return std::move(std::make_unique<dp::msg_t>("done"));
     } else {
       final_message_sent = true;
     }
@@ -145,7 +145,7 @@ dp::MsgPtr_t translate(dp::MsgPtr_t msg_ptr, std::string& out_msg,
 }
 
 namespace dp {
-  result_code dispatch(const Msg_t& msg) {
+  result_code dispatch(const msg_t& msg) {
     result_code rc{ result_code::success };
     if (!msg.msg_name.starts_with("ui::msg")) {
       LogInfo(L"dispatch(): unsupported message name, %S", msg.msg_name.c_str());
@@ -159,7 +159,7 @@ namespace dp {
 }
 
 namespace cope {
-  dp::MsgPtr_t start_txn_sellitem(dp::MsgPtr_t msg_ptr) {
+  dp::msg_ptr_t start_txn_sellitem(dp::msg_ptr_t msg_ptr) {
     using namespace Broker::Sell;
     LogInfo(L"starting txn::sell_item");
     auto state = std::make_unique<txn::state_t>("magic beans"s, 2);
@@ -172,7 +172,7 @@ namespace cope {
 
     dp::txn::handler_t tx_sell{ Broker::Sell::txn::handler() };
     bool tx_active = false;
-    dp::MsgPtr_t out{};
+    dp::msg_ptr_t out{};
 
     auto start = high_resolution_clock::now();
     int i{};
@@ -181,7 +181,7 @@ namespace cope {
       std::string extra;
 
       window;
-      dp::MsgPtr_t out_ptr = std::move(translate(screenshot(),
+      dp::msg_ptr_t out_ptr = std::move(translate(screenshot(),
         expected_out_msg_name, extra));
       if (out_ptr->msg_name == "done") break;
       if (!tx_active) {

@@ -16,7 +16,7 @@
 #include "ui_msg.h"
 
 namespace dp {
-  result_code Dispatch(const Msg_t& msg) {
+  result_code Dispatch(const msg_t& msg) {
     result_code rc{ result_code::success };
     if (!msg.msg_name.starts_with("ui::msg")) {
       LogInfo(L"dispatch(): unsupported message name, %S", msg.msg_name.c_str());
@@ -49,7 +49,7 @@ namespace Broker::Transaction::SellItems {
     if (started_ || strcmp(event.msg_name.data(), Broker::Sell::txn::kTxnName) != 0) {
       return S_FALSE;
     }
-    ++started_;
+    started_ = true;
     return S_OK;
   }
 
@@ -58,7 +58,7 @@ namespace Broker::Transaction::SellItems {
     if (strcmp(event.msg_name.data(), Broker::Sell::txn::kTxnName) != 0) {
       return S_FALSE;
     }
-    started_ = 0;
+    started_ = false;
     return S_OK;
   }
 
@@ -70,30 +70,36 @@ namespace Broker::Transaction::SellItems {
     }
     using Translate::Legacy::Data_t;
     const Data_t& msg = reinterpret_cast<const Data_t&>(*pMessage);
-    if (started_ == 1) {
-      ++started_;
-      return StartTxn(Transform(msg));
+    if (!tx_sellitems_.txn_started()) {
+      return StartTxn(Transform(msg), CreateTxnState());
     }
     return SendMsgToTxn(Transform(msg));
   }
 
-  dp::MsgPtr_t Handler_t::Transform(
+  dp::msg_ptr_t Handler_t::Transform(
     const Broker::Sell::Translate::Legacy::Data_t& msg) const {
     msg;
     return std::make_unique<Broker::Sell::Translate::Data_t>(1);
   }
 
-  HRESULT Handler_t::StartTxn(dp::MsgPtr_t msg_ptr) {
+  // hack. figure out txn vs. Transaction namespace issue
+  using state_t = Broker::Sell::txn::state_t;
+  using start_t = dp::txn::start_t<state_t>;
+
+  start_t::state_ptr_t Handler_t::CreateTxnState() {
+    return std::make_unique<state_t>("magic beans"s, 2);
+  }
+
+  HRESULT Handler_t::StartTxn(dp::msg_ptr_t msg_ptr, start_t::state_ptr_t state_ptr) {
     using namespace Broker::Sell;
     LogInfo(L"starting txn::sell_item");
-    auto state = std::make_unique<txn::state_t>("magic beans"s, 2);
     auto start_txn_msg = dp::txn::make_start_txn<txn::state_t>(txn::kTxnName,
-      std::move(msg_ptr), std::move(state));
+      std::move(msg_ptr), std::move(state_ptr));
     return SendMsgToTxn(std::move(start_txn_msg));
   }
 
-  HRESULT Handler_t::SendMsgToTxn(dp::MsgPtr_t msg_ptr) {
-    dp::MsgPtr_t out = tx_sellitems_.send_value(std::move(msg_ptr));
+  HRESULT Handler_t::SendMsgToTxn(dp::msg_ptr_t msg_ptr) {
+    dp::msg_ptr_t out = tx_sellitems_.send_value(std::move(msg_ptr));
     if (out) {
       dp::Dispatch(*out.get());
     }

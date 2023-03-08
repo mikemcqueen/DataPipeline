@@ -15,10 +15,4 @@ namespace Broker::SetPrice::txn {
   using start_t = dp::txn::start_t<state_t>;
 
   auto handler() -> dp::txn::handler_t;
-
-  inline auto validate_start(const dp::Msg_t& txn) {
-    using namespace Broker::SetPrice;
-    return dp::txn::validate_start<start_t, Translate::Data_t>(txn, kTxnName,
-      kMsgName);
-  }
 } // namespace Broker::SetPrice::txn

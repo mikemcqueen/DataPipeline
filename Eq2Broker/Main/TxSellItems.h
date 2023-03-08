@@ -17,6 +17,7 @@
 #include "DpEvent.h"
 #include "BrokerSellTypes.h"
 #include "txsellitem.h"
+#include "dp.h"
 
 class Eq2Broker_t;
 
@@ -31,6 +32,10 @@ namespace Broker::Transaction::SellItems {
   };
 
   class Handler_t : public DP::Handler_t {
+    // hack. figure out txn vs. Transaction namespace issue
+    using state_t = Broker::Sell::txn::state_t;
+    using start_t = dp::txn::start_t<state_t>;
+
   public:
     Handler_t(); //  Eq2Broker_t& broker);
 //    Handler_t() = delete;
@@ -42,12 +47,13 @@ namespace Broker::Transaction::SellItems {
   private:
     HRESULT Start(const DP::Event::Data_t& event);
     HRESULT Stop(const DP::Event::Data_t & event);
-    HRESULT StartTxn(dp::MsgPtr_t msg_ptr);
-    HRESULT SendMsgToTxn(dp::MsgPtr_t msg_ptr);
-    dp::MsgPtr_t Transform(const Broker::Sell::Translate::Legacy::Data_t& msg) const;
+    start_t::state_ptr_t CreateTxnState();
+    HRESULT StartTxn(dp::msg_ptr_t msg_ptr, start_t::state_ptr_t state_ptr);
+    HRESULT SendMsgToTxn(dp::msg_ptr_t msg_ptr);
+    dp::msg_ptr_t Transform(const Broker::Sell::Translate::Legacy::Data_t& msg) const;
 
     dp::txn::handler_t tx_sellitems_;
-    int started_ = 0;
+    bool started_ = false;
   };
 
 } // namespace Broker::Transaction::SellItems

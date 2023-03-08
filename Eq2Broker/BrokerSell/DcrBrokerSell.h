@@ -43,7 +43,7 @@ namespace Broker::Sell::Translate {
   };
 
   namespace msg {
-    inline auto validate(const dp::Msg_t& msg) {
+    inline auto validate(const dp::msg_t& msg) {
       return dp::msg::validate<Data_t>(msg, kMsgName);
     }
   }

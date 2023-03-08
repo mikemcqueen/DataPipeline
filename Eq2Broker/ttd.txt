@@ -1,4 +1,34 @@
+* Txn_complete
+* The question is, why do I even need a txn::complete_t wrapper for msg_ptr_t
+  if all of the processing is happening on the awaitable side? shouldn't just
+  using complete_txn_awaitable be enough, and just mark txn as !started there?
+* The purpose I am currently using txn::complete_t for is to contain a result_code
+  on error. Which requires the client to check the out() msg type, which is what
+  I was trying to avoid in the first place. And seems somewhat unnecessary if I
+  can just shove an	'rc' into the promise.
 
+
+
+
+
+Still some work left to make it work with live client:
+* Transform method primarily.
+* Then I also want to change all kMsg / kTxn constants to char*.
+* Figure out how to get dp::Dispatch gain aware of ui::msg without
+  bringing in Ui as a dependency. SendEvent? PostMessage + Ui::Handler_t?
+  * SendEvent + UI::Handler_t. Maybe I should add a special "Event" stage
+  that gets checked first for SendEvent calls.
+* Figure out some nice clean way for the handler promise object
+  to know that a "transaction has started." This has two benefits
+  1) Simplifies started_ state to a boolean in TxSellItems.
+  2) Simplifies all txn handlers to not have to include logic
+     for "have we started yet?" If I can cram it in an awaitable,
+	 or something. 
+	 Maybe there needs to be an outer invisible "idle state" "handler"
+	 coro function that auto-activates, and waits for a txn_start,
+	 or something?
+	
+	
 So here's what I'm thinking.  Take TxBuySellItems and call it TxHandler.
 Insert handler as Interpreter.  No need to insert buy/sell/setprice interpreters (yet)
 as they don't do anything.
@@ -11,7 +41,8 @@ The	goal:
     ** Can't I just call SendEvent and have an EventHandler on TxnHaandler
   * TxHandler (eventually, maybe, TransactionManager) can own the tx_sell coroutine.
   * if tx_sell is not active, "activate" it whatever that means. set a flag basically.
-  * StartAcquiring(false). Auto-Stops after first acquire data.
+  * StartAcquiring(true). Auto-Stops after first acquire data. Set a flag to discard
+    any subsequent events?
   * in MessageHandler, if tx is active, send_event to tx_sell.
     * NO: But! we want this to run on tx_sells thread. Or, the "current txn" thread.
 	* NO: For now, there is only one, so can probably just create one in TxHandler.
@@ -29,9 +60,7 @@ The	goal:
 	transaction PoC work, then I can start thinking about how that interops with
 	threads.
   * So, after MessageHandler handles:
-    * if txn_complete message, "disable" tx_sell. May need to call TM.txnComplete().
-      * I really don't think I want to use TM though. it fucks with the processing.
-	  ** Can't I just call SendEvent and have an EventHandler on TxnHaandler
+    * if txn_complete message, "disable" tx_sell. 
 	* else, call StartAcquiring(true) again
   * I may need/want to write some transformer from Legacy to New msg data,
     For BrokerSell and BrokerSetPrice.

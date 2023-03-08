@@ -16,7 +16,7 @@ namespace ui::msg {
 
   auto enabled() { return s_enabled; }
 
-  result_code validate(const dp::Msg_t& msg) {
+  result_code validate(const dp::msg_t& msg) {
     msg;
     return result_code::success;
   }
@@ -121,7 +121,7 @@ namespace ui::msg {
 */
   }
 
-  auto dispatch(const dp::Msg_t& msg) -> result_code {
+  auto dispatch(const dp::msg_t& msg) -> result_code {
     result_code rc = result_code::success;
     if (msg.msg_name == name::click_point) {
       rc = click_point(msg.as<click::data_t>());
