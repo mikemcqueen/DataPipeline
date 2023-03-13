@@ -22,7 +22,8 @@ namespace DP {
     typedef unsigned Flag_t;
 
     namespace Flag {
-      constexpr unsigned Synchronous = 0x1;
+      constexpr auto Synchronous = 0x1u;
+      constexpr auto Flush = 0x2u;
     }
 
     template<int Id>
@@ -58,8 +59,8 @@ namespace DP {
     };
 
     struct StopAcquire_t : Data_t {
-      StopAcquire_t() : Data_t(Stage_t::Acquire, Event::Id::Stop,
-        sizeof(StopAcquire_t)) {}
+      StopAcquire_t(Flag_t flags = 0) : Data_t(Stage_t::Acquire, Event::Id::Stop,
+        sizeof(StopAcquire_t), flags) {}
     };
   }// Event
 

@@ -99,7 +99,7 @@ private:
 
   bool Start();
 
-  void Stop();
+  void Stop(DP::Event::Flag_t flags);
 
   void SetTestSurface(wchar_t* pszPath);
 

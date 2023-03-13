@@ -113,7 +113,7 @@ namespace Broker::Transaction::SellItems {
   }
 
   HRESULT Handler_t::SendMsgToTxn(dp::msg_ptr_t msg_ptr) {
-    DP::Event::StopAcquire_t stop;
+    DP::Event::StopAcquire_t stop(DP::Event::Flag::Flush);
     GetPipelineManager().SendEvent(stop);
     dp::msg_ptr_t out = tx_sellitems_.send_value(std::move(msg_ptr));
     if (out) {

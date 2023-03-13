@@ -158,7 +158,7 @@ HRESULT SsTask_t::EventHandler(DP::Event::Data_t& Data){
 
   switch (Data.Id) {
   case DP::Event::Id::Start: Start(); break;
-  case DP::Event::Id::Stop:  Stop();  break;
+  case DP::Event::Id::Stop:  Stop(Data.Flags);  break;
   default: return S_FALSE;
   }
   return S_OK;
@@ -170,10 +170,15 @@ bool SsTask_t::Start() {
     return true;
 }
 
-void SsTask_t::Stop()
+void SsTask_t::Stop(DP::Event::Flag_t flags)
 {
-    LogInfo(L"SsTask_t::Stop()");
-    Suspend();
+    LogInfo(L"SsTask_t::Stop(%d)", flags);
+    if (flags & DP::Event::Flag::Flush) {
+      SuspendAndFlush();
+    }
+    else {
+      Suspend();
+    }
 }
 
 void SsTask_t::Suspend() {

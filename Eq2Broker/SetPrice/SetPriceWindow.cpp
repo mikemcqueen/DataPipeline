@@ -33,13 +33,7 @@ namespace Broker::SetPrice {
     LoadSurfaces();
   }
 
-/*
-  bool Window_t::GetWidgetRect(Ui::WidgetId_t  WidgetId, Rect_t* pRect) const {
-    //return Ui::Window_t::GetWidgetRect(WidgetId, MainWindow_t::GetPopupRect(), WidgetRect);
-  }
-  */
-  void Window_t::LoadSurfaces()
-  {
+  void Window_t::LoadSurfaces() {
     extern CDisplay* g_pDisplay;
     HRESULT hr = g_pDisplay->CreateSurfaceFromBitmap(&origin_surface_,
       MAKEINTRESOURCE(IDB_SETPRICE_OKBUTTON));

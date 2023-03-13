@@ -42,19 +42,13 @@ namespace Ui
 
     template<int Size>
     static bool SendChars(const std::array<char, Size>& text) {
-      text;
-#if 0
-// old pre-array code
-      for (int index = 0; L'\0' != pText[index]; ++index)
-      {
-        if (!SendChar(pText[index]))
-        {
-          LogError(L"Input_t::SendChars(): Could not send string (%ls) char (%c)",
-            pText, pText[index]);
+      for (auto it = text.cbegin(); (it != text.cend()) && *it; ++it) {
+        if (!SendChar(*it)) {
+          LogError(L"Input_t::SendChars(): Could not send string (%S) char (%c)",
+            text.data(), *it);
           return false;
         }
       }
-#endif
       return true;
     }
 

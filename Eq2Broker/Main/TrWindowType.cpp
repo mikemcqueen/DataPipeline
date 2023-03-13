@@ -89,8 +89,9 @@ namespace Broker::Translate {
     if (windowId != Id::Unknown) {
       // Found topmost window. Now check for children.
       POINT pt{};
-      windowId = main_window_.GetWindow(windowId).GetWindowId(surface, &pt);
-      assert(windowId != Id::Unknown); // coz i want to know.
+      auto childWindowId = main_window_.GetWindow(windowId).GetWindowId(surface, &pt);
+      assert(childWindowId != Id::Unknown); // coz i want to know.
+      windowId = childWindowId;
     }
     return windowId;
   }

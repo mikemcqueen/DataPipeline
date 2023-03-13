@@ -17,11 +17,6 @@ namespace Broker::SetPrice {
   public:
     explicit Window_t(const Ui::Window_t& parent);
 
-    // Ui::Window_t virtual:
-/*    bool GetWidgetRect(
-      Ui::WidgetId_t WidgetId,
-      Rect_t* WidgetRect) const override;
-*/
     // UI::Window_t virtual:
     const CSurface* GetOriginSurface() const override { return &origin_surface_; }
     void GetOriginSearchRect(const CSurface& surface, Rect_t& rect) const override;
