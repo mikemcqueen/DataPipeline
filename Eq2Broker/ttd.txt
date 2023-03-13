@@ -1,33 +1,22 @@
-* Txn_complete
-* The question is, why do I even need a txn::complete_t wrapper for msg_ptr_t
-  if all of the processing is happening on the awaitable side? shouldn't just
-  using complete_txn_awaitable be enough, and just mark txn as !started there?
-* The purpose I am currently using txn::complete_t for is to contain a result_code
-  on error. Which requires the client to check the out() msg type, which is what
-  I was trying to avoid in the first place. And seems somewhat unnecessary if I
-  can just shove an	'rc' into the promise.
+
+TODO: event_sceenshot vs. event_start/stop
 
 
-
-
+* SSTask::GetEventData exception kinda stops things from running with current start/stop mechanism.
 
 Still some work left to make it work with live client:
 * Transform method primarily.
-* Then I also want to change all kMsg / kTxn constants to char*.
 * Figure out how to get dp::Dispatch gain aware of ui::msg without
   bringing in Ui as a dependency. SendEvent? PostMessage + Ui::Handler_t?
   * SendEvent + UI::Handler_t. Maybe I should add a special "Event" stage
   that gets checked first for SendEvent calls.
-* Figure out some nice clean way for the handler promise object
-  to know that a "transaction has started." This has two benefits
-  1) Simplifies started_ state to a boolean in TxSellItems.
-  2) Simplifies all txn handlers to not have to include logic
-     for "have we started yet?" If I can cram it in an awaitable,
-	 or something. 
-	 Maybe there needs to be an outer invisible "idle state" "handler"
-	 coro function that auto-activates, and waits for a txn_start,
-	 or something?
-	
+* Just leverage SendEvent + SsWindow::EventHandler for now.  
+* I can create a "ui::msg::dp_event_wrapper" that has a unique_ptr to a
+  DP::Event::Data_t.
+* I'd like to add some flags to that event object like "synchronous", 
+  (maybe that's enough) and possible "dont_suspend_and_flush".  I really
+  don't think that async + suspend + flush is necessary in this use case.
+
 	
 So here's what I'm thinking.  Take TxBuySellItems and call it TxHandler.
 Insert handler as Interpreter.  No need to insert buy/sell/setprice interpreters (yet)

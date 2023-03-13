@@ -30,7 +30,9 @@ class CSurface;
 struct Rect_t;
 
 class SsTask_t : public DP::Handler_t {
-  inline static const size_t DefaultDelayMs = 300;
+  inline static constexpr auto kHandlerName = "SsTask";
+
+  inline static const size_t DefaultDelayMs = 1000;
   inline static const size_t DefaultPoolSize = 3;
 
   inline static const size_t MaxEventDataSize = 1024;
@@ -157,9 +159,9 @@ private:
 
 namespace SsTask::Acquire {
 #if 0
-  struct Data_t : dp::msg::Data_t {
-    Data_t(std::string_view msg_name, CSurface* sfc) :
-      dp::msg::Data_t(msg_name), surface(sfc)
+  struct data_t : dp::msg::data_t {
+    data_t(std::string_view msg_name, CSurface* sfc) :
+      dp::msg::data_t(msg_name), surface(sfc)
     {}
 
     CSurface* surface;

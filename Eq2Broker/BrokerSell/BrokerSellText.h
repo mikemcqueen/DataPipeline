@@ -14,7 +14,7 @@
 #define Include_BROKERSELLTEXT_H
 
 #include "BrokerSellTypes.h"
-#include "Price_t.h"
+//#include "Price_t.h"
 
 namespace Broker::Sell {
   using TextBase_t = NewTextTableData_t<Table::RowCount, Table::CharsPerRow, Table::ColumnCount>;

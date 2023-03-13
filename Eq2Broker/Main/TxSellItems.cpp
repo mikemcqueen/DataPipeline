@@ -10,20 +10,24 @@
 #include "PipelineManager.h"
 #include "TxSellItems.h"
 #include "DcrBrokerSell.h"
+#include "DcrSetPrice.h"
 #include "MainWindow_t.h"
 #include "Eq2Broker_t.h"
 //#include "UiEvent.h"
 #include "ui_msg.h"
+#include "DcrSetPrice.h"
 
 namespace dp {
-  result_code Dispatch(const msg_t& msg) {
-    result_code rc{ result_code::success };
-    if (!msg.msg_name.starts_with("ui::msg")) {
+  result_code Dispatch(msg_t& msg) {
+    result_code rc{ result_code::s_ok };
+    if (msg.msg_name != dp::msg::name::kEventWapper) {
       LogInfo(L"dispatch(): unsupported message name, %S", msg.msg_name.c_str());
-      rc = result_code::unexpected_error;
+      rc = result_code::e_fail;
     }
     else {
-      rc = ui::msg::dispatch(msg);
+      LogInfo(L"dispatching %S", msg.msg_name.c_str());
+      auto& event_wrapper = msg.as<dp::msg::event_wrapper_base_t>();
+      GetPipelineManager().SendEvent(*event_wrapper.get_event_data());
     }
     return rc;
   }
@@ -49,6 +53,8 @@ namespace Broker::Transaction::SellItems {
     if (started_ || strcmp(event.msg_name.data(), Broker::Sell::txn::kTxnName) != 0) {
       return S_FALSE;
     }
+    DP::Event::StartAcquire_t start;
+    GetPipelineManager().SendEvent(start);
     started_ = true;
     return S_OK;
   }
@@ -64,33 +70,41 @@ namespace Broker::Transaction::SellItems {
 
   HRESULT Handler_t::MessageHandler(const DP::Message::Data_t* pMessage) {
     LogInfo(L"TxSellItems::MessageHandler, msg_name: %S", pMessage->msg_name.data());
-    using namespace Broker::Sell;
-    if (!started_ || (strcmp(pMessage->msg_name.data(), kMsgName) != 0)) {
-      return S_FALSE;
-    }
-    using Translate::Legacy::Data_t;
-    const Data_t& msg = reinterpret_cast<const Data_t&>(*pMessage);
+    // TODO this is all a bit haxy and needs some thought & cleanup
+    // on multiple aisles probably
+    if (!started_) return S_FALSE;
+    dp::msg_ptr_t msg_ptr = std::move(Transform(*pMessage));
+    if (!msg_ptr) return S_FALSE;
     if (!tx_sellitems_.txn_started()) {
-      return StartTxn(Transform(msg), CreateTxnState());
+      if (strcmp(pMessage->msg_name.data(), Sell::kMsgName) != 0) return S_FALSE;
+      return StartTxn(std::move(msg_ptr), CreateTxnState());
     }
-    return SendMsgToTxn(Transform(msg));
+    return SendMsgToTxn(std::move(msg_ptr));
   }
 
-  dp::msg_ptr_t Handler_t::Transform(
-    const Broker::Sell::Translate::Legacy::Data_t& msg) const {
-    msg;
-    return std::make_unique<Broker::Sell::Translate::Data_t>(1);
+  dp::msg_ptr_t Handler_t::Transform(const DP::Message::Data_t& msg) const {
+    if (strcmp(msg.msg_name.data(), Sell::kMsgName) == 0) {
+      using namespace Broker::Sell::Translate;
+      return Legacy::Transform(reinterpret_cast<const Legacy::Data_t&>(msg));
+    }
+    else if (strcmp(msg.msg_name.data(), SetPrice::kMsgName) == 0) {
+      using namespace Broker::SetPrice::Translate;
+      return Legacy::Transform(reinterpret_cast<const Legacy::Data_t&>(msg));
+    }
+    else {
+      return {};
+    }
   }
 
   // hack. figure out txn vs. Transaction namespace issue
-  using state_t = Broker::Sell::txn::state_t;
-  using start_t = dp::txn::start_t<state_t>;
+  using /*state_t = */Broker::Sell::txn::state_t;
+  using state_ptr_t = dp::txn::start_t<state_t>::state_ptr_t;
 
-  start_t::state_ptr_t Handler_t::CreateTxnState() {
-    return std::make_unique<state_t>("magic beans"s, 2);
+  state_ptr_t Handler_t::CreateTxnState() {
+    return std::make_unique<state_t>("agoblineye"s, 3);
   }
 
-  HRESULT Handler_t::StartTxn(dp::msg_ptr_t msg_ptr, start_t::state_ptr_t state_ptr) {
+  HRESULT Handler_t::StartTxn(dp::msg_ptr_t msg_ptr, state_ptr_t state_ptr) {
     using namespace Broker::Sell;
     LogInfo(L"starting txn::sell_item");
     auto start_txn_msg = dp::txn::make_start_txn<txn::state_t>(txn::kTxnName,
@@ -99,9 +113,15 @@ namespace Broker::Transaction::SellItems {
   }
 
   HRESULT Handler_t::SendMsgToTxn(dp::msg_ptr_t msg_ptr) {
+    DP::Event::StopAcquire_t stop;
+    GetPipelineManager().SendEvent(stop);
     dp::msg_ptr_t out = tx_sellitems_.send_value(std::move(msg_ptr));
     if (out) {
       dp::Dispatch(*out.get());
+    }
+    if (started_) {
+      DP::Event::StartAcquire_t start;
+      GetPipelineManager().SendEvent(start);
     }
     return S_OK;
   }

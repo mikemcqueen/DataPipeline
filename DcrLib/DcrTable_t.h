@@ -43,7 +43,9 @@ public:
   auto GetColumnCount() const { return params_.ColumnCount; }
   auto GetColumnWidth(int column) const { return columnWidths_[column]; }
   const auto& GetTextRect(int column) const { return textRects_[column]; }
-  auto GetTotalColumnWidths() const { return std::accumulate(std::cbegin(columnWidths_), std::cend(columnWidths_), 0); }
+  auto GetTotalColumnWidths() const {
+    return std::accumulate(std::cbegin(columnWidths_), std::cend(columnWidths_), 0);
+  }
 
 private:
   const TableParams_t params_;

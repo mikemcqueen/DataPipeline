@@ -24,7 +24,7 @@ namespace Broker {
     Ui::Window_t(
       Broker::Window::Id::BrokerFrame,
       parent,
-      "BrokerFrame"sv,
+      kWindowName,
       { buy_window_, sell_window_ },
       kWindowFlags),
     buy_window_(*this),

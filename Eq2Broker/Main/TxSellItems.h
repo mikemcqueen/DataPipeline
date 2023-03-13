@@ -38,19 +38,19 @@ namespace Broker::Transaction::SellItems {
 
   public:
     Handler_t(); //  Eq2Broker_t& broker);
-//    Handler_t() = delete;
+    //    Handler_t() = delete;
 
-    // DP::Handler_t virtual
+        // DP::Handler_t virtual
     HRESULT MessageHandler(const DP::Message::Data_t* pData) override;
     HRESULT EventHandler(DP::Event::Data_t& Data) override;
 
   private:
     HRESULT Start(const DP::Event::Data_t& event);
-    HRESULT Stop(const DP::Event::Data_t & event);
+    HRESULT Stop(const DP::Event::Data_t& event);
     start_t::state_ptr_t CreateTxnState();
     HRESULT StartTxn(dp::msg_ptr_t msg_ptr, start_t::state_ptr_t state_ptr);
     HRESULT SendMsgToTxn(dp::msg_ptr_t msg_ptr);
-    dp::msg_ptr_t Transform(const Broker::Sell::Translate::Legacy::Data_t& msg) const;
+    dp::msg_ptr_t Transform(const DP::Message::Data_t& base_msg) const;
 
     dp::txn::handler_t tx_sellitems_;
     bool started_ = false;

@@ -68,7 +68,7 @@ namespace Broker::Buy::Translate {
     TranslatePolicy_t, ValidatePolicy_t>;
 
   class Handler_t : public BaseHandler_t {
-    friend struct Translate::Data_t;
+//    friend struct Translate::data_t;
 
   public:
     explicit Handler_t(const Window_t& window);

@@ -21,6 +21,10 @@ namespace DP {
   namespace Event {
     typedef unsigned Flag_t;
 
+    namespace Flag {
+      constexpr unsigned Synchronous = 0x1;
+    }
+
     template<int Id>
     constexpr auto MakeId() noexcept -> EventId_t {
       return Message::MakeId<Id, Message::Id::Event_First, Message::Id::Event_Last>();
@@ -58,6 +62,8 @@ namespace DP {
         sizeof(StopAcquire_t)) {}
     };
   }// Event
+
+  using EventPtr_t = std::unique_ptr<Event::Data_t>;
 } // DP
 
 #endif // Include_DPEVENT_H

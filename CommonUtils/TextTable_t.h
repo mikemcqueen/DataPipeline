@@ -30,6 +30,10 @@ public:
   virtual size_t GetRowWidth() const { throw std::runtime_error("not implemented"); };
   virtual const size_t* GetColumnWidths() const { throw std::runtime_error("not implemented"); };
   virtual void SetEndRow(size_t ) { throw std::runtime_error("not implemented"); };
+
+  virtual void SetRowRect(int, const Rect_t&) {
+    throw std::runtime_error("not implemented");
+  }
 };
 
 template<int RowCount, int CharsPerRow, int ColumnCount>
@@ -43,7 +47,9 @@ public:
     void SetText(const std::string& str) {
       memcpy_s(view.data(), view.size(), str.c_str(), std::min<size_t>(view.size(), str.size()));
     }
-    const std::string GetText() const { return std::string{ view.data(), view.size() }; }
+    const std::string_view GetText() const {
+      return { view.data(), strnlen(view.data(), view.size()) };
+    }
   };
 
   template<int CharsPerRow, int ColumnCount>
@@ -66,6 +72,7 @@ public:
 
     std::array<char, CharsPerRow>     text;
     std::array<Column_t, ColumnCount> columns;
+    Rect_t rect;
   };
   using Row_t = RowData_t<CharsPerRow, ColumnCount>;
 
@@ -106,7 +113,7 @@ public:
   void Dump(const wchar_t* header) const {
     LogInfo(L"------%s------", header);
     for (auto row : rows_) {
-      LogInfo(L"Name: %S", row.columns[1].GetText().c_str());
+      LogInfo(L"Name: %S", row.columns[1].GetText().data());
     }
     LogInfo(L"-----------------------");
   }
@@ -135,6 +142,10 @@ public:
     void SetText(int row, int column, const std::string& str) override {
         data_.GetRow(row).columns[column].SetText(str);
     }
+    void SetRowRect(int row, const Rect_t& rect) override {
+      data_.GetRow(row).rect = rect;
+    }
+
     const Data_t& GetData() const { return data_; }
 
 private:

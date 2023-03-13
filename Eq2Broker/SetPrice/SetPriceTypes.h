@@ -18,14 +18,14 @@
 
 namespace Broker::SetPrice {
   constexpr auto kWindowId = Broker::Window::Id::SetPrice;
-  constexpr auto kWindowName = "SetPrice"sv;
-  constexpr auto kMsgName = "msg::set_price"sv;
+  constexpr auto kWindowName = "SetPrice";
+  constexpr auto kMsgName = "msg::set_price";
 
   namespace Translate {
     namespace Legacy {
       struct Data_t;
     }
-    struct Data_t;
+    struct data_t;
     class Handler_t;
   } // Translate
 
@@ -33,7 +33,7 @@ namespace Broker::SetPrice {
     namespace Legacy {
       struct Data_t;
     }
-    struct Data_t;
+    struct data_t;
     class Handler_t;
   } // Interpret
 

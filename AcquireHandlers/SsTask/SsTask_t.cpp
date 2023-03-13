@@ -151,8 +151,6 @@ HRESULT SsTask_t::InitSurfacePool(
   return S_OK;
 }
 
-//#pragma warning(disable:4063) // enum in case statement
-
 HRESULT SsTask_t::EventHandler(DP::Event::Data_t& Data){
   HRESULT hr = DP::Handler_t::EventHandler(Data);
   if (S_FALSE != hr)
@@ -397,7 +395,7 @@ void SsTask_t::Shutter() {
     ~AutoRelease_t() { pPoolItem->release(); }
   } AutoRelease(pPoolItem);
 
-  static bool last_hwnd_null = true;
+  static bool last_hwnd_null = false;
   Rect_t rc;
   HWND hWnd = m_fnGetWindow(rc);
   if (hWnd) {

@@ -21,7 +21,7 @@ public:
 
   Price_t() : plat_(0) {}
   Price_t(int plat) : plat_(plat) {}
-
+  
   Price_t(const Price_t& price) = default;
 
   int GetPlat() const { return plat_; }

@@ -19,8 +19,8 @@
 
 namespace Broker::Buy {
   constexpr auto kWindowId = /*Broker::*/Window::Id::BrokerBuy;
-  constexpr auto kWindowName = "BrokerBuy"sv;
-  constexpr auto kMsgName = "msg::broker_buy"sv;
+  constexpr auto kWindowName = "BrokerBuy";
+  constexpr auto kMsgName = "msg::broker_buy";
 
   namespace Table {
     // TextTable_t data
@@ -46,7 +46,7 @@ namespace Broker::Buy {
     namespace Legacy {
       struct Data_t;
     }
-    struct Data_t;
+    struct data_t;
     class Handler_t;
   } // namespace Translate
 
@@ -54,7 +54,7 @@ namespace Broker::Buy {
     namespace Legacy {
       struct Data_t;
     }
-    struct Data_t;
+    struct data_t;
     class Handler_t;
   } // namespace Interpret
 

@@ -74,9 +74,10 @@ namespace Ui::Window {
     const CSurface& /*Surface*/,
     const POINT*    /*pptHint*/) const
   {
-    // TODO pure virtual?
-    throw runtime_error("Ui::Window_t::GetWindowId() not implemented");
-    //return m_WindowId;
+    if (!children_.empty()) {
+      throw runtime_error("Ui::Window_t::GetWindowId(CSurface, POINT) must be implemented");
+    }
+    return m_WindowId;
   }
 
   bool Base_t::GetWidgetRect(

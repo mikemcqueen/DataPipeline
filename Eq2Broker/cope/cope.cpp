@@ -136,20 +136,20 @@ dp::msg_ptr_t translate(dp::msg_ptr_t msg_ptr, std::string& out_msg,
     }
   } else if (in_setprice) {
     using namespace Broker::SetPrice::Translate;
-    return std::move(std::make_unique<Data_t>(rows_page_1[index].item_price));
+    return std::move(std::make_unique<data_t>(rows_page_1[index].item_price));
   }
-  /*Data_t::row_vector*/auto rows_copy = rows_page_1; //unnecessary. pass & copy directly below/ (no move)
+  /*data_t::row_vector*/auto rows_copy = rows_page_1; //unnecessary. pass & copy directly below/ (no move)
   using namespace Broker::Sell::Translate;
-  return std::move(std::make_unique<Data_t>(std::move(rows_copy), 0,
+  return std::move(std::make_unique<data_t>(std::move(rows_copy), 0,
     Ui::Scroll::Position::Unknown));
 }
 
 namespace dp {
   result_code dispatch(const msg_t& msg) {
-    result_code rc{ result_code::success };
+    result_code rc{ result_code::s_ok };
     if (!msg.msg_name.starts_with("ui::msg")) {
       LogInfo(L"dispatch(): unsupported message name, %S", msg.msg_name.c_str());
-      rc = result_code::unexpected_error;
+      rc = result_code::s_false;
     }
     else {
       rc = ui::msg::dispatch(msg);
@@ -162,9 +162,9 @@ namespace cope {
   dp::msg_ptr_t start_txn_sellitem(dp::msg_ptr_t msg_ptr) {
     using namespace Broker::Sell;
     LogInfo(L"starting txn::sell_item");
-    auto state = std::make_unique<txn::state_t>("magic beans"s, 2);
+    auto state_ptr = std::make_unique<txn::state_t>("magic beans"s, 2);
     return dp::txn::make_start_txn<txn::state_t>(txn::kTxnName,
-      std::move(msg_ptr), std::move(state));
+      std::move(msg_ptr), std::move(state_ptr));
   }
 
   dp::result_code SellItem(const MainWindow_t& window) {
@@ -205,6 +205,6 @@ namespace cope {
     double elapsed = 1e-6 * duration_cast<nanoseconds>(end - start).count();
     LogInfo(L"Elapsed: %.2fms (%d frames)", elapsed, i);
 
-    return dp::result_code::success;
+    return dp::result_code::s_ok;
   }
 } // namespace cope

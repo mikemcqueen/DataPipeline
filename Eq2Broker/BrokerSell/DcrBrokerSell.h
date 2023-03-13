@@ -26,16 +26,16 @@
 #include "dp_msg.h"
 
 namespace Broker::Sell::Translate {
-  struct Data_t : dp::msg::Data_t {
-    Data_t(int i) : dp::msg::Data_t(kMsgName) { i; } // TEMP
+  struct data_t : dp::msg::data_t {
+    data_t(int i) : dp::msg::data_t(kMsgName) { i; } // TEMP
 
-    Data_t(const Table::RowVector rws, int sel_row,
-      Ui::Scroll::Position_t vs_pos) :
-      dp::msg::Data_t(kMsgName),
-      rows(std::move(rws)),
-        selected_row(sel_row),
-        vscroll_pos(vs_pos)
-      {}
+    data_t(const Table::RowVector rows, int selected_row,
+      Ui::Scroll::Position_t vscroll_pos) :
+      dp::msg::data_t(kMsgName),
+      rows(std::move(rows)),
+      selected_row(selected_row),
+      vscroll_pos(vscroll_pos)
+    {}
 
     Table::RowVector rows;
     int selected_row;
@@ -44,7 +44,7 @@ namespace Broker::Sell::Translate {
 
   namespace msg {
     inline auto validate(const dp::msg_t& msg) {
-      return dp::msg::validate<Data_t>(msg, kMsgName);
+      return dp::msg::validate<data_t>(msg, kMsgName);
     }
   }
 
@@ -72,6 +72,29 @@ namespace Broker::Sell::Translate {
     private:
       Data_t();
     };
+
+    inline dp::msg_ptr_t Transform(const Data_t& msg) {
+      using namespace Broker::Sell::Table;
+      RowVector row_vector;
+      row_vector.reserve(msg.Text.GetRowCount());
+      for (int row_index = 0; row_index < msg.Text.GetRowCount(); ++row_index) {
+        const auto& row = msg.Text.GetRow(row_index);
+        RowData_t row_data;
+        row_data.item_name.assign(row.columns[ItemNameColumn].GetText());
+        row_data.item_quantity = 1;
+        row_data.item_price = Price_t::MakeFromString(row.columns[PriceColumn].GetText())
+          .value_or(Price_t(0));
+        row_data.selected = row_index == (int)msg.selectedRow;
+        row_data.item_listed = row.columns[ListedColumn].GetText() == "Yes";
+        row_data.rect = row.rect;
+        row_vector.push_back(row_data);
+        LogInfo(L"Row(%d), name: %S, price: %dp, listed: %d, selected: %d",
+          row_index, row_data.item_name.c_str(), row_data.item_price.GetPlat(),
+          row_data.item_listed, row_data.selected);
+      }
+      return std::make_unique<data_t>(row_vector, (int)msg.selectedRow,
+        msg.VScrollPos);
+    }
   } // namespace Legacy
 
   typedef DcrWindow::Policy::Translate::Many_t TranslatePolicy_t;
@@ -81,7 +104,7 @@ namespace Broker::Sell::Translate {
     TranslatePolicy_t, ValidatePolicy_t>;
 
   class Handler_t : public BaseHandler_t {
-    friend struct Translate::Data_t;
+    friend struct Translate::data_t;
 
   public:
     explicit Handler_t(const Window_t& window); // Window::ManagerBase_t& Manager);

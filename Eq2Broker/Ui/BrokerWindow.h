@@ -18,6 +18,8 @@
 #include "DdUtil.h"
 
 namespace Broker { //TODO: ::Frame {
+  constexpr auto kWindowName = "BrokerFrame";
+
   class Window_t : public Ui::Window_t {
   public:
     // this tab shit is goofy. nix it.

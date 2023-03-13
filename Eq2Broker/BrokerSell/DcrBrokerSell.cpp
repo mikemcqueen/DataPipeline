@@ -15,6 +15,8 @@
 #include "BrokerId.h"
 #include "BrokerUi.h"
 
+#include "DcrBrokerBuy.h" // SaveWidgetRects
+
 namespace Broker::Sell::Translate {
   constexpr Rect_t TextRects[Table::ColumnCount] = {
     { 2, 28, // first gap + quantitytexttop 
@@ -77,11 +79,19 @@ namespace Broker::Sell::Translate {
   {
     windowId;
     pSurface;
+#if 1
+    static bool firstTime = true;
+    if (firstTime) {
+      Rect_t rc{ 0, 0, (int)pSurface->GetWidth(), (int)pSurface->GetHeight() };
+      pSurface->WriteBMP(L"Diag\\DcrBrokerSell.bmp", rc);
+      firstTime = false;
+    }
+#endif
+
 
     switch (dcrId) {
     case Widget::Id::Table:
     {
-      //rcSurface;
       Rect_t rect = window_.GetClientRect();
       if (!rect.IsEmpty()) {
         rect.top += Broker::Table::TopRowOffset;
@@ -107,7 +117,7 @@ namespace Broker::Sell::Translate {
     void* pBuffer = GetPipelineManager().Alloc(sizeof(Data_t));
     if (nullptr != pBuffer) {
       m_TextTable.GetData().Dump(L"DcrBrokerSell");
-      LogInfo(L"SeletecedRow(%d)", m_DcrTable.GetSelectedRow().value_or(-1));
+      LogInfo(L"SelectedRow(%d)", m_DcrTable.GetSelectedRow().value_or(-1));
       Data_t* pData = new (pBuffer) Data_t(
         m_TextTable,
         m_DcrTable.GetSelectedRow().value_or(-1),

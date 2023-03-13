@@ -191,11 +191,11 @@ InitLogBuffer(
           size_t   CchBuffer,
     const wchar_t* pszType)
 {
-    int Count = _snwprintf_s(pszBuf, CchBuffer, _TRUNCATE, L"%08x: %ls: ",
-                             GetCurrentThreadId(),
+    int Count = _snwprintf_s(pszBuf, CchBuffer, _TRUNCATE, L"%ls: ",
                              const_cast<wchar_t*>(pszType));
-    if (0 >= Count)
-        throw std::domain_error("InitLogBuffer");
+    if (Count < 0) {
+      throw std::runtime_error("InitLogBuffer");
+    }
     return Count;
 }
 
@@ -244,7 +244,8 @@ LogInfo(
     ...)
 {
     if (LOGINFO > Log_t::Get().GetLogLevel())
-        return;
+
+      return;
 
     wchar_t szBuf[Log_t::StringLength];
     int Len = InitLogBuffer(szBuf, _countof(szBuf), L"INF");

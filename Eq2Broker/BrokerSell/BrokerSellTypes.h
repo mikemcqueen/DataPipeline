@@ -20,7 +20,7 @@
 
 namespace Broker::Sell {
   constexpr auto kWindowId = Window::Id::BrokerSell;
-  constexpr auto kWindowName = "BrokerSell"sv;
+  constexpr auto kWindowName = "BrokerSell";
   constexpr auto kMsgName = "msg::broker_sell";
 
   namespace Table {
@@ -42,6 +42,7 @@ namespace Broker::Sell {
       Price_t item_price;
       bool selected;
       bool item_listed;
+      Rect_t rect;
       // std::unique_ptr<int> enforce_no_copies;
     };
     using RowVector = std::vector<RowData_t>;
@@ -54,7 +55,7 @@ namespace Broker::Sell {
     namespace Legacy {
       struct Data_t;
     }
-    struct Data_t;
+    struct data_t;
     class Handler_t;
   } // Translate
 
@@ -62,7 +63,7 @@ namespace Broker::Sell {
     namespace Legacy {
       struct Data_t;
     }
-    struct Data_t;
+    struct data_t;
     class Handler_t;
   } // Interpret
 

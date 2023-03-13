@@ -46,7 +46,7 @@ bool DcrTable_t::Initialize() {
 }
 
 bool DcrTable_t::TranslateSurface(CSurface* pSurface, const Rect_t& rcSurface) {
-  LogInfo(L"Dcr::Table_t::TranslateSurface");
+  LogInfo(L"DcrTable_t::TranslateSurface");
   auto start = std::chrono::high_resolution_clock::now();
 
   Timer_t t("DcrTable_t::ReadTable");
@@ -76,13 +76,13 @@ optional<int> DcrTable_t::GetSelectedRow(
   const Rect_t& tableRect,
   const ColorRange_t& colors) const
 {
-  auto rowHeight = tableInfo_.GetRowHeight();
+  auto rowHeight = tableInfo_.GetRowHeight() + tableInfo_.GetRowGapSize();
   const size_t width = 4;
   const size_t height = 1;
   Rect_t selectRect;
   selectRect.left = tableRect.left + tableRect.Width() / 2 - width / 2;
   selectRect.right = selectRect.left + width;
-  selectRect.top = tableRect.top;
+  selectRect.top = tableRect.top + 1; // +1 in case we have SlowRectangle turned on. Hack. TODO.
   selectRect.bottom = selectRect.top + height;
   optional<int> selectedRow{};
   for (int row = 0; selectRect.top + rowHeight <= tableRect.bottom; ++row) {
@@ -90,7 +90,7 @@ optional<int> DcrTable_t::GetSelectedRow(
       if (selectedRow) {
         LogError(L"Dcr::Table_t::GetSelectedRow() Two rows selected (%d,%d)",
           selectedRow.value(), row);
-        return 0;
+        return nullopt;
       }
       selectedRow.emplace(row);
     }

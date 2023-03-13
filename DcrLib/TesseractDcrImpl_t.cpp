@@ -125,6 +125,7 @@ int TesseractDcrImpl_t::GetTableText(
 #if LOGROWTEXT
     stringstream text;
 #endif
+    pTextTable->SetRowRect(row, rcRow);
     pTextTable->ClearRow(row);
     for (size_t column = 0; column < columnRects.size(); ++column) {
       auto& rc = columnRects[column];

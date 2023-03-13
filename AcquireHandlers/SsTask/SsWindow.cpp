@@ -20,6 +20,7 @@ namespace SsWindow::Acquire {
         Window.SyncHwnd();
         if (Window.IsVisibleTopWindow()) {
           Window.GetClientRect(rect);
+          LogInfo(L"ClientRect.size = %dx%d", rect.Width(), rect.Height());
           return Window.Hwnd();
         }
         return (HWND)nullptr;
@@ -43,9 +44,31 @@ namespace SsWindow::Acquire {
 
       //    case Id::Scroll:
     case Id::ClickPoint:
+      if (Data.Flags & DP::Event::Flag::Synchronous) {
+        auto& clickData = static_cast<Ui::Event::Click::Data_t&>(Data);
+        ClickPoint(clickData, clickData.Destination.Point);
+      }
+      else {
+        AsyncEvent(Data);
+      }
+      break;
     case Id::ClickWidget:
+      if (Data.Flags & DP::Event::Flag::Synchronous) {
+        auto& clickData = static_cast<Ui::Event::Click::Data_t&>(Data);
+        ClickWidget(clickData);
+      }
+      else {
+        AsyncEvent(Data);
+      }
+      break;
     case Id::SendChars:
-      AsyncEvent(Data);
+      if (Data.Flags & DP::Event::Flag::Synchronous) {
+        auto& scData = static_cast<Ui::Event::SendChars::Data_t&>(Data);
+        SendChars(scData);
+      }
+      else {
+        AsyncEvent(Data);
+      }
       break;
 
       /*
@@ -178,7 +201,7 @@ namespace SsWindow::Acquire {
   }
 
   void Handler_t::SendChars(const Ui::Event::SendChars::Data_t& Data) {
-    LogInfo(L"SsWindow::SendChars(%ls)", Data.Chars);
+    LogInfo(L"SsWindow::SendChars(%ls)", Data.Chars.data());
     if (!m_bClick || !m_Window.IsVisibleTopWindow()) {
       return;
     }

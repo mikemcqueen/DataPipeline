@@ -18,11 +18,11 @@ namespace ui::msg {
   namespace name {
     using namespace std::literals;
 
-    constexpr auto click_widget{ "ui::msg::click_widget"sv };
-    constexpr auto click_point{ "ui::msg::click_point"sv };
-    constexpr auto click_table_row{ "ui::msg::click_table_row"sv };
-    constexpr auto send_chars{ "ui::msg::send_chars"sv };
-    constexpr auto set_widget_text{ "ui::msg::set_widget_text"sv };
+    constexpr auto click_widget{ "ui::msg::click_widget" };
+    constexpr auto click_point{ "ui::msg::click_point" };
+    constexpr auto click_table_row{ "ui::msg::click_table_row" };
+    constexpr auto send_chars{ "ui::msg::send_chars" };
+    constexpr auto set_widget_text{ "ui::msg::set_widget_text" };
   }
 
   struct data_t : dp::msg_t {

@@ -26,15 +26,16 @@
 #include "Price_t.h"
 
 namespace Broker::SetPrice::Translate {
-  struct Data_t : dp::msg::Data_t {
-    Data_t(Price_t pr) : dp::msg::Data_t(kMsgName), price(pr) {}
+  struct data_t : dp::msg::data_t {
+    data_t(int price) : dp::msg::data_t(kMsgName), price(price) {}
+    data_t(Price_t price) : dp::msg::data_t(kMsgName), price(price) {}
 
     Price_t price;
   };
 
   namespace msg {
     inline auto validate(const dp::msg_t& msg) {
-      return dp::msg::validate<Data_t>(msg, kMsgName);
+      return dp::msg::validate<data_t>(msg, kMsgName);
     }
   }
 
@@ -51,6 +52,10 @@ namespace Broker::SetPrice::Translate {
 
       int Price;
     };
+
+    inline dp::msg_ptr_t Transform(const Data_t& msg) {
+      return std::make_unique<data_t>(msg.Price);
+    }
   }
 
   typedef SsWindow::Acquire::Data_t     AcquireData_t;
@@ -62,7 +67,7 @@ namespace Broker::SetPrice::Translate {
 
   class Handler_t : public HandlerBase_t
   {
-    friend struct Translate::Data_t;
+    friend struct Translate::data_t;
 
   public:
     explicit Handler_t(const Window_t& window); //  Window::ManagerBase_t& Manager);
