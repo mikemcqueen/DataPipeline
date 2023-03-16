@@ -38,7 +38,7 @@ namespace dp {
 
     struct event_wrapper_base_t : data_t {
       event_wrapper_base_t() : data_t(name::kEventWapper) {}
-
+      virtual ~event_wrapper_base_t() = default;
       virtual DP::Event::Data_t* get_event_data() = 0;
     };
 
@@ -58,9 +58,9 @@ namespace dp {
     inline auto validate_name(const msg_t& msg, std::string_view msg_name) {
       result_code rc = result_code::s_ok;
       if (msg.msg_name != msg_name) {
-        LogError(L"msg::validate_name: name mismatch, expected(%S), actual(%S)",
+        LogError(L"msg::validate_name() mismatch, expected(%S), actual(%S)",
           msg_name.data(), msg.msg_name.c_str());
-        rc = result_code::e_unexpected;
+        rc = result_code::e_unexpected_msg_name;
       }
       return rc;
     }
@@ -68,11 +68,10 @@ namespace dp {
     template<typename msgT>
     auto validate(const msg_t& msg, std::string_view msg_name) {
       result_code rc = validate_name(msg, msg_name);
-      if (succeeded(rc)) {
-        if (!dynamic_cast<const msgT*>(&msg)) {
-          LogError(L"msg::validate: type mismatch");
-          rc = result_code::e_fail;
-        }
+      if (succeeded(rc) && !dynamic_cast<const msgT*>(&msg)) {
+        LogWarning(L"msg::validate(%S) type mismatch, expected(%S), actual(%S)",
+          msg_name.data(), msg.msg_name.c_str());
+        rc = result_code::e_unexpected_msg_type;
       }
       return rc;
     }

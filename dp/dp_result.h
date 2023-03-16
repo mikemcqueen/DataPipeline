@@ -11,11 +11,17 @@ namespace dp {
     s_false = 1,
     e_abort = 4,
     e_fail = 5,
-    e_unexpected = 0xffff
+    e_unexpected = 0xffff,
+    e_unexpected_msg_name,
+    e_unexpected_msg_type,
   };
 
   inline auto succeeded(result_code rc) { return (unsigned)rc <= 1; }
   inline auto failed(result_code rc) { return (unsigned)rc >= 2; }
+  inline auto unexpected_msg(result_code rc) {
+    return (rc == result_code::e_unexpected_msg_name)
+      || (rc == result_code::e_unexpected_msg_type);
+  }
 
 #if 0
 #define E_NOINTERFACE _HRESULT_TYPEDEF_(0x80004002)

@@ -79,7 +79,7 @@ namespace Broker::Sell::Translate {
   {
     windowId;
     pSurface;
-#if 1
+#if 0
     static bool firstTime = true;
     if (firstTime) {
       Rect_t rc{ 0, 0, (int)pSurface->GetWidth(), (int)pSurface->GetHeight() };

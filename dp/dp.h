@@ -111,6 +111,7 @@ namespace dp::txn {
 
       state txn_state() const { return txn_state_; }
       bool txn_started() const { return txn_state_ == state::started; }
+      bool txn_complete() const { return txn_state_ == state::complete; }
       void set_txn_state(state txn_state) {
         LogInfo(L"%S:set_txn_state(%S)", txn_name_.c_str(),
           std::format("{}", txn_state).c_str());
@@ -149,12 +150,12 @@ namespace dp::txn {
     ~handler_t() { if (coro_handle_) coro_handle_.destroy(); }
 
     auto handle() const noexcept { return coro_handle_; }
-    auto txn_started() const noexcept { return coro_handle_.promise().txn_started(); }
+    auto& promise() const noexcept { return coro_handle_.promise(); }
 
   private:
-    auto active_handle() const noexcept { return coro_handle_.promise().active_handle(); }
-    auto root_handle() const noexcept { return coro_handle_.promise().root_handle(); }
-    auto& txn_name() const noexcept { return coro_handle_.promise().txn_name(); }
+    auto active_handle() const noexcept { return promise().active_handle(); }
+    auto root_handle() const noexcept { return promise().root_handle(); }
+    auto& txn_name() const noexcept { return promise().txn_name(); }
 
     void validate_send_value_msg(const msg_t& msg) {
       if (msg::is_start_txn(msg)) {

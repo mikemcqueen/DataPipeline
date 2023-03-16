@@ -75,7 +75,7 @@ namespace Broker::Transaction::SellItems {
     if (!started_) return S_FALSE;
     dp::msg_ptr_t msg_ptr = std::move(Transform(*pMessage));
     if (!msg_ptr) return S_FALSE;
-    if (!tx_sellitems_.txn_started()) {
+    if (!tx_sellitems_.promise().txn_started()) {
       if (strcmp(pMessage->msg_name.data(), Sell::kMsgName) != 0) return S_FALSE;
       return StartTxn(std::move(msg_ptr), CreateTxnState());
     }
@@ -101,7 +101,7 @@ namespace Broker::Transaction::SellItems {
   using state_ptr_t = dp::txn::start_t<state_t>::state_ptr_t;
 
   state_ptr_t Handler_t::CreateTxnState() {
-    return std::make_unique<state_t>("agoblineye"s, 3);
+    return std::make_unique<state_t>("agoblineye"s, 4);
   }
 
   HRESULT Handler_t::StartTxn(dp::msg_ptr_t msg_ptr, state_ptr_t state_ptr) {
@@ -118,6 +118,16 @@ namespace Broker::Transaction::SellItems {
     dp::msg_ptr_t out = tx_sellitems_.send_value(std::move(msg_ptr));
     if (out) {
       dp::Dispatch(*out.get());
+      if ((tx_sellitems_.promise().txn_state() == dp::txn::state::ready)
+        && dp::succeeded(tx_sellitems_.promise().result()))
+      {
+        LogInfo(L"TxSellItems::TXN_COMPLETE!");
+        started_ = false;
+      }
+      else {
+        LogInfo(L"TxSellItems::Active because txn_state(%d), result(%d)",
+          tx_sellitems_.promise().txn_state(), tx_sellitems_.promise().result());
+      }
     }
     if (started_) {
       DP::Event::StartAcquire_t start;

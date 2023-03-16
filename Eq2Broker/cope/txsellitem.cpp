@@ -18,7 +18,16 @@ namespace Broker::Sell::txn {
   {
     const Translate::data_t& msg = promise.in().as<Translate::data_t>();
     if (row_index < 0 || row_index >= msg.rows.size()) {
-      return dp::result_code::e_fail; // expected
+      // e_unexpected_state_change?
+      // though, i suppose not. if an item "sold" while txn was in progress,
+      // this could fire on a for-sale list refresh. it might even case the
+      // scroll position to tweak a bit.  maybe a rare condition for current
+      // use case, but I could imagine "realtime" market data that could 
+      // change that fast. maybe it's the responsibility of whatever layer
+      // sits on top of the data source to ensure the data comes in relatively
+      // consistently on subsequent fetches during a txn.  at best, it's txn
+      // specific. so, do whatever makes sense for sell_items, here.
+      return dp::result_code::e_fail;
     }
     *row = &msg.rows[row_index];
     return dp::result_code::s_ok;
@@ -29,9 +38,7 @@ namespace Broker::Sell::txn {
   {
     auto& row = msg.rows[row_index];
     if (row.item_name == state.item_name) {
-      if ((row.item_price.GetPlat() != state.item_price)
-        || !row.item_listed)
-      {
+      if ((row.item_price.GetPlat() != state.item_price) || !row.item_listed) {
         return true;
       }
     }
@@ -41,11 +48,10 @@ namespace Broker::Sell::txn {
   auto get_candidate_row(const Translate::data_t& msg, const state_t& state)
     -> std::optional<int>
   {
-    using result_t = std::optional<int>;
     for (size_t row{}; row < msg.rows.size(); ++row) {
       if (is_candidate_row(msg, state, row)) {
         LogInfo(L"get_candidate_row(%d)", row);
-        return result_t(row);
+        return std::optional<int>(row);
       }
     }
     LogInfo(L"get_candidate_row(none)");
@@ -141,13 +147,22 @@ namespace Broker::Sell::txn {
     while (true) {
       auto& promise = co_await dp::txn::receive_txn_awaitable{ kTxnName, state };
 
-      while (true) {//rc != result_code::e_unexpected) {
-        auto opt_row_index = get_candidate_row(promise, state);
-        if (!opt_row_index.has_value()) break;
-        auto row_index = opt_row_index.value();
+      // here we should consider adding some part of the first message to our
+      // "state", such as the visible row range, or scroll position, or names
+      // of items, or some combination of those. If that state changes in a 
+      // subsequent message, it would trigger an "e_unexpected_state_change"
+      // result, which should cause us to exit the transaction. the "do the
+      // scrolly bits" outer transaction would be responsible for figuring out
+      // how to recover from that state.
+      // see: comments in get_row() above
 
+      int row_index = -1;
+      while (true) {
+        if (error(Sell::Translate::msg::validate(promise.in()))) break; // txn_complete(rc)
+        row_index = get_candidate_row(promise, state).value_or(-1);
+        if (row_index == -1) break; // txn_complete(success)
         const Table::RowData_t* row;
-        if (error(get_row(promise, row_index, &row))) continue;
+        if (error(get_row(promise, row_index, &row))) break; // txn_complete(rc)
 
         if (!row->selected) {
           co_yield click_table_row(row->rect);
@@ -163,12 +178,13 @@ namespace Broker::Sell::txn {
           if (error(validate_row(promise, row_index, state, &row,
             { .selected{true}, .price{true} }))) continue;
         }
-
+  
         if (!row->item_listed) {
           co_yield click_listitem_button();
           if (error(validate_row(promise, row_index, state, &row,
             { .selected{true}, .price{true}, .listed{true} }))) continue;
         }
+        break; // txn_complete(success)
       }
       dp::txn::complete(promise, rc);
     }
