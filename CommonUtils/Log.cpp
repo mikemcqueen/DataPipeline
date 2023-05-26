@@ -68,7 +68,7 @@ Log_t&
 Log_t::
 Get()
 {
-    static shared_ptr<Log_t> spLog;
+    static std::shared_ptr<Log_t> spLog;
     if (!spLog)
     {
         spLog.reset(new Log_t);
@@ -85,7 +85,7 @@ Log(
 {
     if (m_bInitialized && m_LogThread.IsInitialized())
     {
-        wstring str(pszBuf);
+        std::wstring str(pszBuf);
         m_LogThread.QueueData(str);
 //        m_logWindow.Log(str);
     }

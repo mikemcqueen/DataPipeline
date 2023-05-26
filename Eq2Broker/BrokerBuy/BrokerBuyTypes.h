@@ -19,8 +19,8 @@
 
 namespace Broker::Buy {
   constexpr auto kWindowId = /*Broker::*/Window::Id::BrokerBuy;
-  constexpr auto kWindowName = "BrokerBuy";
-  constexpr auto kMsgName = "msg::broker_buy";
+  constexpr std::string_view kWindowName{ "BrokerBuy" };
+  constexpr std::string_view kMsgName{ "msg::broker_buy" };
 
   namespace Table {
     // TextTable_t data

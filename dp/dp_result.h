@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+
 #if 0
 #include <format>
 #include <unordered_map>
@@ -14,14 +16,33 @@ namespace dp {
     e_unexpected = 0xffff,
     e_unexpected_msg_name,
     e_unexpected_msg_type,
+    e_unexpected_txn_name
   };
 
-  inline auto succeeded(result_code rc) { return (unsigned)rc <= 1; }
-  inline auto failed(result_code rc) { return (unsigned)rc >= 2; }
-  inline auto unexpected_msg(result_code rc) {
-    return (rc == result_code::e_unexpected_msg_name)
-      || (rc == result_code::e_unexpected_msg_type);
+  inline auto succeeded(result_code rc) { return rc <= result_code::s_false; }
+  inline auto failed(result_code rc) { return rc > result_code::s_false; }
+  inline auto unexpected(result_code rc) {
+    return rc >= result_code::e_unexpected;
   }
+
+  struct result_t {
+    result_code code = result_code::s_ok;
+
+    void set(result_code rc) { code = rc; }
+
+    auto succeeded() { return dp::succeeded(code); }
+    auto failed() { return dp::failed(code); }
+    auto unexpected() { return dp::unexpected(code); }
+  };
+
+/*
+  template<std::invocable T> // todo: callable
+  auto result_of(T& op, result_t& result) {
+    result.set(std::invoke(op)());
+//    result.set(op());
+    return result;
+  }
+*/
 
 #if 0
 #define E_NOINTERFACE _HRESULT_TYPEDEF_(0x80004002)

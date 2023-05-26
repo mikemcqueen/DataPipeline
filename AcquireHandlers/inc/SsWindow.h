@@ -22,8 +22,8 @@
 #include "UiWindowId.h"
 
 namespace SsWindow::Acquire {
-  constexpr auto kHandlerName = "SsWindow";
-  constexpr auto kMsgName = "msg::screenshot";
+//  constexpr std::string_view kHandlerName{ "SsWindow" };
+  constexpr std::string_view kMsgName{ "msg::screenshot" };
 
 #if 0
   struct Data_t : SsTask::Acquire::Data_t {

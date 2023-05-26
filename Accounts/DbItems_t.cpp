@@ -92,7 +92,7 @@ GetItemId(
 {
     if ((nullptr == pItemName) || (L'\0' == *pItemName))
     {
-        throw invalid_argument("Items_t::GetItemId()");
+        throw std::invalid_argument("Items_t::GetItemId()");
     }
     ItemId_t ItemId = 0;
     try
@@ -166,7 +166,7 @@ GetItemName(
     //TODO: AssertArg((nullptr != pName) && (0 < NameCount))
     if ((nullptr == pName) || (0 == NameCount))
     {
-        throw invalid_argument("ItemsId_t::GetItemName()");
+        throw std::invalid_argument("ItemsId_t::GetItemName()");
     }
     Items_t rs(&db);
     rs.AddField(Field::ItemName);

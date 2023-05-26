@@ -176,7 +176,7 @@ short Input_t::GetVkCode(char ch)
   }
   if (vkInvalid == LOBYTE(vkScan)) {
     LogError(L"Unknown vk code for (%c)", ch);
-    throw runtime_error("Unknown vk code");
+    throw std::runtime_error("Unknown vk code");
   }
   return vkScan;
 }

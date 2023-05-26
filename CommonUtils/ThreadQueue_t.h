@@ -343,8 +343,7 @@ private:
 
   ////////////////////////////////////////////////////////////////////////////////
 
-  void
-    OnStartup()
+  void OnStartup()
   {
     LogInfo(L"ThreadQueue_t<%s>::OnStartup()", m_pszName);
     m_Process(ThreadQueue::State::Startup, Data_t(), m_pParam);
@@ -352,8 +351,7 @@ private:
 
   ////////////////////////////////////////////////////////////////////////////////
 
-  void
-    OnShutdown()
+  void OnShutdown()
   {
     LogInfo(L"ThreadQueue_t<%s>::OnShutdown()", m_pszName);
     m_Process(ThreadQueue::State::Shutdown, Data_t(), m_pParam);
@@ -388,7 +386,7 @@ private:
       }
       if (ThreadQueue::High == m_LogLevel)
       {
-        LogInfo(L"ProcessQueue: Found entry, %S, queue size was %d", typeid(Data).name(), Count);
+        //LogInfo(L"ProcessQueue: Found entry, %S, queue size was %d", typeid(Data).name(), Count);
       }
       /*
                   if (nullptr == pData)
@@ -401,7 +399,7 @@ private:
       */
       if (ThreadQueue::High == m_LogLevel)
       {
-        LogInfo(L"++ThreadQueue_t<%s>::ProcessData", m_pszName);
+        //LogInfo(L"++ThreadQueue_t<%s>::ProcessData", m_pszName);
         m_Process(ThreadQueue::State::Display, Data, m_pParam);
       }
 
@@ -418,7 +416,7 @@ private:
       m_Process(ThreadQueue::State::Free, Data, m_pParam);
       if (ThreadQueue::High == m_LogLevel)
       {
-        LogInfo(L"--ThreadQueue_t<%s>::ProcessData", m_pszName);
+        //LogInfo(L"--ThreadQueue_t<%s>::ProcessData", m_pszName);
       }
       // must allow queued APCs to execute
       SleepEx(0, TRUE);

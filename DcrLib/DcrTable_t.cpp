@@ -55,7 +55,7 @@ bool DcrTable_t::TranslateSurface(CSurface* pSurface, const Rect_t& rcSurface) {
 
   if (0 == rowCount) {
     LogInfo(L"ReadTable(): Table is empty.");
-    selected_row_ = nullopt;
+    selected_row_ = std::nullopt;
   }
   else {
     ColorRange_t colors{ RGB(45, 35, 40), RGB(50, 40, 45) };
@@ -71,7 +71,7 @@ bool DcrTable_t::TranslateSurface(CSurface* pSurface, const Rect_t& rcSurface) {
   return true;
 }
 
-optional<int> DcrTable_t::GetSelectedRow(
+std::optional<int> DcrTable_t::GetSelectedRow(
   CSurface& surface,
   const Rect_t& tableRect,
   const ColorRange_t& colors) const
@@ -84,13 +84,13 @@ optional<int> DcrTable_t::GetSelectedRow(
   selectRect.right = selectRect.left + width;
   selectRect.top = tableRect.top + 1; // +1 in case we have SlowRectangle turned on. Hack. TODO.
   selectRect.bottom = selectRect.top + height;
-  optional<int> selectedRow{};
+  std::optional<int> selectedRow{};
   for (int row = 0; selectRect.top + rowHeight <= tableRect.bottom; ++row) {
     if (surface.CompareColorRange(selectRect, colors.low, colors.high)) {
       if (selectedRow) {
         LogError(L"Dcr::Table_t::GetSelectedRow() Two rows selected (%d,%d)",
           selectedRow.value(), row);
-        return nullopt;
+        return std::nullopt;
       }
       selectedRow.emplace(row);
     }
@@ -121,16 +121,16 @@ std::vector<Rect_t> DcrTable_t::InitColumnRects(
   return columnRects;
 }
 
-std::vector<unique_ptr<CSurface>> DcrTable_t::InitColumnSurfaces(
+std::vector<std::unique_ptr<CSurface>> DcrTable_t::InitColumnSurfaces(
   const std::vector<RECT>& columnRects) const
 {
   extern CDisplay* g_pDisplay;
-  std::vector<unique_ptr<CSurface>> surfaces;
+  std::vector<std::unique_ptr<CSurface>> surfaces;
   for (auto& rc : columnRects) {
     std::unique_ptr<CSurface> pSurface = std::make_unique<CSurface>();
     HRESULT hr = g_pDisplay->CreateSurface(pSurface.get(), RECTWIDTH(rc), RECTHEIGHT(rc));
     if (FAILED(hr)) {
-      throw new runtime_error(std::format("CreateSurface failed {}x{}",
+      throw new std::runtime_error(std::format("CreateSurface failed {}x{}",
         RECTWIDTH(rc), RECTHEIGHT(rc)));
     }
     surfaces.push_back(std::move(pSurface));

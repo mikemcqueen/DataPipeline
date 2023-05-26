@@ -18,8 +18,8 @@
 
 namespace Broker::SetPrice {
   constexpr auto kWindowId = Broker::Window::Id::SetPrice;
-  constexpr auto kWindowName = "SetPrice";
-  constexpr auto kMsgName = "msg::set_price";
+  constexpr std::string_view kWindowName{ "SetPrice" };
+  constexpr std::string_view kMsgName{ "msg::set_price" };
 
   namespace Translate {
     namespace Legacy {

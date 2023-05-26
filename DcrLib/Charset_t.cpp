@@ -209,8 +209,8 @@ GetKernPairs(const HDC hDC)
 	std::size_t numPairs = (std::size_t)::GetKerningPairs(hDC, 0, nullptr);
     m_vKernPairs.resize(numPairs);
     //std::vector<KERNINGPAIR>::iterator iter = m_vKernPairs.begin();
-    unique_ptr<KERNINGPAIR[]>
-    /*auto*/ pkPairs(make_unique<KERNINGPAIR[]>(numPairs));
+    std::unique_ptr<KERNINGPAIR[]>
+    /*auto*/ pkPairs(std::make_unique<KERNINGPAIR[]>(numPairs));
     if (numPairs > 0) {
         DWORD ret = ::GetKerningPairs(hDC, numPairs, pkPairs.get()); //  m_vKernPairs.data());
         if (0 == ret) {

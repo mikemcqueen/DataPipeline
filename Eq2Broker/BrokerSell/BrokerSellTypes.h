@@ -19,9 +19,9 @@
 #include "Price_t.h"
 
 namespace Broker::Sell {
-  constexpr auto kWindowId = Window::Id::BrokerSell;
-  constexpr auto kWindowName = "BrokerSell";
-  constexpr auto kMsgName = "msg::broker_sell";
+  constexpr auto kWindowId{ Window::Id::BrokerSell };
+  constexpr std::string_view kWindowName{ "BrokerSell" };
+  constexpr std::string_view kMsgName{ "msg::broker_sell" };
 
   namespace Table {
     constexpr auto RowCount = 10;

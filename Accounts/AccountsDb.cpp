@@ -109,11 +109,11 @@ Initialize(
 {
     if ((nullptr == pServerName) || (L'\0' == pServerName[0]))
     {
-        throw invalid_argument("Accounts::Db::Initialize()");
+        throw std::invalid_argument("Accounts::Db::Initialize()");
     }
     if (g_bInitialized)
     {
-        throw runtime_error("Accounts::Db::Intialize() called twice");
+        throw std::runtime_error("Accounts::Db::Intialize() called twice");
     }
     swprintf_s(s_szSellersDbPath, s_szSellersDbFormat, pServerName);
     s_szSellersDbConnect[0] = '\0';

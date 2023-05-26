@@ -1793,11 +1793,11 @@ bool CSurface::FindSurfaceInRect(
 	// Check if origin is found at hint location
 	if ((nullptr != pptHint) && ((0 < pptHint->x) || (0 < pptHint->y))) {
 		if (Compare(pptHint->x, pptHint->y, surface)) {
-			LogInfo(L"CSurface::FindSurfaceInRect() Hint match");
+			//LogInfo(L"CSurface::FindSurfaceInRect() Hint match");
 			ptOrigin = *pptHint;
 			return true;
 		}
-		LogInfo(L"CSurface::FindSurfaceInRect() Hint mis-match");
+		//LogInfo(L"CSurface::FindSurfaceInRect() Hint mis-match");
 	}
 	Rect_t surfaceRect;
 	surface.GetClientRect(&surfaceRect);
@@ -1859,8 +1859,7 @@ GetWidthInColorRange(
             (pixGreen < lowGreen) || (pixGreen > hiGreen) ||
             (pixBlue  < lowBlue)  || (pixBlue  > hiBlue))
         {
-            if (Flags & 1)
-            {
+            if (Flags & 1) {
                 LogInfo(L"GetWidthInColorRange(): RGB(%d,%d,%d) @ (%d,%d) Width(%d)",
                         pixRed, pixGreen, pixBlue, x, y, Width);
             }

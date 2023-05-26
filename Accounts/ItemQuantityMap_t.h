@@ -15,9 +15,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 class ItemQuantityMap_t :
-    public map<ItemId_t, size_t>
+  public std::map<ItemId_t, size_t>
 {
-    wstring m_mapName;
+    std::wstring m_mapName;
 
 public:
 
@@ -61,7 +61,7 @@ public:
         }
         else if (0 < quantity)
         {
-            if (insert(make_pair(itemId, quantity)).second)
+            if (insert(std::make_pair(itemId, quantity)).second)
             {
                 LogAlways(L"%s::AdjustQuantity() Added Item(%d) Qty(%d)",
                           m_mapName.c_str(), itemId, quantity);

@@ -13,7 +13,7 @@
 #include "DcrSetPrice.h"
 #include "MainWindow_t.h"
 #include "Eq2Broker_t.h"
-//#include "UiEvent.h"
+#include "CommonTypes.h"
 #include "ui_msg.h"
 #include "DcrSetPrice.h"
 
@@ -28,6 +28,7 @@ namespace dp {
       LogInfo(L"dispatching %S", msg.msg_name.c_str());
       auto& event_wrapper = msg.as<dp::msg::event_wrapper_base_t>();
       GetPipelineManager().SendEvent(*event_wrapper.get_event_data());
+      ::Sleep(50);
     }
     return rc;
   }
@@ -50,44 +51,52 @@ namespace Broker::Transaction::SellItems {
 
   HRESULT Handler_t::Start(const DP::Event::Data_t& event) {
     LogInfo(L"TxSellItems::Start()");
-    if (started_ || strcmp(event.msg_name.data(), Broker::Sell::txn::kTxnName) != 0) {
+    if (!array_equal(event.msg_name, Broker::Sell::txn::kTxnName)) {
       return S_FALSE;
     }
-    DP::Event::StartAcquire_t start;
-    GetPipelineManager().SendEvent(start);
-    started_ = true;
+    GetPipelineManager().set_txn_executing(true);
     return S_OK;
   }
 
   HRESULT Handler_t::Stop(const DP::Event::Data_t& event) {
     LogInfo(L"TxSellItems::Stop()");
-    if (strcmp(event.msg_name.data(), Broker::Sell::txn::kTxnName) != 0) {
+    if (!array_equal(event.msg_name, Broker::Sell::txn::kTxnName)) {
       return S_FALSE;
     }
-    started_ = false;
+    GetPipelineManager().set_txn_executing(false);
     return S_OK;
   }
 
   HRESULT Handler_t::MessageHandler(const DP::Message::Data_t* pMessage) {
-    LogInfo(L"TxSellItems::MessageHandler, msg_name: %S", pMessage->msg_name.data());
+    LogInfo(L"TxSellItems::MessageHandler, %S", pMessage->msg_name.data());
     // TODO this is all a bit haxy and needs some thought & cleanup
     // on multiple aisles probably
-    if (!started_) return S_FALSE;
-    dp::msg_ptr_t msg_ptr = std::move(Transform(*pMessage));
-    if (!msg_ptr) return S_FALSE;
+    if (!GetPipelineManager().txn_executing()) {
+      LogInfo(L"  No txn executing");
+      return S_FALSE;
+    }
+    dp::msg_ptr_t msg_ptr = Transform(*pMessage);
+    if (!msg_ptr) {
+      LogError(L"  Transform failed");
+      return S_FALSE;
+    }
     if (!tx_sellitems_.promise().txn_started()) {
-      if (strcmp(pMessage->msg_name.data(), Sell::kMsgName) != 0) return S_FALSE;
+      if (!array_equal(pMessage->msg_name, Sell::kMsgName)) {
+        return S_FALSE;
+      }
       return StartTxn(std::move(msg_ptr), CreateTxnState());
     }
-    return SendMsgToTxn(std::move(msg_ptr));
+    else {
+      return SendMsgToTxn(std::move(msg_ptr));
+    }
   }
 
   dp::msg_ptr_t Handler_t::Transform(const DP::Message::Data_t& msg) const {
-    if (strcmp(msg.msg_name.data(), Sell::kMsgName) == 0) {
+    if (array_equal(msg.msg_name, Sell::kMsgName)) {
       using namespace Broker::Sell::Translate;
       return Legacy::Transform(reinterpret_cast<const Legacy::Data_t&>(msg));
     }
-    else if (strcmp(msg.msg_name.data(), SetPrice::kMsgName) == 0) {
+    else if (array_equal(msg.msg_name, SetPrice::kMsgName)) {
       using namespace Broker::SetPrice::Translate;
       return Legacy::Transform(reinterpret_cast<const Legacy::Data_t&>(msg));
     }
@@ -113,25 +122,22 @@ namespace Broker::Transaction::SellItems {
   }
 
   HRESULT Handler_t::SendMsgToTxn(dp::msg_ptr_t msg_ptr) {
-    DP::Event::StopAcquire_t stop(DP::Event::Flag::Flush);
-    GetPipelineManager().SendEvent(stop);
+    //DP::Event::StopAcquire_t stop(DP::Event::Flag::Flush);
+    //GetPipelineManager().SendEvent(stop);
+    LogInfo(L"sending message to txn::sell_item");
     dp::msg_ptr_t out = tx_sellitems_.send_value(std::move(msg_ptr));
     if (out) {
       dp::Dispatch(*out.get());
       if ((tx_sellitems_.promise().txn_state() == dp::txn::state::ready)
-        && dp::succeeded(tx_sellitems_.promise().result()))
+        && tx_sellitems_.promise().result().succeeded())
       {
         LogInfo(L"TxSellItems::TXN_COMPLETE!");
-        started_ = false;
+        GetPipelineManager().set_txn_executing(false);
       }
       else {
         LogInfo(L"TxSellItems::Active because txn_state(%d), result(%d)",
           tx_sellitems_.promise().txn_state(), tx_sellitems_.promise().result());
       }
-    }
-    if (started_) {
-      DP::Event::StartAcquire_t start;
-      GetPipelineManager().SendEvent(start);
     }
     return S_OK;
   }

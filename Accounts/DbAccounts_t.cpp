@@ -36,7 +36,7 @@ CString DbAccounts_t::GetDefaultConnect()
     {
         throw std::logic_error("DbAccounts_t::GetDefaultConnect() not allowed");
     }
-    throw logic_error("DbAccounts_t not impelemented");
+    throw std::logic_error("DbAccounts_t not impelemented");
 //    return GetConnectString(BuySell);
 }
 

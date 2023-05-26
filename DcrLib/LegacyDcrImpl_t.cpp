@@ -214,7 +214,7 @@ GetTableText(
     TextTable_i* pTextTable) const
 {
     pSurface; rcTable; tableInfo; columnRects; columnSurfaces; pTextTable;
-    throw runtime_error("not implemented");
+    throw std::runtime_error("not implemented");
 }
 
 int

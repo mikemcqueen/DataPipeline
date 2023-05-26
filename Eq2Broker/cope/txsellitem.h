@@ -7,7 +7,7 @@
 #include "DcrBrokerSell.h"
 
 namespace Broker::Sell::txn {
-  inline constexpr auto kTxnName{ "txn::sell_items" };
+  inline constexpr std::string_view kTxnName{ "txn::sell_items" };
 
   struct state_t {
     std::string item_name;

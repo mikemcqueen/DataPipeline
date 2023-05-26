@@ -144,7 +144,7 @@ wParam;
     case WM_USER:
         {
             ASSERT(0);
-            shared_ptr<const wstring> *str = (shared_ptr<const wstring>*)lParam;
+            std::shared_ptr<const std::wstring> *str = (std::shared_ptr<const std::wstring>*)lParam;
             SendMessage(hChild, LB_ADDSTRING, 0, LPARAM(str->get()->c_str()));
             delete str;
         }

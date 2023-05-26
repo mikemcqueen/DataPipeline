@@ -53,7 +53,7 @@ namespace Broker::Transaction::SellItems {
     dp::msg_ptr_t Transform(const DP::Message::Data_t& base_msg) const;
 
     dp::txn::handler_t tx_sellitems_;
-    bool started_ = false;
+    //bool started_ = false;
   };
 
 } // namespace Broker::Transaction::SellItems

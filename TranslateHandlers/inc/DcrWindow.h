@@ -96,10 +96,10 @@ namespace Translate {
 
     bool Validate(
       const DP::Message::Data_t* pMessage,
-      Ui::WindowId_t       WindowId) const
+      Ui::WindowId_t WindowId) const
     {
       Ui::WindowId_t ssWindowId = Ui::Window::Id::Unknown;
-      if (0 == strcmp(pMessage->msg_name.data(), "SsWindow")) {
+      if (array_equal(pMessage->msg_name, SsWindow::Acquire::kMsgName)) {
         auto& ssData = static_cast<const AcquireData_t&>(*pMessage);
         ssWindowId = ssData.WindowId;
         if (ssData.WindowId == WindowId) {
@@ -115,7 +115,7 @@ namespace Translate {
     Ui::WindowId_t m_WindowId;
     TranslatePolicy_t& m_TranslatePolicy;
     ValidatePolicy_t& m_ValidatePolicy;
-    wstring m_name;
+    std::wstring m_name;
   };
 
 } // Translate

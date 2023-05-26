@@ -14,7 +14,7 @@ class AccountManager_t
 {
 private:
 
-    shared_ptr<Account_t> m_spAccount;
+    std::shared_ptr<Account_t> m_spAccount;
 
 public:
 

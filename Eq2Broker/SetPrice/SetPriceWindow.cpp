@@ -38,7 +38,7 @@ namespace Broker::SetPrice {
     HRESULT hr = g_pDisplay->CreateSurfaceFromBitmap(&origin_surface_,
       MAKEINTRESOURCE(IDB_SETPRICE_OKBUTTON));
     if (FAILED(hr)) {
-      throw runtime_error("SetPriceWindow(): Create SetPrice_OkButton surface");
+      throw std::runtime_error("SetPriceWindow(): Create SetPrice_OkButton surface");
     }
   }
 
@@ -54,6 +54,7 @@ namespace Broker::SetPrice {
     // bottom 3rd
     rect.top += rect.bottom * 2 /  3;
   }
+
 
   bool Window_t::FindBorder(
     const CSurface& Surface,

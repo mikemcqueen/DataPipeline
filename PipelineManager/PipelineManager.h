@@ -62,8 +62,8 @@ namespace DP {
       std::string name;
     };
 
-    typedef vector<HandlerData_t>                HandlerVector_t;
-    typedef map<TransactionId_t, HandlerData_t>  TxIdHandlerMap_t;
+    typedef std::vector<HandlerData_t>                HandlerVector_t;
+    typedef std::map<TransactionId_t, HandlerData_t>  TxIdHandlerMap_t;
 
     struct CompareMessage_t final {
       bool operator()(
@@ -99,11 +99,13 @@ namespace DP {
       std::string_view msg_name = {});
 
 
+/*
     void AddTransactionHandler(
       Stage_t          stage,
       TransactionId_t  transactionId,
       Handler_t& handler,
       std::string_view displayName);
+*/      
 
     size_t StartAcquiring(
       std::string_view msg_name = {},
@@ -128,11 +130,16 @@ namespace DP {
 
     HANDLE GetIdleEvent() const { return m_MessageThread.GetIdleEvent(); }
 
-    const char* GetTransactionName(TransactionId_t txId) const;
+    //const char* GetTransactionName(TransactionId_t txId) const;
+
+    auto txn_executing() { return txn_executing_.load(); }
+    // return void for now. bool in future maybe.
+    void set_txn_executing(bool flag);
 
   private:
 
     void Dispatch(Message::Data_t* pMessage);
+    void AfterDispatch(Message::Data_t* pMessage);
 
     void Release(Message::Data_t* pData);
 
@@ -141,14 +148,14 @@ namespace DP {
       std::string_view msg_name,
       HandlerVector_t::const_iterator& it) const;
 
-    HRESULT TrySendTransactionMessage(
-      Message::Data_t* pMessage,
-      Stage_t stage);
+    // HRESULT TrySendTransactionMessage(Message::Data_t* pMessage, Stage_t stage);
 
+    /*
     // TransactionManager internal call
     HRESULT SendTransactionEvent(
       Transaction::Data_t& Data,
       Transaction::Data_t* pLastTxData = nullptr);
+    */
 
   private:
     PipelineManager_t(const PipelineManager_t&) = delete;
@@ -156,9 +163,9 @@ namespace DP {
 
     MessageThread_t  m_MessageThread;
     HandlerVector_t  m_Handlers;
-    TxIdHandlerMap_t m_txHandlerMap;
+    //TxIdHandlerMap_t m_txHandlerMap;
     CAutoCritSec     m_csHandlers;
-    bool acquire_on_demand_ = false;
+    std::atomic<bool> txn_executing_;
   };
 
 } // DP

@@ -8,7 +8,7 @@
 #include <string_view>
 #include "dp_msg.h"
 #include "log.h"
-#include "Rect.h"
+//#include "Rect.h"
 
 namespace dp::txn {
   enum class state : int {
@@ -18,8 +18,8 @@ namespace dp::txn {
   };
 
   struct data_t : msg::data_t {
-    data_t(std::string_view msg_name, std::string_view tx_name) :
-      msg::data_t(msg_name), txn_name(tx_name) {}
+    data_t(std::string_view msg_name, std::string_view txn_name) :
+      msg::data_t(msg_name), txn_name(txn_name) {}
 
     std::string txn_name;
   };
@@ -40,10 +40,24 @@ namespace dp::txn {
       return std::move(*txn_start.state.get());
     }
 
-    constexpr start_t(std::string_view txn_name, msg_ptr_t m_ptr,
-        state_ptr_t s_ptr) :
-      data_t(msg::name::txn_start, txn_name),
-      msg_ptr(std::move(m_ptr)), state_ptr(std::move(s_ptr)) {}
+    static auto validate(const msg_t& msg, std::string_view txn_name) {
+      if (!is_start_txn(msg)) {
+        return result_code::e_unexpected_msg_name;
+      }
+      const auto* txn = dynamic_cast<const start_t<stateT>*>(&msg);
+      if (!txn) {
+        return result_code::e_unexpected_msg_type;
+      }
+      if (txn->txn_name != txn_name) {
+        return result_code::e_unexpected_txn_name;
+      }
+      return result_code::s_ok;
+    }
+
+    constexpr start_t(std::string_view txn_name, msg_ptr_t msg_ptr,
+        state_ptr_t state_ptr) :
+      data_t(msg::name::kTxnStart, txn_name),
+      msg_ptr(std::move(msg_ptr)), state_ptr(std::move(state_ptr)) {}
 
     msg_ptr_t msg_ptr;
     state_ptr_t state_ptr;
@@ -68,9 +82,9 @@ namespace dp::txn {
 
     struct initial_awaitable;
     struct promise_type {
+      auto get_return_object() noexcept { return handler_t{ this }; }
       initial_awaitable initial_suspend() noexcept { return {}; }
       std::suspend_always final_suspend() noexcept { return {}; }
-      auto get_return_object() noexcept { return handler_t{ this }; }
       void unhandled_exception() {
         LogError(L"************* Exception in %S **************",
           active_handle_.promise().txn_name().c_str());
@@ -94,7 +108,7 @@ namespace dp::txn {
       auto prev_handle() const { return prev_handle_; }
       void set_prev_handle(handle_t h) { prev_handle_.emplace(h); }
 
-      //      const auto& in() const { return *in_ptr_.get(); }
+      // const auto& in() const { return *in_ptr_.get(); }
       auto& in() const { return *in_ptr_.get(); }
       void emplace_in(msg_ptr_t in_ptr) { in_ptr_ = std::move(in_ptr); }
       [[nodiscard]] msg_ptr_t&& in_ptr() { return std::move(in_ptr_); }
@@ -103,15 +117,16 @@ namespace dp::txn {
       void emplace_out(msg_ptr_t out_ptr) { out_ptr_ = std::move(out_ptr); }
       [[nodiscard]] msg_ptr_t&& out_ptr() { return std::move(out_ptr_); }
 
-      const std::string& txn_name() { return txn_name_; }
-      void set_txn_name(const std::string& txn_name) { txn_name_ = txn_name; }
+      const std::string& txn_name() const noexcept { return txn_name_; }
+      void set_txn_name(std::string_view txn_name) { txn_name_ = txn_name; }
 
-      auto result() const { return result_; }
-      void set_result(result_code rc) { result_ = rc; }
+      operator result_t&() { return result_; }
+      auto result() const noexcept { return result_; }
+      result_t set_result(result_code rc) noexcept { result_.set(rc); return result_;  }
 
-      state txn_state() const { return txn_state_; }
-      bool txn_started() const { return txn_state_ == state::started; }
-      bool txn_complete() const { return txn_state_ == state::complete; }
+      state txn_state() const noexcept { return txn_state_; }
+      bool txn_started() const noexcept { return txn_state_ == state::started; }
+      bool txn_complete() const noexcept { return txn_state_ == state::complete; }
       void set_txn_state(state txn_state) {
         LogInfo(L"%S:set_txn_state(%S)", txn_name_.c_str(),
           std::format("{}", txn_state).c_str());
@@ -126,14 +141,13 @@ namespace dp::txn {
       msg_ptr_t out_ptr_;
       std::string txn_name_;
       state txn_state_ = state::ready;
-      result_code result_ = result_code::s_ok;
+      result_t result_;
     };
 
     // TODO: private?
     struct initial_awaitable {
       bool await_ready() { return false; }
       bool await_suspend(handle_t h) {
-        LogInfo(L"initial_awaitable::await_suspend()");
         h.promise().set_root_handle(h);
         h.promise().set_active_handle(h);
         return false;
@@ -157,16 +171,15 @@ namespace dp::txn {
     auto root_handle() const noexcept { return promise().root_handle(); }
     auto& txn_name() const noexcept { return promise().txn_name(); }
 
-    void validate_send_value_msg(const msg_t& msg) {
+    void validate_send_value_msg(const msg_t& msg) const {
       if (msg::is_start_txn(msg)) {
         if (handle().promise().txn_started()) {
-          LogError(L"start_txn() already started: %S", handle().promise().txn_name().c_str());
+          LogError(L"send_value() %S already started", handle().promise().txn_name().c_str());
           throw std::logic_error("dp::txn::handler::start_txn(): txn already started");
         }
-      }
-      else if (!handle().promise().txn_started()) {
-        LogError(L"send_value() no txn started");
-        throw std::logic_error("dp::txn::handler::send_value(): no txn started");
+      } else if (!handle().promise().txn_started()) {
+        LogError(L"send_value() %S is not started", handle().promise().txn_name().c_str());
+        throw std::logic_error("dp::txn::handler::send_value(): txn not started");
       }
     }
 
@@ -190,27 +203,15 @@ namespace dp::txn {
     handle_t coro_handle_;
   }; // struct handler_t
 
-  inline auto validate_start(const msg_t& msg, std::string_view txn_name) {
-    if (msg.msg_name == msg::name::txn_start) {
-      auto* txn = dynamic_cast<const data_t*>(&msg);
-      if (txn && (txn->txn_name == txn_name)) {
-        return result_code::s_ok;
-      }
-    }
-    return result_code::e_unexpected;
-  }
-
   template<typename stateT>
-  struct receive_txn_awaitable : handler_t::basic_awaitable {
-    using start_t = start_t<stateT>;
-
-    receive_txn_awaitable(std::string_view txn_name, stateT& state) :
+  struct receive_awaitable : handler_t::basic_awaitable {
+    receive_awaitable(std::string_view txn_name, stateT& state) :
       txn_name_(txn_name), state_(state) {}
 
     std::coroutine_handle<> await_suspend(handler_t::handle_t h) {
       handler_t::basic_awaitable::await_suspend(h);
       if (promise().txn_state() == state::started) {
-        throw std::logic_error(std::format("receive_txn_awaitable({}), cannot "
+        throw std::logic_error(std::format("receive_awaitable({}), cannot "
           "be used with txn in 'started' state", promise().txn_name()));
       }
       promise().set_txn_name(txn_name_);
@@ -245,27 +246,30 @@ namespace dp::txn {
           throw std::runtime_error("impossible state");
         }
       }
-      LogInfo(L"  returning noop_coroutine");
+      LogInfo(L"  %S - returning noop_coroutine", promise().txn_name().c_str());
       return std::noop_coroutine();
     }
 
     handler_t::promise_type& await_resume() {
+      using start_t = start_t<stateT>;
       auto& txn = promise().in();
-      // validate this is the txn we expect, just because. although
-      // not sure what to do about failure at this point.
-      if (succeeded(validate_start(txn, txn_name_))) {
-        auto& txn_start = dynamic_cast<start_t&>(txn);
-        // copy/move initial state into coroutine frame
-        // NOTE: state move/copy MUST happen BEFORE emplace_in()
-        // TODO: is this actually a move? try w/moveonly state
-        state_ = std::move(*txn_start.state_ptr.get());
-        // extract msg_ptr from txn and plug it back in to promise().in().
-        promise().emplace_in(std::move(txn_start.msg_ptr));
-        promise().set_txn_state(state::started);
+      // validate this is a start_txn message for the txn we are expecting.
+      promise().set_result(start_t::validate(txn, txn_name_));
+      if (promise().result().failed()) {
+        LogError(L"Resuming %S... ****ERROR**** %d", txn_name_.c_str(),
+          (unsigned)promise().result().code);
         return promise();
       }
-      LogError(L"Resuming %S... ****ERROR**** ", txn_name_.c_str());
-      // TODO: return empty_promise()?
+      auto& txn_start = dynamic_cast<start_t&>(txn);
+      // copy/move initial state into coroutine frame
+      // NOTE: state move/copy MUST happen BEFORE emplace_in()
+      // why exactly?
+      // TODO: std::move into a reference, does this actually move?
+      // try with non-copyable type.
+      state_ = std::move(*txn_start.state_ptr.get());
+      // move msg_ptr from incoming txn to promise().in()
+      promise().emplace_in(std::move(txn_start.msg_ptr));
+      promise().set_txn_state(state::started);
       return promise();
     }
 
@@ -275,11 +279,11 @@ namespace dp::txn {
   };
 
   template<typename stateT>
-  struct start_txn_awaitable : handler_t::basic_awaitable {
+  struct start_awaitable : handler_t::basic_awaitable {
     using handle_t = handler_t::handle_t;
     using state_ptr_t = start_t<stateT>::state_ptr_t;
 
-    start_txn_awaitable(handle_t dst_handle, msg_ptr_t msg_ptr,
+    start_awaitable(handle_t dst_handle, msg_ptr_t msg_ptr,
       state_ptr_t state_ptr) :
       dst_handle_(dst_handle), msg_ptr_(std::move(msg_ptr)),
       state_ptr_(std::move(state_ptr)) {}
@@ -319,12 +323,12 @@ namespace dp::txn {
       std::move(state_ptr));
   }
 
-  inline void complete(handler_t::promise_type& promise, result_code rc) {
+  inline void complete(handler_t::promise_type& promise) { //, result_code rc) {
     if (!promise.txn_started()) {
       throw std::logic_error("txn::complete(): txn is not in started state");
     }
     promise.set_txn_state(state::complete);
-    promise.set_result(rc);
+    //promise.set_result(rc);
   }
 } // namespace dp::txn
 

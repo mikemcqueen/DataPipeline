@@ -52,7 +52,7 @@ private:
 	CharDataVector        m_vCharData;
 	KernPairVector        m_vKernPairs;
 	std::vector<int>      m_charWidths;
-	unique_ptr<CSurface>  m_pSurface;
+	std::unique_ptr<CSurface>  m_pSurface;
 	int                   m_iSpaceWidth;
     bool                  m_valid;
 

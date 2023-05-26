@@ -34,7 +34,7 @@ public:
   // DCR virtual:
   bool TranslateSurface(CSurface* pSurface, const Rect_t& rect) override;
 
-  const string& GetText() const { return text_; }
+  const std::string& GetText() const { return text_; }
   bool GetHasCaret() const { return m_hasCaret; }
 
 private:

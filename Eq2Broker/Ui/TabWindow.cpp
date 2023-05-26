@@ -92,7 +92,7 @@ Ui::WindowId_t TableWindow_t::GetWindowId(
   const POINT* pptHint) const
 {
   if (!pptHint) {
-    throw invalid_argument("TableWindow_t::GetWindowId()");
+    throw std::invalid_argument("TableWindow_t::GetWindowId()");
   }
   Rect_t TableRect;
   SIZE ScrollOffsets = { 0, 0 };
@@ -196,7 +196,7 @@ bool TableWindow_t::FindTable(
     // m_TableSize.cy = 0;
   }
 
-  DWORD Flags = 1;// set to 1 to debug
+  DWORD Flags = 0;// set to 1 to debug
   const int TopBorderWidth = Surface.GetWidthInColorRange(
     ptTable.x, ptTable.y, BorderLowColor, BorderHighColor, Flags);
   if (kMinTableWidth > TopBorderWidth) {

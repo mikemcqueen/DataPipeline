@@ -40,12 +40,11 @@ namespace DP
 
     void Data_t::SetState(State_t state) {
       if (State::Complete == State) {
-        throw logic_error("TxData::SetState() Transaction already completed");
+        throw std::logic_error("TxData::SetState() Transaction already completed");
       }
       State = state;
       stateTimeout = 0;
-      LogAlways(L"%s::SetState(%x)",
-        GetPipelineManager().GetTransactionName(Id), state);
+      //LogAlways(L"%s::SetState(%x)", GetPipelineManager().GetTransactionName(Id), state);
     }
   } // Transaction
 
@@ -82,9 +81,9 @@ namespace DP
       bool                 fInterrupt)
   {
     if (nullptr == pTxData) {
-      throw invalid_argument("TM::ExecuteTransaction()");
+      throw std::invalid_argument("TM::ExecuteTransaction()");
     }
-    LogInfo(L"TM::ExecuteTransaction(%s)", GetPipelineManager().GetTransactionName(pTxData->Id));
+    //LogInfo(L"TM::ExecuteTransaction(%s)", GetPipelineManager().GetTransactionName(pTxData->Id));
     bool bRet = false;
     CLock lock(m_cs);
     if (SetTransactionExecuting(pTxData, fInterrupt)) {
@@ -112,14 +111,14 @@ namespace DP
     CLock lock(m_cs);
     Data_t* pData = GetTransactionExecuting();
     if (nullptr == pData) {
-      throw logic_error("TM::CompleteTransaction() No transaction executing");
+      throw std::logic_error("TM::CompleteTransaction() No transaction executing");
     }
     Transaction::Data_t* pTxData = pData->pTxData;
     if (TransactionId != pTxData->Id) {
-      throw invalid_argument("TM::CompleteTransaction() TransactionId invalid");
+      throw std::invalid_argument("TM::CompleteTransaction() TransactionId invalid");
     }
-    LogAlways(L"TM::CompleteTransaction(%s) Error(%x)",
-      GetPipelineManager().GetTransactionName(pTxData->Id), Error);
+    //LogAlways(L"TM::CompleteTransaction(%s) Error(%x)",
+    //  GetPipelineManager().GetTransactionName(pTxData->Id), Error);
     pTxData->Error = Error;
     pTxData->SetState(Transaction::State::Complete);
     GetPipelineManager().QueueApc(ApcComplete, ULONG_PTR(pTxData));
@@ -154,6 +153,7 @@ namespace DP
 
   ///////////////////////////////////////////////////////////////////////////////
 
+
   void TransactionManager_t::SendEvent(
     const wchar_t* eventName,
     Transaction::Data_t* pPrevTxData /*= nullptr*/)
@@ -161,7 +161,7 @@ namespace DP
     CLock lock(m_cs);
     Data_t* pData = GetTransactionExecuting();
     if (nullptr == pData) {
-      throw logic_error("TM::CompleteTransaction() No transaction executing");
+      throw std::logic_error("TM::CompleteTransaction() No transaction executing");
     }
     Transaction::Data_t* pTxData = pData->pTxData;
     LogAlways(L"TM::SendEvent(%s::%s) State(%d)",
@@ -294,7 +294,7 @@ namespace DP
       delete data.pTxData;
     }
     else {
-      throw logic_error("XM::ExecuteNext() Nothing to execute!");
+      throw std::logic_error("XM::ExecuteNext() Nothing to execute!");
     }
     // if one of the containers is non-empty, we have a newly active transaction
     if (!m_stack.empty() || !m_queue.empty()) {

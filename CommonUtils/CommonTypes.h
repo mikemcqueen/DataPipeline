@@ -23,4 +23,14 @@ constexpr bool operator==(underlying_type_int auto lhs, underlying_type_int auto
     return static_cast<int>(lhs) == static_cast<int>(rhs);
 }
 
+template<size_t N>
+auto array_equal(const std::array<char, N>& array, std::string_view sv) {
+  return std::strncmp(array.data(), sv.data(), array.size()) == 0;
+}
+
+template<size_t N>
+auto array_equal(const std::array<char, N>& array1, std::array<char, N> array2) {
+  return std::strncmp(array1.data(), array2.data(), array1.size()) == 0;
+}
+
 #endif // Include_COMMONTYPES_H_

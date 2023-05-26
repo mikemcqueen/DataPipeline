@@ -5,7 +5,7 @@
 #include "DcrSetPrice.h"
 
 namespace Broker::SetPrice::txn {
-  constexpr auto kTxnName{ "txn::set_price" };
+  constexpr std::string_view kTxnName{ "txn::set_price" };
 
   struct state_t {
     std::string prev_msg_name; // i.e. "who called us"

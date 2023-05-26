@@ -14,7 +14,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 struct BuySellData_t;
-typedef map<ItemId_t, BuySellData_t> ItemBuySellMap_t;
+typedef std::map<ItemId_t, BuySellData_t> ItemBuySellMap_t;
 
 namespace Accounts
 {

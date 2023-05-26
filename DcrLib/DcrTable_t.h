@@ -79,7 +79,7 @@ public:
 private:
   std::vector<Rect_t> InitColumnRects(const TableInfo_t& tableInfo) const;
 
-  std::vector<unique_ptr<CSurface>> InitColumnSurfaces(
+  std::vector<std::unique_ptr<CSurface>> InitColumnSurfaces(
     const std::vector<RECT>& columnRects) const;
 
   int ReadTable(
@@ -96,7 +96,7 @@ private:
     const std::vector<std::unique_ptr<CSurface>>& columnSurfaces,
     TextTable_i* pText) const;
 
-  optional<int> GetSelectedRow(
+  std::optional<int> GetSelectedRow(
     CSurface& surface,
     const Rect_t& tableRect,
     const ColorRange_t& colors) const;

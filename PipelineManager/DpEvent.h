@@ -54,13 +54,13 @@ namespace DP {
     };
 
     struct StartAcquire_t : Data_t {
-      StartAcquire_t() :
-        Data_t(Stage_t::Acquire, Event::Id::Start, sizeof(StartAcquire_t)) {}
+      StartAcquire_t() : Data_t(Stage_t::Acquire, Event::Id::Start,
+        sizeof(StartAcquire_t), 0, "event::start_acquiriing") {}
     };
 
     struct StopAcquire_t : Data_t {
       StopAcquire_t(Flag_t flags = 0) : Data_t(Stage_t::Acquire, Event::Id::Stop,
-        sizeof(StopAcquire_t), flags) {}
+        sizeof(StopAcquire_t), flags, "event::stop_acquiring") {}
     };
   }// Event
 

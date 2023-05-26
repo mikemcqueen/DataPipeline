@@ -20,7 +20,6 @@ namespace SsWindow::Acquire {
         Window.SyncHwnd();
         if (Window.IsVisibleTopWindow()) {
           Window.GetClientRect(rect);
-          LogInfo(L"ClientRect.size = %dx%d", rect.Width(), rect.Height());
           return Window.Hwnd();
         }
         return (HWND)nullptr;
@@ -84,7 +83,7 @@ namespace SsWindow::Acquire {
   }
 
   void Handler_t::AsyncEvent(const DP::Event::Data_t& Data) {
-    LogInfo(L"SsWindow::AsyncEvent(%d, %d)", Data.Id, Data.Size);
+    //LogInfo(L"SsWindow::AsyncEvent(%d, %d)", Data.Id, Data.Size);
 
     if (!SetEventPending(true)) {
       DP::Event::Data_t EventData(DP::Stage_t::Any);
@@ -201,7 +200,7 @@ namespace SsWindow::Acquire {
   }
 
   void Handler_t::SendChars(const Ui::Event::SendChars::Data_t& Data) {
-    LogInfo(L"SsWindow::SendChars(%ls)", Data.Chars.data());
+    LogInfo(L"SsWindow::SendChars(%S)", Data.Chars.data());
     if (!m_bClick || !m_Window.IsVisibleTopWindow()) {
       return;
     }
@@ -222,7 +221,7 @@ namespace SsWindow::Acquire {
     pool<CSurface>::item_t* pPoolItem)
   {
     //using Legacy::Data_t;
-    LogInfo(L"SsWindow::PostData()");
+    //LogInfo(L"SsWindow::PostData()");
     void* pBuffer = GetPipelineManager().Alloc(sizeof(Data_t));
     if (nullptr == pBuffer) {
       LogError(L"SsWindow::PostData(): Alloc callback data failed.");
@@ -231,11 +230,11 @@ namespace SsWindow::Acquire {
       pPoolItem->addref(); // Haxington Heights
       Data_t* pData = new (pBuffer)
         Data_t(
-          GetName().c_str(),
+          kMsgName,
           Ui::Window::Id::Unknown,
           pPoolItem);
 
-      LogInfo(L"SsWindow_t::PostData: data %S", typeid(*pData).name());
+      //LogInfo(L"SsWindow::PostData: data %S", typeid(*pData).name());
 
       HRESULT hr = GetPipelineManager().Callback(pData);
       if (FAILED(hr)) {

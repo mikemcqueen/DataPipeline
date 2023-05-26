@@ -120,7 +120,7 @@ public:
     impl_map_.emplace(method, make_unique<erased::impl_t<T>>(std::move(impl)));
   }
 
-  static unique_ptr<erased::interface_t> remove_impl(DcrImpl method) {
+  static std::unique_ptr<erased::interface_t> remove_impl(DcrImpl method) {
     if (!impl_map_.contains(method)) {
       throw std::invalid_argument(std::format("DcrImpl doesn't exist, method: {}", int(method)));
     }

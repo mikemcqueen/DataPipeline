@@ -41,9 +41,9 @@ namespace Broker::Buy::Translate {
         const TextTable_t& textTable,
         size_t initSelectedRow,
         const PageNumber_t& initPageNumber,
-        const string& initSearchText,
+        const std::string& initSearchText,
         bool initSearchBoxHasCaret,
-        const string& initSavedSearch) :
+        const std::string& initSavedSearch) :
         DP::Message::Data_t(
           DP::Stage_t::Translate,
           Message::Id::Buy,

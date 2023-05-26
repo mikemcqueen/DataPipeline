@@ -36,6 +36,7 @@ namespace DP {
     {
     case State::Execute:
       pPM->Dispatch(pData);
+      pPM->AfterDispatch(pData);
       break;
 
     case State::Free:
@@ -80,7 +81,7 @@ namespace DP {
   {
     if (0 == (intValue(pD1->Stage) & intValue(pD2->Stage)))
       return false;
-    if (0 != strcmp(pD1->msg_name.data(), pD2->msg_name.data()))
+    if (!array_equal(pD1->msg_name, pD2->msg_name))
       return false;
     return true;
   }
@@ -101,9 +102,8 @@ namespace DP {
 
   size_t PipelineManager_t::StartAcquiring(
     std::string_view, /* msg_name = {} */
-    bool on_demand /* = false */)
+    bool /*on_demand = false */)
   {
-    acquire_on_demand_ = on_demand;
     Event::StartAcquire_t eventStart;
     return SendEvent(eventStart);
   }
@@ -112,6 +112,26 @@ namespace DP {
     Event::StopAcquire_t eventStop;
     return SendEvent(eventStop);
   }
+
+  void PipelineManager_t::set_txn_executing(bool flag) {
+    bool executing = txn_executing();
+    if (executing && flag) {
+      LogError(L"A transaction is already executing");
+    } else if (!executing && !flag) {
+      LogError(L"No transaction is executing");
+    } else if (txn_executing_.exchange(flag) == flag) {
+      LogError(L"Attempted to set txn_executing to same state (%d)", flag);
+    }
+    else {
+      if (flag) {
+        StartAcquiring();
+      }
+      else {
+        StopAcquiring();
+      }
+    }
+  }
+
 
   class StageNameMap_t final :
     public std::unordered_map<Stage_t, std::wstring_view>
@@ -138,19 +158,19 @@ namespace DP {
 
     static StageNameMap_t make_new() {
       StageNameMap_t m;
-      m.insert(make_pair(Stage_t::None, L"None"));
-      m.insert(make_pair(Stage_t::Acquire, L"Acquire"));
-      m.insert(make_pair(Stage_t::Translate, L"Translate"));
-      m.insert(make_pair(Stage_t::Interpret, L"Interpret"));
-      m.insert(make_pair(Stage_t::Analyze, L"Analyze"));
-      m.insert(make_pair(Stage_t::Execute, L"Execute"));
-      m.insert(make_pair(Stage_t::Any, L"Any"));
+      m.insert(std::make_pair(Stage_t::None, L"None"));
+      m.insert(std::make_pair(Stage_t::Acquire, L"Acquire"));
+      m.insert(std::make_pair(Stage_t::Translate, L"Translate"));
+      m.insert(std::make_pair(Stage_t::Interpret, L"Interpret"));
+      m.insert(std::make_pair(Stage_t::Analyze, L"Analyze"));
+      m.insert(std::make_pair(Stage_t::Execute, L"Execute"));
+      m.insert(std::make_pair(Stage_t::Any, L"Any"));
       return m;
     }
   };
 
   /* static */
-  wstring_view PipelineManager_t::GetStageString(Stage_t stage) {
+  std::wstring_view PipelineManager_t::GetStageString(Stage_t stage) {
     static StageNameMap_t stageNameMap = StageNameMap_t::make_new();
     return stageNameMap.GetStageName(stage);
   }
@@ -186,18 +206,19 @@ namespace DP {
     if (!Handler.Initialize(msg_name)) {
       LogError(L"PM::AddHandler(%d, %S): Handler.Initialize() failed", Stage,
         msg_name);
-      throw runtime_error("PM::AddHandler()");
+      throw std::runtime_error("PM::AddHandler()");
     }
     HandlerData_t hd(Stage, &Handler);
     CLock lock(m_csHandlers);
     m_Handlers.push_back(hd);
   }
 
+/*
   void PipelineManager_t::AddTransactionHandler(
     Stage_t         stage,
     TransactionId_t transactionId,
     Handler_t& handler,
-    std::string_view displayName /* = {} */)
+    std::string_view displayName)
   {
     if (handler.Initialize(nullptr)) {
       // NOTE: obviously this only allows for one handler per transaction Id,
@@ -213,7 +234,7 @@ namespace DP {
         }
         HandlerData_t handlerData(stage, &handler, displayName);
         auto [_, added] = m_txHandlerMap.insert(
-          make_pair(transactionId, handlerData));
+          std::make_pair(transactionId, handlerData));
         if (added) {
           return; // Success
         }
@@ -230,14 +251,14 @@ namespace DP {
       LogError(L"PM::AddTransactionHandler(): Handler.Initialize(%d, %d) failed",
         stage, transactionId);
     }
-    throw runtime_error("PM::AddTransactionHandler()");
+    throw std::runtime_error("PM::AddTransactionHandler()");
   }
-
+*/
   ////////////////////////////////////////////////////////////////////////////////
 
   size_t PipelineManager_t::SendEvent(Event::Data_t& Data) {
     if (DP::Message::Type::Event != Data.Type) { // && (Type::Transaction != Data.Type))
-      throw invalid_argument("PM::SendEvent(): Invalid message type");
+      throw std::invalid_argument("PM::SendEvent(): Invalid message type");
     }
 
     size_t Total = 0;
@@ -269,21 +290,23 @@ namespace DP {
       }
       ++it;
     }
-    LogInfo(L"SendEvent(): Total (%d) Handled (%d)", Total, Handled);
+    LogInfo(L"--SendEvent(%S): Total (%d) Handled (%d)", Data.msg_name.data(),
+      Total, Handled);
     return Handled;
   }
 
+/*
   HRESULT PipelineManager_t::SendTransactionEvent(
     Transaction::Data_t& Data,
-    Transaction::Data_t* pPrevTxData /*= nullptr*/)
+    Transaction::Data_t* pPrevTxData)
   {
     //using namespace DP::Message;
     if (DP::Message::Type::Transaction != Data.Type) {
       //        return E_FAIL;
-      throw invalid_argument("PM::SendTransactionEvent(): Invalid message type");
+      throw std::invalid_argument("PM::SendTransactionEvent(): Invalid message type");
     }
     if (Data.Size < sizeof(Transaction::Data_t)) {
-      throw invalid_argument("PM::SendTransactionEvent(): Invalid data size");
+      throw std::invalid_argument("PM::SendTransactionEvent(): Invalid data size");
     }
     CLock lock(m_csHandlers);
     TxIdHandlerMap_t::const_iterator it = m_txHandlerMap.find(Data.Id);
@@ -307,6 +330,7 @@ namespace DP {
     // LogError(L"PM::SendEvent(): Transaction event not handled");
     // throw logic_error("PM::SendEvent(): Transaction event not handled");
   }
+*/
 
   void* PipelineManager_t::Alloc(size_t Size) {
     return malloc(Size);
@@ -317,20 +341,16 @@ namespace DP {
   }
 
   HRESULT PipelineManager_t::Callback(Message::Data_t* pMessage) {
-    LogInfo(L"PipelineManager_t::Callback pMessage %S", typeid(*pMessage).name());
+    //LogInfo(L"PipelineManager_t::Callback pMessage %S", typeid(*pMessage).name());
 
     if (nullptr == pMessage) {
       throw std::invalid_argument("PipelineManager_t::Callback(): Invalid message");
     }
     switch (pMessage->Stage) {
     case Stage_t::Acquire:
-      if (acquire_on_demand_) {
-        StopAcquiring();
-      }
-      // [[fallthrough]
     case Stage_t::Translate:
     case Stage_t::Interpret:
-      LogInfo(L"PM::Callback (%s)", GetStageString(pMessage->Stage));
+      //LogInfo(L"PM::Callback (%s)", GetStageString(pMessage->Stage));
       break;
 
     default:
@@ -368,9 +388,11 @@ namespace DP {
       ASSERT(false);
       return;
     }
+/*
     if (SUCCEEDED(TrySendTransactionMessage(pMessage, NextStage))) {
       return;
     }
+*/
     // create list of output formats desired
     // walk list of translate handlers.  if a desired format is supported,
     //   translate and remove it from list
@@ -404,11 +426,20 @@ namespace DP {
       LogError(L"PM::Dispatch(%s) No handlers", GetStageString(pMessage->Stage));
     }
     else {
-      LogInfo(L"PM::Dispatch(%s) Total (%d) Handled(%d)",
-        GetStageString(pMessage->Stage), Total, Handled);
+      //LogInfo(L"PM::Dispatch(%s) Total (%d) Handled(%d)",
+      //  GetStageString(pMessage->Stage), Total, Handled);
     }
   }
 
+  void PipelineManager_t::AfterDispatch(Message::Data_t* pMsg) {
+    if (pMsg->Stage == Stage_t::Acquire) {
+      if (txn_executing()) {
+        StartAcquiring();
+      }
+    }
+  }
+
+/*
   HRESULT PipelineManager_t::TrySendTransactionMessage(
     Message::Data_t* pMessage,
     Stage_t          stage)
@@ -433,6 +464,7 @@ namespace DP {
     }
     return hr;
   }
+*/
 
   ////////////////////////////////////////////////////////////////////////////////
 
@@ -495,9 +527,11 @@ namespace DP {
     }
   }
 
+  /*
   const char* PipelineManager_t::GetTransactionName(TransactionId_t txId) const {
     static const char unknownName[] = "[Unknown]";
     auto it = m_txHandlerMap.find(txId);
     return (it != m_txHandlerMap.end()) ? it->second.name.c_str() : unknownName;
   }
+  */
 } // namespace DP

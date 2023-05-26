@@ -40,7 +40,7 @@ public:
         }
     }
 
-    void Log(shared_ptr<const wstring>& buf);
+    void Log(std::shared_ptr<const std::wstring>& buf);
     void Log(const wchar_t* buf);
 
     HWND GetHwnd() const { return m_hWnd; }

@@ -95,11 +95,11 @@ bool Eq2Broker_t::Start() {
     acquire = false;
   }
   if (acquire) {
-    constexpr size_t requiredTaskCount = 1; // 1 == SsWindow/SsTask
-    auto startedTaskCount = GetPipelineManager().StartAcquiring();
-    if (requiredTaskCount != startedTaskCount) {
+    const size_t required_tasks = 1; // 1 == SsWindow/SsTask
+    auto started_tasks = GetPipelineManager().StartAcquiring();
+    if (started_tasks < required_tasks) {
       LogError(L"Only (%d) of (%d) acquire handler(s) started",
-        startedTaskCount, requiredTaskCount);
+        started_tasks, required_tasks);
       return false;
     }
   }
@@ -220,7 +220,7 @@ bool Eq2Broker_t::CmdControl(const wchar_t* pszCmd) {
   return false;
 }
 
-void Eq2Broker_t::LoadAndSendTestImage(const wstring& testImagePath) {
+void Eq2Broker_t::LoadAndSendTestImage(const std::wstring& testImagePath) {
   LogInfo(L"Loading and processing test image: %s", testImagePath.c_str());
   // TODO: pool leaks.
   pool<CSurface>* pPool = new pool<CSurface>();
@@ -236,7 +236,7 @@ void Eq2Broker_t::PostSurfaceItem(pool<CSurface>* pPool, std::wstring_view testI
   CSurface* pSurface = new CSurface();
   HRESULT hr = g_pDisplay->CreateSurfaceFromBitmap(pSurface, testImagePath.data());
   if (FAILED(hr)) {
-    throw invalid_argument("CreateSurfaceFromBitmap failed");
+    throw std::invalid_argument("CreateSurfaceFromBitmap failed");
   }
   pool<CSurface>::item_t item(pPool, pSurface);
   item.addref();

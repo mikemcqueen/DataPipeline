@@ -38,7 +38,7 @@ CString ItemsOwned_t::GetDefaultConnect()
     {
         throw std::logic_error("ItemsOwned_t::GetDefaultConnect() not allowed");
     }
-    throw logic_error("ItemsOwned_t::GetDefaultConnect() not impelemented");
+    throw std::logic_error("ItemsOwned_t::GetDefaultConnect() not impelemented");
 }
 
 CString ItemsOwned_t::GetDefaultSQL()
@@ -116,7 +116,7 @@ Load(
     rs.AddParam(ItemsOwned_t::Field::CharacterIdParam);
     if (0 == rs.Open(CRecordset::forwardOnly, nullptr, Recordset_t::DefaultReadOnlyFlags))
     {
-        throw logic_error("ItemsOwned_t::Load(): rs.Open() failed");
+        throw std::logic_error("ItemsOwned_t::Load(): rs.Open() failed");
     }
     size_t totalItems = 0;
     for (; !rs.IsEOF(); rs.MoveNext())
@@ -125,7 +125,7 @@ Load(
             ItemQuantityMap_t::value_type(rs.m_item_id, rs.m_quantity));
         if (!inserted)
         {
-            throw logic_error("ItemsOwned_t::Load(): map.insert() failed");
+            throw std::logic_error("ItemsOwned_t::Load(): map.insert() failed");
         }
         totalItems += rs.m_quantity;
     }

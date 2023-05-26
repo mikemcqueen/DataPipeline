@@ -34,7 +34,7 @@ std::optional<Price_t> Price_t::MakeFromString(std::string_view text) {
   int plat;
   std::from_chars(all_digits.data(), all_digits.data() + all_digits.size(), plat);
   // assert(ptr == all_digits.end());
-  return make_optional<Price_t>(plat);
+  return std::make_optional<Price_t>(plat);
 }
 
 bool Price_t::FromString(std::string_view text) {

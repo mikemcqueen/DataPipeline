@@ -24,11 +24,11 @@ struct ForSaleData_t
     size_t Price;
     bool   isListed;
 };
-typedef multimap<ItemId_t, ForSaleData_t> ItemForSaleMap_t;
+typedef std::multimap<ItemId_t, ForSaleData_t> ItemForSaleMap_t;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-const wstring&
+const std::wstring&
 GetServerName(
     ServerId_t serverId);
 
@@ -41,7 +41,7 @@ private:
     const Account_t&  m_account;
     ServerId_t        m_serverId;
     CharacterId_t     m_id;
-    wstring           m_name;
+    std::wstring           m_name;
 
     
     ItemQuantityMap_t m_itemsOwned;
@@ -88,13 +88,13 @@ public:
     void Load();
     void Reload();
 
-    const CharacterId_t GetId() const            { return m_id; };
-    const wstring&      GetName() const          { return m_name; }
-    const wstring&      GetServerName() const    { return ::GetServerName(m_serverId); }
+    const CharacterId_t GetId() const         { return m_id; };
+    const std::wstring& GetName() const       { return m_name; }
+    const std::wstring& GetServerName() const { return ::GetServerName(m_serverId); }
 
     size_t
     WantToBuyHowManyAt(
-        const wstring& itemName,
+        const std::wstring& itemName,
         size_t price) const;
 
     void
@@ -102,7 +102,7 @@ public:
 
     bool
     BuyItem(
-        const wstring& itemName,
+        const std::wstring& itemName,
               size_t   price,
               size_t   quantity = 1,
               bool     pending = false);
@@ -170,13 +170,13 @@ private:
     OpenDb(
         CDatabase& db) const;
 
-    const wstring&
+    const std::wstring&
     GetDbPath(
-        wstring& dbPath) const;
+        std::wstring& dbPath) const;
 
-    const wstring&
+    const std::wstring&
     GetDbConnect(
-        wstring& dbConnect) const;
+        std::wstring& dbConnect) const;
 
 private:
 

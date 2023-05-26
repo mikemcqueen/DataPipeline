@@ -122,29 +122,29 @@ void StartupInitialize(
   //InitCommonControls(); // DrawShadowText
 
   if (!AfxWinInit(::GetModuleHandle(NULL), NULL, ::GetCommandLine(), 0)) {
-    throw runtime_error("MFC initialization failed");
+    throw std::runtime_error("MFC initialization failed");
   }
   srand(static_cast<unsigned>(time(nullptr)));
   Log::SetOutput(Log::Output::Debug);
   if (!Log_t::Get().Initialize()) {
-    throw runtime_error("Log_t::Initialize() failed");
+    throw std::runtime_error("Log_t::Initialize() failed");
   }
   if (!Log_t::Get().Open(g_szLogPrefix)) {
-    throw runtime_error("Log_t::Open() failed");
+    throw std::runtime_error("Log_t::Open() failed");
   }
   HRESULT hr = InitDirectDraw(GetDesktopWindow());
   if (FAILED(hr)) {
-    throw runtime_error("InitDirectDraw() failed");
+    throw std::runtime_error("InitDirectDraw() failed");
   }
 
   TesseractDcrImpl_t::Init();
 
   if (!GetPipelineManager().Initialize()) {
-    throw runtime_error("GetPipelineManager().Initialize() failed");
+    throw std::runtime_error("GetPipelineManager().Initialize() failed");
   }
   if (int result = ProcessCommandLine(argc, argv, pOptions); result <= 0) {
     if (result < 0) {
-      throw invalid_argument("ProcessCommandLine() failed.");
+      throw std::invalid_argument("ProcessCommandLine() failed.");
     }
     exit(result);
   }
@@ -178,10 +178,10 @@ void BrokerLoop(const Game::Options_t& options) {
   MainWindow_t mainWindow;
   Eq2Broker_t broker(mainWindow, options);
   if (!broker.Initialize()) {
-    throw runtime_error("broker.Initialize() failed");
+    throw std::runtime_error("broker.Initialize() failed");
   }
   if (!broker.Start()) {
-    throw runtime_error("broker.Start() failed");
+    throw std::runtime_error("broker.Start() failed");
   }
   broker.ReadConsoleLoop();
   broker.Stop();

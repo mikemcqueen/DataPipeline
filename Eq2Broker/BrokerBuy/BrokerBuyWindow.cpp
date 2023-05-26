@@ -72,7 +72,7 @@ namespace Broker::Buy {
         return Ui::Window_t::GetWidgetRect(widgetId, GetTableRect(), pRect,
           std::span{ MarketTabs });
       default:
-        throw logic_error("BrokerBuyWindow::GetWidgetRect() Invalid layout");
+        throw std::logic_error("BrokerBuyWindow::GetWidgetRect() Invalid layout");
       }
     }
     else {
@@ -89,7 +89,7 @@ namespace Broker::Buy {
       SetOffsets(MarketDefaultTabOffset, MarketDefaultTableOffset);
       break;
     default:
-      throw logic_error("BrokerBuyWindow::SetLayout() Invalid layout");
+      throw std::logic_error("BrokerBuyWindow::SetLayout() Invalid layout");
     }
   }
 } // namespace Broker::Buy

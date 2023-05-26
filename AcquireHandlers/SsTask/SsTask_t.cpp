@@ -18,8 +18,6 @@
 #include "CommonTypes.h"
 #include "Rect.h"
 
-using namespace std;
-
 DP::MessageId_t SsTask_t::s_MessageId = DP::Message::Id::Unknown;
 
 int release_count = 0;
@@ -30,7 +28,7 @@ void
 SsTask::Acquire::Data_t::ReleaseFn(DP::Message::Data_t& data) {
   auto& ssData = static_cast<SsTask::Acquire::Data_t&>(data);
   if (nullptr == ssData.pPoolItem) {
-    throw invalid_argument("SsData::pPoolItem is null");
+    throw std::invalid_argument("SsData::pPoolItem is null");
   }
   release_count++;
   ssData.pPoolItem->release();
@@ -165,14 +163,14 @@ HRESULT SsTask_t::EventHandler(DP::Event::Data_t& Data){
 }
 
 bool SsTask_t::Start() {
-    LogInfo(L"SsTask_t::Start()");
+    //LogInfo(L"SsTask_t::Start()");
     Resume();
     return true;
 }
 
 void SsTask_t::Stop(DP::Event::Flag_t flags)
 {
-    LogInfo(L"SsTask_t::Stop(%d)", flags);
+    //LogInfo(L"SsTask_t::Stop(%d)", flags);
     if (flags & DP::Event::Flag::Flush) {
       SuspendAndFlush();
     }
@@ -184,15 +182,13 @@ void SsTask_t::Stop(DP::Event::Flag_t flags)
 void SsTask_t::Suspend() {
   LONG lCount = InterlockedIncrement(&m_lSuspendCount);
   LogInfo(L"SsTask_t::Suspend(%d)", lCount);
-  if (1 == lCount)
-  {
+  if (1 == lCount) {
 #ifdef _DEBUG
     bool b =
 #endif
       SetSuspended(true);
     ASSERT(b);
-    if (!SameThread())
-    {
+    if (!SameThread()) {
       SignalObjectAndWait(m_hSuspendEvent.get(), m_hSuspendNotifyEvent.get(), INFINITE, FALSE);
     }
   }
@@ -201,25 +197,23 @@ void SsTask_t::Suspend() {
 void SsTask_t::Resume() {
   LONG lCount = InterlockedDecrement(&m_lSuspendCount);
   LogInfo(L"SsTask_t::Resume(%d)", lCount);
-  if (0 == lCount)
-  {
+  if (0 == lCount) {
 #ifdef _DEBUG
     bool b =
 #endif
       SetSuspended(false);
     ASSERT(b);
   }
-  else if (0 > lCount)
-  {
+  else if (0 > lCount) {
     LogError(L"SsTask_t::Resume() mismatched, (%d)\n", lCount);
-    throw logic_error("SsTask_t::Resume()");
+    throw std::logic_error("SsTask_t::Resume()");
   }
 }
 
 bool SsTask_t::SetSuspended(bool bSuspend) {
-    LONG lValue = bSuspend ? 1 : 0;
-    bool bPrev = (1 == InterlockedExchange(&m_lSuspended, lValue));
-    return bSuspend ^ bPrev;
+  LONG lValue = bSuspend ? 1 : 0;
+  bool bPrev = (1 == InterlockedExchange(&m_lSuspended, lValue));
+  return bSuspend ^ bPrev;
 }
 
 bool SsTask_t::IsSuspended() const {
@@ -227,15 +221,14 @@ bool SsTask_t::IsSuspended() const {
 }
 
 void SsTask_t::ClearEventData() {
-    m_EventData.clear();
-    m_EventCount = 0;
+  m_EventData.clear();
+  m_EventCount = 0;
 }
 
 void SsTask_t::AddEventData(const DP::Event::Data_t* pData){
   ASSERT(nullptr != pData);
-  if ((0 == pData->Size) || (MaxEventDataSize < pData->Size))
-  {
-    throw invalid_argument("SsTask_t::AddEventData() invalid size");
+  if ((0 == pData->Size) || (MaxEventDataSize < pData->Size)) {
+    throw std::invalid_argument("SsTask_t::AddEventData() invalid size");
   }
   size_t Size = m_EventData.size();
   m_EventData.resize(Size + pData->Size);
@@ -244,9 +237,8 @@ void SsTask_t::AddEventData(const DP::Event::Data_t* pData){
 }
 
 void SsTask_t::SetEventData(const DP::Event::Data_t& Data) {
-  if ((0 == Data.Size) || (MaxEventDataSize < Data.Size))
-  {
-    throw invalid_argument("SsTask_t::SetEventData() invalid size");
+  if ((0 == Data.Size) || (MaxEventDataSize < Data.Size)) {
+    throw std::invalid_argument("SsTask_t::SetEventData() invalid size");
   }
   m_EventData.resize(Data.Size);
   memcpy(&m_EventData[0], &Data, Data.Size);
@@ -262,7 +254,7 @@ const DP::Event::Data_t& SsTask_t::PeekEvent(size_t Event) const {
   if (m_EventData.empty() || (Event >= m_EventCount)) {
     LogError(L"SsTask_t::PeekEvent(): EventData empty (%d), or invalid index (%d)",
       m_EventData.size(), Event);
-    throw logic_error("SsTask_t::PeekEvent(): EventData empty, or invalid index");
+    throw std::logic_error("SsTask_t::PeekEvent(): EventData empty, or invalid index");
   }
 #endif
   size_t pos = 0;
@@ -353,19 +345,17 @@ DWORD WINAPI SsTask_t::ThreadFunc(void* pvParam){
       break;
 
     case WAIT_OBJECT_0 + Suspend:
-      LogInfo(L"SsTask_t::ThreadFunc()::Suspend");
+      //LogInfo(L"SsTask_t::ThreadFunc()::Suspend");
       SetEvent(pClass->m_hSuspendNotifyEvent.get());
       break;
 
     case WAIT_OBJECT_0 + Event:
-      LogInfo(L"SsTask_t::ThreadFunc()::Event");
+      //LogInfo(L"SsTask_t::ThreadFunc()::Event");
       pClass->ThreadProcessEvent();
       break;
 
     case WAIT_OBJECT_0 + Timer:
-      if (!pClass->IsSuspended())
-      {
-        //LogInfo(L"SsTask_t::ThreadFunc()::Timer");
+      if (!pClass->IsSuspended()) {
         pClass->Shutter();
       }
       break;
@@ -408,6 +398,8 @@ void SsTask_t::Shutter() {
     if (TakeSnapShot(hWnd, rc, pSurface)) {
       pPoolItem->set_state(PF_READY);
       ready_count++;
+      // TODO: if (on_demand)
+      Suspend();
       PostData(hWnd, pPoolItem);
     }
     last_hwnd_null = false;

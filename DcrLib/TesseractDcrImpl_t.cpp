@@ -24,9 +24,9 @@ void TesseractDcrImpl_t::Init() {
   if (impl_) {
     throw std::runtime_error("Tesseract already initialized");
   }
-  auto tess{ make_unique<TesseractDcrImpl_t>() };
+  auto tess{ std::make_unique<TesseractDcrImpl_t>() };
   if (auto result = tess->InitTesseract(nullptr, "eng"); result < 0) {
-    throw runtime_error(std::format("InitTesseract() failed, {}", result));
+    throw std::runtime_error(std::format("InitTesseract() failed, {}", result));
   }
   auto temp = tess.get();
   DCR::add_impl<TesseractDcrImpl_t>(DcrImpl::Tesseract, std::move(tess));
@@ -123,7 +123,7 @@ int TesseractDcrImpl_t::GetTableText(
 #endif
 #define LOGROWTEXT 1
 #if LOGROWTEXT
-    stringstream text;
+    std::stringstream text;
 #endif
     pTextTable->SetRowRect(row, rcRow);
     pTextTable->ClearRow(row);
@@ -153,7 +153,7 @@ int TesseractDcrImpl_t::GetTableText(
 #if LOGROWTEXT
         if (columnText[0]) {
           text << columnText;
-          text.seekp(-1, ios_base::end);
+          text.seekp(-1, std::ios_base::end);
         }
         else text << "[empty]";
         text << " | ";
@@ -177,7 +177,7 @@ int TesseractDcrImpl_t::InitTesseract(
   const char* languageCode)
 {
   if (tesseract_) {
-    throw new logic_error("Tesseract already initialized");
+    throw new std::logic_error("Tesseract already initialized");
   }
   tesseract_ = std::make_unique<tesseract::TessBaseAPI>();
   return tesseract_->Init(dataPath, languageCode);

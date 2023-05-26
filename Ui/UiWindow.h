@@ -70,7 +70,7 @@ namespace Ui::Window {
     Base_t(
       WindowId_t WindowId,
       const Base_t& ParentWindow,
-      string_view windowName,
+      std::string_view windowName,
       Vector_t children = {},
       Flag_t Flags = 0,
       std::span<const Widget::Data_t> widgets = std::span<const Widget::Data_t>{});
@@ -118,7 +118,7 @@ namespace Ui::Window {
       Ui::WidgetId_t  WidgetId,
       const Rect_t& RelativeRect,
       Rect_t* pWidgetRect,
-      span<const Widget::Data_t> widgets) const;
+      std::span<const Widget::Data_t> widgets) const;
 
     bool GetWidgetRect(
       Ui::WidgetId_t  WidgetId,

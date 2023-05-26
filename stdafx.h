@@ -83,4 +83,5 @@
 	#pragma warning(disable:28125) // InitialzeCriticalSection in try/except block
 #endif
 
-using namespace std;
+//using namespace std;
+namespace stdr = std::ranges;

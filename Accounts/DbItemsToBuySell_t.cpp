@@ -47,7 +47,7 @@ CString ItemsToBuySell_t::GetDefaultConnect()
     {
         throw std::logic_error("ItemsToBuySell_t::GetDefaultConnect() not allowed");
     }
-    throw logic_error("ItemsToBuySell_t not impelemented");
+    throw std::logic_error("ItemsToBuySell_t not impelemented");
 }
 
 CString ItemsToBuySell_t::GetDefaultSQL()
@@ -147,7 +147,7 @@ Load(
 
     if (0 == rs.Open(CRecordset::forwardOnly, nullptr, Recordset_t::DefaultReadOnlyFlags))
     {
-        throw logic_error("ItemsToBuySell_t::Load(): rs.Open() failed");
+        throw std::logic_error("ItemsToBuySell_t::Load(): rs.Open() failed");
     }
     for (; !rs.IsEOF(); rs.MoveNext())
     {
@@ -157,7 +157,7 @@ Load(
         if (!inserted)
         {
             LogError(L"ItemsToBuySell_t::Load(): map.insert(%d) failed", rs.m_ItemId);
-            throw logic_error("ItemsToBuySell_t::Load(): map.insert() failed");
+            throw std::logic_error("ItemsToBuySell_t::Load(): map.insert() failed");
         }
     }
     LogAlways(L"ItemsToBuySell_t::Load() map.size(%d)", map.size());

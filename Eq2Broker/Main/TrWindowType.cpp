@@ -37,9 +37,9 @@ namespace Broker::Translate {
   HRESULT WindowType_t::MessageHandler(const DP::Message::Data_t* pMessage) {
     LogInfo(L"WindowType::MessageHandler()");
     // TODO: access SsWindow::GetClass() from instance? make class static? why is there a class.
-    if (0 != strcmp(pMessage->msg_name.data(), "SsWindow")) {
+    if (!array_equal(pMessage->msg_name, SsWindow::Acquire::kMsgName)) {
       LogInfo(L"WindowType_t::MessageHandler(): Data type not supported, %S - expected %S",
-        pMessage->msg_name.data(), "SsWindow");
+        pMessage->msg_name.data(), SsWindow::Acquire::kMsgName.data());
       return S_FALSE;
     }
     auto& ssData = *static_cast<const SsWindow::Acquire::Data_t*>(pMessage);
@@ -91,9 +91,10 @@ namespace Broker::Translate {
       POINT pt{};
       auto childWindowId = main_window_.GetWindow(windowId).GetWindowId(surface, &pt);
       assert(childWindowId != Id::Unknown); // coz i want to know.
-      // ok so this can happen if there is something obscuring broker sell window for example,
-      // and it's not the setprice window.  like a tooltip.  probably should allow for retries
-      // and not abort. or just return brokerframe.
+      // ok so this can happen if there is something obscuring broker
+      // sell window for example, and it's not the setprice window.
+      // like a tooltip.  probably should allow for retries and not
+      // abort. or just return brokerframe.
       windowId = childWindowId;
     }
     return windowId;

@@ -18,7 +18,7 @@
 #include "DdUtil.h"
 
 namespace Broker { //TODO: ::Frame {
-  constexpr auto kWindowName = "BrokerFrame";
+  constexpr std::string_view kWindowName{ "BrokerFrame" };
 
   class Window_t : public Ui::Window_t {
   public:

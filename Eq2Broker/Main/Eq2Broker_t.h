@@ -71,7 +71,7 @@ private:
   bool CmdTransaction(const wchar_t* pszCmd);
   bool CmdCharacter(const wchar_t* pszCmd);
 
-  void LoadAndSendTestImage(const wstring& testImagePath);
+  void LoadAndSendTestImage(const std::wstring& testImagePath);
   void PostSurfaceItem(pool<CSurface>* pPool, std::wstring_view testImagePath);
 
 private:

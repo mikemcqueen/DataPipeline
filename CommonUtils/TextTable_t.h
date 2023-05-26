@@ -91,7 +91,7 @@ public:
   const Row_t& GetRow(int row) const { return rows_[row]; }
 
   void fill() {
-    stringstream ss;
+    std::stringstream ss;
     for (auto i = 0; i < 10; ++i) {
       for (auto j = 0; j < 10; ++j) {
         ss << std::format("{}", j);

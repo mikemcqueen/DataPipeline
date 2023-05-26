@@ -55,6 +55,7 @@ namespace Broker::SetPrice::txn {
   }
 
   auto handler() -> handler_t {
+/*
     result_code rc{ result_code::s_ok };
     const auto& error = [&rc](result_code new_rc) noexcept {
       rc = new_rc;
@@ -64,11 +65,15 @@ namespace Broker::SetPrice::txn {
       }
       return false;
     };
+*/
     state_t state;
 
     while (true) {
-      auto& promise = co_await dp::txn::receive_txn_awaitable{ kTxnName, state };
-      while (true) {
+      auto& promise = co_await dp::txn::receive_awaitable{ kTxnName, state };
+      const auto& error = [&promise](result_code rc)
+        { return promise.set_result(rc).failed(); };
+      //rc = promise.result().code;
+      while (!promise.result().unexpected()) {
         // TODO: I don't like this. validation errors should always continue?
         // can't we access the price? have it returned via &price param?
         // consider:
@@ -76,19 +81,19 @@ namespace Broker::SetPrice::txn {
         // e_unexpected_msg_type
         // unexpected() (rc >= 0xf000)
         // error() -> capture_error()
-        if (error(validate_price(promise, state.price))
-          && (rc != result_code::e_unexpected))
+        if (error(validate_price(promise, state.price)) &&
+          !promise.result().unexpected())
         {
           co_yield enter_price_text(state.price);
           if (error(validate_price(promise, state.price))) continue;
         }
-        if (rc != result_code::e_unexpected) {
+        if (!promise.result().unexpected()) {
           co_yield click_ok_button();
         }
         if (error(validate_complete(promise, state.prev_msg_name))) continue;
         break;
       }
-      dp::txn::complete(promise, rc);
+      dp::txn::complete(promise); //, rc);
     }
   }
 } // namespace Broker::SetPrice::Txn

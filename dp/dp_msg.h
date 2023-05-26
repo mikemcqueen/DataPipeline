@@ -16,15 +16,16 @@ namespace dp {
 
   namespace msg {
     namespace name {
-      constexpr auto txn_start{ "msg::txn_start" };
-      constexpr auto kEventWapper{ "msg::event_wrapper" };
+      constexpr std::string_view kTxnStart{ "msg::txn_start" };
+      constexpr std::string_view kEventWapper{ "msg::event_wrapper" };
+      constexpr std::string_view kNoOp{ "msg::no_op" };
     }
 
     struct data_t {
       data_t(std::string_view name) : msg_name(name) {}
       data_t(const data_t&) = delete;
       data_t& operator=(const data_t&) = delete;
-      virtual ~data_t() {}
+      virtual ~data_t() = default;
 
       template<typename T> const T& as() const {
         return dynamic_cast<const T&>(*this);
@@ -36,6 +37,13 @@ namespace dp {
       std::string msg_name;
     };
 
+    struct noop_t : data_t {
+      noop_t() : data_t(name::kNoOp) {}
+    };
+    inline auto make_noop() {
+      return std::make_unique<noop_t>();
+    }
+      
     struct event_wrapper_base_t : data_t {
       event_wrapper_base_t() : data_t(name::kEventWapper) {}
       virtual ~event_wrapper_base_t() = default;
@@ -77,7 +85,7 @@ namespace dp {
     }
 
     constexpr auto is_start_txn(const msg_t& msg) {
-      return msg.msg_name == msg::name::txn_start;
+      return msg.msg_name == msg::name::kTxnStart;
     }
   } // namespace msg
 } // namespace dp

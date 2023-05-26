@@ -62,7 +62,7 @@ GetCharacter()
 {
     if (nullptr == s_pCharacter)
     {
-        throw logic_error("Character_t::GetCharacter()");
+        throw std::logic_error("Character_t::GetCharacter()");
     }
     return *s_pCharacter;
 }
@@ -87,7 +87,7 @@ Load()
 {
     if (!m_itemsOwned.empty() || !m_itemsToBuySell.empty())
     {
-        throw logic_error("Character_t::Load(): Already loaded");
+        throw std::logic_error("Character_t::Load(): Already loaded");
     }
     ItemsOwned_t::Load(GetId(), m_itemsOwned);
     ItemsToBuySell_t::Load(GetId(), m_itemsToBuySell);
@@ -128,18 +128,18 @@ CDatabase&
 Character_t::
 GetDb() const
 {
-    typedef map<ServerId_t, shared_ptr<CDatabase> > ServerDatabaseMap_t;
+    typedef std::map<ServerId_t, std::shared_ptr<CDatabase> > ServerDatabaseMap_t;
     static ServerDatabaseMap_t dbMap;
 
     ServerDatabaseMap_t::iterator it = dbMap.find(m_serverId);
     if (dbMap.end() == it)
     {
-        shared_ptr<CDatabase> spDb(new CDatabase);
+        std::shared_ptr<CDatabase> spDb(new CDatabase);
         OpenDb(*spDb.get());
         auto [elem, inserted] = dbMap.insert(make_pair(m_serverId, spDb));
         if (!inserted)
         {
-            throw logic_error("Character_t::GetDb(): dbMap.insert() failed");
+            throw std::logic_error("Character_t::GetDb(): dbMap.insert() failed");
         }
         it = elem;
     }
@@ -148,10 +148,10 @@ GetDb() const
 
 ////////////////////////////////////////////////////////////////////////////////
 
-const wstring&
+const std::wstring&
 FormatConnectString(
-          wstring& dbConnect,
-    const wstring& dbPath)
+          std::wstring& dbConnect,
+    const std::wstring& dbPath)
 {
     static const wchar_t connectPrefix[] =
         L"DSN=MS Access Database;DBQ=";
@@ -166,24 +166,24 @@ FormatConnectString(
 
 ////////////////////////////////////////////////////////////////////////////////
 // NOTE: belongs elsewhere
-const wstring&
+const std::wstring&
 GetServerName(
     ServerId_t serverId)
 {
-    static wstring mm(L"Mistmoore");
+    static std::wstring mm(L"Mistmoore");
     if (0 != serverId)
     {
-        throw invalid_argument("GetServerName()");
+        throw std::invalid_argument("GetServerName()");
     }
     return mm;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-const wstring&
+const std::wstring&
 Character_t::
 GetDbPath(
-    wstring& dbPath) const
+    std::wstring& dbPath) const
 {
     static const wchar_t dbPathPrefix[] = L"\\db\\buysell_";
     dbPath.assign(dbPathPrefix);
@@ -194,12 +194,12 @@ GetDbPath(
 
 ////////////////////////////////////////////////////////////////////////////////
 
-const wstring&
+const std::wstring&
 Character_t::
 GetDbConnect(
-    wstring& dbConnect) const
+    std::wstring& dbConnect) const
 {
-    wstring dbPath;
+    std::wstring dbPath;
     return FormatConnectString(dbConnect, GetDbPath(dbPath));
 }
 
@@ -211,10 +211,10 @@ OpenDb(
    CDatabase& db) const
 {
     DWORD Flags = CDatabase::noOdbcDialog;
-    wstring connect;
+    std::wstring connect;
     if (!db.OpenEx(GetDbConnect(connect).c_str(), Flags))
     {
-        throw logic_error("Character_t::OpenDb(): OpenEx failed");
+        throw std::logic_error("Character_t::OpenDb(): OpenEx failed");
     }
 }
 
@@ -223,7 +223,7 @@ OpenDb(
 size_t
 Character_t::
 WantToBuyHowManyAt(
-    const wstring& itemName,
+    const std::wstring& itemName,
           size_t   price) const
 {
     ItemId_t itemId = Items_t::GetItemId(itemName.c_str());
@@ -259,7 +259,7 @@ InitItemsOwnedFromItemsForSale()
     {
         const ForSaleData_t& data = it->second;
         auto [elem, inserted] = m_itemsOwned.insert(
-            make_pair(it->first, data.Quantity));
+            std::make_pair(it->first, data.Quantity));
         if (!inserted)
         {
             elem->second += data.Quantity;
@@ -273,7 +273,7 @@ InitItemsOwnedFromItemsForSale()
 bool
 Character_t::
 BuyItem(
-    const wstring& itemName,
+    const std::wstring& itemName,
           size_t   price,
           size_t   quantity /*= 1*/,
           bool     pending /*= false*/)
@@ -307,7 +307,7 @@ AdjustQuantity(
         }
         else
         {
-            throw logic_error("Character_t::AdjustQuantity() pending sales not allowed");
+            throw std::logic_error("Character_t::AdjustQuantity() pending sales not allowed");
         }
     }
     else
@@ -332,7 +332,7 @@ BuySellAdd(
 {
     if (0 != itemId)
     {
-        auto [elem, inserted] = m_itemsToBuySell.insert(make_pair(itemId, data));
+        auto [elem, inserted] = m_itemsToBuySell.insert(std::make_pair(itemId, data));
         if (inserted)
         {
             LogAlways(L"BuySell::Add() Buy %d x (%d) @ (%d)", 
@@ -347,7 +347,7 @@ BuySellAdd(
     }
     else
     {
-        throw invalid_argument("BuySell::Add()");
+        throw std::invalid_argument("BuySell::Add()");
     }
 }
 
@@ -373,7 +373,7 @@ BuySellDelete(
     }
     else
     {
-        throw invalid_argument("BuySell::Delete()");
+        throw std::invalid_argument("BuySell::Delete()");
     }
 }
 

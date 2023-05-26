@@ -41,42 +41,42 @@ namespace Broker {
     hr = g_pDisplay->CreateSurfaceFromBitmap(&m_brokerCaption,
       MAKEINTRESOURCE(IDB_BROKER_CAPTION));
     if (FAILED(hr)) {
-      throw runtime_error("Create BrokerCaption surface");
+      throw std::runtime_error("Create BrokerCaption surface");
     }
     hr = g_pDisplay->CreateSurfaceFromBitmap(&m_buyTabActive,
       MAKEINTRESOURCE(IDB_BROKER_BUYTAB_ACTIVE));
     if (FAILED(hr)) {
-      throw runtime_error("Create BrokerBuyTabActive surface");
+      throw std::runtime_error("Create BrokerBuyTabActive surface");
     }
     hr = g_pDisplay->CreateSurfaceFromBitmap(&m_buyTabInactive,
       MAKEINTRESOURCE(IDB_BROKER_BUYTAB_INACTIVE));
     if (FAILED(hr)) {
-      throw runtime_error("Create BrokerBuyTabInactive surface");
+      throw std::runtime_error("Create BrokerBuyTabInactive surface");
     }
     hr = g_pDisplay->CreateSurfaceFromBitmap(&m_marketCaption,
       MAKEINTRESOURCE(IDB_MARKET_CAPTION));
     if (FAILED(hr)) {
-      throw runtime_error("Create MarketCaption surface");
+      throw std::runtime_error("Create MarketCaption surface");
     }
     hr = g_pDisplay->CreateSurfaceFromBitmap(&m_browseTabActive,
       MAKEINTRESOURCE(IDB_MARKET_BROWSETAB_ACTIVE));
     if (FAILED(hr)) {
-      throw runtime_error("Create BrowseTabActive surface");
+      throw std::runtime_error("Create BrowseTabActive surface");
     }
     hr = g_pDisplay->CreateSurfaceFromBitmap(&m_browseTabInactive,
       MAKEINTRESOURCE(IDB_MARKET_BROWSETAB_INACTIVE));
     if (FAILED(hr)) {
-      throw runtime_error("Create BrowseTabInactive surface");
+      throw std::runtime_error("Create BrowseTabInactive surface");
     }
     hr = g_pDisplay->CreateSurfaceFromBitmap(&m_sellTabActive,
       MAKEINTRESOURCE(IDB_BROKER_SELLTAB_ACTIVE));
     if (FAILED(hr)) {
-      throw runtime_error("Create BrokerSellTabActive surface");
+      throw std::runtime_error("Create BrokerSellTabActive surface");
     }
     hr = g_pDisplay->CreateSurfaceFromBitmap(&m_sellTabInactive,
       MAKEINTRESOURCE(IDB_BROKER_SELLTAB_INACTIVE));
     if (FAILED(hr)) {
-      throw runtime_error("Create BrokerSellTabInactive surface");
+      throw std::runtime_error("Create BrokerSellTabInactive surface");
     }
     hr = g_pDisplay->CreateSurfaceFromBitmap(&m_salesLogTabActive,
       MAKEINTRESOURCE(IDB_BROKER_SALESLOGTAB_ACTIVE));
@@ -120,8 +120,8 @@ namespace Broker {
       Tab_t Tab = FindActiveTab(surface, ptCaption, ptTab);
       if (Tab::Id::None != Tab) {
         const Ui::Window_t& tabWindow = GetTabWindow(Tab);
-        LogInfo(L"BrokerWindow::GetWindowId() Found %S Tab @ (%d, %d)",
-          tabWindow.GetWindowName(), ptTab.x, ptTab.y);
+        //LogInfo(L"BrokerWindow::GetWindowId() Found %S Tab @ (%d, %d)",
+        //  tabWindow.GetWindowName(), ptTab.x, ptTab.y);
         // Now that we have verified the tab is active, validate
         // the table, or determine if a popup is active
         windowId = tabWindow.GetWindowId(surface, &ptTab);
@@ -213,7 +213,7 @@ namespace Broker {
         }
       }
       else {
-        throw logic_error("BrokerWindow::FindActiveTab() lastTab.pSurface is nullptr");
+        throw std::logic_error("BrokerWindow::FindActiveTab() lastTab.pSurface is nullptr");
       }
     }
     // Next, try all the other tabs
@@ -226,7 +226,7 @@ namespace Broker {
       pBuyTab = &m_browseTabActive;
       break;
     default:
-      throw logic_error("BrokerWindow::FindActiveTab() Invalid layout");
+      throw std::logic_error("BrokerWindow::FindActiveTab() Invalid layout");
     }
     const TabSurface_t allTabs[] = {
         Tab::Id::Buy,       pBuyTab,

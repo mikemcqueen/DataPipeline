@@ -75,7 +75,7 @@ namespace Ui::Window {
     const POINT*    /*pptHint*/) const
   {
     if (!children_.empty()) {
-      throw runtime_error("Ui::Window_t::GetWindowId(CSurface, POINT) must be implemented");
+      throw std::runtime_error("Ui::Window_t::GetWindowId(CSurface, POINT) must be implemented");
     }
     return m_WindowId;
   }
@@ -106,7 +106,7 @@ namespace Ui::Window {
     Ui::WidgetId_t WidgetId,
     const Rect_t& RelativeRect,
     Rect_t* pWidgetRect,
-    span<const Widget::Data_t> widgets) const
+    std::span<const Widget::Data_t> widgets) const
   {
     for (auto& widget : widgets) {
       if (widget.WidgetId == WidgetId) {
@@ -163,7 +163,7 @@ namespace Ui::Window {
         if (pptOrigin) {
           *pptOrigin = pt;
         }
-        LogInfo(L"%S::CompareLastOrigin() Match", GetWindowName());
+        //LogInfo(L"%S::CompareLastOrigin() Match", GetWindowName());
         return true;
       }
     }
@@ -182,8 +182,8 @@ namespace Ui::Window {
     // search for the supplied origin bitmap on the supplied surface
     POINT ptOrigin;
     if (surface.FindSurfaceInRect(image, searchRect, ptOrigin, nullptr)) {
-      LogInfo(L"%S::OriginSearch(): Found @ (%d, %d)", GetWindowName(),
-        ptOrigin.x, ptOrigin.y);
+      //LogInfo(L"%S::OriginSearch(): Found @ (%d, %d)", GetWindowName(),
+      //  ptOrigin.x, ptOrigin.y);
       if (pptOrigin) {
         *pptOrigin = ptOrigin;
       }

@@ -37,7 +37,7 @@ public:
     { }
 
     Text_t(
-        span<const int> charsPerColumn)
+        std::span<const int> charsPerColumn)
         :
         TextBase_t(charsPerColumn)
     { }

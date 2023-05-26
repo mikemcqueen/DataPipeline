@@ -22,9 +22,9 @@ private:
     AccountManager_t& m_manager;
     GameId_t          m_gameId;
     AccountId_t       m_accountId;
-    wstring           m_username;
-    wstring           m_password;
-    shared_ptr<Character_t> m_spCharacter; // TODO: vector
+    std::wstring           m_username;
+    std::wstring           m_password;
+    std::shared_ptr<Character_t> m_spCharacter; // TODO: vector
 
 public:
 
@@ -43,10 +43,10 @@ public:
     {
     }
 
-    const wstring&
+    const std::wstring&
     GetUsername() const { return m_username; }
 
-    const wstring&
+    const std::wstring&
     GetPassword() const { return m_password; }
 
     Character_t&
