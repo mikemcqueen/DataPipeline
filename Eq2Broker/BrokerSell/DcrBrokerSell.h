@@ -26,12 +26,14 @@
 #include "dp_msg.h"
 
 namespace Broker::Sell::Translate {
-  struct data_t : dp::msg::data_t {
-    data_t(int i) : dp::msg::data_t(kMsgName) { i; } // TEMP
+  constexpr std::string_view kMsgName{ "msg::broker_sell" };
+
+  struct data_t : cope::msg::data_t {
+    data_t(int i) : cope::msg::data_t(kMsgName) { i; } // TEMP
 
     data_t(const Table::RowVector rows, int selected_row,
       Ui::Scroll::Position_t vscroll_pos) :
-      dp::msg::data_t(kMsgName),
+      cope::msg::data_t(kMsgName),
       rows(std::move(rows)),
       selected_row(selected_row),
       vscroll_pos(vscroll_pos)
@@ -43,8 +45,8 @@ namespace Broker::Sell::Translate {
   };
 
   namespace msg {
-    inline auto validate(const dp::msg_t& msg) {
-      return dp::msg::validate<data_t>(msg, kMsgName);
+    inline auto validate(const cope::msg_t& msg) {
+      return cope::msg::validate<data_t>(msg, kMsgName);
     }
   }
 
@@ -73,7 +75,7 @@ namespace Broker::Sell::Translate {
       Data_t();
     };
 
-    inline dp::msg_ptr_t Transform(const Data_t& msg) {
+    inline cope::msg_ptr_t Transform(const Data_t& msg) {
       using namespace Broker::Sell::Table;
       RowVector row_vector;
       row_vector.reserve(msg.Text.GetRowCount());
@@ -122,10 +124,6 @@ namespace Broker::Sell::Translate {
     const DcrTable_t& GetDcr() const { return m_DcrTable; }
 
   private:
-//    Window::ManagerBase_t& GetManager() const { return m_windowManager; }
-
-  private:
-//    Window::ManagerBase_t& m_windowManager;
     const Window_t& window_;
     TranslatePolicy_t m_TranslatePolicy;
     ValidatePolicy_t m_ValidatePolicy;

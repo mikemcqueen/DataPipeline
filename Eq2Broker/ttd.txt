@@ -1,22 +1,10 @@
 
-TODO: event_sceenshot vs. event_start/stop
-
-
-* SSTask::GetEventData exception kinda stops things from running with current start/stop mechanism.
-
 Still some work left to make it work with live client:
-* Transform method primarily.
 * Figure out how to get dp::Dispatch gain aware of ui::msg without
   bringing in Ui as a dependency. SendEvent? PostMessage + Ui::Handler_t?
   * SendEvent + UI::Handler_t. Maybe I should add a special "Event" stage
   that gets checked first for SendEvent calls.
 * Just leverage SendEvent + SsWindow::EventHandler for now.  
-* I can create a "ui::msg::dp_event_wrapper" that has a unique_ptr to a
-  DP::Event::Data_t.
-* I'd like to add some flags to that event object like "synchronous", 
-  (maybe that's enough) and possible "dont_suspend_and_flush".  I really
-  don't think that async + suspend + flush is necessary in this use case.
-
 	
 So here's what I'm thinking.  Take TxBuySellItems and call it TxHandler.
 Insert handler as Interpreter.  No need to insert buy/sell/setprice interpreters (yet)
@@ -48,12 +36,6 @@ The	goal:
     be in the quagmire of threading shit right now. I want to make the coroutine
 	transaction PoC work, then I can start thinking about how that interops with
 	threads.
-  * So, after MessageHandler handles:
-    * if txn_complete message, "disable" tx_sell. 
-	* else, call StartAcquiring(true) again
-  * I may need/want to write some transformer from Legacy to New msg data,
-    For BrokerSell and BrokerSetPrice.
-  * 
 
 g_pDisplay
 

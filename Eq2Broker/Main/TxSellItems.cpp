@@ -15,18 +15,19 @@
 #include "Eq2Broker_t.h"
 #include "CommonTypes.h"
 #include "ui_msg.h"
-#include "DcrSetPrice.h"
+#include "cope.h"
 
 namespace dp {
-  result_code Dispatch(msg_t& msg) {
+  auto dispatch(cope::msg_t& msg) {
+    using cope::result_code;
     result_code rc{ result_code::s_ok };
-    if (msg.msg_name != dp::msg::name::kEventWapper) {
+    if (msg.msg_name != DP::msg::name::kEventWapper) {
       LogInfo(L"dispatch(): unsupported message name, %S", msg.msg_name.c_str());
       rc = result_code::e_fail;
     }
     else {
       LogInfo(L"dispatching %S", msg.msg_name.c_str());
-      auto& event_wrapper = msg.as<dp::msg::event_wrapper_base_t>();
+      auto& event_wrapper = msg.as<DP::msg::event_wrapper_base_t>();
       GetPipelineManager().SendEvent(*event_wrapper.get_event_data());
       ::Sleep(50);
     }
@@ -75,13 +76,13 @@ namespace Broker::Transaction::SellItems {
       LogInfo(L"  No txn executing");
       return S_FALSE;
     }
-    dp::msg_ptr_t msg_ptr = Transform(*pMessage);
+    cope::msg_ptr_t msg_ptr = Transform(*pMessage);
     if (!msg_ptr) {
       LogError(L"  Transform failed");
       return S_FALSE;
     }
-    if (!tx_sellitems_.promise().txn_started()) {
-      if (!array_equal(pMessage->msg_name, Sell::kMsgName)) {
+    if (!tx_sellitems_.promise().txn_running()) {
+      if (!array_equal(pMessage->msg_name, Sell::Translate::kMsgName)) {
         return S_FALSE;
       }
       return StartTxn(std::move(msg_ptr), CreateTxnState());
@@ -91,8 +92,8 @@ namespace Broker::Transaction::SellItems {
     }
   }
 
-  dp::msg_ptr_t Handler_t::Transform(const DP::Message::Data_t& msg) const {
-    if (array_equal(msg.msg_name, Sell::kMsgName)) {
+  cope::msg_ptr_t Handler_t::Transform(const DP::Message::Data_t& msg) const {
+    if (array_equal(msg.msg_name, Sell::Translate::kMsgName)) {
       using namespace Broker::Sell::Translate;
       return Legacy::Transform(reinterpret_cast<const Legacy::Data_t&>(msg));
     }
@@ -106,29 +107,27 @@ namespace Broker::Transaction::SellItems {
   }
 
   // hack. figure out txn vs. Transaction namespace issue
-  using /*state_t = */Broker::Sell::txn::state_t;
-  using state_ptr_t = dp::txn::start_t<state_t>::state_ptr_t;
+  using Broker::Sell::txn::state_t;
+  using state_ptr_t = cope::txn::start_t<state_t>::state_ptr_t;
 
   state_ptr_t Handler_t::CreateTxnState() {
     return std::make_unique<state_t>("agoblineye"s, 4);
   }
 
-  HRESULT Handler_t::StartTxn(dp::msg_ptr_t msg_ptr, state_ptr_t state_ptr) {
+  HRESULT Handler_t::StartTxn(cope::msg_ptr_t msg_ptr, state_ptr_t state_ptr) {
     using namespace Broker::Sell;
     LogInfo(L"starting txn::sell_item");
-    auto start_txn_msg = dp::txn::make_start_txn<txn::state_t>(txn::kTxnName,
+    auto start_txn_msg = cope::txn::make_start_txn<txn::state_t>(txn::kTxnName,
       std::move(msg_ptr), std::move(state_ptr));
     return SendMsgToTxn(std::move(start_txn_msg));
   }
 
-  HRESULT Handler_t::SendMsgToTxn(dp::msg_ptr_t msg_ptr) {
-    //DP::Event::StopAcquire_t stop(DP::Event::Flag::Flush);
-    //GetPipelineManager().SendEvent(stop);
+  HRESULT Handler_t::SendMsgToTxn(cope::msg_ptr_t msg_ptr) {
     LogInfo(L"sending message to txn::sell_item");
-    dp::msg_ptr_t out = tx_sellitems_.send_value(std::move(msg_ptr));
+    cope::msg_ptr_t out = tx_sellitems_.send_msg(std::move(msg_ptr));
     if (out) {
-      dp::Dispatch(*out.get());
-      if ((tx_sellitems_.promise().txn_state() == dp::txn::state::ready)
+      dp::dispatch(*out.get());
+      if ((tx_sellitems_.promise().txn_state() == cope::txn::state::ready)
         && tx_sellitems_.promise().result().succeeded())
       {
         LogInfo(L"TxSellItems::TXN_COMPLETE!");

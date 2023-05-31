@@ -49,9 +49,6 @@
     <ClCompile Include="Main\TrWindowType.cpp">
       <Filter>Main</Filter>
     </ClCompile>
-    <ClCompile Include="cope\cope.cpp">
-      <Filter>cope</Filter>
-    </ClCompile>
     <ClCompile Include="cope\txsellitem.cpp">
       <Filter>cope</Filter>
     </ClCompile>
@@ -146,9 +143,6 @@
     </ClInclude>
     <ClInclude Include="Main\TrWindowType.h">
       <Filter>Main</Filter>
-    </ClInclude>
-    <ClInclude Include="cope\cope.h">
-      <Filter>cope</Filter>
     </ClInclude>
     <ClInclude Include="cope\txsellitem.h">
       <Filter>cope</Filter>

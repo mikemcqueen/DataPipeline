@@ -1,32 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="dp">
-      <UniqueIdentifier>{65ce25e7-93e0-4d89-ba48-ff88ccd1f3d3}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\dp\dp.cpp">
-      <Filter>dp</Filter>
-    </ClCompile>
     <ClCompile Include="PipelineManager.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\dp\dp.h">
-      <Filter>dp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\dp\dp_msg.h">
-      <Filter>dp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\dp\dp_result.h">
-      <Filter>dp</Filter>
-    </ClInclude>
     <ClInclude Include="DpEvent.h" />
     <ClInclude Include="DpHandler_t.h" />
     <ClInclude Include="DpMessage.h" />
     <ClInclude Include="DpTransaction.h" />
     <ClInclude Include="PipelineManager.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="dp_msg.h" />
   </ItemGroup>
 </Project>

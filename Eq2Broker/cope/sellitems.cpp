@@ -153,7 +153,6 @@ namespace dp {
     }
     else {
       rc = ui::msg::dispatch(msg);
-      ::Sleep(300);
     }
     return rc;
   }

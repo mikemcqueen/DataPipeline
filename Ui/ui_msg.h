@@ -1,33 +1,28 @@
 // ui_msg.h
 
-#if _MSC_VER > 1000
-#pragma once
-#endif
-
-#ifndef Include_UI_MSG_H
-#define Include_UI_MSG_H
+#ifndef INCLUDE_UI_MSG_H
+#define INCLUDE_UI_MSG_H
 
 #include <string_view>
-#include "dp.h"
+#include "cope_msg.h"
 #include "UiTypes.h"
-//#include "UiWindowId.h"
 
 namespace ui::msg {
-  constexpr auto kMsgPrefix = "ui::msg";
+  constexpr std::string_view kMsgPrefix{ "ui::msg" };
 
   namespace name {
     using namespace std::literals;
 
-    constexpr auto click_widget{ "ui::msg::click_widget" };
-    constexpr auto click_point{ "ui::msg::click_point" };
-    constexpr auto click_table_row{ "ui::msg::click_table_row" };
-    constexpr auto send_chars{ "ui::msg::send_chars" };
-    constexpr auto set_widget_text{ "ui::msg::set_widget_text" };
+    constexpr std::string_view click_widget{ "ui::msg::click_widget" };
+    constexpr std::string_view click_point{ "ui::msg::click_point" };
+    constexpr std::string_view click_table_row{ "ui::msg::click_table_row" };
+    constexpr std::string_view send_chars{ "ui::msg::send_chars" };
+    constexpr std::string_view set_widget_text{ "ui::msg::set_widget_text" };
   }
 
-  struct data_t : dp::msg_t {
+  struct data_t : cope::msg_t {
     data_t(std::string_view msg_name, std::string_view wnd_name) :
-      dp::msg_t(msg_name), window_name(wnd_name) {}
+      cope::msg_t(msg_name), window_name(wnd_name) {}
 
     std::string window_name;
   };
@@ -104,10 +99,10 @@ namespace ui::msg {
 
       std::string chars;
     };
-  } // namespace set_widget_text
+  } // namespace send_chars
 
   void toggle_enabled();
-  auto dispatch(const dp::msg_t& msg) -> dp::result_code;
+  auto dispatch(const cope::msg_t& msg) -> cope::result_code;
 } // namespace ui::msg
 
-#endif // Include_UI_MSG_H
+#endif // INCLUDE_UI_MSG_H

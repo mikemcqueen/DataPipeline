@@ -26,16 +26,16 @@
 #include "Price_t.h"
 
 namespace Broker::SetPrice::Translate {
-  struct data_t : dp::msg::data_t {
-    data_t(int price) : dp::msg::data_t(kMsgName), price(price) {}
-    data_t(Price_t price) : dp::msg::data_t(kMsgName), price(price) {}
+  struct data_t : cope::msg::data_t {
+    data_t(int price) : cope::msg::data_t(kMsgName), price(price) {}
+    data_t(Price_t price) : cope::msg::data_t(kMsgName), price(price) {}
 
     Price_t price;
   };
 
   namespace msg {
-    inline auto validate(const dp::msg_t& msg) {
-      return dp::msg::validate<data_t>(msg, kMsgName);
+    inline auto validate(const cope::msg_t& msg) {
+      return cope::msg::validate<data_t>(msg, kMsgName);
     }
   }
 
@@ -53,7 +53,7 @@ namespace Broker::SetPrice::Translate {
       int Price;
     };
 
-    inline dp::msg_ptr_t Transform(const Data_t& msg) {
+    inline cope::msg_ptr_t Transform(const Data_t& msg) {
       return std::make_unique<data_t>(msg.Price);
     }
   }

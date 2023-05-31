@@ -1,11 +1,11 @@
 #include "stdafx.h"
-#include "dp.h"
-#include "ui_msg.h"
 #include "UiInput.h"
+#include "ui_msg.h"
+#include "cope.h"
 #include "log.h"
 
 namespace ui::msg {
-  using dp::result_code;
+  using cope::result_code;
 
   static bool s_enabled = true;
 
@@ -16,7 +16,7 @@ namespace ui::msg {
 
   auto enabled() { return s_enabled; }
 
-  result_code validate(const dp::msg_t& msg) {
+  result_code validate(const cope::msg_t& msg) {
     msg;
     return result_code::s_ok;
   }
@@ -120,7 +120,7 @@ namespace ui::msg {
 */
   }
 
-  auto dispatch(const dp::msg_t& msg) -> result_code {
+  auto dispatch(const cope::msg_t& msg) -> result_code {
     result_code rc = result_code::s_ok;
     if (msg.msg_name == name::click_point) {
       rc = click_point(msg.as<click::data_t>());

@@ -2,15 +2,18 @@
 #include <optional>
 #include "txsellitem.h"
 #include "txsetprice.h"
+#include "dp_msg.h"
 #include "ui_msg.h"
+#include "DcrBrokerSell.h"
+#include "DcrSetPrice.h"
 #include "BrokerSellTypes.h"
 
 namespace Broker::Sell::txn {
   using namespace std::literals;
 
-  using dp::msg_t;
-  using dp::result_code;
-  using dp::txn::handler_t;
+  using cope::msg_t;
+  using cope::result_code;
+  using cope::txn::handler_t;
   using promise_type = handler_t::promise_type;
 
   auto is_candidate_row(const Table::RowData_t& row, const state_t& state) {
@@ -106,7 +109,7 @@ namespace Broker::Sell::txn {
   }
 
   namespace yield_validate {
-    using yield_fn_t = std::function<std::unique_ptr<dp::msg::event_wrapper_base_t>()>;
+    using yield_fn_t = std::function<std::unique_ptr<DP::msg::event_wrapper_base_t>()>;
     using validate_fn_t = std::function<result_code(promise_type& promise)>;
 
     struct state_t {
@@ -118,14 +121,15 @@ namespace Broker::Sell::txn {
       state_t state;
 
       while (true) {
-        auto& promise = co_await dp::txn::receive_awaitable{ "txn::yield_validate", state };
-        const auto& error = [&promise](result_code rc) { return promise.set_result(rc).failed(); };
-        //rc = promise.result().code;
+        auto& promise = co_await cope::txn::receive_awaitable{ "txn::yield_validate", state };
+        const auto& error = [&promise](result_code rc) {
+          return promise.set_result(rc).failed();
+        };
         while (!promise.result().unexpected()) {
           co_yield state.yield_fn();
           if (!error(state.validate_fn(promise))) break;
         }
-        dp::txn::complete(promise); // , rc);
+        cope::txn::complete(promise);
       }
     }
 
@@ -135,7 +139,7 @@ namespace Broker::Sell::txn {
       promise;
       auto state = std::make_unique<state_t>(/*std::string(kMsgName),*/
         std::move(yield_fn), std::move(validate_fn));
-      return dp::txn::start_awaitable<state_t>{ handle, {},//std::move(promise.in_ptr()),
+      return cope::txn::start_awaitable<state_t>{ handle, {},//std::move(promise.in_ptr()),
         std::move(state) };
     }
   }
@@ -152,15 +156,15 @@ namespace Broker::Sell::txn {
       state_t state;
 
       while (true) {
-        auto& promise = co_await dp::txn::receive_awaitable{ "txn::retry", state };
+        auto& promise = co_await cope::txn::receive_awaitable{ "txn::retry", state };
         const auto& error = [&promise](result_code rc)
           { return promise.set_result(rc).failed(); };
         while (!promise.result().unexpected()) {
           if (!error(state.fn(promise)) || (state.retries_remaining-- < 1)) break;
           LogInfo(L" retry: yielding noop");
-          co_yield dp::msg::make_noop();
+          co_yield cope::msg::make_noop();
         }
-        dp::txn::complete(promise);
+        cope::txn::complete(promise);
       }
     }
 
@@ -168,21 +172,9 @@ namespace Broker::Sell::txn {
       int retry_count = 2)
     {
       auto state = std::make_unique<state_t>(retry_count, std::move(fn));
-      return dp::txn::start_awaitable<state_t>{ handle,
+      return cope::txn::start_awaitable<state_t>{ handle,
         std::move(promise.in_ptr()), std::move(state) };
     }
-  }
-
-  // todo: move to setprice
-  auto start_txn_setprice(handler_t::handle_t handle, promise_type& promise,
-    const state_t& sell_state)
-  {
-    // build a SetPrice txn state that contains a Broker::Sell::Translate msg
-    auto setprice_state = std::make_unique<SetPrice::txn::state_t>(
-      std::string(kMsgName), sell_state.item_price);
-    return dp::txn::start_awaitable<SetPrice::txn::state_t>{
-      handle, std::move(promise.in_ptr()), std::move(setprice_state)
-    };
   }
 
   auto click_table_row(const Rect_t& rect) {
@@ -192,15 +184,16 @@ namespace Broker::Sell::txn {
     using Ui::Event::Click::Data_t;
     auto click_event_ptr = std::make_unique<Data_t>(Broker::Window::Id::BrokerSell,
       rect.Center(), DP::Event::Flag::Synchronous);
-    return std::make_unique<dp::msg::event_wrapper_t<Data_t>>(
+    return std::make_unique<DP::msg::event_wrapper_t<Data_t>>(
       std::move(click_event_ptr));
   }
 
+  // todo generalize "click id" function
   auto click_setprice_button() {
     using Ui::Event::Click::Data_t;
     auto click_event_ptr = std::make_unique<Data_t>(Broker::Window::Id::BrokerSell,
       Broker::Sell::Widget::Id::SetPriceButton, DP::Event::Flag::Synchronous);
-    return std::make_unique<dp::msg::event_wrapper_t<Data_t>>(
+    return std::make_unique<DP::msg::event_wrapper_t<Data_t>>(
       std::move(click_event_ptr));
   }
 
@@ -208,7 +201,7 @@ namespace Broker::Sell::txn {
     using Ui::Event::Click::Data_t;
     auto click_event_ptr = std::make_unique<Data_t>(Broker::Window::Id::BrokerSell,
       Broker::Sell::Widget::Id::ListItemButton, DP::Event::Flag::Synchronous);
-    return std::make_unique<dp::msg::event_wrapper_t<Data_t>>(
+    return std::make_unique<DP::msg::event_wrapper_t<Data_t>>(
       std::move(click_event_ptr));
   }
 
@@ -218,9 +211,8 @@ namespace Broker::Sell::txn {
     state_t state;
 
     while (true) {
-      auto& promise = co_await dp::txn::receive_awaitable{ kTxnName, state };
+      auto& promise = co_await cope::txn::receive_awaitable{ kTxnName, state };
       const auto& error = [&promise](result_code rc) { return promise.set_result(rc).failed(); };
-      //      rc = promise.result();
       // here we should consider adding some part of the first message to our
       // "state", such as the visible row range, or scroll position, or names
       // of items, or some combination of those. If that state changes in a 
@@ -249,7 +241,7 @@ namespace Broker::Sell::txn {
             [](promise_type& promise) { return validate(promise.in()); });
           if (promise.result().failed()) continue;
 
-          co_await start_txn_setprice(setprice_handler.handle(), promise, state);
+          co_await SetPrice::txn::start(setprice_handler.handle(), promise, state);
           if (error(validate_row(promise, state, row_data.row_index,
             { .selected{true}, .price{true} }))) continue;
         }
@@ -261,7 +253,7 @@ namespace Broker::Sell::txn {
         }
         break; // txn_complete(success)
       }
-      dp::txn::complete(promise);
+      cope::txn::complete(promise);
     }
   }
 } // namespace Broker::Sell:txn

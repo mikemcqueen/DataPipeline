@@ -162,7 +162,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <CompileAsManaged>false</CompileAsManaged>
       <CompileAsWinRT>false</CompileAsWinRT>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)Main;$(SolutionDir)BrokerBuy;$(SolutionDir)BrokerSell;$(SolutionDir)SetPrice;$(SolutionDir)Ui;$(SolutionDir)Db;$(SolutionDir)cope;$(SolutionDir)..\Accounts;$(SolutionDir)..\PipelineManager;$(SolutionDir)..\dp;$(SolutionDir)..\Ui;$(SolutionDir)..\DcrLib;$(SolutionDir)..\CommonUtils;$(SolutionDir)..\AcquireHandlers\inc;$(SolutionDir)..\TranslateHandlers\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)Main;$(SolutionDir)BrokerBuy;$(SolutionDir)BrokerSell;$(SolutionDir)SetPrice;$(SolutionDir)Ui;$(SolutionDir)Db;e:\code\cope\include;$(SolutionDir)cope;$(SolutionDir)..\Accounts;$(SolutionDir)..\PipelineManager;$(SolutionDir)..\Ui;$(SolutionDir)..\DcrLib;$(SolutionDir)..\CommonUtils;$(SolutionDir)..\AcquireHandlers\inc;$(SolutionDir)..\TranslateHandlers\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ddraw.lib;dxguid.lib;odbc32.lib;comctl32.lib;tesseract53d.lib;leptonica-1.83.1d.lib;tiffd.lib;libpng16d.lib;archive.lib;jpeg.lib;libwebp.lib;zstd.lib;lzma.lib;zlibd.lib;gif.lib;openjp2.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -200,7 +200,7 @@
       <PreprocessorDefinitions>_UNICODE;UNICODE;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CompileAsManaged>false</CompileAsManaged>
       <CompileAsWinRT>false</CompileAsWinRT>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)Main;$(SolutionDir)BrokerBuy;$(SolutionDir)BrokerSell;$(SolutionDir)SetPrice;$(SolutionDir)Ui;$(SolutionDir)Db;$(SolutionDir)cope;$(SolutionDir)..\Accounts;$(SolutionDir)..\PipelineManager;$(SolutionDir)..\dp;$(SolutionDir)..\Ui;$(SolutionDir)..\DcrLib;$(SolutionDir)..\CommonUtils;$(SolutionDir)..\AcquireHandlers\inc;$(SolutionDir)..\TranslateHandlers\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)Main;$(SolutionDir)BrokerBuy;$(SolutionDir)BrokerSell;$(SolutionDir)SetPrice;$(SolutionDir)Ui;$(SolutionDir)Db;e:\code\cope\include;$(SolutionDir)cope;$(SolutionDir)..\Accounts;$(SolutionDir)..\PipelineManager;$(SolutionDir)..\Ui;$(SolutionDir)..\DcrLib;$(SolutionDir)..\CommonUtils;$(SolutionDir)..\AcquireHandlers\inc;$(SolutionDir)..\TranslateHandlers\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ddraw.lib;dxguid.lib;odbc32.lib;comctl32.lib;tesseract53.lib;leptonica-1.83.1.lib;tiff.lib;libpng16.lib;archive.lib;jpeg.lib;libwebp.lib;zstd.lib;lzma.lib;zlib.lib;gif.lib;openjp2.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -258,7 +258,6 @@
     <ClCompile Include="BrokerSell\BrokerSellWindow.cpp" />
     <ClCompile Include="BrokerSell\DcrBrokerSell.cpp" />
     <ClCompile Include="BrokerSell\TiBrokerSell.cpp" />
-    <ClCompile Include="cope\cope.cpp" />
     <ClCompile Include="cope\txsellitem.cpp" />
     <ClCompile Include="cope\txsetprice.cpp" />
     <ClCompile Include="Main\Eq2BrokerImpl_t.cpp" />
@@ -292,7 +291,6 @@
     <ClInclude Include="BrokerSell\BrokerSellWindowManager.h" />
     <ClInclude Include="BrokerSell\DcrBrokerSell.h" />
     <ClInclude Include="BrokerSell\TiBrokerSell.h" />
-    <ClInclude Include="cope\cope.h" />
     <ClInclude Include="cope\txsellitem.h" />
     <ClInclude Include="cope\txsetprice.h" />
     <ClInclude Include="Main\BrokerId.h" />

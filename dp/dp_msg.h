@@ -44,25 +44,6 @@ namespace dp {
       return std::make_unique<noop_t>();
     }
       
-    struct event_wrapper_base_t : data_t {
-      event_wrapper_base_t() : data_t(name::kEventWapper) {}
-      virtual ~event_wrapper_base_t() = default;
-      virtual DP::Event::Data_t* get_event_data() = 0;
-    };
-
-    template<typename T> // TODO: requires inherit from Event::Data_t
-    struct event_wrapper_t : event_wrapper_base_t {
-      event_wrapper_t(std::unique_ptr<T> event_ptr) :
-        event_ptr(std::move(event_ptr)) {}
-      event_wrapper_t() = delete;
-
-      DP::Event::Data_t* get_event_data() override {
-        return reinterpret_cast<DP::Event::Data_t*>(event_ptr.get());
-      }
-
-      std::unique_ptr<T> event_ptr;
-    };
-
     inline auto validate_name(const msg_t& msg, std::string_view msg_name) {
       result_code rc = result_code::s_ok;
       if (msg.msg_name != msg_name) {
